@@ -18,8 +18,6 @@ With new developments, R is becoming more and more useful for a variety of progr
 - Machine learning
 - Data journalism / data analysis
 
-A telling quote about R comes from someone at Google:
-
 > "The best thing about R is that it was developed by statisticians. The worst thing about R is that... it was developed by statisticians."
 > -Bo Cowgill, Google, at the Bay Area R Users Group
 
@@ -194,39 +192,48 @@ Another good practice is to name objects after nouns (e.g., `fedex_number`) and 
 
 [Note about these object names in different languages]
 
+### Commenting code
+
+[Add section about commenting code here]
+
 ## R's most basic object types
 
-The two most basic types of objects for data in R are **vectors** (1D) and **dataframes** (2D). 
+An R *object* stores some type of data that you want to use later in your R code, without fully recreating it. The content of R objects can vary from very simple (the `"GoFedEx"` string in the example code above) to very complex objects with lots of elements (for example, a machine learning model). 
+
+There are a variety of different object types in R, shaped to fit different types of objects ranging from the simple to complex. In this section, we'll start by describing two object types that you will use most often in basic data analysis, **vectors** (1-dimensional objects) and **dataframes** (2-dimensional objects). 
 
 ### Vectors
 
-- A vector is a string of values. 
-- All values must be of the same class (i.e., all numbers, all characters, all dates)
-- You can use `c()` to join values together to create a vector
-- The *length* of the vector is how many values it has in it
+To get an initial grasp of the *vector* object type in R, think of it as a 1-dimensional object, or a string of values. All values in a vector must be of the same class (i.e., all numbers, all characters, all dates). If you try to create a vector with elements from different classes (like "FedEx", which is a character, and 3, a number), R will coerce all of the elements to the most generic class of any of the elements (i.e., "FedEx" and "3", now both characters, since "3" can be changed to a character, but "FedEx" can't be changed to a number). 
 
-For example:
+To create a vector from different elements, you'll use the concatenation function, `c` to join them together, with commas between the elements. For example, to create a vector with the first five elements of the Fibonacci sequence, you can run:
+
 ```{r}
 fibonacci <- c(1, 1, 2, 3, 5)
 fibonacci
-length(fibonacci)
 ```
 
-An example using characters instead of numbers:
+Here is an example of creating a vector using elements with the character class instead of numbers (note the quotation marks used around each element for character strings):
 
 ```{r}
 one_to_five <- c("one", "two", "three", "four", "five")
 one_to_five
 ```
 
-If you mix classes, it will default to most generic:
+If you mix classes when you create the vector, R will coerce all the elements  to most generic of the elements' classes:
 
 ```{r}
 mixed_classes <- c(1, 3, "five")
 mixed_classes
 ```
 
-You can pull out certain values by using indexing (`[...]`) to identify the locations you want to get
+A vector's *length* is the number of elements in the vector. You can use the `length` function to determine a vector's length:
+
+```{r}
+length(mixed_classes)
+```
+
+Once you create an object, you will often want to reference the whole object in future code. However, there will be some times when you'll want to reference just certain elements of the object (for example, the first three values). You can pull out certain values from a vector by using indexing with square brackets (`[...]`) to identify the locations of the elements you want to pull, with a numeric vector inside the brackets that lists the numbered positions of the elements you want to get:
 
 ```{r}
 fibonacci[2] # Get the second value
@@ -234,13 +241,13 @@ fibonacci[c(1, 5)] # Get first and fifth values
 fibonacci[1:3] # Get the first three values
 ```
 
+You can also use logic to pull out some values of a vector. For example, you might only want to pull out even values from the `fibonacci` vector. We'll cover using logical statements to index vectors later in the book.
+
 ### Dataframes
 
-A dataframe is one or more vectors of the same length stuck together side-by-side. It is the closest R has to what you'd get with an Excel spreadsheet. 
+A dataframe is a 2-dimensional object, and is made of one or more vectors of the same length stuck together side-by-side. It is the closest R has to an Excel spreadsheet-type structure. You can create dataframes using the `data.frame()` function. However, most often you will create a dataframe by reading in data from a file, using something like `read.csv()`. 
 
-You can create dataframes using the `data.frame()` function. However, most often you will create a dataframe by reading in data from a file using something like `read.csv()`. 
-
-For example, to create a dataframe from vectors you already have saved as R objects:
+To create a dataframe using `data.frame`, in this case by sticking together vectors you already have saved as R objects, you can run:
 
 ```{r}
 fibonacci_seq <- data.frame(num_in_seq = one_to_five,
@@ -248,33 +255,54 @@ fibonacci_seq <- data.frame(num_in_seq = one_to_five,
 fibonacci_seq
 ```
 
-The format for using `data.frame()` is:
+Note that this call requires that the `one_to_five` and `fibonacci` vectors are the same length, although they don't have to be (and in this case aren't) the same class of objects (`one_to_five` is a character class, `fibonacci` is numeric).
+
+You can also create a dataframe using `data.frame` even if you don't have the vectors for the columns saved as objects. Instead, in this case, you can put the vector assignment directly within the `data.frame` call: 
+
+```{r}
+fibonacci_seq <- data.frame(num_in_seq = c("one", "two", "three",
+                                           "four", "five"),
+                            fibonacci_num = c(1, 1, 2, 3, 5))
+fibonacci_seq
+```
+
+[A note about how R will evaluate calls from the inside out when you write a call like this with different functions included.]
+
+The general format for using `data.frame()` is:
 
 ```{r eval = FALSE}
-## Note: Generic code-- this will not work
+## Note: Generic code
 [name of object] <- data.frame([1st column name] = [1st column content],
                                [2nd column name] = [2nd column content])
 ```
 
-You can use indexing (`[..., ...]`) for dataframes, too, but now they'll have two dimensions (rows, then columns). Put the rows you want before the comma, the columns after. If you want all of something, leave the designated spot blank. For example:
+with an equals sign between the column name and column content for each column, and commas between each of the columns.
+
+You can use square-bracket indexing (`[..., ...]`) for dataframes, too, but now they'll have two dimensions (rows, then columns). Put the rows you want before the comma, the columns after. If you want all of something (e.g., all rows in the dataframe), leave the designated spot blank. Here are two examples of using square-bracket indexing to pull a subset of the `fibonacci_seq` dataframe we created above:
 
 ```{r}
 fibonacci_seq[1:2, 2] # First two rows, second column
 fibonacci_seq[5, ] # Last row, all columns
 ```
 
-Usually, instead of creating a dataframe from vectors, you'll read one in from data on an outside file. For example, to read in a dataset from a CSV file called `daily_show_guests.csv` in a subdirectory called `data/`:
+So far, we've only shown how to create dataframes from scratch within an R session. Usually, however, you'll create R dataframes instead by reading in data from an outside file using `read.csv` and related functions. For example, you might want to analyze data on all the guests that came on the *Daily Show*, *circa* Jon Stewart. If you have this data in a comma-separated (csv) file on your computer called `daily_show_guests.csv`, you can read it into your R session with the following code:
 
 ```{r echo = FALSE}
 daily_show <- read.csv("data/daily_show_guests.csv",
                        header = TRUE,
                        skip = 4)
-daily_show[1:2, ]
 ```
 ```{r eval = FALSE}
 daily_show <- read.csv("daily_show_guests.csv",
                        header = TRUE,
                        skip = 4)
+```
+
+In this code, the `read.csv` function is reading in the data from "daily_show_guests", while the gets arrow (`<-`) assigns that data to the object `daily_show`, which you can then reference in later code to explore and plot the data.
+
+Once you've read in the data and saved the resulting dataframe as an object, you can use square-bracket indexing to look at the first two rows in the data:
+
+```{r}
 daily_show[1:2, ]
 ```
 
