@@ -107,37 +107,47 @@ This downloads the package from CRAN and saves it in a special location on your 
 
 ### Loading an installed package
 
-Once you have a package, you can load it to an R session using the `library()` function. 
+Once you have installed a package, it will be saved to your computer, but you won't be able to access it's functions until you load it in your R session. You can load a package in an R session using the `library()` function, with the package name inside the parentheses. 
 
 ```{r messages = FALSE, warnings = FALSE, results = FALSE}
 library(phonenumber)
 ```
 
-Once it's loaded, you can use all its functions.
+[Add note about quotation marks with `library` call.]
+
+Once a package is loaded, you can use all its exported (i.e., public) functions by calling them directly. For example, the `phonenumber` has a function called `letterToNumber` that converts a character string to a number. Once you've loaded `phonenumber` using `library`, you can use this function in your R session:
 
 ```{r}
 fedex_number <- "GoFedEx"
 letterToNumber(fedex_number)
 ```
 
+[Add note about character strings]
+
 ## Some basics of R code
 
-### R's MVP: <-
+This section covers some of the basic conventions of R code, to get you started writing very basic code. 
 
-`<-` is R's assignment operator. It takes whatever you've created on the right hand side of the `<-` and saves it as an object with the name you put on the left hand side of the `<-` : 
+### R's MVP: The gets arrow
+
+The *gets arrow*, `<-`, is R's assignment operator. It takes whatever you've created on the right hand side of the `<-` and saves it as an object with the name you put on the left hand side of the `<-`. The basic structure of a call with a gets arrow looks like this: 
 
 ```{r eval = FALSE}
-## Note: Generic code-- this will not work
+## Note: Generic code
 [name of object] <- [thing I want to save]
 ```
 
-For example, if I just type `"GoFedEx"`, R will print it back to me, but won't save it anywhere for me to use later:
+[Add a note on generic code]
+
+[Add a note on `->`, the history of the gets arrow, and the keyboard shortcut for the gets arrow.]
+
+For example, if I just type `"GoFedEx"` at the R prompt, R will print that string back to me, but won't save it anywhere for me to use later:
 
 ```{r}
 "GoFedEx"
 ```
 
-However, if I assign it to an object, I can print it out or use it later by referencing that object name:
+However, if I assign `"GoFedEx"` to an object using a gets arrow, I can print it out or use it later by typing ("referencing") that object name:
 
 ```{r}
 fedex_number <- "GoFedEx"
@@ -145,13 +155,11 @@ fedex_number
 letterToNumber(fedex_number)
 ```
 
-### <- vs. =
+### Assignment operator wars: `<-` vs. `=`
 
-You can make assignments using either `<-` or `=`, and you'll see both when you're reading other people's code. 
+You can make assignments in R using either the gets arrow (`<-`) or `=`. When you read other people's code, you'll see both. R gurus advise using `<-` rather than `=` when coding in R, and as you move to doing more complex things, some subtle problems might crop up if you use `=`. I have heard from someone in the know that you can tell the age of a programmer by whether he or she uses the gets arrow or `=`, with `=` more common among the young and hip. For this course, however, I am asking you to code according to [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html), which specifies using the gets arrow for assignment.
 
-However, R gurus advise using `<-` in your own code, and as you move to doing more complex things, problems might crop up if you use `=`. 
-
-For now, though, it will be helpful for you to know that these two calls do the same thing:
+While you will be coding with the gets arrow exclusively in this course, it will be helpful for you to know that the two assignment arrows do pretty much the same thing:
 
 ```{r}
 one_to_ten <- 1:10
@@ -163,18 +171,28 @@ one_to_ten
 
 ### Naming objects
 
-> “There are only two hard things in Computer Science: cache invalidation and naming things.”
+When you assign objects, you will need to choose names for them. This object name is what you will type later in your code to reference the object and use it in functions, figures, etc. For example, with the following code, I am assigning the character string "GoFedEx" to an object that I am naming `fedex_number`:
 
-> — Phil Karlton
+```{r}
+fedex_number <- "GoFedEx"
+```
+
+There are only two fixed rules for naming objects in R:
 
 - Use only letters, numbers, and underscores
 - Don't start with anything but a letter
 
-*From [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html)*
+In addition to these fixed rules, there are also some guidelines for naming objects that you should adopt now, since they will make your life easier as you advance to writing more complex code in R. The following three guidelines for naming objects are from [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html):
 
 - Use lower case for variable names (`fedex_number`, not `FedExNumber`)
 - Use an underscore as a separator (`fedex_number`, not `fedex.number` or `fedexNumber`)
 - Avoid using names that are already defined in R (e.g., don't name an object `mean`, because as `mean` function exists)
+
+Another good practice is to name objects after nouns (e.g., `fedex_number`) and later, when you start writing functions, name those after verbs (e.g., `call_fedex`). You'll want your object names to be short enough that they don't take forever to type as you're coding, but not so short that you can't remember what they stand for. 
+
+[Make this a note?] Sometimes, you'll want to create an object that you won't want to keep for very long. For example, you might want to create a small object to test some code, but you plan to not need the object again once you've done that. You may want to come up with some short, generic object names that you use for these kinds of objects, so that you'll know that you can delete them without problems when you want to clean up your R session. 
+
+[Note about these object names in different languages]
 
 ## R's most basic object types
 
