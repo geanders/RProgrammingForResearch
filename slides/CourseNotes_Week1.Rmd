@@ -35,6 +35,8 @@ Currently popular in a number of fields, including:
 - Gratis: Free as in beer
 - Libre: Free as in speech
 
+\medskip
+
 With open-source software (free as in speech), you can:
 
 - Check out the code to figure out how the software works
@@ -44,6 +46,8 @@ With open-source software (free as in speech), you can:
 ## What is RStudio?
 
 RStudio is a user interface for R. You download it separately, but it's a "nicer" way to work in R. 
+
+\bigskip
 
 RStudio (the company) currently:
 
@@ -82,21 +86,25 @@ knitr::include_graphics("../figures/BrioFancySet.jpg")
 
 You can get packages to add-on to your version of R from:
 
-- CRAN (currently 7050 available packages)
+- CRAN (thousands of available packages)
 - GitHub
 - Your friends and collaborators
 - Make them yourself
 
-## Installing from CRAN
+\medskip
 
 The most popular place from which to get packages is currently CRAN. You can install packages from CRAN using R code. 
 
-<img src="figures/telephone_keypad.png" width="150" />
+## Installing from CRAN
 
 For example, to get the package `phonenumber`, you could use:
 
 ```{r, eval = FALSE}
 install.packages("phonenumber")
+```
+
+```{r fig.align = "center", out.width = "75pt", echo = FALSE}
+knitr::include_graphics("../figures/telephone_keypad.png")
 ```
 
 ## Loading an installed package
@@ -116,9 +124,9 @@ letterToNumber(fedex_number)
 
 # Some basics of R code
 
-## R's MVP: <-
+## R's MVP: The *gets arrow*
 
-`<-` is R's assignment operator. It takes whatever you've created on the right hand side of the `<-` and saves it as an object with the name you put on the left hand side of the `<-` : 
+The *gets arrow*, `<-`, is R's assignment operator. It takes whatever you've created on the right hand side of the `<-` and saves it as an object with the name you put on the left hand side of the `<-` : 
 
 ```{r eval = FALSE}
 ## Note: Generic code-- this will not work
@@ -146,6 +154,8 @@ letterToNumber(fedex_number)
 ## <- vs. =
 
 You can make assignments using either `<-` or `=`, and you'll see both when you're reading other people's code. 
+
+\medskip
 
 However, R gurus advise using `<-` in your own code, and as you move to doing more complex things, problems might crop up if you use `=`. 
 
@@ -176,7 +186,7 @@ one_to_ten
 
 - Use lower case for variable names (`fedex_number`, not `FedExNumber`)
 - Use an underscore as a separator (`fedex_number`, not `fedex.number` or `fedexNumber`)
-- Avoid using names that are already defined in R (e.g., don't name an object `mean`, because as `mean` function exists)
+- Avoid using names that are already defined in R (e.g., don't name an object `mean`, because a `mean` function exists)
 
 ## R's most basic object types
 
@@ -186,7 +196,7 @@ The two most basic types of objects for data in R are **vectors** (1D) and **dat
 
 - A vector is a string of values. 
 - All values must be of the same class (i.e., all numbers, all characters, all dates)
-- You can use `c()` to join values together to create a vector
+- You can use `c` to join values together to create a vector
 - The *length* of the vector is how many values it has in it
 
 For example:
@@ -214,7 +224,7 @@ mixed_classes
 
 ## Vectors
 
-You can pull out certain values by using indexing (`[...]`) to identify the locations you want to get
+You can pull out certain values by using indexing (`[...]`) to identify the locations you want to get:
 
 ```{r}
 fibonacci[2] # Get the second value
@@ -226,7 +236,9 @@ fibonacci[1:3] # Get the first three values
 
 A dataframe is one or more vectors of the same length stuck together side-by-side. It is the closest R has to what you'd get with an Excel spreadsheet. 
 
-You can create dataframes using the `data.frame()` function. However, most often you will create a dataframe by reading in data from a file using something like `read.csv()`. 
+\medskip
+
+You can create dataframes using the `data.frame` function. However, most often you will create a dataframe by reading in data from a file using something like `read.csv`. 
 
 ## Dataframes
 
@@ -240,12 +252,14 @@ fibonacci_seq
 
 ## Dataframes
 
-The format for using `data.frame()` is:
+The format for using `data.frame` is:
 
 ```{r eval = FALSE}
-## Note: Generic code-- this will not work
-[name of object] <- data.frame([1st column name] = [1st column content],
-                               [2nd column name] = [2nd column content])
+## Generic code
+[name of object] <- data.frame([1st column name] = 
+                                     [1st column content],
+                               [2nd column name] = 
+                                     [2nd column content])
 ```
 
 ## Dataframes
@@ -259,7 +273,7 @@ fibonacci_seq[5, ] # Last row, all columns
 
 ## Dataframes
 
-Usually, instead of creating a dataframe from vectors, you'll read one in from data on an outside file. For example, to read in a dataset from a CSV file called `daily_show_guests.csv`:
+Usually, instead of creating a dataframe from vectors, you'll read one in from data on an outside file. For example, to read in a dataset from a csv file called "daily_show_guests.csv":
 
 ```{r echo = FALSE}
 daily_show <- read.csv("../data/daily_show_guests.csv",
@@ -273,12 +287,12 @@ daily_show <- read.csv("daily_show_guests.csv",
 ```
 
 ```{r}
-daily_show[1:2, ]
+daily_show[1:2, 1:4]
 ```
 
 ## Dataframes
 
-You can use the functions `dim()`, `nrow()`, and `ncol` to figure out the dimensions (number of rows and columns) of a dataframe:
+You can use the functions `dim`, `nrow`, and `ncol` to figure out the dimensions (number of rows and columns) of a dataframe:
 
 ```{r}
 dim(daily_show)
@@ -291,13 +305,15 @@ ncol(daily_show)
 In general, functions in R take the following structure:
 
 ```{r, eval = FALSE}
-function.name(required information, options)  ## Generic code
+## Generic code
+function.name(required information, options)  
 ```
 
 The result of the function will be output to your R session, unless you choose to save the output in an object:
 
 ```{r, eval = FALSE}
-new.object <- function.name(required information, options)  ## Generic code
+## Generic code
+new.object <- function.name(required information, options)  
 ```
 
 ## Functions
