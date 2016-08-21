@@ -406,7 +406,7 @@ Because code tends to be more robust to errors when you use parameter names to s
 head(daily_show, n = 3)
 ```
 
-[Add a note about code completion]
+[Add a note about tab completion]
 
 ## In-course Exercise
 
@@ -421,6 +421,8 @@ For today's class, you'll be using a dataset of all the guests on Jon Stewart's 
 * Briefly browse around [FiveThirtyEight's GitHub data page](https://github.com/fivethirtyeight/data). What are some other datasets available that you find interesting? You can scroll to the bottom of the page to get to the compiled README.md content, which gives the full titles and links to relevant datasets. You can also click on any dataset to get more information. 
 * Look at [the GitHub page for this *Daily Show* data](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests). How many columns will be in this dataset? What kind of information does the data include?
 
+[Add a note about GitHub]
+
 If you have extra time:
 
 * Check out [the related article](http://fivethirtyeight.com/datalab/every-guest-jon-stewart-ever-had-on-the-daily-show/) on FiveThirtyEight. What are some specific questions they used this data to answer for this article?
@@ -428,23 +430,24 @@ If you have extra time:
 
 ### Getting the data onto your computer
 
-First, download the data from GitHub onto your computer. Put it in your directory (folder) for this course. 
+First, download the data from GitHub onto your computer. Make a directory (folder) on your computer specifically for this course (I strongly recommend that you put it somewhere where the file path will not have any spaces in it-- for example, putting it in your home directory, under the name "R_Prog_Course" would be great. Putting it in a directory called "R Prog Course" would not.). Put the *Daily Show* data in your directory for this course. 
 
 **Take the following steps to get the data onto your computer**
 
-* If you do not yet have a directory (folder) just for this course, make one someplace straightforward like in your home directory.
+* If you do not yet have a directory (folder) just for this course, make one someplace straightforward like in your home directory. Do not use any spaces in the directory name. 
 * Download the file [from GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv). Right click on `Raw` and then choose "Download linked file". Put the file into the directory you created for this course. 
 * Find out what your home directory is in R. To do this, make sure R is set to your home directory using `setwd("~")`, and then get R to print that home directory path using `getwd()`.
-* Outside of R, open Finder (or your system's equivalent). Go to your home directory (mine, for example, is `/Users/brookeanderson`). Figure out home to get from this to the directory you created for this course. For example, from my home directory, I would go `Desktop` to `RCourseFall2015` to `Week1_Aug24`. 
-* Go back into R. Set R's working directory to your directory for this class using the `setwd()` command, now that you know the pathname for the directory. For example, I would use `setwd("Desktop/RCourseFall2015/Week1_Aug24")`. 
+* Outside of R, open Finder (or your system's equivalent). Go to your home directory (mine, for example, is `/Users/brookeanderson`). Figure out how to get from your home directory to the directory you created for this course. For example, from my home directory, I would go `RProgrammingForResearch` to `data`. 
+* Go back into R. Set R's working directory to your directory for this class using the `setwd()` command, now that you know the pathname for the directory. For example, I would use `setwd("~/RProgrammingForResearch/data")`. 
 * Use the `list.files()` command to make sure that the `daily_show_guests.csv` file is in your current working directory.
 
 The full R code for this task might look something like:
+
 ```{r, eval=FALSE}
 setwd("~")
 getwd()
 
-setwd("Desktop/RCourseFall2015/Week1_Aug24")
+setwd("~/RProgrammingForResearch/data")
 getwd()
 
 list.files()
@@ -458,7 +461,7 @@ If you have extra time:
 
 ### Getting the data into R
 
-Now that you have the dataset in your working directory, you can read it into R. This dataset is in the CSV (comma separated values) format. (We will talk more about different file formats next week.) You can read csv files into R using the `read.csv()` function. 
+Now that you have the dataset in your working directory, you can read it into R. This dataset is in a `.csv` (comma separated values) format. (We will talk more about different file formats next week.) You can read csv files into R using the `read.csv()` function. 
 
 **Read the data into your R session**
 
@@ -468,10 +471,9 @@ Now that you have the dataset in your working directory, you can read it into R.
 * What would have happened if you'd used `read.csv` but hadn't saved the result as the object `daily_show`? (For example, you'd run the code `read.csv("daily_show_guests.csv")` rather than `daily_show <- read.csv("daily_show_guests.csv")`.)
 
 Example R code:
+
 ```{r, eval=FALSE}
-daily_show <- read.csv("daily_show_guests.csv",
-                       header = TRUE,
-                       skip = 4)
+daily_show <- read.csv("daily_show_guests.csv", header = TRUE, skip = 4)
 ```
 
 If you have extra time:
@@ -481,10 +483,8 @@ If you have extra time:
 
 Example R code:
 ```{r, eval=FALSE}
-daily_show_first10 <- read.csv("daily_show_guests.csv",
-                       header = TRUE,
-                       skip = 4,
-                       nrows = 10)
+daily_show_first10 <- read.csv("daily_show_guests.csv", header = TRUE,
+                       skip = 4, nrows = 10)
 daily_show_first10
 ```
 
@@ -494,12 +494,13 @@ You now have the data available in the `daily_show` option. You'll want to check
 
 **Take the following steps to check out the dataset**
 
-* Use indexing to look at the first two rows of the dataset. Based on this, what does each row "measure"? What information do you get for each "measurement"? Indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you'd use `daily_show[1:2, 1:3]`. If you wanted to get the first five rows and all the columns, you'd use `daily_show[1:5, ]`. 
+* Use indexing to look at the first two rows of the dataset. Based on this, what does each row "measure"? What information do you get for each "measurement"? As a reminder, indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you'd use `daily_show[1:2, 1:3]`. If you wanted to get the first five rows and all the columns, you'd use `daily_show[1:5, ]`. 
 * Use the `dim()` function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?
 * Use the `head()` function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart's first show? Does it look like this dataset covers that first show?
 * Use the `tail()` function to look at the last few rows of the dataframe. What is the last show date covered by the dataframe? Who was the last guest?
 
 Example R code:
+
 ```{r, eval=FALSE}
 daily_show[1:2, ]
 dim(daily_show)
@@ -512,6 +513,7 @@ If you have extra time:
 * Say you wanted to look at the first ten rows of the dataframe, rather than the first six. How could you use an option with `head()` to do this?
 
 Example R code:
+
 ```{r, eval=FALSE}
 head(daily_show, n = 10)
 ```
@@ -528,6 +530,7 @@ Nate Silver was a guest on *The Daily Show*. Let's use this data to figure out h
 * To get the dates when Nate Silver was a guest, you can print out just the `Show` column of the dataframe. There are a few ways you can do this using indexing: `nate_silver[ , 3]` (since `Show` is the third column), `nate_silver[ , "Show"]`, or `nate_silver$Show`. Try these.
 
 Example R code:
+
 ```{r, eval=FALSE}
 nate_silver <- subset(daily_show, 
                       Raw_Guest_List == "Nate Silver")
@@ -546,6 +549,7 @@ If you have extra time:
 * What were the occupations that were only represented by one guest visit? Since `GoogleKnowlege_Occupation` is a factor, you can use the `table()` function to create a new vector with the number of times each value of `GoogleKnowlege_Occupation` shows up. You can put this information into a new vector and then pull out only the values that equal 1 (so, only had one guest). (Note that "Statistician" doesn't show up-- there was only one person who was a guest, but he had three visits.) Pick your favorite "one-off" example and find out who the guest was for that occupation.
 
 Example R code:
+
 ```{r, eval=FALSE}
 class(nate_silver$Show)
 ```
