@@ -312,27 +312,33 @@ nrow(daily_show)
 ncol(daily_show)
 ```
 
-## Functions
+## Using R functions
+
+### Function structure
 
 In general, functions in R take the following structure:
 
 ```{r, eval = FALSE}
-function.name(required information, options)  ## Generic code
+## Generic code
+function.name(parameter 1 = argument 1, parameter 2 = argument 2,
+              parameter 3 = argument 3)  
 ```
 
 The result of the function will be output to your R session, unless you choose to save the output in an object:
 
 ```{r, eval = FALSE}
-new.object <- function.name(required information, options)  ## Generic code
+## Generic code
+new_object <- function.name(parameter 1 = argument 1,
+                            parameter 2 = argument 2,
+                            parameter 3 = argument 3)  
 ```
 
-Examples of this structure:
+Here are some example function calls, to give you examples of this structure:
 
 ```{r}
 head(daily_show)
 head(daily_show, n = 3)
 ```
-
 ```{r echo = FALSE}
 daily_show <- read.csv("data/daily_show_guests.csv",
                     skip = 4,
@@ -344,7 +350,63 @@ daily_show <- read.csv("daily_show_guests.csv",
                     header = TRUE)
 ```
 
-Find out more about a function by using `?` (e.g., ,`?head`, `?read.csv`). This will take you to the help page for the function, where you can find out all the possible arguments for the function, required and optional.
+Within the function call, *parameters* allow you to customize the function to run in a certain way (e.g., use a certain dataframe as an input, give output in a certain format). Some function parameters will have *default arguments*, which means that you don't have to put a value for that parameter for the function to run, but you can if you want the function to do something other than the default. 
+
+### Function help files
+
+You can find out more about a function, include what parameters it has and what the default values, if any, are by using `?` before the function name in the R console. For example, to find out more about the `read.csv` command, run: 
+
+```{r eval = FALSE}
+?read.csv
+```
+
+From the "Usage" section of the help file, you can figure out that the only required parameter is `file`, the pathname of the file that you want to read in, since this is the only argument in the "Usage" example without an argument value:
+
+```
+read.csv(file, header = TRUE, sep = ",", quote = "\"",
+         dec = ".", fill = TRUE, comment.char = "", ...)
+```
+
+You can also see from this "Usage" section that the default value of `header` is `TRUE`, the default value of `sep` is a comma, etc.
+
+The "Arguments" section explains each of the parameters, and possible arguments that each can take. For example, here is the explanation of the `nrows` parameter in the `read.csv` function: 
+
+```
+integer: the maximum number of rows to read in. Negative and other 
+    invalid values are ignored.
+```
+
+From this, you can determine that you should put in a whole number, 1 or higher, and the function will only read in that many lines of the dataframe when you run `read.csv`.
+
+### Function parameters
+
+Each function parameter has a name (e.g., `nrows`, `header`, `file`). The safest way to call a function in R is to use the structure `parameter name = argument value` for every parameter, like this: 
+
+```{r eval = FALSE}
+head(x = daily_show, n = 3)
+```
+
+However, you can also give argument values by position. For example, in the `head` function, the first parameter is `x`, the object you want to look at, and the second is `n`, the number of elements you want to include when you look at the object. If you know this, you can call `head` using the shorter call: 
+
+```{r eval = FALSE}
+head(daily_show, 3)
+```
+
+If you use position alone, you will have problems if you don't include arguments in exactly the right order. However, if you use parameter names to set each argument, it doesn't matter what order you include arguments when calling a function: 
+
+```{r eval = FALSE}
+# These two calls return the exact same object
+head(x = daily_show, n = 3)
+head(n = 3, x = daily_show)
+```
+
+Because code tends to be more robust to errors when you use parameter names to set arguments, we recommend against using position, rather than name, to give arguments when calling functions, at least while you're learning R. It's too easy to forget the exact order and get errors in your code. However, there is one exception-- the first argument to a function is almost always required (i.e., there's not a default value), and you very quickly learn what the first parameter of most functions are as soon as you start using the function regularly. Therefore, it's fine to use position alone to specify the first argument in a function, but for now always use the parameter name to set any later arguments:
+
+```{r eval = FALSE}
+head(daily_show, n = 3)
+```
+
+[Add a note about code completion]
 
 ## In-course Exercise
 
