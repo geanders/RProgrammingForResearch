@@ -105,7 +105,7 @@ This downloads the package from CRAN and saves it in a special location on your 
 
 ### Loading an installed package
 
-Once you have installed a package, it will be saved to your computer, but you won't be able to access it's functions until you load it in your R session. You can load a package in an R session using the `library()` function, with the package name inside the parentheses. 
+Once you have installed a package, it will be saved to your computer, but you won't be able to access it's functions until you load it in your R session. You can load a package in an R session using the `library` function, with the package name inside the parentheses. 
 
 ```{r messages = FALSE, warnings = FALSE, results = FALSE}
 library(phonenumber)
@@ -182,7 +182,7 @@ In addition to these fixed rules, there are also some guidelines for naming obje
 
 - Use lower case for variable names (`fedex_number`, not `FedExNumber`)
 - Use an underscore as a separator (`fedex_number`, not `fedex.number` or `fedexNumber`)
-- Avoid using names that are already defined in R (e.g., don't name an object `mean`, because as `mean` function exists)
+- Avoid using names that are already defined in R (e.g., don't name an object `mean`, because a function named `mean` already exists)
 
 Another good practice is to name objects after nouns (e.g., `fedex_number`) and later, when you start writing functions, name those after verbs (e.g., `call_fedex`). You'll want your object names to be short enough that they don't take forever to type as you're coding, but not so short that you can't remember what they stand for. 
 
@@ -243,7 +243,7 @@ You can also use logic to pull out some values of a vector. For example, you mig
 
 ### Dataframes
 
-A dataframe is a 2-dimensional object, and is made of one or more vectors of the same length stuck together side-by-side. It is the closest R has to an Excel spreadsheet-type structure. You can create dataframes using the `data.frame()` function. However, most often you will create a dataframe by reading in data from a file, using something like `read.csv()`. 
+A dataframe is a 2-dimensional object, and is made of one or more vectors of the same length stuck together side-by-side. It is the closest R has to an Excel spreadsheet-type structure. You can create dataframes using the `data.frame` function. However, most often you will create a dataframe by reading in data from a file, using something like `read.csv`. 
 
 To create a dataframe using `data.frame`, in this case by sticking together vectors you already have saved as R objects, you can run:
 
@@ -266,7 +266,7 @@ fibonacci_seq
 
 [A note about how R will evaluate calls from the inside out when you write a call like this with different functions included.]
 
-The general format for using `data.frame()` is:
+The general format for using `data.frame` is:
 
 ```{r eval = FALSE}
 ## Note: Generic code
@@ -304,7 +304,7 @@ Once you've read in the data and saved the resulting dataframe as an object, you
 daily_show[1:2, ]
 ```
 
-You can use the functions `dim()`, `nrow()`, and `ncol` to figure out the dimensions (number of rows and columns) of a dataframe:
+You can use the functions `dim`, `nrow`, and `ncol` to figure out the dimensions (number of rows and columns) of a dataframe:
 
 ```{r}
 dim(daily_show)
@@ -438,8 +438,8 @@ First, download the data from GitHub onto your computer. Make a directory (folde
 * Download the file [from GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv). Right click on `Raw` and then choose "Download linked file". Put the file into the directory you created for this course. 
 * Find out what your home directory is in R. To do this, make sure R is set to your home directory using `setwd("~")`, and then get R to print that home directory path using `getwd()`.
 * Outside of R, open Finder (or your system's equivalent). Go to your home directory (mine, for example, is `/Users/brookeanderson`). Figure out how to get from your home directory to the directory you created for this course. For example, from my home directory, I would go `RProgrammingForResearch` to `data`. 
-* Go back into R. Set R's working directory to your directory for this class using the `setwd()` command, now that you know the pathname for the directory. For example, I would use `setwd("~/RProgrammingForResearch/data")`. 
-* Use the `list.files()` command to make sure that the `daily_show_guests.csv` file is in your current working directory.
+* Go back into R. Set R's working directory to your directory for this class using the `setwd` command, now that you know the pathname for the directory. For example, I would use `setwd("~/RProgrammingForResearch/data")`. 
+* Use the `list.files` command to make sure that the `daily_show_guests.csv` file is in your current working directory.
 
 The full R code for this task might look something like:
 
@@ -461,12 +461,12 @@ If you have extra time:
 
 ### Getting the data into R
 
-Now that you have the dataset in your working directory, you can read it into R. This dataset is in a `.csv` (comma separated values) format. (We will talk more about different file formats next week.) You can read csv files into R using the `read.csv()` function. 
+Now that you have the dataset in your working directory, you can read it into R. This dataset is in a `.csv` (comma separated values) format. (We will talk more about different file formats next week.) You can read csv files into R using the `read.csv` function. 
 
 **Read the data into your R session**
 
-* Use the `read.csv()` function to read the data into R and save it as the object `daily_show`.
-* Use the help file for the `read.csv()` function to figure out how this function works. To pull that up, use `?read.csv`. Why are we using the option `header = TRUE`? Can you figure out why we're using the `skip` option, and why it's set to 4?
+* Use the `read.csv` function to read the data into R and save it as the object `daily_show`.
+* Use the help file for the `read.csv` function to figure out how this function works. To pull that up, use `?read.csv`. Why are we using the option `header = TRUE`? Can you figure out why we're using the `skip` option, and why it's set to 4?
 * Note that you need to put the file name in quotation marks.
 * What would have happened if you'd used `read.csv` but hadn't saved the result as the object `daily_show`? (For example, you'd run the code `read.csv("daily_show_guests.csv")` rather than `daily_show <- read.csv("daily_show_guests.csv")`.)
 
@@ -478,8 +478,8 @@ daily_show <- read.csv("daily_show_guests.csv", header = TRUE, skip = 4)
 
 If you have extra time:
 
-* Say this was a really big dataset. You want to check out just the first 10 rows to make sure that you've got your code right before you take the time to pull in the whole dataset. Use the help file for `read.csv()` to figure out how to only read in a few rows. 
-* Look through the help file for other options available for `read.csv()`. Can you think of examples when some of these options would be useful?
+* Say this was a really big dataset. You want to check out just the first 10 rows to make sure that you've got your code right before you take the time to pull in the whole dataset. Use the help file for `read.csv` to figure out how to only read in a few rows. 
+* Look through the help file for other options available for `read.csv`. Can you think of examples when some of these options would be useful?
 
 Example R code:
 ```{r, eval=FALSE}
@@ -495,9 +495,9 @@ You now have the data available in the `daily_show` option. You'll want to check
 **Take the following steps to check out the dataset**
 
 * Use indexing to look at the first two rows of the dataset. Based on this, what does each row "measure"? What information do you get for each "measurement"? As a reminder, indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you'd use `daily_show[1:2, 1:3]`. If you wanted to get the first five rows and all the columns, you'd use `daily_show[1:5, ]`. 
-* Use the `dim()` function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?
-* Use the `head()` function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart's first show? Does it look like this dataset covers that first show?
-* Use the `tail()` function to look at the last few rows of the dataframe. What is the last show date covered by the dataframe? Who was the last guest?
+* Use the `dim` function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?
+* Use the `head` function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart's first show? Does it look like this dataset covers that first show?
+* Use the `tail` function to look at the last few rows of the dataframe. What is the last show date covered by the dataframe? Who was the last guest?
 
 Example R code:
 
@@ -510,7 +510,7 @@ tail(daily_show)
 
 If you have extra time:
 
-* Say you wanted to look at the first ten rows of the dataframe, rather than the first six. How could you use an option with `head()` to do this?
+* Say you wanted to look at the first ten rows of the dataframe, rather than the first six. How could you use an option with `head` to do this?
 
 Example R code:
 
@@ -524,9 +524,9 @@ Nate Silver was a guest on *The Daily Show*. Let's use this data to figure out h
 
 **Find out more about Nate Silver on The Daily Show**
 
-* Use the `subset()` function to create a new dataframe that only has the rows of `daily_show` when Nate Silve was a guest. Put it in the object `nate_silver`.
+* Use the `subset` function to create a new dataframe that only has the rows of `daily_show` when Nate Silve was a guest. Put it in the object `nate_silver`.
 * Print out the full `nate_silver` dataframe by typing `nate_silver`. (You could just use this to answer both questions, but still try the next steps. They would be important with a bigger dataset.)
-* To count the number of times Nate Silver was a guest, you'll need to count the number of rows in the new dataset. You can either use the `dim()` function or the `nrow()` function to do this. What additional information does the `dim()` function give you?
+* To count the number of times Nate Silver was a guest, you'll need to count the number of rows in the new dataset. You can either use the `dim` function or the `nrow` function to do this. What additional information does the `dim` function give you?
 * To get the dates when Nate Silver was a guest, you can print out just the `Show` column of the dataframe. There are a few ways you can do this using indexing: `nate_silver[ , 3]` (since `Show` is the third column), `nate_silver[ , "Show"]`, or `nate_silver$Show`. Try these.
 
 Example R code:
@@ -546,7 +546,7 @@ If you have extra time:
 
 * When you print out the `Show` column, why does it also print out something underneath about Levels? Hint: This has to do with the class that R has saved this column as. What class is it currently? What other classes might we want to consider converting it to as we continue working with the dataset? Check out the example code below to get some ideas.
 * Was Nate Silver the only statistician to be a guest on the show?
-* What were the occupations that were only represented by one guest visit? Since `GoogleKnowlege_Occupation` is a factor, you can use the `table()` function to create a new vector with the number of times each value of `GoogleKnowlege_Occupation` shows up. You can put this information into a new vector and then pull out only the values that equal 1 (so, only had one guest). (Note that "Statistician" doesn't show up-- there was only one person who was a guest, but he had three visits.) Pick your favorite "one-off" example and find out who the guest was for that occupation.
+* What were the occupations that were only represented by one guest visit? Since `GoogleKnowlege_Occupation` is a factor, you can use the `table` function to create a new vector with the number of times each value of `GoogleKnowlege_Occupation` shows up. You can put this information into a new vector and then pull out only the values that equal 1 (so, only had one guest). (Note that "Statistician" doesn't show up-- there was only one person who was a guest, but he had three visits.) Pick your favorite "one-off" example and find out who the guest was for that occupation.
 
 Example R code:
 
