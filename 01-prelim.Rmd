@@ -111,7 +111,11 @@ Once you have installed a package, it will be saved to your computer, but you wo
 library(phonenumber)
 ```
 
-[Add note about quotation marks with `library` call.]
+```{block, type = 'rmdtip'}
+One thing that people often find confusing when they start using R is knowing when to use and not use quotation marks. The general rule is that you use quotation marks when you want to refer to a character string literally, but no quotation marks when you want to refer to the value in a previously-defined object. For example, if you saved the string `"Anderson"` as the object `my_name` (`my_name <- "Anderson"`), then in later code, if you type `my_name` (no quotation marks), you'll get `"Anderson"`, while if you type out `"my_name"` (with quotation marks), you'll get `"my_name"` (what you typed, literally). 
+
+One thing that makes this rule confusing is that there are a few cases in R where you really should (by this rule) use quotation marks, but the function is coded to let you be lazy and get away without them. One example is the `library` function. In the above code, you want to literally load the package "phonenumber", rather than load whatever character string is saved in the object named `phonenumber`. However, `library` is one of the functions where you can be lazy and skip the quotation marks, and it will still load "phonenumber" for you (although, if you want, this function also works if you follow the rule and call `library("phonenumber")` instead).
+```
 
 Once a package is loaded, you can use all its exported (i.e., public) functions by calling them directly. For example, the `phonenumber` has a function called `letterToNumber` that converts a character string to a number. Once you've loaded `phonenumber` using `library`, you can use this function in your R session:
 
@@ -120,11 +124,13 @@ fedex_number <- "GoFedEx"
 letterToNumber(fedex_number)
 ```
 
-[Add note about character strings]
+```{block, type = "rmdnote"}
+R vectors can have several different *classes*. One common class is the character class, which is the class of the character string we're using here ("GoFedEx"). You'll always put character strings in quotation marks. Another key class is numeric (numbers). Later in the course, we'll introduce other classes that vectors can have, including factors and dates.
+```
 
 ## Basic code conventions of R
 
-### R's MVP: The gets arrow
+### R's MVP: The *gets arrow*
 
 The *gets arrow*, `<-`, is R's assignment operator. It takes whatever you've created on the right hand side of the `<-` and saves it as an object with the name you put on the left hand side of the `<-`. The basic structure of a call with a gets arrow looks like this: 
 
@@ -133,9 +139,9 @@ The *gets arrow*, `<-`, is R's assignment operator. It takes whatever you've cre
 [name of object] <- [thing I want to save]
 ```
 
-[Add a note on generic code]
-
-[Add a note on `->`, the history of the gets arrow, and the keyboard shortcut for the gets arrow.]
+```{block, type = "rmdwarning"}
+Sometimes, we'll show "generic" code in a code block, that doesn't actually work if you put it in R, but instead shows the generic structure of an R call. We'll try to always include a comment with any generic code, so you'll know not to try to run it in R.
+```
 
 For example, if I just type `"GoFedEx"` at the R prompt, R will print that string back to me, but won't save it anywhere for me to use later:
 
@@ -186,13 +192,28 @@ In addition to these fixed rules, there are also some guidelines for naming obje
 
 Another good practice is to name objects after nouns (e.g., `fedex_number`) and later, when you start writing functions, name those after verbs (e.g., `call_fedex`). You'll want your object names to be short enough that they don't take forever to type as you're coding, but not so short that you can't remember what they stand for. 
 
-[Make this a note?] Sometimes, you'll want to create an object that you won't want to keep for very long. For example, you might want to create a small object to test some code, but you plan to not need the object again once you've done that. You may want to come up with some short, generic object names that you use for these kinds of objects, so that you'll know that you can delete them without problems when you want to clean up your R session. 
+```{block, type = "rmdtip"}
+Sometimes, you'll want to create an object that you won't want to keep for very long. For example, you might want to create a small object to test some code, but you plan to not need the object again once you've done that. You may want to come up with some short, generic object names that you use for these kinds of objects, so that you'll know that you can delete them without problems when you want to clean up your R session. 
 
-[Note about these object names in different languages]
+There are all kinds of traditions for these placeholder variable names in computer science. `foo` and `bar` are two popular choices, as are, evidently, `xyzzy`, `spam`, `ham`, and `norf`. There are different placeholder names in different languages: for example, `toto`, `truc`, and `azerty` (French); and `pippo`, `pluto`, `paperino` (Disney character names; Italian). See the Wikipedia page on [metasyntactic variables](https://en.wikipedia.org/wiki/Metasyntactic_variable) to find out more.
+```
 
 ### Commenting code
 
-[Add section about commenting code here]
+Sometimes, you'll want to include notes in your code. You can do this in all programming languages by using a *comment character* to start the line with your comment. In R, the comment character is the hash symbol, `#`. R will skip any line that starts with `#` in a script. For example, if you run the following code: 
+
+```{r}
+# Don't print this.
+"But print this"
+```
+
+R will only print the second, uncommented line. 
+
+You can also use a comment in the middle of a line, to add a note on what you're doing in that line of the code. R will skip any part of the code from the hash symbol on. For example: 
+
+```{r}
+"Print this" ## But not this, it's a comment.
+```
 
 ## R's most basic object types
 
@@ -264,7 +285,9 @@ fibonacci_seq <- data.frame(num_in_seq = c("one", "two", "three",
 fibonacci_seq
 ```
 
-[A note about how R will evaluate calls from the inside out when you write a call like this with different functions included.]
+```{block, type = "rmdnote"}
+You can put more than one function call in a single line of R code, as in this example (the `c` creates a vector, while the `data.frame` creates a dataframe, using the vectors created by the calls to `c`). When you use multiple functions within a single R call, R will evaluate starting from the inner-most parentheses out, much like the order of operations in a math equation with parentheses.
+```
 
 The general format for using `data.frame` is:
 
@@ -407,7 +430,7 @@ head(daily_show, n = 3)
 ```
 
 ```{block, type='rmdtip'}
-[Add a note about tab completion]
+Using the full parameter names for arguments can take a bit more time, since it requires more typing. However, RStudio helps you out with that by offering *code completion*. Once you start typing the first few letters of a parameter name within a function call, try pressing the tab key. All possible arguments that start with those letters should show up, and you can scroll through to pick the right one, or keep typing until the argument you want is atnthe top of the list of choices, and then press the tab key again.
 ```
 
 ## In-course Exercise
@@ -423,7 +446,9 @@ For today's class, you'll be using a dataset of all the guests on Jon Stewart's 
 * Briefly browse around [FiveThirtyEight's GitHub data page](https://github.com/fivethirtyeight/data). What are some other datasets available that you find interesting? You can scroll to the bottom of the page to get to the compiled README.md content, which gives the full titles and links to relevant datasets. You can also click on any dataset to get more information. 
 * Look at [the GitHub page for this *Daily Show* data](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests). How many columns will be in this dataset? What kind of information does the data include?
 
-[Add a note about GitHub]
+```{block, type = "rmdnote"}
+In this exercise, you're using data posted by [FiveThirtyEight](http://fivethirtyeight.com) on [GitHub](https://github.com). We'll be using a lot of data that's on GitHub this semester, and GitHub is being used behind-the-scenes for both this book and the course note slides. We'll talk more about GitHub later, but you might find it interesting to explore a bit now. It's a place where people can post, work on, and share code in a number of programming languages-- it's been referred to as "Facebook for Nerds". You can search GitHub repositories and code specifically by programming language, so it can be a good way to find example R code from which to learn.
+```
 
 If you have extra time:
 
