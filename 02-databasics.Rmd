@@ -34,6 +34,8 @@ While it's generally best to write your R code in a script and run it from there
 
 ## Directories and pathnames
 
+### Directory structure
+
 It seems a bit of a pain and a bit complex to have to think about computer directory structure in the "basics" part of this class, but this structure is not terribly complex once you get the idea of it, and they are a couple of very good reasons why it's worth learning now. 
 
 First, many of the most frustrating errors you get when you start using R trace back to understanding directories and filepaths. For example, when you try to read a file into R using only the filename, and that file is not in your current working directory, you will get an error like: 
@@ -48,63 +50,73 @@ This error is especially frustrating when you're new to R because it happens at 
 
 Second, once you understand how to use pathnames, especially relative pathnames, to tell R how to find a file that is in a directory other than your working directory, you will be able to organize all of your files for a project in a much cleaner way. For example, you can create a directory for your project, then create one subdirectory to store all of your R scripts, and another to store all of your data, and so on. This can help you keep very complex projects more structured and easier to navigate. We'll talk about these ideas more in the course sections on Reproducible Research, but it's good to start learning the background you'll need for that (which is how directory structures and filepaths work) early.
 
-Your computer organizes files through a collection of directories. Chances are, you are fairly used to working with these in your daily life already (although you may call them "folders" rather than "directories"). For example, you've probably created new directories to use to store data files and Word documents for a specific project. 
+Your computer organizes files through a collection of directories. Chances are, you are fairly used to working with these in your daily life already (although you may call them "folders" rather than "directories"). For example, you've probably created new directories to store data files and Word documents for a specific project. 
 
-Here's a figure that illustrates the file directory structure on my computer. (Note that I have omitted many, many additional files and directories-- this just shows an example of a few directories and files and how they are structured together). Directories are shown in blue and files in green. 
+Figure \@ref(fig:filedirstructure) illustrates the file directory structure on my computer. (Note that I have omitted many, many additional files and directories-- this just shows an example of a few directories and files and how they are structured together). Directories are shown in blue and files in green. 
 
-![]("figures/FileDirectoryStructure.png")
+```{r filedirstructure, echo = FALSE, fig.cap= "An example of file directory structure.", out.width = "600pt", fig.align = "center"}
+knitr::include_graphics("figures/FileDirectoryStructure.png")
+```
 
-You can notice a few interesting things from this figure. First, you might notice the structure includes a few of the directories that you use a lot on your own computer, like `Desktop`, `Documents`, and `Downloads`. `Desktop` is the directory that contains all the directories and files that show up on your computer's Desktop. `Downloads` is the default place where downloaded files are saved. 
-
-Next, the directory at the very top is the computer's root directory, `\`. For a PC, the root directory might something like `C:`; for Unix and Macs, it's usually `\`. 
-
-Finally, if you look closely, you'll notice that it's possible to have different files in different locations of the directory structure with the same file name. For example, in the figure, there are files names `heat_mort.csv` in both the `CourseText` directory and in the `example_data` directory. These are two different files with completely different contents, but they can have the same name as long as they're in different directories. This fact-- that you can have files with the same name in different places-- how useful it is that R requires you to give very clear directions to describe exactly which file you want R to read in, if you aren't reading in something in your current working directory.
+You can notice a few interesting things from Figure \@ref(fig:filedirstructure). First, you might notice the structure includes a few of the directories that you use a lot on your own computer, like `Desktop`, `Documents`, and `Downloads`. Next, the directory at the very top is the computer's root directory, `\`. For a PC, the root directory might something like `C:`; for Unix and Macs, it's usually `\`. Finally, if you look closely, you'll notice that it's possible to have different files in different locations of the directory structure with the same file name. For example, in the figure, there are files names `heat_mort.csv` in both the `CourseText` directory and in the `example_data` directory. These are two different files with different contents, but they can have the same name as long as they're in different directories. This fact-- that you can have files with the same name in different places-- should help you appreciate how useful it is that R requires you to give very clear directions to describe exactly which file you want R to read in, if you aren't reading in something in your current working directory.
 
 You will have a home directory somewhere near the top of your structure, although it's likely not your root directory. My home directory is `\Users\brookeanderson`. I'll describe just a bit later how you can figure out what your own home directory on your own computer.
 
-Anytime you run R, it's always doing its work based in some working directory, which will be one of the directories somewhere within your computer's directory structure. At any time, you can figure out what directory R is working in by running the command `getwd()`. For example, my R session is currently running in the following directory:
+### Working directory
+
+When you run R, it's always running from within some working directory, which will be one of the directories somewhere in your computer's directory structure. At any time, you can figure out which directory R is working in by running the command `getwd()` (short for "get working directory"). For example, my R session is currently running in the following directory:
 
 ```{r}
 getwd()
 ```
 
-This means that, for my current R session, R is working in the `CourseText` subdirectory of my `RCourseFall2015` directory, which is a subdirectory itself of my `Desktop`, which is a subdirectory of my home directory (`\Users\brookeanderson`).
+This means that, for my current R session, R is working in the `RProgrammingForResearch` subdirectory of my `brookeanderson` directory (which is my home directory).
 
 There are a few general rules for which working directory R will start in when you open an R session. These are not absolute rules, but they're generally true. If you have R closed, and you open it by double-clicking on an R script, then R will generally open with, as its working directory, the directory in which that script is stored. This is often a very convenient convention, because often any of the data you'll be reading in for that script is somewhere near where the script file is saved in the directory structure. 
 
 If you open R by double-clicking on the R icon in "Applications" (or something similar on a PC), R will start in its default working directory. You can find out what this is, or change it, in RStudio's "Preferences". I have never had a compelling reason to change this on my own computer, as I find it very easy to just move around the directories and set a new working directory using pathnames and the `setwd()` function. 
 
-Once you get a picture of how your directories and files are organized, you can use pathnames, either absolute or relative, to move around the directories, set a different working directory, and read in files from different directories than your current working directory. 
+Finally, later in the course, we'll talk about using R Projects from within RStudio. If you open an R Project, R will start in that project's working dirctory (the directory in which the `.Rproj` file for the project is stored).
 
-There are two ways to specify pathnames (i.e., the directions for getting to a directory or file): absolute pathnames and relative pathnames. Absolute pathnames are a bit more straightforward, because they don't depend on your current working directory. However, they're also a lot longer to write, and they're much less convenient if you'll be sharing some of your code with other people who might run it on their own computers. I'll explain this second point a bit more a little later in this section. 
+### File and directory pathnames
 
-**Absolute pathnames** give the full directions to a directory or file, starting all the way at the root directory. For example, the `heat_mort.csv` file in the `CourseText` directory has the absolute pathname:
+Once you get a picture of how your directories and files are organized, you can use pathnames, either absolute or relative, to move around the directories, set a different working directory, and read in files from different directories than your current working directory. Pathnames are the directions for getting to a directory or file stored on your computer.
+
+When you want to reference a directory or file, you can use one of two types of pathnames:
+
+- *Relative pathname*: How to get to the file or directory from your current working directory
+- *Absolute pathname*: How to get to the file or directory from anywhere on the computer
+
+Absolute pathnames are a bit more straightforward conceptually, because they don't depend on your current working directory. However, they're also a lot longer to write, and they're much less convenient if you'll be sharing some of your code with other people who might run it on their own computers. I'll explain this second point a bit more a little later in this section. 
+
+*Absolute pathnames* give the full directions to a directory or file, starting all the way at the root directory. For example, the `heat_mort.csv` file in the `CourseText` directory has the absolute pathname:
 
 ```
 "\Users\brookeanderson\Desktop\RCourseFall2015\CourseText\heat_mort.csv"
 ```
 
-You can use this absolute pathname to read this file in using `read.csv`, and this absolute pathname will *always* work, regardless of your current working directory, because it gives directions from the root, so it will always be clear to R exactly what file you're talking about. Here's the code to use to read that file in using its absolute pathname:
+You can use this absolute pathname to read this file in using `read.csv`, and this absolute pathname will *always* work, regardless of your current working directory, because it gives directions from the root, so it will always be clear to R exactly what file you're talking about. Here's the code to use to read that file in using the `read.csv` function with the file's absolute pathname:
 
-```
+```{r eval = FALSE}
 heat_mort <- read.csv("\Users\brookeanderson\Desktop\RCourseFall2015\CourseText\heat_mort.csv")
 ```
 
-The **relative pathname**, on the other hand, gives R the directions for how to get to a directory or file *from the current working directory*. If the file or directory you're looking for is pretty close to your current working directory in your directory structure, then this will be a (possibly much) shorter way to tell R how to get there. However, the relative pathname depends on what your current working directory is, and the relative pathname that works perfectly when you're working in one directory will not work at all once you move into a different working directory. 
 
-As an example of a relative pathname, say you're working in the directory `RCourseFall2015` and you want to read in the `heat_mort.csv` file in the `CourseText` directory. To get from `RCourseFall2015` to that file, you'd need to look in the subdirectory `CourseText`, where you could find `heat_mort.csv`. Therefore, the relative pathname from your working directory would be:
+The *relative pathname*, on the other hand, gives R the directions for how to get to a directory or file from the current working directory. If the file or directory you're looking for is pretty close to your current working directory in your directory structure, then a relative pathname can be a much shorter way to tell R how to get to the file than an absolute pathname. However, the relative pathname depends on what your current working directory is, and the relative pathname that works perfectly when you're working in one directory will not work at all once you move into a different working directory. 
+
+As an example of a relative pathname, say you're working in the directory `RCourseFall2015` within the file structure shown in Figure \@ref(fig:filedirstructure), and you want to read in the `heat_mort.csv` file in the `CourseText` directory. To get from `RCourseFall2015` to that file, you'd need to look in the subdirectory `CourseText`, where you could find `heat_mort.csv`. Therefore, the relative pathname from your working directory would be:
 
 ```
 "CourseText/heat_mort.csv"
 ```
 
-You can use this relative pathname instead of the absolute pathname to help R find and read in the file:
+You can use this relative pathname to tell R where to find and read in the file:
 
-```
+```{r eval = FALSE}
 heat_mort <- read.csv("CourseText/heat_mort.csv")
 ```
 
-While this is much shorter, it is important to remember that if you changed your working directory (for example, if you used `setwd("CourseText")` to move into the `CourseText` directory), this relative pathname would no longer work. 
+While this pathname is much shorter than the absolute pathname, it is important to remember that if you changed your working directory (for example, if you used `setwd("CourseText")` to move into the `CourseText` directory), this relative pathname would no longer work. 
 
 There are a few abbreviations that can be really useful for pathnames:
 
@@ -192,43 +204,11 @@ You will end up using `paste()` and `paste0()` for a lot of other applications, 
 
 ------------------------------------------------
 
-If you are writing code you think you will use later, write it in an R script file rather than using the console. 
-
-- Open a new script file in RStudio: `File` -> `New File` -> `R Script`.
-- To run code from an R script file in RStudio, you can use the `Run` button (or `Command-R`). It will run whatever's on your cursor line or whatever's highlighted.
-- To run the whole script, use `source`. 
-- Save scripts using the extension `.R`
 
 ## Getting data into R
 
-### Basics of getting data into R
-
-Basic approach: 
-
-- Download data to your computer
-- Make sure R is working in the directory with your data (`getwd`, `setwd`)
-- Read data into R (`read.csv`, `read.table`)
-- Check to make sure the data came in correctly (`dim`, `head`, `tail`, `str`)
 
 ### Directories
-
-Anytime you work in R, R will run from within a directory somewhere on your computer. 
-
-Let's review directories: 
-
-```{r echo = FALSE, fig.align='center'}
-knitr::include_graphics("figures/korn0102.gif")
-```
-
-You can check your working directory anytime using `getwd()`:
-
-```{r eval = FALSE}
-getwd()
-```
-
-```
-## [1] "/Users/brookeanderson/RProgrammingForResearch"
-```
 
 You can use `setwd()` to change your directory.
 
@@ -268,16 +248,6 @@ list.files()
 ## [25] "vocabulary.Rmd"
 ```
 
-### Getting around directories
-
-There are a few abbreviations you can use to represent certain relative or absolute locations when you're using `setwd()`:
-
-Command           | Directory
----------         | ---------
-`setwd("~")`      | Your home directory
-`setwd("..")`     | One directory up from your current directory
-`setwd("../..")`  | Two directories up from your current directory
-
 ### Taking advantage of `paste0`
 
 You can create an object with your directory name using `paste0`, and then use that to set your directory. We'll take a lot of advantage of this for reading in files.
@@ -302,46 +272,17 @@ my_dir
 setwd(my_dir)
 ```
 
-### Pathnames: Relative versus absolute
-
-When you want to reference a directory or file, you can use one of two types of pathnames:
-
-- *Relative*: How to get there from your current working directory
-- *Absolute*: The full pathname
-
-Say your current working directory was `/Users/brookeanderson/Desktop/RCourseFall2015` and you wanted to get into the subdirectory `Week2_Aug31`. Here are examples using the two types of pathnames:
-
-Absolute: 
-```{r eval = FALSE}
-setwd("/Users/brookeanderson/Desktop/RCourseFall2015/Week2_Aug31")
-```
-
-Relative:
-```{r eval = FALSE}
-setwd("Week2_Aug31")
-```
-
-Here are some other examples of relative pathnames:
-
-If `Week2_Aug31` is a subdirectory of your current parent directory:
-
-```{r eval = FALSE}
-setwd("../Week2_Aug31")
-```
-
-If `Week2_Aug31` is a subdirectory of your home (root) directory:
-
-```{r eval = FALSE}
-setwd("~/Week2_Aug31")
-```
-
-If `Week2_Aug31` is a subdirectory of the subdirectory `Ex` of your current working directory:
-
-```{r eval = FALSE}
-setwd("Ex/Week2_Aug31")
-```
-
 ## Reading data into R
+
+### Basics of getting data into R
+
+Basic approach: 
+
+- Download data to your computer
+- Make sure R is working in the directory with your data (`getwd`, `setwd`)
+- Read data into R (`read.csv`, `read.table`)
+- Check to make sure the data came in correctly (`dim`, `head`, `tail`, `str`)
+
 
 ### What kind of data can you get into R?
 
