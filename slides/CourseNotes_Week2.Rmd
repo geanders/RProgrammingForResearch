@@ -8,6 +8,11 @@ output:
 fontsize: 10pt
 ---
 
+```{r echo = FALSE}
+options(width = 50)
+```
+
+
 # R scripts
 
 ## R scripts
@@ -40,12 +45,10 @@ Basic approach:
 
 ## Directories
 
-Anytime you work in R, R will run from within a directory somewhere on your computer. 
+Anytime you work in R, R will run from within a directory somewhere on your computer. Let's review directories: 
 
-Let's review directories: 
-
-```{r echo = FALSE, fig.align='center', eval = FALSE}
-knitr::include_graphics("../figures/korn0102.gif")
+```{r echo = FALSE, fig.align='center', out.width = "200pt"}
+knitr::include_graphics("../figures/FileDirectoryStructure.png")
 ```
 
 ## Directories
@@ -60,7 +63,11 @@ getwd()
 
 You can use `setwd()` to change your directory.
 
+\medskip
+
 To get to your home directory (for example, mine is "/Users/brookeanderson"), you can use the abbreviation `~`. 
+
+\medskip
 
 For example, if you want to change into your home directory and print its name, you could run:
 
@@ -85,11 +92,14 @@ list.files()
 
 There are a few abbreviations you can use to represent certain relative or absolute locations when you're using `setwd()`:
 
-Command           | Directory
----------         | ---------
-`setwd("~")`      | Your home directory
-`setwd("..")`     | One directory up from your current directory
-`setwd("../..")`  | Two directories up from your current directory
+```{r echo = FALSE}
+dirpath_shortcuts <- data.frame(abbr = c("`~`", "`.`", "`..`", "`../..`"),
+                                meaning = c("Home directory",
+                                            "Current working directory",
+                                            "One directory up from current working directory",
+                                            "Two directories up from current working directory"))
+knitr::kable(dirpath_shortcuts, col.names = c("Shorthand", "Meaning"))
+```
 
 ## Taking advantage of `paste0`
 
@@ -121,43 +131,43 @@ setwd(my_dir)
 
 When you want to reference a directory or file, you can use one of two types of pathnames:
 
-- *Relative*: How to get there from your current working directory
-- *Absolute*: The full pathname
+- *Relative pathname*: How to get to the file or directory from your current working directory
+- *Absolute pathname*: How to get to the file or directory from anywhere on the computer
 
 ## Relative versus absolute pathnames
 
-Say your current working directory was `/Users/brookeanderson/Desktop/RCourseFall2015` and you wanted to get into the subdirectory `Week2_Aug31`. Here are examples using the two types of pathnames:
+Say your current working directory was `/Users/brookeanderson/RProgrammingForResearch` and you wanted to get into the subdirectory `data`. Here are examples using the two types of pathnames:
 
 Absolute: 
 ```{r eval = FALSE}
-setwd("/Users/brookeanderson/Desktop/RCourseFall2015/Week2_Aug31")
+setwd("/Users/brookeanderson/RProgrammingForResearch/data")
 ```
 
 Relative:
 ```{r eval = FALSE}
-setwd("Week2_Aug31")
+setwd("data")
 ```
 
 ## Relative versus absolute pathnames
 
 Here are some other examples of relative pathnames:
 
-If `Week2_Aug31` is a subdirectory of your current parent directory:
+If `data` is a subdirectory of your current parent directory:
 
 ```{r eval = FALSE}
-setwd("../Week2_Aug31")
+setwd("../data")
 ```
 
-If `Week2_Aug31` is a subdirectory of your home (root) directory:
+If `data` is a subdirectory of your home directory:
 
 ```{r eval = FALSE}
-setwd("~/Week2_Aug31")
+setwd("~/data")
 ```
 
-If `Week2_Aug31` is a subdirectory of the subdirectory `Ex` of your current working directory:
+If `data` is a subdirectory of the subdirectory `Ex` of your current working directory:
 
 ```{r eval = FALSE}
-setwd("Ex/Week2_Aug31")
+setwd("Ex/data")
 ```
 
 # Reading data into R
@@ -529,4 +539,3 @@ Your date    | `format = `
 08-10-23     | "%y-%m-%d"
 Oct. 23 2008  | "%b. %d %Y"
 October 23, 2008 | "%B %d, %Y"
-

@@ -1,6 +1,6 @@
 # (PART) Part II: Basics {-}
 
-# Entering and cleaning data 1
+# Entering and cleaning data #1
 
 [Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2.pdf) a pdf of the lecture slides covering this topic.
 
@@ -120,11 +120,14 @@ While this pathname is much shorter than the absolute pathname, it is important 
 
 There are a few abbreviations that can be really useful for pathnames:
 
-Abbreviation      | Meaning
----------         | ---------
-`~`               | Your home directory
-`..`              | One directory up from your current directory
-`../..`           | Two directories up from your current directory
+```{r echo = FALSE}
+dirpath_shortcuts <- data.frame(abbr = c("`~`", "`.`", "`..`", "`../..`"),
+                                meaning = c("Home directory",
+                                            "Current working directory",
+                                            "One directory up from current working directory",
+                                            "Two directories up from current working directory"))
+knitr::kable(dirpath_shortcuts, col.names = c("Shorthand", "Meaning"))
+```
 
 These can help you keep pathnames shorter and also help you move "up-and-over" to get to a file or directory that's not on the direct path below your current working directory. 
 
@@ -158,7 +161,7 @@ You can use absolute or relative pathnames for a number of things:
 
 If you're getting errors reading in files, and you think it's related to the relative pathname you're using, it's often helpful to use `list.files()` to make sure the file you're trying to load is in the directory that the relative pathname you're using is directing R to. 
 
-## Diversion: `paste` and `paste0`
+## Diversion: `paste`
 
 This is a good opportunity to explain how to use some functions that can be very helpful when you're using relative or absolute pathnames: `paste()` and `paste0()`. 
 
@@ -609,3 +612,292 @@ Your date    | `format = `
 Oct. 23 2008  | "%b. %d %Y"
 October 23, 2008 | "%B %d, %Y"
 Thurs, 23 October 2008 | "%a, %d %B %Y"
+
+## In-course Exercise
+
+### Checking out directory structures
+
+Download the whole directory for this week from Github. Put the directory for Week 2 as a subdirectory in your directory for this class. To do that, go the the [GitHub page for the course](https://github.com/geanders/RCourseFall2015) and, in the bottom right, choose "Download Zip". Then you can move the directory for this Week into your directory for this course and throw away rest of the directory. 
+
+Look through the structure of this week's directory. What files are in the directory? What subdirectories? Sketch out the structure of this directory.
+
+### R script file
+
+Create a new R script file to put all the code you use for this exercise. Save it in the directory for this week. 
+
+### Using relative and absolute file names
+
+First, I'd like you to try using `setwd()` to move around the directories on your computer. I want you to try to open the same file from different working directories, to get practice using absolute and relative file path names. 
+
+Start in the working directory `Week2_Aug31/example_data/`. For me, the absolute path to that is `/Users/brookeanderson/Desktop/RCourseFall2015/Week2_Aug31/example_data`, so I can run:
+
+```{r eval = FALSE}
+my_dir <- paste0("/Users/brookeanderson/Desktop/RCourseFall2015/",
+                 "Week2_Aug31/example_data")
+setwd(my_dir)
+getwd()
+```
+
+(The absolute pathname will be different for each person, based on the directories they have on their computer and where they saved this particular directory.)
+
+Now you can check to make sure you have all the files you want:
+
+```{r eval = FALSE}
+setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
+list.files()
+```
+
+Try the following tasks: 
+
+* Read in the ebola data in `country_timeseries.csv`. Save is as the R object `ebola`. How many rows and columns does it have? What are the names of the columns?
+* Now try moving up one directory from your working directory, into the directory `Week2_Aug31\`. What happens if you use the same code as before to read in the file? What do you need to change to be able to read the file in from here? Try to read in the data from here using:
+    + A relative pathname
+    + An absolute pathname
+* Now move down into the subdirectory of `example_data` called `measles_data`. Try to read in the Ebola data from here using: 
+    + A relative pathname
+    + An absolute pathname
+* Which method was the same, regardless of your current working directory? Which methods was different?
+
+Example R code:
+
+```{r eval = FALSE}
+setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
+ebola <- read.csv("country_timeseries.csv", header = TRUE)
+ebola[1:5, 1:5]
+dim(ebola) # To figure out number of rows and columns
+colnames(ebola) # To figure out column names
+
+## Move up one directory
+setwd("..")
+getwd() 
+
+## Get the file using the relative pathname
+ebola <- read.csv("example_data/country_timeseries.csv",
+                  header = TRUE) 
+ebola[1:5, 1:5]
+
+## Get the file using the absolute pathname
+abs_path <- paste0("/Users/brookeanderson/Desktop/",
+                   "RCourseFall2015/Week2_Aug31/",
+                   "example_data/country_timeseries.csv")
+abs_path
+ebola <- read.csv(abs_path,
+                  header = TRUE) 
+ebola[1:5, 1:5]
+
+## Move into the measles_data subdirectory
+setwd("example_data/measles_data")
+getwd()
+
+## Get the file using the relative pathname
+ebola <- read.csv("../country_timeseries.csv",
+                  header = TRUE) 
+ebola[1:5, 1:5]
+
+# Get the file using the absolute pathname
+abs_path <- paste0("/Users/brookeanderson/Desktop/",
+                   "RCourseFall2015/Week2_Aug31/",
+                   "example_data/country_timeseries.csv")
+ebola <- read.csv(abs_path,
+                  header = TRUE) 
+ebola[1:5, 1:5]
+```
+
+If you have extra time: 
+
+- On the [GitHub page for this week's data](https://github.com/geanders/RCourseFall2015/tree/master/Week2_Aug31/example_data), I've included some information about where I got all the example data. Find out some more about the Ebola dataset by following the link I've included to Caitlin Rivers' GitHub repository. Who is Caitlin Rivers? How did she put this dataset together?
+- When you `list.files()` inside the `example_data` directory, almost everything listed has a file extension, like `.csv`, `.xls`, `.sas7bdat`. One thing does not. Which one? Why does this listing not have a file extension?
+
+### Reading in different types of files
+
+First, make sure you're in the `example_data/` directory again:
+
+```{r eval = FALSE}
+my_dir <- paste0("/Users/brookeanderson/Desktop/RCourseFall2015/",
+                 "Week2_Aug31/example_data")
+setwd(my_dir)
+```
+
+Now I'd like you to try reading in data from a variety of types of file formats. 
+
+Try the following tasks:
+
+- What type of flat file do you think the `ld_genetics.txt` file is? See if you can read it in and save it as the R object `ld_genetics`. Use the `summary` function to check out basic statistics on the data.
+- Check out the file `measles_data/02-09-2015.txt`. What type of flat file do you think it is? Stay in the `example_data` directory and use a relative pathname to read it into the R object `ca_measles`. Use the `col.names` option to name the columns "city" and "count". What would the default column names be if you didn't use this option?
+- Read in the Excel file `icd-10.xls` and assign it to the object name `idc10`. Use the [`readxl` package to do that](https://github.com/hadley/readxl) (examples are at the bottom of the linked page).
+- Read in the SAS file `icu.sas7bdat`. To do this, use the [`haven` package](https://github.com/hadley/haven). Read the file into the R object `icu`. 
+
+Example R code (note: for some of these, you may get messages I haven't printed out here):
+
+```{r, message = FALSE, eval = FALSE}
+setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
+
+ld_genetics <- read.delim("ld_genetics.txt", header = TRUE)
+summary(ld_genetics)
+
+ca_measles <- read.delim("measles_data/02-09-2015.txt",
+                         header = FALSE,
+                         col.names = c("city", "count"))
+head(ca_measles)
+
+library(readxl)
+icd10 <- read_excel("icd-10.xls")
+head(icd10)
+
+library(haven)
+icu <- read_sas("icu.sas7bdat")
+icu[1:5, 1:5]
+```
+
+If you have extra time: 
+
+- Is there a way to read the `ld_genetics.txt` file in using `read.table()` and specific options? If so, try to read the data in using that function.
+
+Example R code: 
+
+```{r eval = FALSE}
+setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
+
+## Using the read.table function 
+ld_genetics <- read.table("ld_genetics.txt", header = TRUE,
+                          sep = "\t")
+ld_genetics[1:5, 1:5]
+```
+
+### Cleaning up data
+
+Try out the following tasks:
+
+- You now have an R object called `ebola`. Create an object called `ebola_liberia` that only has the columns with the Date and cases and deaths in Liberia. How many observations do you have? 
+- Change the column names to `date`, `cases`, and `deaths`.
+- What class is the `date` column currently in? Convert it to a Date object. If it's currently a factor, you will need to first convert it to a character (do you know why)? What are the starting and ending dates of this data?
+- This data has earliest dates last and latest dates first. Often, we want our data in chronological order. Change the dataset so it's in chronological order. *Hint: You can use row indices to do this, if you use row indices to list the data from last row to first. For example, what do you get if you do `3:1`? What about if you do `ebola[3:1, ]`? Think of how you can extend this, along with `nrow()` do this task.*
+
+Example R code:
+
+```{r eval = FALSE}
+## Create a subset with just the Liberia columns and Date
+ebola_liberia <- subset(ebola, 
+                        select = c("Date", "Cases_Liberia",
+                                   "Deaths_Liberia"))
+head(ebola_liberia)
+
+## How many rows does the whole dataset have?
+nrow(ebola_liberia)
+
+## Rename the columns
+colnames(ebola_liberia) <- c("date", "cases", "deaths")
+ebola_liberia[1:3, ]
+
+## What class is the `date` column?
+class(ebola_liberia$date)
+
+## Change the class to a character and then to a Date
+## Use the `format` option to tell R what format the date
+## currently is in
+ebola_liberia$date <- as.character(ebola_liberia$date)
+ebola_liberia$date <- as.Date(ebola_liberia$date,
+                              format = c("%m/%d/%Y"))
+head(ebola_liberia$date)
+
+## What are the starting and ending dates?
+range(ebola_liberia$date)
+
+## Re-order the dataset from last to first
+ebola_liberia <- ebola_liberia[nrow(ebola_liberia):1, ]
+ebola_liberia[1, ]
+```
+
+If you have extra time:
+
+- Limit the `ebola_liberia` dataset just to the days with non-missing case data. How many observations do you have now?
+- Try using the basic plotting function, `plot()`, to plot the number of cases over time. Do you think that the `cases` variable is measuring the count of cases for that day, or the cumulative number of cases up to that day? See if you can figure out more on Caitlin Rivers' GitHub documentation. Do you notice any potential data quality issues in this data? *Hint: The `plot()` function takes, as required arguments, the vector you want to plot on the x-axis and then the vector you want to plot on the y-axis, like `plot([x vector], [y vector])`. If you are pulling the vectors from a dataset, you will need to use indexing to pull out the column you want as a vector, like `plot([dataframe name]$[column name for x], [dataframe]$[column name for y]`.*
+
+Example R code: 
+
+```{r eval = FALSE}
+## Remove observations with missing cases
+ebola_liberia <- subset(ebola_liberia, !is.na(cases))
+nrow(ebola_liberia)
+
+## Plot the data
+plot(ebola_liberia$date, ebola_liberia$cases)
+```
+
+### A taste of what's to come...
+
+Here's an example to give you a feel for why it's worth learning all these different things about directories and `list.files()` and different pathnames, etc. 
+
+The `measles_data` subdirectory includes counts of measles made at different times in different cities in California. Say that we wanted to read them all in and make put them into one long dataframe with the variables `city`, `count`, and `date`. You can put together the things you've learned so far, along with a few new ideas (including doing a loop), to do this very easily. 
+
+We'll talk more later about using loops and functions to make your programming more efficient, but for right now just look through this code and see if you can get a feel for how it's working:
+
+```{r, fig.width=10, fig.height=4, eval = FALSE}
+setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
+
+## Create a vector of all the file names in the `measles_data` subdirectory
+measles_files <- list.files("measles_data")
+measles_files
+
+## Create a vector of all the dates for files by taking the 
+## `.txt` off each of these file names and change it into
+## a date
+measles_dates <- sub(".txt", "", measles_files)
+measles_dates
+class(measles_dates)
+measles_dates <- as.Date(measles_dates, format = "%m-%d-%Y")
+measles_dates
+
+## Before I show the loop, let me talk you through some 
+## of the parts of it:
+i <- 1 # I'm setting the index to 1
+
+## Now I'll use `paste0` to create the first file name
+## I want to read.
+file_name <- paste0("measles_data/", measles_files[i])
+file_name
+
+## Now I'll read in that file
+df <- read.delim(file_name,
+                 header = FALSE,
+                 col.names = c("city", "count"))
+head(df)
+
+## Now I'll add on a column with the date for all the 
+## values from that file. Notice that I'm using `i` to 
+## index this, as well
+
+df$date <- measles_dates[i]
+head(df)
+
+## Loop through and read in files. After the first file,
+## add on the new information to the data that's already 
+## been read in. Note that you can use `rbind` to add on 
+## new rows to a dataframe as long as the new and old rows
+## have the same number of columns and the same column names.
+for(i in 1:length(measles_files)){
+        file_name <- paste0("measles_data/", 
+                                measles_files[i])
+        df <- read.delim(file_name,
+                         header = FALSE,
+                         col.names = c("city", "count"))
+        df$date <- measles_dates[i]
+        if(i == 1){
+                ca_measles <- df
+        } else { 
+                 ca_measles <- rbind(ca_measles, df)
+                }
+}
+
+dim(ca_measles)
+summary(ca_measles)
+
+library(ggplot2)
+ggplot(subset(ca_measles, city %in% c("LOS ANGELES",
+                                      "SAN DIEGO",
+                                      "ORANGE")),
+       aes(x = date, y = count)) + 
+        geom_line()  + 
+        facet_grid(. ~ city)
+```
+
