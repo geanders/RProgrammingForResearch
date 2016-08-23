@@ -6,6 +6,192 @@
 
 ## R scripts
 
+This is a good point in learning R for you to start putting your work in R scripts, rather than entering commands at the console. 
+
+An R script is a plain text file where you can save a series of R commands. You can save the script and open it up later to see (or re-do) what you did earlier, just like you could with something like a Word document when you're writing a paper. 
+
+To open a new R script in RStudio, go to the menu bar and select "File" -> "New File" -> "R Script". Alternatively, you can use the keyboard shortcut Command-Shift-N. Figure \@ref(fig:rscript) gives an example of an R script file opened in RStudio and points out some of interesting elements.
+
+```{r rscript, echo = FALSE, fig.align="center", fig.cap = "Example of an R script in RStudio.", out.width= "600pt"}
+knitr::include_graphics("figures/ExampleOfRScript.jpg")
+```
+
+To save a script you're working on, you can click on the "Save" button (which looks like a floppy disk) at the top of your R script window in RStudio or use the keyboard shortcut Command-S. Save R scripts using a ".R" file extension.
+
+Within the R script, you'll usually want to type your code so there's one command per line. If your command runs long, you can write a single call over multiple lines. It's unusual to put more than one command on a single line of a script file, but you can if you separate the commands with semicolons (`;`). These rules all correspond to how you can enter commands at the console. 
+
+Running R code from a script file is very easy in RStudio. You can use either the "Run" button or Command-Return, and any code that is selected (i.e., that you've highlighted with your cursor) will run at the console. You can use this functionality to run a single line of code, multiple lines of code, or even just part of a specific line of code. If no code is highlighted, then R will instead run all the code on the line with the cursor and then move the cursor down to the next line in the script. 
+
+You can also run all of the code in a script. To do this, use the "Source" button at the top of the script window. You can also run the entire script either from the console or from within another script by using the `source()` function, with the filename of the script you want to run as the argument. For example, to run all of the code in a file named "MyFile.R" that is saved in your current working directory, run:
+
+```{r, eval = FALSE}
+source("MyFile.R")
+```
+
+You can add comments into an R script to let others know (and remind yourself) what you're doing and why. To do this, use R's comment character, `#`. Any line on a script line that starts with `#` will not be read by R. You can also take advantage of commenting to comment out certain parts of code that you don't want to run at the moment.
+
+While it's generally best to write your R code in a script and run it from there rather than entering it interactively at the R console, there are some exceptions. A main example is when you're initially checking out a dataset, to make sure you've read it in correctly. It often makes more sense to run commands for this task, like `str()`, `head()`, `tail()`, and `summary()`, at the console. These are all examples of commands where you're trying to look at something about your data **right now**, rather than code that builds toward your analysis or helps you read in or clean up your data.  
+
+## Directories and pathnames
+
+It seems a bit of a pain and a bit complex to have to think about computer directory structure in the "basics" part of this class, but this structure is not terribly complex once you get the idea of it, and they are a couple of very good reasons why it's worth learning now. 
+
+First, many of the most frustrating errors you get when you start using R trace back to understanding directories and filepaths. For example, when you try to read a file into R using only the filename, and that file is not in your current working directory, you will get an error like: 
+
+```
+Error in file(file, "rt") : cannot open the connection
+In addition: Warning message:
+In file(file, "rt") : cannot open file 'Ex.csv': No such file or directory
+```
+
+This error is especially frustrating when you're new to R because it happens at the very beginning of your analysis-- you can't even get your data in. Also, if you don't understand a bit about working directories and how R looks for the file you're ask it to find, you'd have no idea where to start to fix this error. 
+
+Second, once you understand how to use pathnames, especially relative pathnames, to tell R how to find a file that is in a directory other than your working directory, you will be able to organize all of your files for a project in a much cleaner way. For example, you can create a directory for your project, then create one subdirectory to store all of your R scripts, and another to store all of your data, and so on. This can help you keep very complex projects more structured and easier to navigate. We'll talk about these ideas more in the course sections on Reproducible Research, but it's good to start learning the background you'll need for that (which is how directory structures and filepaths work) early.
+
+Your computer organizes files through a collection of directories. Chances are, you are fairly used to working with these in your daily life already (although you may call them "folders" rather than "directories"). For example, you've probably created new directories to use to store data files and Word documents for a specific project. 
+
+Here's a figure that illustrates the file directory structure on my computer. (Note that I have omitted many, many additional files and directories-- this just shows an example of a few directories and files and how they are structured together). Directories are shown in blue and files in green. 
+
+![]("figures/FileDirectoryStructure.png")
+
+You can notice a few interesting things from this figure. First, you might notice the structure includes a few of the directories that you use a lot on your own computer, like `Desktop`, `Documents`, and `Downloads`. `Desktop` is the directory that contains all the directories and files that show up on your computer's Desktop. `Downloads` is the default place where downloaded files are saved. 
+
+Next, the directory at the very top is the computer's root directory, `\`. For a PC, the root directory might something like `C:`; for Unix and Macs, it's usually `\`. 
+
+Finally, if you look closely, you'll notice that it's possible to have different files in different locations of the directory structure with the same file name. For example, in the figure, there are files names `heat_mort.csv` in both the `CourseText` directory and in the `example_data` directory. These are two different files with completely different contents, but they can have the same name as long as they're in different directories. This fact-- that you can have files with the same name in different places-- how useful it is that R requires you to give very clear directions to describe exactly which file you want R to read in, if you aren't reading in something in your current working directory.
+
+You will have a home directory somewhere near the top of your structure, although it's likely not your root directory. My home directory is `\Users\brookeanderson`. I'll describe just a bit later how you can figure out what your own home directory on your own computer.
+
+Anytime you run R, it's always doing its work based in some working directory, which will be one of the directories somewhere within your computer's directory structure. At any time, you can figure out what directory R is working in by running the command `getwd()`. For example, my R session is currently running in the following directory:
+
+```{r}
+getwd()
+```
+
+This means that, for my current R session, R is working in the `CourseText` subdirectory of my `RCourseFall2015` directory, which is a subdirectory itself of my `Desktop`, which is a subdirectory of my home directory (`\Users\brookeanderson`).
+
+There are a few general rules for which working directory R will start in when you open an R session. These are not absolute rules, but they're generally true. If you have R closed, and you open it by double-clicking on an R script, then R will generally open with, as its working directory, the directory in which that script is stored. This is often a very convenient convention, because often any of the data you'll be reading in for that script is somewhere near where the script file is saved in the directory structure. 
+
+If you open R by double-clicking on the R icon in "Applications" (or something similar on a PC), R will start in its default working directory. You can find out what this is, or change it, in RStudio's "Preferences". I have never had a compelling reason to change this on my own computer, as I find it very easy to just move around the directories and set a new working directory using pathnames and the `setwd()` function. 
+
+Once you get a picture of how your directories and files are organized, you can use pathnames, either absolute or relative, to move around the directories, set a different working directory, and read in files from different directories than your current working directory. 
+
+There are two ways to specify pathnames (i.e., the directions for getting to a directory or file): absolute pathnames and relative pathnames. Absolute pathnames are a bit more straightforward, because they don't depend on your current working directory. However, they're also a lot longer to write, and they're much less convenient if you'll be sharing some of your code with other people who might run it on their own computers. I'll explain this second point a bit more a little later in this section. 
+
+**Absolute pathnames** give the full directions to a directory or file, starting all the way at the root directory. For example, the `heat_mort.csv` file in the `CourseText` directory has the absolute pathname:
+
+```
+"\Users\brookeanderson\Desktop\RCourseFall2015\CourseText\heat_mort.csv"
+```
+
+You can use this absolute pathname to read this file in using `read.csv`, and this absolute pathname will *always* work, regardless of your current working directory, because it gives directions from the root, so it will always be clear to R exactly what file you're talking about. Here's the code to use to read that file in using its absolute pathname:
+
+```
+heat_mort <- read.csv("\Users\brookeanderson\Desktop\RCourseFall2015\CourseText\heat_mort.csv")
+```
+
+The **relative pathname**, on the other hand, gives R the directions for how to get to a directory or file *from the current working directory*. If the file or directory you're looking for is pretty close to your current working directory in your directory structure, then this will be a (possibly much) shorter way to tell R how to get there. However, the relative pathname depends on what your current working directory is, and the relative pathname that works perfectly when you're working in one directory will not work at all once you move into a different working directory. 
+
+As an example of a relative pathname, say you're working in the directory `RCourseFall2015` and you want to read in the `heat_mort.csv` file in the `CourseText` directory. To get from `RCourseFall2015` to that file, you'd need to look in the subdirectory `CourseText`, where you could find `heat_mort.csv`. Therefore, the relative pathname from your working directory would be:
+
+```
+"CourseText/heat_mort.csv"
+```
+
+You can use this relative pathname instead of the absolute pathname to help R find and read in the file:
+
+```
+heat_mort <- read.csv("CourseText/heat_mort.csv")
+```
+
+While this is much shorter, it is important to remember that if you changed your working directory (for example, if you used `setwd("CourseText")` to move into the `CourseText` directory), this relative pathname would no longer work. 
+
+There are a few abbreviations that can be really useful for pathnames:
+
+Abbreviation      | Meaning
+---------         | ---------
+`~`               | Your home directory
+`..`              | One directory up from your current directory
+`../..`           | Two directories up from your current directory
+
+These can help you keep pathnames shorter and also help you move "up-and-over" to get to a file or directory that's not on the direct path below your current working directory. 
+
+For example, my home directory is `\Users\brookeanderson`. If I wanted to change my working directory to the `Downloads` directory, which is a direct sub-directory of my home directory, I could use:
+
+```
+setwd("~/Downloads")
+```
+
+As a second example, say I was working in the working directory `CourseText`, but I wanted to read in the `heat_mort.csv` file that's in the `example_data` directory, rather than the one in the `CourseText` directory. I can use the `..` abbreviation to tell R to look up one directory from the current working directory, and then down within a subdirectory of that. The relative pathname in this case is:
+
+```
+"../Week2_Aug31/example_data/heat_mort.csv"
+```
+
+This tells R to look one directory up from the working directory (`..`), which in this case is to `RCourseFall2015`, and then down within that directory to `Week2_Aug31`, then to `example_data`, and then to look there for the file `heat_mort.csv`. 
+
+To read this file in using a relative pathname, then, while R is working in the `CourseTest` directory, would be:
+
+```
+heat_mort <- read.csv("../Week2_Aug31/example_data/heat_mort.csv")
+```
+
+These relative pathnames would "break" as soon as you tried tham from a different working directory-- this fact might make it seem like you would never want to use relative pathnames, and would always want to use absolute ones instead, even if they're longer. If that were the only consideration (length of the pathname), then perhaps that would be true. However, as you do more and more in R, there will likely be many occasions when you want to use relative pathnames instead. They are particularly useful if you ever want to share a whole directory, with R scripts and data, with a collaborator. In that case, if you've used relative pathnames, all the code should work fine for the person you share with, even though they're running it on their own computer. Conversely, if you'd used absolute pathnames, none of them would work on another computer, because the "top" of the directory structure (i.e., for me, `\Users\brookeanderson\Desktop`) will almost definitely be different for your collaborator's computer than it is for yours. 
+
+You can use absolute or relative pathnames for a number of things:
+
+- To set your working directory: `setwd("../Week2_Aug31")`, for example
+- To read in files from a different directory (as shown in the previous examples)
+- To list files in a different directory: for example, `list.files("..")` will list all files in the directory directly about your current working directory (the *parent directory* of your working directory)
+
+If you're getting errors reading in files, and you think it's related to the relative pathname you're using, it's often helpful to use `list.files()` to make sure the file you're trying to load is in the directory that the relative pathname you're using is directing R to. 
+
+## Diversion: `paste` and `paste0`
+
+This is a good opportunity to explain how to use some functions that can be very helpful when you're using relative or absolute pathnames: `paste()` and `paste0()`. 
+
+As a bit of important background information, it's important that you understand that you can save a pathname (absolute or relative) as an R object, and then use that R object in calls to later functions like `list.files()` and `read.csv()`. For example, to use the absolute pathname to read the `heat_mort.csv` file in the `CourseText` directory, you could run:
+
+```
+my_file <- "/Users/brookeanderson/Desktop/RCourseFall2015/CourseText/heat_mort.csv"
+heat_mort <- read.csv(my_file)
+```
+
+You'll notice from this code that sometimes the pathname to get to a directory or file can sometimes get ungainly long. To keep your code cleaner, you can address this by using the `paste` or `paste0` functions. These functions come in handy in a lot of other applications, too, but this is a good place to introduce them. 
+
+The `paste()` function is very straightforward. It takes, as inputs, a series of different character strings you want to join together, and it pastes them together in a single character string. (As a note, this means that your result vector will only be one element long, for basic uses of `paste()`, while the inputs will be several different character stings.) You separate all the different things you want to paste together using with commas in the function call. For example:
+
+```{r}
+paste("Sunday", "Monday", "Tuesday")
+
+length(c("Sunday", "Monday", "Tuesday"))
+length(paste("Sunday", "Monday", "Tuesday"))
+```
+
+The `paste()` function has an option called `sep = `. This tells R what you want to use to separate the values you're pasting together in the output. The default is for R to use a space, as shown in the example above. To change the separator, you can change this option, and you can put in just about anything you want. For example, if you wanted to paste all the values together without spaces, you could use `sep = ""`:
+
+```{r}
+paste("Sunday", "Monday", "Tuesday", sep = "")
+```
+
+As a shortcut, instead of using the `sep = ""` option, you could achieve the same thing using the `paste0` function. This function is almost exacly like `paste`, but it defaults to `""` (i.e., no space) as the separator between values by default:
+
+```{r}
+paste0("Sunday", "Monday", "Tuesday")
+```
+
+With pathnames, you will usually not want spaces. Therefore, you could think about using `paste0()` to write an object with the pathname you want to ultimately use in commands like `list.files()` and `setwd()`. This will allow you to keep your code cleaner, since you can now divide long pathnames over multiple lines:
+
+```
+my_file <- paste0("/Users/brookeanderson/Desktop/",
+                  "RCourseFall2015/CourseText/heat_mort.csv")
+heat_mort <- read.csv(my_file)
+```
+
+You will end up using `paste()` and `paste0()` for a lot of other applications, but this is a good example of how you can start using these functions, to start to get a feel for them.
+
+------------------------------------------------
+
 If you are writing code you think you will use later, write it in an R script file rather than using the console. 
 
 - Open a new script file in RStudio: `File` -> `New File` -> `R Script`.
