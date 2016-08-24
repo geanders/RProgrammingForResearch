@@ -617,149 +617,170 @@ Thurs, 23 October 2008 | "%a, %d %B %Y"
 
 ### Checking out directory structures
 
-Download the whole directory for this week from Github. Put the directory for Week 2 as a subdirectory in your directory for this class. To do that, go the the [GitHub page for the course](https://github.com/geanders/RCourseFall2015) and, in the bottom right, choose "Download Zip". Then you can move the directory for this Week into your directory for this course and throw away rest of the directory. 
+Download the whole directory for this week from Github. Put the "data" directory as a subdirectory in your directory for this class. To do that, go the the [GitHub page for the course](https://github.com/geanders/RProgrammingForResearch) and, in the top right, choose "Clone or Download" and then choose "Download ZIP". Then move the "data" subdirectory into your course directory and throw away rest of what you downloaded. 
 
-Look through the structure of this week's directory. What files are in the directory? What subdirectories? Sketch out the structure of this directory.
+```{block, type = 'rmdnote'}
+Unfortunately, while GitHub will let you download data files one at a time, it doesn't offer a straightforward way of downloading a whole subdirectory from a repository. For this task, where you're pulling all of the data in the "data" subdirectory of the course repository, the quickest method is to download the entire directory, find and move the subdirectory that you need, and then delete the rest. 
+```
 
-### R script file
+- Look through the structure of the "data" directory. What files are in the directory? What subdirectories? Sketch out the structure of this directory.
+- Create a new R script to put all the code you use for this exercise. Create a subdirectory in your course directory called "R" and save this script there using a `.R` extension (e.g., "week_2.R"). 
 
-Create a new R script file to put all the code you use for this exercise. Save it in the directory for this week. 
+### Using relative and absolute file pathnames
 
-### Using relative and absolute file names
+Once you have the data, I'd like you to try using `setwd()` to move around the directories on your computer. For this section of the exercise, you'll try to open the same file from different working directories, to get practice using absolute and relative file pathnames. 
 
-First, I'd like you to try using `setwd()` to move around the directories on your computer. I want you to try to open the same file from different working directories, to get practice using absolute and relative file path names. 
-
-Start in the working directory `Week2_Aug31/example_data/`. For me, the absolute path to that is `/Users/brookeanderson/Desktop/RCourseFall2015/Week2_Aug31/example_data`, so I can run:
+Start by changing your working directory to the "data" subdirectory you just downloaded. For me, the absolute path to that is `/Users/brookeanderson/RProgrammingForResearch/data`, so to change my working directory to this one using an absolute file pathname, I would run:
 
 ```{r eval = FALSE}
-my_dir <- paste0("/Users/brookeanderson/Desktop/RCourseFall2015/",
-                 "Week2_Aug31/example_data")
-setwd(my_dir)
+setwd("/Users/brookeanderson/RProgrammingForResearch/data")
 getwd()
 ```
 
-(The absolute pathname will be different for each person, based on the directories they have on their computer and where they saved this particular directory.)
+The absolute pathname will be different for each person, based on the directories on his or her computer and where he or she saved this particular directory.
 
-Now you can check to make sure you have all the files you want:
+```{block, type = 'rmdnote'}
+Since "~" is shorthand for my home directory ("/Users/brookeanderson"), I could also use the absolute pathname "~/RProgrammingForResearch/data" when setting this directory as my working directory.
+```
+
+Now, use the `list.files` function to make sure you have all the files that you just pulled in your current working directory:
 
 ```{r eval = FALSE}
-setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
 list.files()
+```
+```{r echo = FALSE}
+list.files("~/RProgrammingForResearch/data")
 ```
 
 Try the following tasks: 
 
-* Read in the ebola data in `country_timeseries.csv`. Save is as the R object `ebola`. How many rows and columns does it have? What are the names of the columns?
-* Now try moving up one directory from your working directory, into the directory `Week2_Aug31\`. What happens if you use the same code as before to read in the file? What do you need to change to be able to read the file in from here? Try to read in the data from here using:
+* Read in the ebola data in `country_timeseries.csv`. Save it as the R object `ebola`. How many rows and columns does it have? What are the names of the columns?
+* Now try moving up one directory from your current working directory (which should be the "data" directory), into the directory you created for this course. What happens if you use the same code as before to read in the file? What do you need to change to be able to read the file in from here? Try to read in the data from here using:
     + A relative pathname
     + An absolute pathname
-* Now move down into the subdirectory of `example_data` called `measles_data`. Try to read in the Ebola data from here using: 
+* Now move down into the subdirectory of "data" called "measles_data". Try to read in the Ebola data from this working directory using: 
     + A relative pathname
     + An absolute pathname
-* Which method was the same, regardless of your current working directory? Which methods was different?
+* Which method (absolute or relative pathnames) always used the same code, regardless of your current working directory? Which method used different code, depending on the starting working directory?
 
 Example R code:
 
 ```{r eval = FALSE}
-setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
+getwd()  ## Make sure you're in the "data" directory to start
+```
+```
+## [1] "/Users/brookeanderson/RProgrammingForResearch/data"
+```
+```{r eval = FALSE}
 ebola <- read.csv("country_timeseries.csv", header = TRUE)
+```
+```{r echo = FALSE}
+ebola <- read.csv("data/country_timeseries.csv", header = TRUE)
+```
+```{r}
 ebola[1:5, 1:5]
 dim(ebola) # To figure out number of rows and columns
 colnames(ebola) # To figure out column names
-
+```
+```{r eval = FALSE}
 ## Move up one directory
 setwd("..")
 getwd() 
 
 ## Get the file using the relative pathname
-ebola <- read.csv("example_data/country_timeseries.csv",
-                  header = TRUE) 
+ebola <- read.csv("data/country_timeseries.csv", header = TRUE) 
+```
+```{r}
 ebola[1:5, 1:5]
-
 ## Get the file using the absolute pathname
-abs_path <- paste0("/Users/brookeanderson/Desktop/",
-                   "RCourseFall2015/Week2_Aug31/",
-                   "example_data/country_timeseries.csv")
+abs_path <- paste0("/Users/brookeanderson/RProgrammingForResearch/",
+                   "data/country_timeseries.csv")
 abs_path
-ebola <- read.csv(abs_path,
-                  header = TRUE) 
+ebola <- read.csv(abs_path, header = TRUE) 
 ebola[1:5, 1:5]
-
-## Move into the measles_data subdirectory
-setwd("example_data/measles_data")
+```
+```{r eval = FALSE}
+## Reset your working directory as your directory for this course
+## and then check that you're in the right place
 getwd()
-
+```
+```
+## [1] "/Users/brookeanderson/RProgrammingForResearch"
+```
+```{r eval = FALSE}
+## Move into the measles_data subdirectory
+setwd("data/measles_data")
+getwd()
+```
+```
+## [1] "/Users/brookeanderson/RProgrammingForResearch/data/measles_data"
+```
+```{r eval = FALSE}
 ## Get the file using the relative pathname
-ebola <- read.csv("../country_timeseries.csv",
-                  header = TRUE) 
+ebola <- read.csv("../country_timeseries.csv", header = TRUE) 
+```
+```{r}
 ebola[1:5, 1:5]
 
-# Get the file using the absolute pathname
-abs_path <- paste0("/Users/brookeanderson/Desktop/",
-                   "RCourseFall2015/Week2_Aug31/",
-                   "example_data/country_timeseries.csv")
-ebola <- read.csv(abs_path,
-                  header = TRUE) 
+# Get the file using the absolute pathname (note: we've already assigned
+# the absolute pathname in the `abs_path` object, so we can just use that 
+# object in the `read.csv` call here, rather than typing out the full 
+# absolute pathname again.)
+ebola <- read.csv(abs_path, header = TRUE) 
 ebola[1:5, 1:5]
 ```
 
 If you have extra time: 
 
-- On the [GitHub page for this week's data](https://github.com/geanders/RCourseFall2015/tree/master/Week2_Aug31/example_data), I've included some information about where I got all the example data. Find out some more about the Ebola dataset by following the link I've included to Caitlin Rivers' GitHub repository. Who is Caitlin Rivers? How did she put this dataset together?
-- When you `list.files()` inside the `example_data` directory, almost everything listed has a file extension, like `.csv`, `.xls`, `.sas7bdat`. One thing does not. Which one? Why does this listing not have a file extension?
+- Find out some more about this Ebola dataset by checking out [Caitlin Rivers' Ebola data GitHub repository](https://github.com/cmrivers/ebola). Who is Caitlin Rivers? How did she put this dataset together?
+- Search for R code related to Ebola research on GitHub. Go to the [GitHub home page](https://github.com) and use the search bar to search for "ebola". On the results page, scroll down and use the "Language" sidebar on the left to choose repositories with R code. Did you find any interesting projects?
+- When you `list.files()` when your working directory is the "data" directory, almost everything listed has a file extension, like `.csv`, `.xls`, `.sas7bdat`. One thing does not. Which one? Why does this listing not have a file extension?
 
 ### Reading in different types of files
 
-First, make sure you're in the `example_data/` directory again:
+First, make sure your reset your working directory to your course directory:
 
 ```{r eval = FALSE}
-my_dir <- paste0("/Users/brookeanderson/Desktop/RCourseFall2015/",
-                 "Week2_Aug31/example_data")
-setwd(my_dir)
+setwd("~/RProgrammingForResearch/")
 ```
 
-Now I'd like you to try reading in data from a variety of types of file formats. 
+Now you'll try reading in data from a variety of types of file formats. All of these files are stored in the "data" subdirectory of your current working directory, so you'll use filenames throughout that start with "data/". 
 
 Try the following tasks:
 
-- What type of flat file do you think the `ld_genetics.txt` file is? See if you can read it in and save it as the R object `ld_genetics`. Use the `summary` function to check out basic statistics on the data.
-- Check out the file `measles_data/02-09-2015.txt`. What type of flat file do you think it is? Stay in the `example_data` directory and use a relative pathname to read it into the R object `ca_measles`. Use the `col.names` option to name the columns "city" and "count". What would the default column names be if you didn't use this option?
-- Read in the Excel file `icd-10.xls` and assign it to the object name `idc10`. Use the [`readxl` package to do that](https://github.com/hadley/readxl) (examples are at the bottom of the linked page).
+- What type of flat file do you think the "ld\_genetics.txt" file is? See if you can read it in and save it as the R object `ld_genetics`. Use the `summary` function to check out basic statistics on the data.
+- Check out the file "measles\_data/02-09-2015.txt". What type of flat file do you think it is? Stay in the "data" directory and use a relative pathname to read the file in and save it as the R object `ca_measles`. Use the `col.names` option to name the columns "city" and "count". What would the default column names be if you didn't use this option?
+- Read in the Excel file "icd-10.xls" and assign it to the object name `idc10`. Use the [`readxl` package to do that](https://github.com/hadley/readxl) (examples are at the bottom of the linked page).
 - Read in the SAS file `icu.sas7bdat`. To do this, use the [`haven` package](https://github.com/hadley/haven). Read the file into the R object `icu`. 
 
-Example R code (note: for some of these, you may get messages I haven't printed out here):
+Example R code:
 
-```{r, message = FALSE, eval = FALSE}
-setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
-
-ld_genetics <- read.delim("ld_genetics.txt", header = TRUE)
+```{r}
+ld_genetics <- read.delim("data/ld_genetics.txt", header = TRUE)
 summary(ld_genetics)
 
-ca_measles <- read.delim("measles_data/02-09-2015.txt",
-                         header = FALSE,
-                         col.names = c("city", "count"))
+ca_measles <- read.delim("data/measles_data/02-09-2015.txt",
+                         header = FALSE, col.names = c("city", "count"))
 head(ca_measles)
 
 library(readxl)
-icd10 <- read_excel("icd-10.xls")
+icd10 <- read_excel("data/icd-10.xls")
 head(icd10)
 
 library(haven)
-icu <- read_sas("icu.sas7bdat")
+icu <- read_sas("data/icu.sas7bdat")
 icu[1:5, 1:5]
 ```
 
 If you have extra time: 
 
-- Is there a way to read the `ld_genetics.txt` file in using `read.table()` and specific options? If so, try to read the data in using that function.
+- Is there a way to read the "ld\_genetics.txt" file in using `read.table()` and specific options? If so, try to read the data in using that function.
 
 Example R code: 
 
-```{r eval = FALSE}
-setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
-
+```{r}
 ## Using the read.table function 
-ld_genetics <- read.table("ld_genetics.txt", header = TRUE,
+ld_genetics <- read.table("data/ld_genetics.txt", header = TRUE,
                           sep = "\t")
 ld_genetics[1:5, 1:5]
 ```
