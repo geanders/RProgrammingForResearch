@@ -58,9 +58,9 @@ Figure \@ref(fig:filedirstructure) illustrates the file directory structure on m
 knitr::include_graphics("figures/FileDirectoryStructure.png")
 ```
 
-You can notice a few interesting things from Figure \@ref(fig:filedirstructure). First, you might notice the structure includes a few of the directories that you use a lot on your own computer, like `Desktop`, `Documents`, and `Downloads`. Next, the directory at the very top is the computer's root directory, `\`. For a PC, the root directory might something like `C:`; for Unix and Macs, it's usually `\`. Finally, if you look closely, you'll notice that it's possible to have different files in different locations of the directory structure with the same file name. For example, in the figure, there are files names `heat_mort.csv` in both the `CourseText` directory and in the `example_data` directory. These are two different files with different contents, but they can have the same name as long as they're in different directories. This fact-- that you can have files with the same name in different places-- should help you appreciate how useful it is that R requires you to give very clear directions to describe exactly which file you want R to read in, if you aren't reading in something in your current working directory.
+You can notice a few interesting things from Figure \@ref(fig:filedirstructure). First, you might notice the structure includes a few of the directories that you use a lot on your own computer, like `Desktop`, `Documents`, and `Downloads`. Next, the directory at the very top is the computer's root directory, `/`. For a PC, the root directory might something like `C:`; for Unix and Macs, it's usually `/`. Finally, if you look closely, you'll notice that it's possible to have different files in different locations of the directory structure with the same file name. For example, in the figure, there are files names `heat_mort.csv` in both the `CourseText` directory and in the `example_data` directory. These are two different files with different contents, but they can have the same name as long as they're in different directories. This fact-- that you can have files with the same name in different places-- should help you appreciate how useful it is that R requires you to give very clear directions to describe exactly which file you want R to read in, if you aren't reading in something in your current working directory.
 
-You will have a home directory somewhere near the top of your structure, although it's likely not your root directory. My home directory is `\Users\brookeanderson`. I'll describe just a bit later how you can figure out what your own home directory on your own computer.
+You will have a home directory somewhere near the top of your structure, although it's likely not your root directory. My home directory is `/Users/brookeanderson`. I'll describe just a bit later how you can figure out what your own home directory on your own computer.
 
 ### Working directory
 
@@ -92,13 +92,13 @@ Absolute pathnames are a bit more straightforward conceptually, because they don
 *Absolute pathnames* give the full directions to a directory or file, starting all the way at the root directory. For example, the `heat_mort.csv` file in the `CourseText` directory has the absolute pathname:
 
 ```
-"\Users\brookeanderson\Desktop\RCourseFall2015\CourseText\heat_mort.csv"
+"/Users/brookeanderson/Desktop/RCourseFall2015/CourseText/heat_mort.csv"
 ```
 
 You can use this absolute pathname to read this file in using `read.csv`, and this absolute pathname will *always* work, regardless of your current working directory, because it gives directions from the root, so it will always be clear to R exactly what file you're talking about. Here's the code to use to read that file in using the `read.csv` function with the file's absolute pathname:
 
 ```{r eval = FALSE}
-heat_mort <- read.csv("\Users\brookeanderson\Desktop\RCourseFall2015\CourseText\heat_mort.csv")
+heat_mort <- read.csv("/Users/brookeanderson/Desktop/RCourseFall2015/CourseText/heat_mort.csv")
 ```
 
 
@@ -131,7 +131,7 @@ knitr::kable(dirpath_shortcuts, col.names = c("Shorthand", "Meaning"))
 
 These can help you keep pathnames shorter and also help you move "up-and-over" to get to a file or directory that's not on the direct path below your current working directory. 
 
-For example, my home directory is `\Users\brookeanderson`. If I wanted to change my working directory to the `Downloads` directory, which is a direct sub-directory of my home directory, I could use:
+For example, my home directory is `/Users/brookeanderson`. If I wanted to change my working directory to the `Downloads` directory, which is a direct sub-directory of my home directory, I could use:
 
 ```
 setwd("~/Downloads")
@@ -151,7 +151,7 @@ To read this file in using a relative pathname, then, while R is working in the 
 heat_mort <- read.csv("../Week2_Aug31/example_data/heat_mort.csv")
 ```
 
-These relative pathnames would "break" as soon as you tried tham from a different working directory-- this fact might make it seem like you would never want to use relative pathnames, and would always want to use absolute ones instead, even if they're longer. If that were the only consideration (length of the pathname), then perhaps that would be true. However, as you do more and more in R, there will likely be many occasions when you want to use relative pathnames instead. They are particularly useful if you ever want to share a whole directory, with R scripts and data, with a collaborator. In that case, if you've used relative pathnames, all the code should work fine for the person you share with, even though they're running it on their own computer. Conversely, if you'd used absolute pathnames, none of them would work on another computer, because the "top" of the directory structure (i.e., for me, `\Users\brookeanderson\Desktop`) will almost definitely be different for your collaborator's computer than it is for yours. 
+These relative pathnames would "break" as soon as you tried tham from a different working directory-- this fact might make it seem like you would never want to use relative pathnames, and would always want to use absolute ones instead, even if they're longer. If that were the only consideration (length of the pathname), then perhaps that would be true. However, as you do more and more in R, there will likely be many occasions when you want to use relative pathnames instead. They are particularly useful if you ever want to share a whole directory, with R scripts and data, with a collaborator. In that case, if you've used relative pathnames, all the code should work fine for the person you share with, even though they're running it on their own computer. Conversely, if you'd used absolute pathnames, none of them would work on another computer, because the "top" of the directory structure (i.e., for me, `/Users/brookeanderson/Desktop`) will almost definitely be different for your collaborator's computer than it is for yours. 
 
 You can use absolute or relative pathnames for a number of things:
 
@@ -297,7 +297,7 @@ The sky is the limit...
 - Data in a database (e.g., SQL)
 - Really crazy data formats used in other disciplines (e.g., [netCDF files from climate folks](https://www.image.ucar.edu/GSP/Software/Netcdf/), [MRI data stored in Analyze, NIfTI, and DICOM formats](http://www.tractor-mri.org.uk))
 - Data through APIs (e.g., [GoogleMaps](http://www.r-bloggers.com/heatmap-of-toronto-traffic-signals-using-rgooglemaps/), [Twitter](http://davetang.org/muse/2013/04/06/using-the-r_twitter-package/))
-- Incrediably messy data using `scan` and `readLines`
+- Incredibly messy data using `scan` and `readLines`
 
 ### Types of flat files
 
