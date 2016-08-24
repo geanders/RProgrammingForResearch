@@ -774,7 +774,7 @@ icu[1:5, 1:5]
 
 If you have extra time: 
 
-- Is there a way to read the "ld\_genetics.txt" file in using `read.table()` and specific options? If so, try to read the data in using that function.
+- Is there a way to read the "ld\_genetics.txt" file in using `read.table()` and specific options? If so, try to read the data in using that function. Why can you use both `read.delim` and `read.table` to read in this file?
 
 Example R code: 
 
@@ -796,11 +796,11 @@ Try out the following tasks:
 
 Example R code:
 
-```{r eval = FALSE}
+```{r}
 ## Create a subset with just the Liberia columns and Date
-ebola_liberia <- subset(ebola, 
-                        select = c("Date", "Cases_Liberia",
-                                   "Deaths_Liberia"))
+ebola_liberia <- subset(ebola,  select = c("Date",
+                                           "Cases_Liberia", 
+                                           "Deaths_Liberia"))
 head(ebola_liberia)
 
 ## How many rows does the whole dataset have?
@@ -817,8 +817,7 @@ class(ebola_liberia$date)
 ## Use the `format` option to tell R what format the date
 ## currently is in
 ebola_liberia$date <- as.character(ebola_liberia$date)
-ebola_liberia$date <- as.Date(ebola_liberia$date,
-                              format = c("%m/%d/%Y"))
+ebola_liberia$date <- as.Date(ebola_liberia$date, format = c("%m/%d/%Y"))
 head(ebola_liberia$date)
 
 ## What are the starting and ending dates?
@@ -832,11 +831,11 @@ ebola_liberia[1, ]
 If you have extra time:
 
 - Limit the `ebola_liberia` dataset just to the days with non-missing case data. How many observations do you have now?
-- Try using the basic plotting function, `plot()`, to plot the number of cases over time. Do you think that the `cases` variable is measuring the count of cases for that day, or the cumulative number of cases up to that day? See if you can figure out more on Caitlin Rivers' GitHub documentation. Do you notice any potential data quality issues in this data? *Hint: The `plot()` function takes, as required arguments, the vector you want to plot on the x-axis and then the vector you want to plot on the y-axis, like `plot([x vector], [y vector])`. If you are pulling the vectors from a dataset, you will need to use indexing to pull out the column you want as a vector, like `plot([dataframe name]$[column name for x], [dataframe]$[column name for y]`.*
+- Try using the basic plotting function, `plot()`, to plot the number of cases over time. Do you think that the `cases` variable is measuring the count of cases for that day, or the cumulative number of cases up to that day? See if you can figure out more on Caitlin Rivers' GitHub documentation. Do you notice any potential data quality issues in this data? *Hint: The `plot()` function takes, as required arguments, the vector you want to plot on the x-axis and then the vector you want to plot on the y-axis, like `plot([x vector], [y vector])`. If you are pulling the vectors from a dataset, you will need to use indexing to pull out the column you want as a vector, like `plot([dataframe name]$[column name for x], [dataframe]$[column name for y])`.*
 
 Example R code: 
 
-```{r eval = FALSE}
+```{r}
 ## Remove observations with missing cases
 ebola_liberia <- subset(ebola_liberia, !is.na(cases))
 nrow(ebola_liberia)
@@ -847,17 +846,15 @@ plot(ebola_liberia$date, ebola_liberia$cases)
 
 ### A taste of what's to come...
 
-Here's an example to give you a feel for why it's worth learning all these different things about directories and `list.files()` and different pathnames, etc. 
+Here's an example to give you a feel for why it's worth learning all these different things about directories, `list.files`, and pathnames. 
 
 The `measles_data` subdirectory includes counts of measles made at different times in different cities in California. Say that we wanted to read them all in and make put them into one long dataframe with the variables `city`, `count`, and `date`. You can put together the things you've learned so far, along with a few new ideas (including doing a loop), to do this very easily. 
 
-We'll talk more later about using loops and functions to make your programming more efficient, but for right now just look through this code and see if you can get a feel for how it's working:
+We'll talk more later about using loops and functions to make your programming more efficient, but for right now just look through this code and see if you can get a feel for how it's working (make sure your directory for this course is your working directory):
 
-```{r, fig.width=10, fig.height=4, eval = FALSE}
-setwd(my_dir) # Note: I have to re-set here for knitr. You won't have to.
-
+```{r, fig.width=10, fig.height=4}
 ## Create a vector of all the file names in the `measles_data` subdirectory
-measles_files <- list.files("measles_data")
+measles_files <- list.files("data/measles_data")
 measles_files
 
 ## Create a vector of all the dates for files by taking the 
@@ -875,13 +872,11 @@ i <- 1 # I'm setting the index to 1
 
 ## Now I'll use `paste0` to create the first file name
 ## I want to read.
-file_name <- paste0("measles_data/", measles_files[i])
+file_name <- paste0("data/measles_data/", measles_files[i])
 file_name
 
 ## Now I'll read in that file
-df <- read.delim(file_name,
-                 header = FALSE,
-                 col.names = c("city", "count"))
+df <- read.delim(file_name, header = FALSE, col.names = c("city", "count"))
 head(df)
 
 ## Now I'll add on a column with the date for all the 
@@ -897,10 +892,8 @@ head(df)
 ## new rows to a dataframe as long as the new and old rows
 ## have the same number of columns and the same column names.
 for(i in 1:length(measles_files)){
-        file_name <- paste0("measles_data/", 
-                                measles_files[i])
-        df <- read.delim(file_name,
-                         header = FALSE,
+        file_name <- paste0("data/measles_data/", measles_files[i])
+        df <- read.delim(file_name, header = FALSE, 
                          col.names = c("city", "count"))
         df$date <- measles_dates[i]
         if(i == 1){
@@ -914,9 +907,7 @@ dim(ca_measles)
 summary(ca_measles)
 
 library(ggplot2)
-ggplot(subset(ca_measles, city %in% c("LOS ANGELES",
-                                      "SAN DIEGO",
-                                      "ORANGE")),
+ggplot(subset(ca_measles, city %in% c("LOS ANGELES", "SAN DIEGO", "ORANGE")),
        aes(x = date, y = count)) + 
         geom_line()  + 
         facet_grid(. ~ city)
