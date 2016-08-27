@@ -1,0 +1,526 @@
+---
+title: "Exploring data 1"
+author: "Brooke Anderson, Assistant Professor of Epidemiology"
+job: Colorado State University
+logo        : figures/CSU_ram.png
+date: "September 14, 2015"
+output: ioslides_presentation
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+mode        : selfcontained # {standalone, draft}
+---
+
+```{r echo = FALSE}
+library(knitr)
+knitr::opts_chunk$set(fig.path='coursenotes/plot-')
+```
+
+# Data from R packages
+
+## Data from R packages
+
+So far you have gotten data to use in R three ways:
+
+1. From flat files (either on your computer or online)
+2. From files like SAS and Excel
+3. From R objects (i.e., using `load()`)
+
+Many R packages come with their own data, which is very easy to load and use.
+
+## Data from R packages
+
+For example, the `faraway` package has a dataset called `worldcup` that you'll use today. To load it, use the `data()` function once you've loaded the package:
+
+```{r}
+library(faraway)
+data("worldcup")
+```
+
+## Data from R packages
+
+Unlike most data objects you'll work with, the data that comes with an R package will often have its own help file. You can access this using the `?` operator:
+
+```{r, eval = FALSE}
+?worldcup
+```
+
+## Data from R packages
+
+To find out all the datasets that are available in the packages you currently have loaded, run `data()` without an option inside the parentheses:
+
+```{r, eval = FALSE}
+data()
+```
+
+As a note, you can similarly use `library()`, without the name of a package, to list all of the packages you have installed that you could call with `library()`:
+
+```{r, eval = FALSE}
+library()
+```
+
+# Plots to explore data
+
+## Plots to explore data
+
+Plots can be invaluable in exploring your data. 
+
+This week, we will focus on **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data. 
+
+Next week, we will talk more about making more attractive plots that would go into final reports. 
+
+## Plots to explore data
+
+We will look at the following types of plots to explore data today:
+
+R function  | Description
+----------- | ---------------
+`hist()`    | Histogram (one numeric variable)
+`plot()`    | Scatter plot (two [usually] numeric variables)
+`pairs()`   | Pairwise scatter plots (2+ [usually] numeric variables)
+`boxplot()` | Boxplot (one numeric variable, possibly stratified by one factor variable)
+
+## Useful plot options
+
+The following options will work for all or most of these plotting functions:
+
+Option    | Description
+--------- | --------------
+`main = ` | The main title for the graph
+`xlab = `, `ylab = ` | Labels for the x- and y-axes
+`xlim = `, `ylim = ` | Limits for the x- and y-axes (a vector of length 2 giving the minimum and maximum values)
+`col = `  | Color of a plotting element
+`cex = `  | Size of points on plot (> 1 for larger, < 1 for smaller)
+
+## Example plots
+
+For the example plots, I'll use a dataset in the `faraway` package called `nepali`. This gives data from a study of the health of a group of Nepalese children. 
+
+Each observation is a single measurement for a child; there can be multiple observations per child. I'll subset out child id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
+
+```{r}
+data(nepali)
+nepali <- subset(nepali, !duplicated(id),
+                 select = c("id", "sex", "wt", "ht", "age"))
+nepali$id <- factor(nepali$id)
+nepali$sex <- factor(nepali$sex, levels = c(1, 2), 
+                     labels = c("male", "female"))
+```
+
+## `nepali` example data
+
+The data now looks like:
+
+```{r}
+head(nepali)
+```
+
+## `hist()` example
+
+For `hist()`, the main argument is the (numeric) vector for which you want to create a histogram:
+
+```{r, fig.width = 4, fig.height = 3}
+hist(nepali$ht)
+```
+
+## `hist()` example
+
+You can try out some of the options on the histogram, like `main`, `xlab`, `xlim`, and `col`:
+
+```{r, fig.width = 4, fig.height = 3}
+hist(nepali$ht, main = "Height of children", 
+     xlab = "Height (cm)", xlim = c(0, 120), col = "blue")
+```
+
+## `hist()` example
+
+`hist` also has its own special function, `breaks`. You can use this to change the number of bins that are used to make the histogram:
+
+```{r, fig.width = 4, fig.height = 3}
+hist(nepali$ht, main = "Height of children", 
+     xlab = "Height (cm)", xlim = c(0, 120), col = "blue", 
+     breaks = 40)
+```
+
+## `plot()` example
+
+The main arguments for the `plot()` function are the vectors to plot on the x- and y-axes. You can use `x=` and `y=` to specify these, or you can just put them in the correct order into the function (x value first, y value second):
+
+```{r, fig.width = 3.5, fig.height = 3}
+plot(nepali$ht, nepali$wt)
+```
+
+## `plot()` example
+
+Again, you can use some of the options to change the plot appearance:
+
+```{r, fig.width = 3.5, fig.height = 3}
+plot(nepali$ht, nepali$wt, 
+     xlab = "Height (cm)", ylab = "Weight (kg)", 
+     cex = 0.5, col = "blue", main = "Weight versus Height")
+```
+
+## `pairs()` example
+
+You can use the `pairs()` function to plot all pairs of scatterplots for several variables. 
+
+Usually, you just do this for numeric variables. However, you could also include factors or logical variables, since R saves them, underneath the form you see, as a numeric value (e.g `TRUE` = 1). The argument is a matrix with the columns to plot. 
+
+The next slide shows the output for:
+
+```{r eval = FALSE}
+pairs(nepali[ , c("sex", "wt", "ht", "age")])
+```
+
+***
+
+```{r echo = FALSE, fig.height = 5, fig.width = 6}
+pairs(nepali[ , c("sex", "wt", "ht", "age")])
+```
+
+## `boxplot()` example
+
+The main argument of `boxplot()` is the (numeric) vector you want to plot:
+
+```{r, fig.height = 3, fig.width = 3}
+boxplot(nepali$ht, ylab = "Height (cm)")
+```
+
+## `boxplot()` example
+
+You can also do separate boxplots by a factor. This call uses the formula notation we'll talk about in a few minutes, when we talk about regression models:
+
+```{r, fig.height = 3, fig.width = 5}
+boxplot(nepali$ht ~ nepali$sex, ylab = "Height (cm)",
+        main = "Height boxplots by sex")
+```
+
+# `with()` digression
+
+## `with()` digression
+
+You'll notice that, in some of these functions, you have to type out the dataframe's object name more than once. You can use the `with()` function to save a bit of time. 
+
+`with()` wraps around another function, and it tells the function it's wrapping to look inside a certain dataframe first when it's looking for objects. For example:
+
+```{r}
+summary(nepali$wt)
+with(nepali, summary(wt))
+```
+
+## `with()` digression
+
+Some of you may have heard of `attach()` and `detach()` as an alternative to this. You can use these to attach a dataframe, so R looks there first for objects for any code until you detach the dataframe. 
+
+Most heavy-duty R users don't use `attach()` and `detach()`. They can create confusion or errors in your code. I would recommend using `with` in cases when it will save you time, but not `attach` or `detach`.
+
+## `with()` digression
+
+From [Google's style page for R](https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml):
+
+> "The possibilities for creating errors when using attach are numerous. Avoid it."
+
+# Simple statistics to explore data
+
+## Simple statistics functions
+
+Here are some simple statistics functions you will likely use often:
+
+Function  | Description
+--------- | -----------------
+`range()` | Range (minimum and maximum) of vector 
+`min()`, `max()` | Minimum or maximum of vector
+`mean()`, `median()` | Mean or median of vector
+`table()` | Number of observations per level for a factor vector
+`cor()` | Determine correlation(s) between two or more vectors
+`summary()` | Summary statistics, depends on class
+
+## Simple statistic examples
+
+All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`).
+
+```{r}
+mean(nepali$wt, na.rm = TRUE)
+range(nepali$ht, na.rm = TRUE)
+table(nepali$sex)
+```
+
+## Simple statistic examples
+
+The `cor` function can take two or more vectors. If you give it multiple values, it will give the correlation matrix for all the vectors.
+
+```{r}
+cor(nepali$wt, nepali$ht, use = "complete.obs")
+cor(nepali[ , c("wt", "ht", "age")], use = "complete.obs")
+```
+
+## `summary()`: A bit of OOP
+
+R supports object-oriented programming. This shows up with `summary()`. R looks to see what type of object it's dealing with, and then uses a method specific to that object type. 
+
+```{r}
+summary(nepali$wt)
+summary(nepali$sex)
+```
+
+We'll see more of this when we do regression models.
+
+# A bit more on logical statements
+
+## Logical statements
+
+Last week, you learned a lot about logical statements and how to use them with the `subset()` function. 
+
+You can also use logical vectors, created with these statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`).
+
+## Logical vectors
+
+A logical statement run on a vector will create a logical vector the same length as the original vector:
+
+```{r}
+is_male <- nepali$sex == "male"
+length(nepali$sex)
+length(is_male)
+```
+
+## Logical vectors
+
+The logical vector will have the value `TRUE` at any position where the original vector met the logical condition you tested, and `FALSE` anywhere else:
+
+```{r}
+head(nepali$sex)
+head(is_male)
+```
+
+## Logical vectors
+
+You can "flip" this logical vector (i.e., change every `TRUE` to `FALSE` and vice-versa) using `!`:
+
+```{r}
+head(is_male)
+head(!is_male)
+```
+
+## Logical vectors
+
+You can do a few cool things now with this vector. For example, you can use it with indexing to pull out just the rows where `is_male` is `TRUE`:
+
+```{r}
+head(nepali[is_male, ])
+```
+
+## Logical vectors
+
+Or, with `!`, just the rows where `is_male` is `FALSE`:
+
+```{r}
+head(nepali[!is_male, ])
+```
+
+## Logical vectors
+
+You can also use `sum()` and `table()` to find out how many males and females are in the dataset:
+
+```{r}
+sum(is_male); sum(!is_male)
+table(is_male)
+```
+
+# Using regression models to explore data
+
+## Formula structure
+
+In R, formulas take this structure:
+
+```{r eval = FALSE}
+[response variable] ~ [indep. var. 1] +  [indep. var. 2] + ...
+```
+
+Notice that `~` used to separate the independent and dependent variables and the `+` used to join independent variables.
+
+You will use this type of structure in a lot of different function calls, including those for linear models (`lm`) and generalized linear models (`glm`).
+
+## Linear models
+
+To fit a linear model, you can use the function `lm()`. Use the `data` option to specify the dataframe from which to get the vectors. You can save the model as an object. 
+
+```{r}
+mod_a <- lm(wt ~ ht, data = nepali)
+```
+
+This call fits the model:
+
+$$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
+
+where: 
+
+- $Y_{i}$ : weight of child $i$
+- $X_{1,i}$ : height of child $i$
+
+## Using model objects
+
+Some functions you can use on model objects:
+
+Function    | Description
+----------- | -----------------
+`summary()` | Get a variety of information on the model, including coefficients and p-values for the coefficients
+`coef()`    | Pull out just the coefficients for a model
+`residuals()` | Get the model residuals
+`fitted()`  | Get the fitted values from the model (for the data used to fit the model)
+`plot()`    | Create plots to help assess model assumptions
+`abline()`  | Add a regression line to a scatterplot based on the model
+
+## Examples of using a model object
+
+For example, you can get the coefficients from the model we just fit:
+
+```{r}
+coef(mod_a)
+```
+
+You can also pull out the residuals:
+
+```{r}
+head(residuals(mod_a))
+```
+
+## Examples of using a model object
+
+You can also plot the data you used to fit the model and add a regression based on the model fit, using `abline()`:
+
+```{r, fig.height = 3, fig.width = 4}
+with(nepali, plot(ht, wt, cex = 0.5,
+                  xlab = "Height (cm)", ylab = "Weight (kg)"))
+abline(mod_a, col = "blue")
+```
+
+## Examples of using a model object
+
+The `summary()` function gives you a lot of information about the model: 
+
+```{r, eval = FALSE}
+summary(mod_a)
+```
+
+(see next slide)
+
+***
+
+```{r, echo = FALSE}
+summary(mod_a)
+```
+
+## `summary` for `lm` objects
+
+The object created when you use the `summary()` function on an `lm` object has several different parts you can pull out using the `$` operator:
+
+```{r}
+names(summary(mod_a))
+summary(mod_a)$coefficients
+```
+
+## Using `plot()` with `lm` objects
+
+You can use `plot` with an `lm` object to get a number of useful diagnostic plots to check regression assumptions:
+
+```{r eval = FALSE}
+plot(mod_a)
+```
+
+(See next slide)
+
+***
+
+```{r echo = FALSE, fig.width = 6, fig.height = 6}
+oldpar <- par(mfrow = c(2, 2))
+plot(mod_a)
+par(oldpar)
+```
+
+## Fitting a model with a factor
+
+You can also use binary variables or factors as independent variables in regression models:
+
+```{r}
+mod_b <- lm(wt ~ sex, data = nepali)
+summary(mod_b)$coefficients
+```
+
+This call fits the model:
+
+$$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
+
+where $X_{1,i}$ : sex of child $i$, where 0 = male; 1 = female
+
+## Linear models versus GLMs
+
+You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). 
+
+For linear models, the only difference between `lm` and `glm` is how they're fitting the model (least squares versus maximum likelihood). You should get the same results regardless of which you pick. 
+
+## Linear models versus GLMs
+
+For example:
+
+```{r}
+mod_c <- glm(wt ~ ht, data = nepali)
+summary(mod_c)$coef
+summary(mod_a)$coef
+```
+
+## GLMs
+
+You can fit other model types with `glm()` using the `family` option:
+
+Model type   | `family` option
+------------ | ------------------
+Linear       | `family = gaussian(link = "identity")` (or use model defaults)
+Logistic     | `family = binomial(link = "logit")`
+Poisson      | `family = poisson(link = "log")`
+
+## Logistic example
+
+For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability that a child weighs more than 13 kg is associated with the child's height.
+
+First, create a binary variable for `wt_over_13`:
+
+```{r}
+nepali$wt_over_13 <- nepali$wt > 13
+head(nepali$wt_over_13)
+```
+
+## Logistic example
+
+Now you can fit a logistic regression:
+
+```{r}
+mod_d <- glm(wt_over_13 ~ ht, data = nepali,
+             family = binomial(link = "logit"))
+summary(mod_d)$coef
+```
+
+Here, the model coefficient gives the **log odds** of having a weight higher than 13 kg associated with a unit increase in height.
+
+## Formula structure
+
+Here are some conventions used in R formulas:
+
+Convention | Meaning
+---------- | -----------
+`I()`      | calculate the value inside before fitting (e.g., `I(x1 + x2)`)
+`:`        | fit the interaction between two variables (e.g., `x1:x2`)
+`*`        | fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)
+`.`        | fit all variables other than the response (e.g., `y ~ .`)
+`-`        | do not include a variable (e.g., `y ~ . - x1`)
+`1`        | intercept (e.g., `y ~ 1`)
+
+## To find out more
+
+A great (and free-to-you) resource to find out more about using R for basic statistics:
+
+- [Introductory Statistics with R](http://discovery.library.colostate.edu/Record/.b44705323)
+
+If you want all the details about fitting linear models and GLMs in R, Faraway's books are fantastic:
+
+- [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691)
+- [Extending the Linear Model with R](http://www.amazon.com/Extending-Linear-Model-Generalized-Nonparametric/dp/158488424X/ref=sr_1_1?ie=UTF8&qid=1442252668&sr=8-1&keywords=extending+linear+model+r)
