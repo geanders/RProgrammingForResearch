@@ -1,0 +1,313 @@
+# Exploring data #1
+
+[Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week3.pdf) a pdf of the lecture slides covering this topic.
+
+## In-course exercise
+
+### Loading data from an R package
+
+The data we'll be using today is from a dataset called `worldcup` in the package `faraway`. Load that data so you can use it on your computer (note: you will need to load and install the `faraway` package to do this). Use the help file for the data to find out more about the dataset. Use some basic functions, like `head`, `tail`, `colnames`, `str`, and `summary` to check out the data a bit. See if you can figure out:
+
+- What variables are included in this dataset (check the column names)?
+- What class is each column currently? In particular, which are numbers and which are factors?
+
+#### Example R code:
+
+Load the `faraway` package using `load()` and then load the data using `data()`:
+
+```{r}
+## Uncomment the next line if you need to install the package
+# install.packages("faraway"")
+library(faraway)
+data("worldcup")
+```
+
+Check out the help file for the `worldcup` dataset to find out more about the data. (Note: Only datasets that are parts of packages will have help files.)
+
+```{r, eval = FALSE}
+?worldcup
+```
+
+Check out the data a bit:
+
+```{r}
+str(worldcup)
+head(worldcup)
+tail(worldcup)
+colnames(worldcup)
+summary(worldcup)
+```
+
+### Basic plots of the data
+
+Use some basic plots to check out this data. Try the following:
+
+- Plot histograms of all the numeric variables (`Time`, `Shot`, `Passes`, `Tackles`, `Saves`)
+- Plot scatterplots of different combinations of numeric variables (e.g., `Time` vs. `Shots`). Try doing this using the `plot()` function. Also try doing it using the `pairs()` function, to plot several of these at the same time. 
+- Create boxplots of `Time`, `Shots`, `Passes` and `Saves` by position.
+- Go online and find out which teams were the top four teams in this World Cup (i.e., first through fourth places). Create a `top_teams` subset with just these teams. Plot boxplots of `Shots` and `Saves` by team for just these teams. 
+- Did you notice any interesting features of the data when you did any of the graphs in this section?
+
+#### Example R code:
+
+Use histograms to explore the distribution of different variables. If you want to change the number of bins in the histogram, try playing around with the `bins=` option. You can use this to either say how many bins you want (e.g., `breaks = 50`) or to say where you want breaks in the bins to be (e.g., `breaks = c(1, 2, 3)` if you wanted breaks at the variables values of 1, 2, and 3).
+
+```{r, fig.width = 3, fig.height = 3}
+hist(worldcup$Time, main = "Time")
+hist(worldcup$Time, main = "Time", breaks = 50)
+hist(worldcup$Time, main = "Time", breaks = seq(from = 0, to = 600, by = 100))
+```
+
+Create a scatterplot of `Time` versus `Passes`. To change the size of the points, use the `cex = ` option (use a number lower than 1 for smaller points, higher than 1 for larger points). If you want to save time typing out the name of the dataframe, you can try using the `with()` function, so you only have to type the dataframe name once. 
+
+```{r, fig.width = 3, fig.height = 3}
+plot(worldcup$Time, worldcup$Passes)
+plot(worldcup$Time, worldcup$Passes, cex = 0.5)
+## You can use the `with` function to save some time typing out the 
+## dataframe name
+with(worldcup, plot(Time, Passes))
+```
+
+Use `pairs` to plot scatterplots of all combinations of several numeric variables.
+
+```{r}
+pairs(worldcup[ , c("Time", "Shots", "Passes", "Tackles", "Saves")],
+      cex = 0.5)
+```
+
+To create a boxplot of `Shots`, you can use the `boxplot()` command:
+
+```{r, fig.width=3, fig.height=3}
+boxplot(worldcup$Shots)
+```
+
+If you want to do separate boxplots of `Shots` by `Position`, you can run:
+
+```{r, fig.width=6, fig.height=3}
+boxplot(worldcup$Shots ~ worldcup$Position)
+```
+
+The top four teams in this World Cup were Spain, the Netherlands, Germany, and Uruguay. Create a subset with just the data for these four teams:
+
+```{r}
+best_four <- c("Spain", "Netherlands", "Germany", "Uruguay")
+top_teams <- subset(worldcup,
+                    Team %in% best_four)
+```
+
+This dataset will still have all the levels saved for the `Team` factor, even though it isn't using them all. You can re-set this by converting `Team` to a character and then back to a factor. When R creates a factor from a vector, its default is to only use as levels the values that show up in the vector. 
+
+```{r}
+top_teams$Team <- as.factor(as.character(top_teams$Team))
+```
+
+```{r, fig.width = 6, fig.height = 3}
+boxplot(top_teams$Shots ~ top_teams$Team, main = "Shots")
+boxplot(top_teams$Saves ~ top_teams$Team, main = "Saves")
+```
+
+#### If you have extra time:
+
+- If you wanted to do the same plot for several different variables, you could loop through your code (we'll be covering more about loops in a few weeks). For example, to create histograms for all of the numeric variables (if you do this in RStudio, you'll need to use the arrows on the plot window to move through and see all the different plots once you've created them):
+
+```{r, fig.width = 3, fig.height = 3}
+## Create an object with the column names for all of the numeric variables
+my_vars <- colnames(worldcup)[3:7]
+
+## Loop through all of those variables. Print out a histogram with the 
+## variable, and have it print on the plot, as the main title, the 
+## column name for that variable
+for(var in my_vars){
+        hist(worldcup[ , var], main = var, breaks = 20)
+}
+```
+
+### Exploring the data using simple statistics and logical statements
+
+Next, try checking out the data using some basic commands for simple statistics, like `mean()`, `range()`, `max()`, and `min()`. Use these, along with some logical statements, to help you answer the following questions:
+
+- What is the range of time that players spent in the game? Who played the most World Cup time in this World Cup? For the minimum of the range of `Time`, how many players played this amount of time?
+- What is the mean number of saves that players made? How many of the players are goalkeepers? What is the mean number of saves just among the goalkeepers? Did any non-goalkeeper make a save?
+
+#### Example R code:
+
+Use `range()` to find out the range of time these players played in the World Cup. 
+
+```{r}
+range(worldcup$Time)
+```
+
+To figure out who played the most time, you need to subset out the rows of the dataset where the `Time` variable equals the maximum of the `Time` variable for the whole dataset. There are a few ways to do that. Here I'm showing two: (1) using logic within the "square-bracket indexing", to pull out just rows where it is TRUE that the `Time` for that row equals `max(worldcup$Time)` and (2) using the `subset()` function to pull out just rows where where it is TRUE that the `Time` for that row equals `max(worldcup$Time)`. 
+
+```{r}
+worldcup[worldcup$Time == max(worldcup$Time) , ]
+subset(worldcup, Time == max(worldcup$Time))
+```
+
+Here are some extra lines of code that do things you might want to do related to this. First, if you wanted to create a vector that had the team names of the teams of the players that played the max time, you could again use the square bracket indexing to pull the right rows, and then specify in the indexing that you just wanted the values of the column `Team` for those rows. 
+
+```{r}
+teams_most_time <- worldcup[worldcup$Time == max(worldcup$Time) , "Team"]
+teams_most_time
+```
+
+If you wanted just the players' names, those are saved as row names rather than as a separate column, so you could use `rownames()` to pull those out of the subsetted data frame. 
+
+```{r}
+most_time <- rownames(subset(worldcup, Time == max(worldcup$Time)))
+most_time
+```
+
+To calculate the mean number of saves among all the players, use `mean()`:
+
+```{r}
+mean(worldcup$Saves)
+```
+
+For the next parts of the question, it will be convenient to have a logical vector for whether each player is a goalkeeper, so here's how you would create that:
+
+```{r}
+goalie <- worldcup$Position == "Goalkeeper"
+```
+
+This new object, `goalie`, is a vector the same length as `worldcup$Position`. Each element of `goalie` says whether it is TRUE or FALSE that `worldcup$Position` is equal to "Goalkeeper" at that spot on the `worldcup$Position` vector. 
+
+```{r}
+head(goalie)
+```
+
+The `summary()` function will count up the total number of times that `goalie` is TRUE and FALSE.
+
+```{r}
+summary(goalie)
+```
+
+There are a few ways to use this vector to figure out how many players were goalkeepers. First, you could use `summary()` (which I just showed) or `table()`, and just read how many times this vector has the value `TRUE`. Second, since R saves logical vectors with `TRUE` as 1 and `FALSE` as 0, you could just `sum()` the vector to find out how often it's `TRUE`.
+
+```{r}
+table(goalie)
+sum(goalie)
+```
+
+Now, you can answer the questions about mean saves for goalies and max saves for non-goalies. If you put `goalie` in the square bracket indexing as the rows value, R will just subset out the rows where `goalie` is equal to TRUE. If you put `!goalie` in the square bracket indexing as the rows value, R will just subset out the rows where `goalie` is equal to FALSE.
+
+```{r}
+mean(worldcup[goalie, "Saves"])
+range(worldcup[!goalie, "Saves"])
+```
+
+### Using regression models to explore data
+
+For this part of the exercise, you'll use a dataset on weather, air pollution, and mortality counts in Chicago, IL. This dataset is called `chicagoNMMAPS` and is part of the `dlnm` package. Change the name of the dataframe to something shorter, like `chic`. Check out the data a bit to see what variables you have, and then perform the following tasks:
+
+- Write out (on paper, not in R) the regression equation for regressing dewpoint temperature on temperature. 
+- Try fitting a linear regression of dew point temperature (`dptp`) on temperature (`temp`). (Bonus points: Notice anything that seems unusual about these two variables in this dataset? You can find out with `summary`, but it helps if you know a bit about what dewpoint temperature measures.)
+Save this model as the object `mod_1`. 
+- Based on this regression, does there seem to be a relationship between temperature and dewpoint temperature in Chicago? (Hint: Try using `summary()` on the model object to get more information about the model you fit.) What is the p-value for the coefficient for temperature?
+- Plot temperature (x-axis) versus dewpoint temperature (y-axis) for Chicago. Add in the regression line from the model you fit.
+- Use `plot()` on the model object to check if some of the assumptions for the regression model seem appropriate.
+- Try fitting the regression as a GLM, using `glm()`. Are your coefficients different?
+- Does PM10 vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable, and then run `anova()` on that model, and R will compare it to an intercept-only model.) What day of the week is PM10 generally highest (check the model coefficients to figure this out)? Try to write out (on paper) the regression equation for the model you're fitting.
+- Try using `glm()` to run a Poisson regression of respiratory deaths (`resp`) on temperature during summer days. Start by creating a subset with just summer days called `summer`. (Hint: Use the `month` variable to do this-- just pull out the subset where the month is 6, 7, or 8, for June, July, and August.) Try to write out the regression equation for the model you're fitting.
+- The coefficient for the temperature variable in this model is our best estimate (based on this model) of the **log relative risk** for a one degree Celcius increase in temperature. What is the **relative risk** associated with a one degree Celsius increase?
+
+#### Example R code:
+
+Install and load the `dlnm` package and then load the `chicagoNMMAPS` data. Change the name of the dataframe to `chic`, so it will be shorter to call for the rest of your work. 
+
+```{r, message = FALSE, warning = FALSE}
+# install.packages("dlnm")
+library(dlnm)
+data("chicagoNMMAPS")
+chic <- chicagoNMMAPS
+```
+
+Fit a linear regression of `dptp` on `temp` and save as the object `mod_1`:
+
+```{r}
+mod_1 <- lm(dptp ~ temp, data = chic)
+mod_1
+```
+
+Use `summary()` to check out a bit more about the model you fit. 
+
+```{r}
+summary(mod_1)
+```
+
+There does seem to be an association between temperature and dewpoint temperature: a unit increase in temperature is associated with a `r round(coef(mod_1)[2], 1)` unit increase in dewpoint temperature. The p-value for the temperature coefficient is <2e-16. This is far below 0.05, which suggests we would be very unlikely to see such a strong association by chance if the null hypothesis, that the two variables are not associated, were true.
+
+Plot these two variables and add in the regression line from the model (note: I've used the `col = ` option to make the color of the points gray). Use `abline()` to add the regression line for the model you fit. 
+
+```{r}
+plot(chic$temp, chic$dptp, cex = 0.25, col = "gray")
+abline(mod_1)
+```
+
+Plot some various plots to check model assumptions for the model you fit using the `plot()` function on your model object:
+
+```{r, fig.width = 6, fig.height = 6}
+par(mfrow = c(2, 2)) # Set to four plots per panel-- 2 rows, 2 columns
+plot(mod_1)
+par(mfrow = c(1, 1)) # Reset to one plot per panel
+```
+
+Try fitting the model using `glm()`. Call it `mod_1a`. Compare the coefficients for the two models. You can use the `coef()` function on an `lm` or `glm` object to pull out just the model coefficients.
+
+```{r}
+mod_1a <- glm(dptp ~ temp, data = chic)
+
+coef(mod_1)
+coef(mod_1a)
+```
+
+The results from the two models are identical.
+
+Fit a model of PM10 regressed on day of week, where day of week is a factor. 
+
+```{r}
+mod_2 <- lm(pm10 ~ dow, data = chic)
+summary(mod_2)
+```
+
+Use the `anova()` command to compare this model to a model with only an intercept (i.e., one that only fits a global mean and uses that as the expected value for all of the observations).
+
+```{r}
+anova(mod_2)
+```
+
+The p-value for an ANOVA of the model with day-of-week coefficients versus the model that just has an intercept is < 2.2e-16. This is well below 0.05, which suggests that day-of-week is associated with PM10 concentration, as a model that includes day-of-week does a much better job of explaining variation in PM10 than a model without it does. (Note, too, that the F value and Pr(>F) for the `anova()` call are identical to the F-statistic information given in the `summary()` of the model object. This will always be true when you're using `anova()` to compare a model to a model with just an intercept.)
+
+Use a boxplot to visually compare PM10 by day of week. 
+
+```{r, fig.height = 3, fig.width = 6}
+boxplot(chic$pm10 ~ chic$dow)
+```
+
+Now try the same plot, but try using the `ylim = ` option to change the limits on the y-axis for the graph, so you can get a better idea of the pattern by day of week (some of the extreme values are very high, which makes it hard to compare by eye when the y-axis extends to include them all).
+
+```{r, fig.height = 3, fig.width = 6}
+boxplot(chic$pm10 ~ chic$dow, ylim = c(0, 100))
+```
+
+Create a subset called `summer` with just the summer days:
+
+```{r}
+summer <- subset(chic, month %in% 6:8)
+```
+
+Use `glm()` to fit a Poisson model of respiratory deaths regressed on temperature. Since you want to fit a Poisson model, use the option `family = poisson(link = "log")`. 
+
+```{r}
+mod_3 <- glm(resp ~ temp, data = summer,
+             family = poisson(link = "log"))
+summary(mod_3)
+```
+
+Use the fitted model coefficient to determine the relative risk for a one degree Celcius increase in temperature. First, remember that you can use the `coef()` function to read out the model coefficients. The second of these is the value for the temperature coefficient. That means that you can use indexing (`[2]`) to get just that value. That's the log relative risk; take the exponent to get the relative risk.
+
+```{r}
+coef(mod_3)
+coef(mod_3)[2]
+exp(coef(mod_3)[2])
+```
