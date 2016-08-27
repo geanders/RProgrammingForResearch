@@ -1,19 +1,15 @@
 ---
-title: "Exploring data 1"
-author: "Brooke Anderson, Assistant Professor of Epidemiology"
-job: Colorado State University
-logo        : figures/CSU_ram.png
-date: "September 14, 2015"
-output: ioslides_presentation
-framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
-highlighter : highlight.js  # {highlight.js, prettify, highlight}
-hitheme     : tomorrow      # 
-mode        : selfcontained # {standalone, draft}
+title: "Exploring data #1"
+output: 
+  beamer_presentation:
+    theme: "Frankfurt"
+    colortheme: "seagull"
+    fonttheme: "structuresmallcapsserif"
+fontsize: 10pt
 ---
 
 ```{r echo = FALSE}
-library(knitr)
-knitr::opts_chunk$set(fig.path='coursenotes/plot-')
+options(width = 50)
 ```
 
 # Data from R packages
@@ -63,18 +59,18 @@ library()
 
 ## Plots to explore data
 
-Plots can be invaluable in exploring your data. 
+Plots can be invaluable in exploring your data. \medskip
 
-This week, we will focus on **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data. 
+This week, we will focus on **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data. \medskip
 
-Next week, we will talk more about making more attractive plots that would go into final reports. 
+Next week, we will talk more about making more attractive plots that would go into final reports. \medskip
 
 ## Plots to explore data
 
 We will look at the following types of plots to explore data today:
 
 R function  | Description
------------ | ---------------
+----------- | --------------------------------------------
 `hist()`    | Histogram (one numeric variable)
 `plot()`    | Scatter plot (two [usually] numeric variables)
 `pairs()`   | Pairwise scatter plots (2+ [usually] numeric variables)
@@ -85,7 +81,7 @@ R function  | Description
 The following options will work for all or most of these plotting functions:
 
 Option    | Description
---------- | --------------
+--------- | -------------------------------------------------
 `main = ` | The main title for the graph
 `xlab = `, `ylab = ` | Labels for the x- and y-axes
 `xlim = `, `ylim = ` | Limits for the x- and y-axes (a vector of length 2 giving the minimum and maximum values)
@@ -96,15 +92,32 @@ Option    | Description
 
 For the example plots, I'll use a dataset in the `faraway` package called `nepali`. This gives data from a study of the health of a group of Nepalese children. 
 
+```{r}
+library(faraway)
+data(nepali)
+```
+
+I'll be using functions from `dplyr` and `ggplot2`:
+
+```{r message = FALSE, warning = FALSE}
+library(dplyr)
+library(ggplot2)
+```
+
+
+## Example plots
+
 Each observation is a single measurement for a child; there can be multiple observations per child. I'll subset out child id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
 
-```{r}
-data(nepali)
-nepali <- subset(nepali, !duplicated(id),
-                 select = c("id", "sex", "wt", "ht", "age"))
-nepali$id <- factor(nepali$id)
-nepali$sex <- factor(nepali$sex, levels = c(1, 2), 
-                     labels = c("male", "female"))
+```{r message = FALSE}
+nepali <- nepali %>%
+  # Subset to certain columns
+  select(id, sex, wt, ht, age) %>%
+  # Convert id and sex to factors
+  mutate(id = factor(id),
+         sex = factor(sex)) %>%
+  # Limit to first obs. per child
+  filter(!duplicated(id))
 ```
 
 ## `nepali` example data
@@ -119,80 +132,90 @@ head(nepali)
 
 For `hist()`, the main argument is the (numeric) vector for which you want to create a histogram:
 
-```{r, fig.width = 4, fig.height = 3}
-hist(nepali$ht)
+```{r, fig.width = 2.5, fig.height = 2, message = FALSE, warning = FALSE, fig.align = "center"}
+ggplot(nepali, aes(x = ht)) + 
+  geom_histogram()
 ```
 
 ## `hist()` example
 
 You can try out some of the options on the histogram, like `main`, `xlab`, `xlim`, and `col`:
 
-```{r, fig.width = 4, fig.height = 3}
-hist(nepali$ht, main = "Height of children", 
-     xlab = "Height (cm)", xlim = c(0, 120), col = "blue")
+```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
+ggplot(nepali, aes(x = ht)) + 
+  geom_histogram(fill = "lightblue", color = "black") + 
+  ggtitle("Height of children") + 
+  xlab("Height (cm)") + xlim(c(0, 120))
 ```
 
 ## `hist()` example
 
-`hist` also has its own special function, `breaks`. You can use this to change the number of bins that are used to make the histogram:
+`geom_histogram` also has its own special argument, `bins`. You can use this to change the number of bins that are used to make the histogram:
 
-```{r, fig.width = 4, fig.height = 3}
-hist(nepali$ht, main = "Height of children", 
-     xlab = "Height (cm)", xlim = c(0, 120), col = "blue", 
-     breaks = 40)
+```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", warning = FALSE, message = FALSE}
+ggplot(nepali, aes(x = ht)) + 
+  geom_histogram(fill = "lightblue", color = "black",
+                 bins = 40) 
 ```
 
 ## `plot()` example
 
 The main arguments for the `plot()` function are the vectors to plot on the x- and y-axes. You can use `x=` and `y=` to specify these, or you can just put them in the correct order into the function (x value first, y value second):
 
-```{r, fig.width = 3.5, fig.height = 3}
-plot(nepali$ht, nepali$wt)
+```{r, fig.width = 2.5, fig.height = 2, warning = FALSE, fig.align = "center"}
+ggplot(nepali, aes(x = ht, y = wt)) + 
+  geom_point()
 ```
 
 ## `plot()` example
 
 Again, you can use some of the options to change the plot appearance:
 
-```{r, fig.width = 3.5, fig.height = 3}
-plot(nepali$ht, nepali$wt, 
-     xlab = "Height (cm)", ylab = "Weight (kg)", 
-     cex = 0.5, col = "blue", main = "Weight versus Height")
+```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
+ggplot(nepali, aes(x = ht, y = wt)) + 
+  geom_point(color = "blue", size = 0.5) + 
+  ggtitle("Weight versus Height") + 
+  xlab("Height (cm)") + ylab("Weight (kg)")
 ```
 
-## `pairs()` example
+## `ggpairs()` example
 
-You can use the `pairs()` function to plot all pairs of scatterplots for several variables. 
+You can use the `ggpairs` function from the `GGally` package to plot all pairs of scatterplots for several variables. 
 
 Usually, you just do this for numeric variables. However, you could also include factors or logical variables, since R saves them, underneath the form you see, as a numeric value (e.g `TRUE` = 1). The argument is a matrix with the columns to plot. 
 
 The next slide shows the output for:
 
 ```{r eval = FALSE}
-pairs(nepali[ , c("sex", "wt", "ht", "age")])
+library(GGally)
+ggpairs(nepali[, c("sex", "wt", "ht", "age")])
 ```
 
 ***
 
-```{r echo = FALSE, fig.height = 5, fig.width = 6}
-pairs(nepali[ , c("sex", "wt", "ht", "age")])
+```{r echo = FALSE, fig.height = 5, fig.width = 6, fig.align = "center", message = FALSE, warning = FALSE}
+library(GGally)
+ggpairs(nepali[, c("sex", "wt", "ht", "age")])
 ```
 
 ## `boxplot()` example
 
 The main argument of `boxplot()` is the (numeric) vector you want to plot:
 
-```{r, fig.height = 3, fig.width = 3}
-boxplot(nepali$ht, ylab = "Height (cm)")
+```{r, fig.height = 2, fig.width = 2, warning = FALSE, fig.align="center"}
+ggplot(nepali, aes(x = 1, y = ht)) + 
+  geom_boxplot() + 
+  xlab("")+ ylab("Height (cm)")
 ```
 
 ## `boxplot()` example
 
 You can also do separate boxplots by a factor. This call uses the formula notation we'll talk about in a few minutes, when we talk about regression models:
 
-```{r, fig.height = 3, fig.width = 5}
-boxplot(nepali$ht ~ nepali$sex, ylab = "Height (cm)",
-        main = "Height boxplots by sex")
+```{r, fig.height = 2, fig.width = 2.5, fig.align = "center", warning = FALSE}
+ggplot(nepali, aes(x = sex, y = ht)) + 
+  geom_boxplot() + 
+  xlab("Sex")+ ylab("Height (cm)") 
 ```
 
 # `with()` digression
@@ -388,10 +411,13 @@ head(residuals(mod_a))
 
 You can also plot the data you used to fit the model and add a regression based on the model fit, using `abline()`:
 
-```{r, fig.height = 3, fig.width = 4}
-with(nepali, plot(ht, wt, cex = 0.5,
-                  xlab = "Height (cm)", ylab = "Weight (kg)"))
-abline(mod_a, col = "blue")
+```{r, fig.height = 1.75, fig.width = 2.5, warning = FALSE, fig.align = "center"}
+mod_coef <- coef(mod_a)
+ggplot(nepali, aes(x = ht, y = wt)) + 
+  geom_point(size = 0.2) + 
+  xlab("Height (cm)") + ylab("Weight (kg)") + 
+  geom_abline(aes(intercept = mod_coef[1],
+                  slope = mod_coef[2]), col = "blue")
 ```
 
 ## Examples of using a model object
@@ -431,7 +457,7 @@ plot(mod_a)
 
 ***
 
-```{r echo = FALSE, fig.width = 6, fig.height = 6}
+```{r echo = FALSE, out.width = '\\textwidth', fig.align = "center"}
 oldpar <- par(mfrow = c(2, 2))
 plot(mod_a)
 par(oldpar)
@@ -454,7 +480,7 @@ where $X_{1,i}$ : sex of child $i$, where 0 = male; 1 = female
 
 ## Linear models versus GLMs
 
-You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). 
+You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). \medskip
 
 For linear models, the only difference between `lm` and `glm` is how they're fitting the model (least squares versus maximum likelihood). You should get the same results regardless of which you pick. 
 
@@ -474,19 +500,20 @@ You can fit other model types with `glm()` using the `family` option:
 
 Model type   | `family` option
 ------------ | ------------------
-Linear       | `family = gaussian(link = "identity")` (or use model defaults)
+Linear       | `family = gaussian(link = "identity")`
 Logistic     | `family = binomial(link = "logit")`
 Poisson      | `family = poisson(link = "log")`
 
 ## Logistic example
 
-For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability that a child weighs more than 13 kg is associated with the child's height.
+For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability that a child weighs more than 13 kg is associated with the child's height. \medskip
 
 First, create a binary variable for `wt_over_13`:
 
 ```{r}
-nepali$wt_over_13 <- nepali$wt > 13
-head(nepali$wt_over_13)
+nepali <- nepali %>% 
+  mutate(wt_over_13 = wt > 13)
+head(nepali)
 ```
 
 ## Logistic example
@@ -506,7 +533,7 @@ Here, the model coefficient gives the **log odds** of having a weight higher tha
 Here are some conventions used in R formulas:
 
 Convention | Meaning
----------- | -----------
+---------- | -------------------------------------------------------------
 `I()`      | calculate the value inside before fitting (e.g., `I(x1 + x2)`)
 `:`        | fit the interaction between two variables (e.g., `x1:x2`)
 `*`        | fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)
