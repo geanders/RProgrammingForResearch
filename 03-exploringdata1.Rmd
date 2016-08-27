@@ -53,57 +53,60 @@ Use some basic plots to check out this data. Try the following:
 Use histograms to explore the distribution of different variables. If you want to change the number of bins in the histogram, try playing around with the `bins=` option. You can use this to either say how many bins you want (e.g., `breaks = 50`) or to say where you want breaks in the bins to be (e.g., `breaks = c(1, 2, 3)` if you wanted breaks at the variables values of 1, 2, and 3).
 
 ```{r, fig.width = 3, fig.height = 3}
-hist(worldcup$Time, main = "Time")
-hist(worldcup$Time, main = "Time", breaks = 50)
-hist(worldcup$Time, main = "Time", breaks = seq(from = 0, to = 600, by = 100))
+library(ggplot2)
+ggplot(worldcup, aes(x = Time)) + 
+  geom_histogram()
+
+ggplot(worldcup, aes(x = Time)) + 
+  geom_histogram(bins = 50)
+
+ggplot(worldcup, aes(x = Time)) + 
+  geom_histogram(binwidth = 100)
 ```
 
 Create a scatterplot of `Time` versus `Passes`. To change the size of the points, use the `cex = ` option (use a number lower than 1 for smaller points, higher than 1 for larger points). If you want to save time typing out the name of the dataframe, you can try using the `with()` function, so you only have to type the dataframe name once. 
 
 ```{r, fig.width = 3, fig.height = 3}
-plot(worldcup$Time, worldcup$Passes)
-plot(worldcup$Time, worldcup$Passes, cex = 0.5)
-## You can use the `with` function to save some time typing out the 
-## dataframe name
-with(worldcup, plot(Time, Passes))
+ggplot(worldcup, aes(x = Time, y = Passes)) + 
+  geom_point()
+
+ggplot(worldcup, aes(x = Time, y = Passes)) + 
+  geom_point(size = 0.5)
 ```
 
-Use `pairs` to plot scatterplots of all combinations of several numeric variables.
+Use the `ggpairs` function from the `GGally` package to plot scatterplots of all combinations of several numeric variables.
 
 ```{r}
-pairs(worldcup[ , c("Time", "Shots", "Passes", "Tackles", "Saves")],
-      cex = 0.5)
+library(GGally)
+library(dplyr)
+ggpairs(select(worldcup, Time, Shots, Passes, Tackles, Saves))
 ```
 
-To create a boxplot of `Shots`, you can use the `boxplot()` command:
+To create a boxplot of `Shots` by `Position`, you can use `geom_boxplot`:
 
 ```{r, fig.width=3, fig.height=3}
-boxplot(worldcup$Shots)
-```
-
-If you want to do separate boxplots of `Shots` by `Position`, you can run:
-
-```{r, fig.width=6, fig.height=3}
-boxplot(worldcup$Shots ~ worldcup$Position)
+ggplot(worldcup, aes(x = Position, y = Shots)) + 
+  geom_boxplot()
 ```
 
 The top four teams in this World Cup were Spain, the Netherlands, Germany, and Uruguay. Create a subset with just the data for these four teams:
 
 ```{r}
-best_four <- c("Spain", "Netherlands", "Germany", "Uruguay")
-top_teams <- subset(worldcup,
-                    Team %in% best_four)
+top_teams <- worldcup %>%
+  filter(Team %in% c("Spain", "Netherlands", "Germany", "Uruguay")) %>% 
+  mutate(Team = factor(Team))
 ```
 
 This dataset will still have all the levels saved for the `Team` factor, even though it isn't using them all. You can re-set this by converting `Team` to a character and then back to a factor. When R creates a factor from a vector, its default is to only use as levels the values that show up in the vector. 
 
-```{r}
-top_teams$Team <- as.factor(as.character(top_teams$Team))
-```
-
 ```{r, fig.width = 6, fig.height = 3}
-boxplot(top_teams$Shots ~ top_teams$Team, main = "Shots")
-boxplot(top_teams$Saves ~ top_teams$Team, main = "Saves")
+ggplot(top_teams, aes(x = Team, y = Shots)) + 
+  geom_boxplot() + 
+  ggtitle("Shots")
+
+ggplot(top_teams, aes(x = Team, y = Saves)) + 
+  geom_boxplot() + 
+  ggtitle("Saves")
 ```
 
 #### If you have extra time:
@@ -140,28 +143,35 @@ range(worldcup$Time)
 To figure out who played the most time, you need to subset out the rows of the dataset where the `Time` variable equals the maximum of the `Time` variable for the whole dataset. There are a few ways to do that. Here I'm showing two: (1) using logic within the "square-bracket indexing", to pull out just rows where it is TRUE that the `Time` for that row equals `max(worldcup$Time)` and (2) using the `subset()` function to pull out just rows where where it is TRUE that the `Time` for that row equals `max(worldcup$Time)`. 
 
 ```{r}
-worldcup[worldcup$Time == max(worldcup$Time) , ]
-subset(worldcup, Time == max(worldcup$Time))
+max(worldcup$Time)
+head(worldcup$Time == max(worldcup$Time))
+
+worldcup %>%
+  filter(Time == max(Time))
 ```
 
 Here are some extra lines of code that do things you might want to do related to this. First, if you wanted to create a vector that had the team names of the teams of the players that played the max time, you could again use the square bracket indexing to pull the right rows, and then specify in the indexing that you just wanted the values of the column `Team` for those rows. 
 
 ```{r}
-teams_most_time <- worldcup[worldcup$Time == max(worldcup$Time) , "Team"]
-teams_most_time
+worldcup %>%
+  filter(Time == max(Time)) %>%
+  select(Team) 
 ```
 
 If you wanted just the players' names, those are saved as row names rather than as a separate column, so you could use `rownames()` to pull those out of the subsetted data frame. 
 
 ```{r}
-most_time <- rownames(subset(worldcup, Time == max(worldcup$Time)))
-most_time
+worldcup %>%
+  mutate(name = row.names(worldcup)) %>%
+  filter(Time == max(Time)) %>%
+  select(name)
 ```
 
 To calculate the mean number of saves among all the players, use `mean()`:
 
 ```{r}
-mean(worldcup$Saves)
+worldcup %>%
+  summarize(mean_saves = mean(Saves))
 ```
 
 For the next parts of the question, it will be convenient to have a logical vector for whether each player is a goalkeeper, so here's how you would create that:
@@ -187,11 +197,20 @@ There are a few ways to use this vector to figure out how many players were goal
 ```{r}
 table(goalie)
 sum(goalie)
+
+worldcup %>%
+  mutate(goalie = Position == "Goalkeeper") %>%
+  group_by(goalie) %>%
+  summarize(n_players = n())
 ```
 
 Now, you can answer the questions about mean saves for goalies and max saves for non-goalies. If you put `goalie` in the square bracket indexing as the rows value, R will just subset out the rows where `goalie` is equal to TRUE. If you put `!goalie` in the square bracket indexing as the rows value, R will just subset out the rows where `goalie` is equal to FALSE.
 
 ```{r}
+head(worldcup[goalie, ])
+
+head(worldcup %>% filter(Position == "Goalkeeper"))
+
 mean(worldcup[goalie, "Saves"])
 range(worldcup[!goalie, "Saves"])
 ```
@@ -240,8 +259,14 @@ There does seem to be an association between temperature and dewpoint temperatur
 Plot these two variables and add in the regression line from the model (note: I've used the `col = ` option to make the color of the points gray). Use `abline()` to add the regression line for the model you fit. 
 
 ```{r}
-plot(chic$temp, chic$dptp, cex = 0.25, col = "gray")
-abline(mod_1)
+ggplot(chic, aes(x = temp, y = dptp)) + 
+  geom_point(size = 0.5, col = "gray") + 
+  geom_smooth(method = "lm", color = "black")
+
+mod_coefs <- coef(mod_1)
+ggplot(chic, aes(x = temp, y = dptp)) + 
+  geom_point(size = 0.5, col = "gray") + 
+  geom_abline(aes(intercept = mod_coefs[1], slope = mod_coefs[2]))
 ```
 
 Plot some various plots to check model assumptions for the model you fit using the `plot()` function on your model object:
@@ -281,19 +306,23 @@ The p-value for an ANOVA of the model with day-of-week coefficients versus the m
 Use a boxplot to visually compare PM10 by day of week. 
 
 ```{r, fig.height = 3, fig.width = 6}
-boxplot(chic$pm10 ~ chic$dow)
+ggplot(chic, aes(x = dow, y = pm10)) + 
+  geom_boxplot()
 ```
 
 Now try the same plot, but try using the `ylim = ` option to change the limits on the y-axis for the graph, so you can get a better idea of the pattern by day of week (some of the extreme values are very high, which makes it hard to compare by eye when the y-axis extends to include them all).
 
 ```{r, fig.height = 3, fig.width = 6}
-boxplot(chic$pm10 ~ chic$dow, ylim = c(0, 100))
+ggplot(chic, aes(x = dow, y = pm10)) + 
+  geom_boxplot() + 
+  ylim(c(0, 100))
 ```
 
 Create a subset called `summer` with just the summer days:
 
 ```{r}
-summer <- subset(chic, month %in% 6:8)
+summer <- chic %>%
+  filter(month %in% 6:8)
 ```
 
 Use `glm()` to fit a Poisson model of respiratory deaths regressed on temperature. Since you want to fit a Poisson model, use the option `family = poisson(link = "log")`. 
