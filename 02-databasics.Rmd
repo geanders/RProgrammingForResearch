@@ -459,7 +459,7 @@ For the examples in this section, I'll use example data listing guests to the Da
 
 ```{r message = FALSE}
 library(dplyr)
-daily_show <- read_csv("../data/daily_show_guests.csv", skip = 4)
+daily_show <- read_csv("data/daily_show_guests.csv", skip = 4)
 ```
 
 I've used this data in previous examples, but as a reminder, here's what it looks like: 
@@ -507,33 +507,17 @@ head(daily_show, 3)
 Don't forget that, if you want to change column names in the saved object, you must reassign the object to be the output of `rename`. If you run one of these cleaning functions without reassigning the object, R will print out the result, but the object itself won't change. 
 ```
 
-```{block, type = 'rmdwarning`}
+```{block, type = 'rmdwarning'}
 Many of the functions in tidyverse packages, including those in `dplyr`, provide exceptions to the general rule about when to use quotation marks versus when to leave them off. Unfortunately, this may make it a bit hard to learn when to use quotation marks versus when not to. One way to think about this, which is a bit of an oversimplification but can help as you're learning, is to assume that anytime you're using a `dplyr` function, every column in the dataframe you're working with has been loaded to your R session as its own object. 
 ```
 
+### Selecting columns
 
-### Using `subset()`
 
-You will often want to use only a portion of your data. You can use `subset()` to create a subset, using logical operators. For example, if you wanted to just pull out the rows of the `icd10` dataframe that start with the letter "A", you could run:
 
-```{r}
-icd10_a <- subset(icd10, substr(code, 1, 1) == "A")
-```
 
-Here are the ends of the original and the subsetted dataframes:
 
-```{r}
-tail(icd10, 2)
-tail(icd10_a, 2)
-```
 
-The convention for `subset()` is:
-
-```{r, eval = FALSE}
-subset([name of dataframe],
-       [logical statement describing which rows to keep],
-       select = [vector with the names of columns to keep])
-```
 
 ### Common logical operators in R
 
