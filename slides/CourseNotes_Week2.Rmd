@@ -263,7 +263,7 @@ Option  | Description
 
 ## `read.table` family of functions
 
-All members of the `read.table` family are doing the same basic thing. The only difference is what defaults they have for the separator (`sep`) and the decimal point (`dec`).
+All members of the `read.table` family are doing the same basic thing. The only difference is what defaults they have for the separator (`sep`) and the decimal point (`dec`). \medskip
 
 Members of the `read.table` family:
 
@@ -274,42 +274,97 @@ Function     | Separator  | Decimal point
 `read.delim` |    tab     |     period
 `read.delim2`|    tab     |     comma
 
+## `read_*` family of functions
+
+The `read.table` family of functions are part of base R. There is a newer package called `reader` that has a family of `read_*` functions. These functions are very similar, but have some more sensible defaults. \medskip
+
+```{r}
+library(readr)
+daily_show <- read_csv("../data/daily_show_guests.csv", 
+                       skip = 4)
+```
+
+## `read_*` family of functions
+
+Functions in the `read_*` family include
+
+- `read_csv`, `read_tsv` (specific delimiters)
+- `read_delim`, `read_table` (generic)
+- `read_fwf`
+- `read_log`
+- `read_lines`
+
+Compared to the `read.table` family of functions, the `read_*` functions: 
+
+- Work better with large datasets: faster, includes progress bar
+- Have more sensible defaults (e.g., characters default to characters, not factors)
+
+## The "tidyverse"
+
+The `readr` package is part of the "tidyverse"-- a collection of new and developing packages for R, many written by Hadley Wickham. \medskip
+
+```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/tidyverse_hexbin.jpeg")
+```
+
+
+## The "tidyverse"
+
+```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = 'center'}
+knitr::include_graphics("../figures/HadleyObama.png")
+```
+
+\begin{center}
+"A giant among data nerds"
+\end{center}
+
+\footnotesize{
+\url{https://priceonomics.com/hadley-wickham-the-man-who-revolutionized-r/}}
+
+
 ## Reading in online flat files
 
 If you're reading in data from a non-secure webpage (i.e., one that starts with `http`), if the data is in a "flat-file" format, you can just read it in using the [web address](http://www2.unil.ch/comparativegenometrics/docs/NC_006368.txt) as the file name:
 
-```{r}
+```{r message = FALSE}
 url <- paste0("http://www2.unil.ch/comparativegenometrics",
               "/docs/NC_006368.txt")
-ld_genetics <- read.delim(url, header = TRUE)
+ld_genetics <- read_tsv(url)
 ld_genetics[1:5, 1:4]
 ```
 
 ## Reading in online flat files
 
-If you want to read in data from a secure webpage (e.g., one that starts with `https`), then you'll need to do something different.
+With the `read_*` family of functions, you can also read in data from a secure webpage (e.g., one that starts with `https`). This allows you to read in data from places like [GitHub](https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv) and Dropbox public folders:
 
-First, you'll need to install then load the package `repmis`:
-
-```{r}
-# install.packages("repmis")
-library(repmis)
-```
-
-## Reading in online flat files
-
-Now you can use the `source.data` function to read in data from places like [GitHub](https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv) and Dropbox public folders:
-
-```{r}
+```{r message = FALSE}
 url <- paste0("https://raw.githubusercontent.com/cmrivers/",
               "ebola/master/country_timeseries.csv")
-ebola <- source_data(url)
+ebola <- read_csv(url)
 ebola[1, 1:3]
 ```
 
-# Saving data as R objects
+## Reading data from other files types
 
-## Saving R objects
+You can also read data in from a variety of other file formats, including:
+
+```{r echo = FALSE}
+read_funcs <- data.frame(file_type = c("Excel",
+                                       "SAS",
+                                       "SPSS",
+                                       "Stata"),
+                         func = c("`read_excel`",
+                                  "`read_sas`",
+                                  "`read_spss`",
+                                  "`read_stata"),
+                         pkg = c("`readxl`",
+                                 "`haven`",
+                                 "`haven`",
+                                 "`haven`"))
+knitr::kable(read_funcs, col.names = c("File type", "Function", "Package"))
+```
+
+## Saving / loading R objects
 
 You can save an R object you've created as an `.RData` file using `save()`:
 
@@ -320,7 +375,7 @@ list.files()
 
 This saves to your current working directory (unless you specify a different location).
 
-## Loading R objects
+## Saving / loading R objects
 
 Then you can re-load the object later using `load()`:
 
@@ -338,134 +393,263 @@ file.remove("Ebola.RData")
 
 ## Saving R objects
 
-One caveat for saving R objects: some people suggest you avoid this if possible, to make your research more reproducible. 
+One caveat for saving R objects: some people suggest you avoid this if possible, to make your research more reproducible. \medskip
 
-Imagine someone wants to look at your data and code in 30 years. R might not work the same, so you might not be able to read an `.RData` file. However, you can open flat files (e.g., `.csv`, `.txt`) and R scripts (`.R`) in text editors-- you should still be able to do this regardless of what happens to R.
+Imagine someone wants to look at your data and code in 30 years. R might not work the same, so you might not be able to read an `.RData` file. However, you can open flat files (e.g., `.csv`, `.txt`) and R scripts (`.R`) in text editors-- you should still be able to do this regardless of what happens to R. \medskip
 
 Potential exceptions: 
 
 - You have an object that you need to save that has a structure that won't work well in a flat file
 - Your starting dataset is really, really large, and it would take a long time for you to read in your data fresh every time
 
-# Cleaning up data in R
+# Data cleaning
 
-## Renaming columns 
+## Cleaning data
 
-Often, you'll want to change the column names of a dataframe as soon as you bring in the data, especially if the original ones have things like spaces. We'll look at this in the `icd10` data.
+Common data-cleaning tasks include: 
 
-```{r}
-library(readxl)
-```
 ```{r echo = FALSE}
-icd10 <- read_excel("../data/icd-10.xls")
+dc_func <- data.frame(task = c("Renaming columns",
+                               "Filter to certain rows",
+                               "Selecting certain columns",
+                               "Adding or changing columns"),
+                      func = c("`rename`",
+                               "`filter`",
+                               "`select`",
+                               "`mutate`"))
+knitr::kable(dc_func, col.names = c("Task", "`dplyr` function"))
 ```
+
+## Cleaning data
+
+As an example, let's look at the Daily Show data:
+
+```{r message = FALSE}
+daily_show <- read_csv("../data/daily_show_guests.csv",
+                       skip = 4)
+head(daily_show, 3)
+```
+
+In cleaning up the data, we'll use `dplyr` functions, so we need to load that package: 
+
+```{r message = FALSE}
+library(dplyr)
+```
+
+## Re-naming columns
+
+A first step is often re-naming columns. It can be hard to work with a column name that is: 
+
+- long
+- includes spaces
+- includes upper case
+
+Several of the column names in `daily_show` have some of these issues: 
+
+```{r}
+colnames(daily_show)
+```
+
+## Renaming columns 
+
+To rename these columns, use `rename`. The basic syntax is: 
+
 ```{r eval = FALSE}
-icd10 <- read_excel("icd-10.xls")
+## Generic code
+rename(dataframe, 
+       new_column_name_1 = old_column_name_1,
+       new_column_name_2 = old_column_name_2)
 ```
+
+If you want to change column names in the saved object, be sure you reassign the object to be the output of `rename`.
 
 ## Renaming columns 
 
-Take a look at the `icd10` data we loaded in the exercise:
+To rename columns in the `daily_show` data, then, use:
 
 ```{r}
-icd10[1:4, ]
+daily_show <- rename(daily_show,
+                     year = YEAR,
+                     job = GoogleKnowlege_Occupation, 
+                     date = Show, 
+                     category = Group,
+                     guest_name = Raw_Guest_List)
+head(daily_show, 3)
 ```
 
-## Renaming columns 
+## Selecting columns
 
-You can use the `colnames()` function to find out what the current column names are:
+Next, you may want to selection only some columns. You can use `select` for this. The basic structure of this command is: 
+
+```{r eval = FALSE}
+## Generic code
+select(dataframe, column_name_1, column_name_2, ...)
+```
+
+## Selecting columns
+
+For example, to select all columns except `year` (since that information is already included in `date`), run: 
 
 ```{r}
-colnames(icd10)
+select(daily_show, job, date, category, guest_name)
 ```
 
-## Renaming columns 
+## Selecting columns
 
-You can also **rename** column names using `colnames()`. You just put this call on the left of the assignment, and what you want to assign them on the left. The new names will need to be in a vector the same length as the number of columns.
+The `select` function also allows you some time-saving tools. For example, in the last example, we wanted all the columns except one. Instead of writing out all the columns we want, we can use `-` with the columns we don't want to save time: 
 
 ```{r}
-colnames(icd10) <- c("code", "title")
-icd10[1:2, ]
+daily_show <- select(daily_show, -year)
+head(daily_show, 3)
 ```
 
-## Using `subset()`
+## Filtering to certain rows
 
-You will often want to use only a portion of your data. You can use `subset()` to create a subset, using logical operators. For example, if you wanted to just pull out the rows of the `icd10` dataframe that start with the letter "A", you could run:
+Next, you might want to filter the dataset down so that it only includes certain rows. You can use `filter` to do that. The syntax is: 
+
+```{r eval = FALSE}
+## Generic code
+filter(dataframe, logical statement)
+```
+
+The `logical statement` gives the condition that a row must meet to be included in the output data frame. For example, you might want to pull: 
+
+- Rows from 2015
+- Rows where the guest was an academic
+- Rows where the job is not missing
+
+## Filtering to certain rows
+
+For example, if you want to create a data frame that only includes guests who were scientists, you can run:
 
 ```{r}
-icd10_a <- subset(icd10, substr(code, 1, 1) == "A")
+scientists <- filter(daily_show, category == "Science")
+head(scientists)
 ```
 
-## Using `subset()`
-
-Here are the ends of the original and the subsetted dataframes:
-
-```{r}
-tail(icd10, 2)
-tail(icd10_a, 2)
-```
-
-## Using `subset()`
-
-The convention for `subset()` is:
-
-```{r, eval = FALSE}
-subset([name of dataframe],
-       [logical statement describing which rows to keep],
-       select = [vector with the names of columns to keep])
-```
 
 ## Common logical operators in R
 
+To build a logical statment to use in `filter`, you'll need to know some of R's logical operators: 
+
 Operator  | Meaning | Example
 --------- | ------- | --------------
-`==`      | equals  | `subset(df, city == "Los Angeles")`
-`!=`      | does not equal | `subset(df, city != "Los Angeles")`
-`%in%`    | is in | `subset(df, city %in% c("Los Angeles", "San Diego"))`
-`is.na()` | is NA | `subset(df, is.na(cases))`
-`!is.na()`| is not NA | `subset(df, !is.na(cases))`
-`&`       | and | `subset(df, city == "Los Angeles" & !is.na(cases))`
-`|`       | or | `subset(df, city == "Los Angeles" | !is.na(cases))`
+`==`      | equals  | `category == "Acting"`
+`!=`      | does not equal | `category != "Comedy`
+`%in%`    | is in | `category %in% c("Academic", "Science")`
+`is.na()` | is NA | `is.na(job)`
+`!is.na()`| is not NA | `!is.na(job)`
+`&`       | and | `year == 2015 & category == "Academic"`
+`|`       | or | `year == 2015 | category == "Academic"`
 
-## Adding columns
+## Add or change columns
 
-In R, you can use the `$` operator after a dataframe to pull out one of it's columns. For example:
+You can change a column or add a new column using the `mutate` function. That function has the syntax: 
+
+```{r eval = FALSE}
+# Generic code
+mutate(dataframe,
+       changed_column = function(changed_column),
+       new_column = function(other arguments))
+```
+
+## Add or change columns
+
+For example, the `job` column in `daily_show` sometimes uses upper case and sometimes does not: 
+
+```{r}
+head(unique(daily_show$job), 10)
+```
+
+## Add or change columns
+
+We could use the `tolower` function to make all listings lowercase: 
+
+```{r}
+mutate(daily_show, job = tolower(job))
+```
+
+## Piping
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/Magritte.png")
+```
+
+
+
+## Piping
+
+If you look at the format of these `dplyr` functions, you'll notice that they all take a dataframe as their first argument: 
+
+```{r eval = FALSE}
+rename(dataframe, 
+       new_column_name_1 = old_column_name_1,
+       new_column_name_2 = old_column_name_2)
+select(dataframe, column_name_1, column_name_2)
+filter(dataframe, logical statement)
+mutate(dataframe,
+       changed_column = function(changed_column),
+       new_column = function(other arguments))
+```
+
+## Piping
+
+Classically, you would clean up a dataframe in R by reassigning the dataframe object at each step: 
+
+```{r eval = FALSE}
+daily_show <-read_csv("../data/daily_show_guests.csv",
+                      skip = 4)
+daily_show <- rename(daily_show, 
+                     job = GoogleKnowlege_Occupation,
+                     date = Show,
+                     category = Group,
+                     guest_name = Raw_Guest_List)
+daily_show <- select(daily_show, -YEAR) 
+daily_show <- mutate(daily_show, job = tolower(job))
+daily_show <- filter(daily_show, category == "Science")
+```
+
+## Piping
+
+"Piping" lets you clean this code up a bit. It can be used with any function that inputs a dataframe as its first argument. It "pipes" the dataframe created right before the pipe (`%>%`) into the function right after the pipe. 
+
+## Piping
+
+With piping, the same data cleaning looks like: 
+
+```{r}
+daily_show <-read_csv("../data/daily_show_guests.csv",
+                      skip = 4) %>%
+  rename(job = GoogleKnowlege_Occupation,
+         date = Show,
+         category = Group,
+         guest_name = Raw_Guest_List) %>%
+  select(-YEAR) %>%
+  mutate(job = tolower(job)) %>%
+  filter(category == "Science")
+```
+
+
+## `dplyr` versus base R
+
+Just so you know, all of these actions also have alternatives in base R:
 
 ```{r echo = FALSE}
-ca_measles <- read.delim("../data/measles_data/02-09-2015.txt",
-                         header = FALSE,
-                         col.names = c("city", "count"))
-```
-```{r eval = FALSE}
-ca_measles <- read.delim("measles_data/02-09-2015.txt",
-                         header = FALSE,
-                         col.names = c("city", "count"))
-```
-
-```{r}
-head(ca_measles$count)
+dplyr_vs_base <- data.frame(dplyr = c("`rename`",
+                                      "`select`",
+                                      "`filter`",
+                                      "`mutate`"),
+                            base = c("Reassign `colnames`",
+                                     "Square bracket indexing",
+                                     "`subset`",
+                                     "Use `$` to change / create columns"))
+knitr::kable(dplyr_vs_base, col.names = c("`dplyr`", 
+                                          "Base R equivalent"))
 ```
 
-## Adding columns
+You will see these alternatives used in older code examples.
 
-You can take advantage of this to add new columns to an existing dataframe. For example, this data is from Feb. 9, 2015. We can add a column with the date to `ca_measles`:
-
-```{r}
-ca_measles$date <- rep("02-09-2015", length = nrow(ca_measles))
-head(ca_measles, 3)
-```
-
-## Adding columns
-
-Two notes: 
-
-- The previous example uses the `rep()` function, which will repeat a value `length` number of times
-- If the value you assign to the new column is not the right length (remember, all columns in a dataframe must be vectors of equal length), R will try to "recycle" it to fill up the dataframe. So, the following call would have been a simpler alternative:  
-
-```{r}
-ca_measles$date <- "02-09-2015"
-ca_measles[1:2, ]
-```
+# Dates in R
 
 ## `Date` class
 
@@ -488,26 +672,20 @@ Class        | Example
 To find out the class of a vector, you can use `class()`:
 
 ```{r}
-class(ca_measles$date)
+class(daily_show$date)
 ```
 
-## Vector classes
-
-To find out the classes of all columns in a dataframe, you can use `str()`:
-
-```{r}
-str(ca_measles)
-```
+Note: You can use `str` to get information on the classes of all columns in a dataframe. It's also printed at the top of output from `dplyr` functions.
 
 ## Converting to `Date` class
 
 To convert a vector to the `Date` class, you can use `as.Date()`:
 
 ```{r}
-ca_measles$date <- as.Date(ca_measles$date,
-                           format = "%m-%d-%Y")
-head(ca_measles$date, 3)
-class(ca_measles$date)
+daily_show <- mutate(daily_show,
+                     date = as.Date(date, format = "%m/%d/%y"))
+head(daily_show, 3)
+class(daily_show$date)
 ```
 
 ## Converting to `Date` class
@@ -515,13 +693,13 @@ class(ca_measles$date)
 Once you have an object in the `Date` class, you can do things like plot by date, calculate the range of dates, and calculate the total number of days the dataset covers:
 
 ```{r}
-range(ca_measles$date)
-diff(range(ca_measles$date))
+range(daily_show$date)
+diff(range(daily_show$date))
 ```
 
 ## Converting to `Date` class
 
-The only tricky thing is learning the abbreviations for the `format` option. Here are some common ones:
+The only tricky thing is learning the abbreviations for the `format` option. You use this option to specify the format of the date **before** you change it to a Date class. Here are some common date format abbreviations:
 
 Abbreviation | Meaning
 ------------ | -------------
@@ -535,9 +713,71 @@ Abbreviation | Meaning
 
 Here are some examples:
 
-Your date    | `format = `
------------- | -------------
+Current format of date    | `format = `
+---------------------- | ------------------
 10/23/2008   | "%m/%d%Y"
 08-10-23     | "%y-%m-%d"
 Oct. 23 2008  | "%b. %d %Y"
 October 23, 2008 | "%B %d, %Y"
+
+## `lubridate` package
+
+In many cases you can use functions from the `lubridate` package to parse dates more easily. \medskip
+
+The `ymd` function from lubridate can be used regardless of the format, as long as the date elements are in the order: year, month, day. For example:
+
+```{r message = FALSE}
+library(lubridate)
+ymd("2008-10-13")
+ymd("'08 Oct 13")
+ymd("'08 Oct 13")
+```
+
+## `lubridate` package
+
+The `lubridate` package has similar functions for other date orders or for date-times. For example: 
+
+- `dmy`
+- `mdy`
+- `ymd_h`
+- `ymd_hm`
+
+## `lubridate` package
+
+We could have used these to transform the date in `daily_show`: 
+
+```{r message = FALSE}
+daily_show <- read_csv("../data/daily_show_guests.csv",
+                       skip = 4) %>%
+  rename(job = GoogleKnowlege_Occupation, 
+         date = Show,
+         category = Group,
+         guest_name = Raw_Guest_List) %>%
+  select(-YEAR) %>%
+  mutate(date = mdy(date)) %>%
+  filter(category == "Science")
+head(daily_show, 2)
+```
+
+## `lubridate` package
+
+The `lubridate` package also includes functions to pull out certain elements of a date. For example, we could use `wday` to create a new column with the weekday of each show: 
+
+```{r}
+mutate(daily_show,
+       show_day = wday(date, label = TRUE)) %>%
+  select(date, show_day, guest_name) %>%
+  slice(1:5)
+```
+
+
+## `lubridate` package
+
+Functions in `lubridate` for pulling elements from a date include: 
+
+- `wday`
+- `mday`
+- `yday`
+- `month`
+- `quarter`
+- `year`
