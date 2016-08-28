@@ -961,32 +961,33 @@ Try out the following tasks:
 - You now have an R object called `ebola`. Create an object called `ebola_liberia` that only has the columns with the Date and cases and deaths in Liberia. How many observations do you have? 
 - Change the column names to `date`, `cases`, and `deaths`.
 - What class is the `date` column currently in? Convert it to a Date object. If it's currently a factor, you will need to first convert it to a character (do you know why)? What are the starting and ending dates of this data?
-- This data has earliest dates last and latest dates first. Often, we want our data in chronological order. Change the dataset so it's in chronological order. *Hint: You can use row indices to do this, if you use row indices to list the data from last row to first. For example, what do you get if you do `3:1`? What about if you do `ebola[3:1, ]`? Think of how you can extend this, along with `nrow()` do this task.*
+- This data has earliest dates last and latest dates first. Often, we want our data in chronological order. Change the dataset so it's in chronological order. *Hint: You can use row indices to do this, if you use row indices to list the data from last row to first. For example, what do you get if you do `3:1`? What about if you do `ebola[3:1, ]`? Think of how you can extend this, along with `nrow()` do this task. There are a number of different ways to do this step, and we'll talk about more ways later in the course.*
 
 Example R code:
 
 ```{r}
+library(dplyr)
 ## Create a subset with just the Liberia columns and Date
-ebola_liberia <- subset(ebola,  select = c("Date",
-                                           "Cases_Liberia", 
-                                           "Deaths_Liberia"))
+ebola_liberia <- select(ebola, Date, Cases_Liberia, Deaths_Liberia)
 head(ebola_liberia)
 
 ## How many rows does the whole dataset have?
 nrow(ebola_liberia)
 
 ## Rename the columns
-colnames(ebola_liberia) <- c("date", "cases", "deaths")
+ebola_liberia <- rename(ebola_liberia,
+                        date = Date,
+                        cases = Cases_Liberia,
+                        deaths = Deaths_Liberia)
 ebola_liberia[1:3, ]
 
 ## What class is the `date` column?
 class(ebola_liberia$date)
 
-## Change the class to a character and then to a Date
-## Use the `format` option to tell R what format the date
-## currently is in
-ebola_liberia$date <- as.character(ebola_liberia$date)
-ebola_liberia$date <- as.Date(ebola_liberia$date, format = c("%m/%d/%Y"))
+## Use the `mdy` from `lubridate` to convert to Date class
+library(lubridate)
+ebola_liberia <- mutate(ebola_liberia, 
+                        date = mdy(date))
 head(ebola_liberia$date)
 
 ## What are the starting and ending dates?
@@ -994,7 +995,7 @@ range(ebola_liberia$date)
 
 ## Re-order the dataset from last to first
 ebola_liberia <- ebola_liberia[nrow(ebola_liberia):1, ]
-ebola_liberia[1, ]
+ebola_liberia[1:3, ]
 ```
 
 If you have extra time:
@@ -1006,7 +1007,7 @@ Example R code:
 
 ```{r}
 ## Remove observations with missing cases
-ebola_liberia <- subset(ebola_liberia, !is.na(cases))
+ebola_liberia <- filter(ebola_liberia, !is.na(cases))
 nrow(ebola_liberia)
 
 ## Plot the data
@@ -1021,7 +1022,7 @@ The `measles_data` subdirectory includes counts of measles made at different tim
 
 We'll talk more later about using loops and functions to make your programming more efficient, but for right now just look through this code and see if you can get a feel for how it's working (make sure your directory for this course is your working directory):
 
-```{r, fig.width=10, fig.height=4}
+```{r, fig.width=10, fig.height=4, message = FALSE}
 ## Create a vector of all the file names in the `measles_data` subdirectory
 measles_files <- list.files("data/measles_data")
 measles_files
@@ -1032,7 +1033,7 @@ measles_files
 measles_dates <- sub(".txt", "", measles_files)
 measles_dates
 class(measles_dates)
-measles_dates <- as.Date(measles_dates, format = "%m-%d-%Y")
+measles_dates <- mdy(measles_dates)
 measles_dates
 
 ## Before I show the loop, let me talk you through some 
@@ -1044,15 +1045,15 @@ i <- 1 # I'm setting the index to 1
 file_name <- paste0("data/measles_data/", measles_files[i])
 file_name
 
-## Now I'll read in that file
-df <- read.delim(file_name, header = FALSE, col.names = c("city", "count"))
+## Now I'll read in that tab-delimited file
+df <- read_tsv(file_name, col_names = c("city", "count"))
 head(df)
 
 ## Now I'll add on a column with the date for all the 
 ## values from that file. Notice that I'm using `i` to 
 ## index this, as well
 
-df$date <- measles_dates[i]
+df <- mutate(df, date = measles_dates[i])
 head(df)
 
 ## Loop through and read in files. After the first file,
@@ -1064,7 +1065,7 @@ for(i in 1:length(measles_files)){
         file_name <- paste0("data/measles_data/", measles_files[i])
         df <- read.delim(file_name, header = FALSE, 
                          col.names = c("city", "count"))
-        df$date <- measles_dates[i]
+        df <- mutate(df, date = measles_dates[i])
         if(i == 1){
                 ca_measles <- df
         } else { 
