@@ -470,7 +470,7 @@ head(daily_show)
 
 ### Renaming columns 
 
-A first step is often re-naming columns. It can be hard to work with a column name that: 
+A first step is often re-naming the columns of the dataframe. It can be hard to work with a column name that: 
 
 - is long
 - includes spaces
@@ -504,119 +504,202 @@ head(daily_show, 3)
 ```
 
 ```{block, type = 'rmdwarning'}
-Don't forget that, if you want to change column names in the saved object, you must reassign the object to be the output of `rename`. If you run one of these cleaning functions without reassigning the object, R will print out the result, but the object itself won't change. 
-```
-
-```{block, type = 'rmdwarning'}
 Many of the functions in tidyverse packages, including those in `dplyr`, provide exceptions to the general rule about when to use quotation marks versus when to leave them off. Unfortunately, this may make it a bit hard to learn when to use quotation marks versus when not to. One way to think about this, which is a bit of an oversimplification but can help as you're learning, is to assume that anytime you're using a `dplyr` function, every column in the dataframe you're working with has been loaded to your R session as its own object. 
 ```
 
 ### Selecting columns
 
+Next, you may want to select only some columns of the dataframe. You can use the `select` function from `dplyr` to subset the dataframe to certain columns. The basic structure of this command is: 
 
+```{r eval = FALSE}
+## Generic code
+select(dataframe, column_name_1, column_name_2, ...)
+```
 
+In this call, you first specify the dataframe to use and then list all of the column names to include in the output dataframe, with commas between each column name. For example, to select all columns in `daily_show` except `year` (since that information is already included in `date`), run: 
 
+```{r}
+select(daily_show, job, date, category, guest_name)
+```
 
+```{block, type = 'rmdwarning'}
+Don't forget that, if you want to change column names in the saved object, you must reassign the object to be the output of `rename`. If you run one of these cleaning functions without reassigning the object, R will print out the result, but the object itself won't change. You can take advantage of this, as I've done in this example, to look at the result of applying a function to a dataframe without changing the original dataframe, which can be helpful as you're figuring out how to write your code.
+```
 
+The `select` function also provides some time-saving tools. For example, in the last example, we wanted all the columns except one. Instead of writing out all the columns we want, we can use `-` with the columns we don't want to save time: 
 
-### Common logical operators in R
+```{r}
+daily_show <- select(daily_show, -year)
+head(daily_show, 3)
+```
+
+### Filtering to certain rows
+
+Next, you might want to filter the dataset down so that it only includes certain rows. For example, you might want to get a dataset with only the guests from 2015, or only guests who are scientists. 
+
+You can use the `filter` function from `dplyr` to filter a dataframe down to a subset of rows. The syntax is: 
+
+```{r eval = FALSE}
+## Generic code
+filter(dataframe, logical statement)
+```
+
+The `logical statement` in this call gives the condition that a row must meet to be included in the output data frame. For example, if you want to create a data frame that only includes guests who were scientists, you can run:
+
+```{r}
+scientists <- filter(daily_show, category == "Science")
+head(scientists)
+```
+
+To build a logical statment to use in `filter`, you'll need to know some of R's logical operators. Some of the most commonly used ones are: 
 
 Operator  | Meaning | Example
---------- | ------- | --------------
-`==`      | equals  | `subset(df, city == "Los Angeles")`
-`!=`      | does not equal | `subset(df, city != "Los Angeles")`
-`%in%`    | is in | `subset(df, city %in% c("Los Angeles", "San Diego"))`
-`is.na()` | is NA | `subset(df, is.na(cases))`
-`!is.na()`| is not NA | `subset(df, !is.na(cases))`
-`&`       | and | `subset(df, city == "Los Angeles" & !is.na(cases))`
-`|`       | or | `subset(df, city == "Los Angeles" | !is.na(cases))`
+--------- | ------- | ---------------------------------
+`==`      | equals  | `category == "Acting"`
+`!=`      | does not equal | `category != "Comedy`
+`%in%`    | is in | `category %in% c("Academic", "Science")`
+`is.na()` | is NA | `is.na(job)`
+`!is.na()`| is not NA | `!is.na(job)`
+`&`       | and | `year == 2015 & category == "Academic"`
+`|`       | or | `year == 2015 | category == "Academic"`
 
-### Adding columns
+We'll use these logical operators a lot more as the course continues, so they're worth learning by heart. 
 
-In R, you can use the `$` operator after a dataframe to pull out one of its columns. For example:
+```{block, type = 'rmdwarning'}
+Two common errors with logical operators are: (1) Using `=` instead of `==` to check if two values are equal; and (2) Using `== NA` instead of `is.na` to check for missing observations.
+```
+
+### Add or change columns
+
+You can change a column or add a new column using the `mutate` function from the `dplyr` package. That function has the syntax: 
+
+```{r eval = FALSE}
+# Generic code
+mutate(dataframe,
+       changed_column = function(changed_column),
+       new_column = function(other arguments))
+```
+
+For example, the `job` column in `daily_show` sometimes uses upper case and sometimes does not (this call uses the `unique` function to list only unique values in this column): 
+
+```{r}
+head(unique(daily_show$job), 10)
+```
+
+To make all the observations in the `job` column lowercase, use the `tolower` function within a `mutate` function: 
+
+```{r}
+mutate(daily_show, job = tolower(job))
+```
+
+### Piping
+
+So far, I've shown how to use these `dplyr` functions one at a time to clean up the data, reassigning the dataframe object at each step. However, there's a trick called "piping" that will let you clean up your code a bit when you're writing a script to clean data.
+
+If you look at the format of these `dplyr` functions, you'll notice that they all take a dataframe as their first argument: 
+
+```{r eval = FALSE}
+# Generic code
+rename(dataframe, 
+       new_column_name_1 = old_column_name_1,
+       new_column_name_2 = old_column_name_2)
+select(dataframe, column_name_1, column_name_2)
+filter(dataframe, logical statement)
+mutate(dataframe,
+       changed_column = function(changed_column),
+       new_column = function(other arguments))
+```
+
+Without piping, you have to reassign the dataframe object at each step of this cleaning if you want the changes saved in the object: 
+
+```{r eval = FALSE, message = FALSE}
+daily_show <-read_csv("data/daily_show_guests.csv",
+                      skip = 4)
+daily_show <- rename(daily_show, 
+                     job = GoogleKnowlege_Occupation,
+                     date = Show,
+                     category = Group,
+                     guest_name = Raw_Guest_List)
+daily_show <- select(daily_show, -YEAR) 
+daily_show <- mutate(daily_show, job = tolower(job))
+daily_show <- filter(daily_show, category == "Science")
+```
+
+Piping lets you clean this code up a bit. It can be used with any function that inputs a dataframe as its first argument. It *pipes* the dataframe created right before the pipe (`%>%`) into the function right after the pipe. With piping, therefore, the same data cleaning looks like: 
+
+```{r message = FALSE}
+daily_show <-read_csv("data/daily_show_guests.csv",
+                      skip = 4) %>%
+  rename(job = GoogleKnowlege_Occupation,
+         date = Show,
+         category = Group,
+         guest_name = Raw_Guest_List) %>%
+  select(-YEAR) %>%
+  mutate(job = tolower(job)) %>%
+  filter(category == "Science")
+```
+
+Notice that, when piping, the first argument (the name of the dataframe) is excluded from all function calls that follow a pipe. This is because piping sends the dataframe from the last step into each of these functions as the dataframe argument.
+
+### Base R equivalents to `dplyr` functions
+
+Just so you know, all of these `dplyr` functions have alternatives, either functions or processes, in base R:
 
 ```{r echo = FALSE}
-ca_measles <- read.delim("data/measles_data/02-09-2015.txt",
-                         header = FALSE,
-                         col.names = c("city", "count"))
-```
-```{r eval = FALSE}
-ca_measles <- read.delim("measles_data/02-09-2015.txt",
-                         header = FALSE,
-                         col.names = c("city", "count"))
-```
-
-```{r}
-head(ca_measles$count)
+dplyr_vs_base <- data.frame(dplyr = c("`rename`",
+                                      "`select`",
+                                      "`filter`",
+                                      "`mutate`"),
+                            base = c("Reassign `colnames`",
+                                     "Square bracket indexing",
+                                     "`subset`",
+                                     "Use `$` to change / create columns"))
+knitr::kable(dplyr_vs_base, col.names = c("`dplyr`", 
+                                          "Base R equivalent"))
 ```
 
-You can take advantage of this to add new columns to an existing dataframe. For example, this data is from Feb. 9, 2015. We can add a column with the date to `ca_measles`:
+You will see these alternatives used in older code examples.
 
-```{r}
-ca_measles$date <- rep("02-09-2015", length = nrow(ca_measles))
-head(ca_measles, 3)
-```
+## Dates in R
 
-Two notes: 
+As part of the data cleaning process, you may want to change the class of some of the columns in the dataframe. For example, you may want to change a column from a character to a date. 
 
-- The previous example uses the `rep()` function, which will repeat a value `length` number of times
-- If the value you assign to the new column is not the right length (remember, all columns in a dataframe must be vectors of equal length), R will try to "recycle" it to fill up the dataframe. So, the following call would have been a simpler alternative:  
-
-```{r}
-ca_measles$date <- "02-09-2015"
-ca_measles[1:2, ]
-```
-
-### `Date` class
-
-One final common task in cleaning data is to change the class of some of the columns. This is especially common for dates, which will usually be read in as characters or factors.
-
-### Vector classes
-
-Here are a few common vector classes in R:
+Here are some of the most common vector classes in R:
 
 Class        | Example
------------- | -------------
+------------ | -----------------------------------
 `character`  | "Chemistry", "Physics", "Mathematics"
 `numeric`    | 10, 20, 30, 40
 `factor`     | Male [underlying number: 1], Female [2]
 `Date`       | "2010-01-01" [underlying number: 14,610]
 `logical`    | TRUE, FALSE
 
-To find out the class of a vector, you can use `class()`:
+To find out the class of a vector (including a column in a dataframe-- remember each column can be thought of as a vector), you can use `class()`:
 
 ```{r}
-class(ca_measles$date)
+class(daily_show$date)
 ```
 
-To find out the classes of all columns in a dataframe, you can use `str()`:
+It is especially common to need to convert dates during the data cleaning process, since date columns will usually be read into R as characters or factors, and you can do some interesting things with vectors that are in a Date class that you cannot do with a vector in a character class. To convert a vector to the `Date` class, you can use the `as.Date` function. For example, to convert the `date` column in the `daily_show` data into a Date class, you can run:
 
 ```{r}
-str(ca_measles)
-```
-
-### Converting to `Date` class
-
-To convert a vector to the `Date` class, you can use `as.Date()`:
-
-```{r}
-ca_measles$date <- as.Date(ca_measles$date,
-                           format = "%m-%d-%Y")
-head(ca_measles$date, 3)
-class(ca_measles$date)
+daily_show <- mutate(daily_show,
+                     date = as.Date(date, format = "%m/%d/%y"))
+head(daily_show, 3)
+class(daily_show$date)
 ```
 
 Once you have an object in the `Date` class, you can do things like plot by date, calculate the range of dates, and calculate the total number of days the dataset covers:
 
-```{r}
-range(ca_measles$date)
-diff(range(ca_measles$date))
+```{r eval = FALSE}
+range(daily_show$date)
+diff(range(daily_show$date))
 ```
 
-The only tricky thing is learning the abbreviations for the `format` option. Here are some common ones:
+You can convert dates expressed in a number of different ways into a Date class in R, as long as you can explain to R how to parse the format that the date is in before you convert it. The only tricky thing in converting objects into a Date class is learning the abbreviations for the `format` option of the `as.Date` function. Here are some common ones:
 
 Abbreviation | Meaning
------------- | -------------
+------------ | --------------------------------
 `%m`         | Month as a number (e.g., 1, 05)
 `%B`         | Full month name (e.g., August)
 `%b`         | Abbreviated month name (e.g., Aug)
@@ -626,15 +709,70 @@ Abbreviation | Meaning
 `%a`         | Abberviated weekday (e.g., Mon)
 
 
-Here are some examples:
+Here are some examples of what you would specify for the `format` argument of `as.Date` for some different original formats of date columns:
 
-Your date    | `format = `
------------- | -------------
+Your date    | `format`
+------------ | ---------------------
 10/23/2008   | "%m/%d%Y"
 08-10-23     | "%y-%m-%d"
 Oct. 23 2008  | "%b. %d %Y"
 October 23, 2008 | "%B %d, %Y"
 Thurs, 23 October 2008 | "%a, %d %B %Y"
+
+```{block, type = 'rmdwarning'}
+You must use the `format` argument to specify what your date column looks like **before** it's converted to a Date class, not how you'd like it to look after its converted. Once an objects is in a date class, it will always be printed out using a common format, unless you change it back into a character class. (Confusingly, there is a `format` function that you can use to convert from a Date class to a character class and, in that case, the `format` argument does specify how the final date will look. This is mainly useful as a last step in data analysis, when you're creating plot labels of table columns, for example.)
+```
+
+There is also a function in the tidyverse, called `lubridate`, that helps in parsing dates. In many cases you can use functions from this package to parse dates much more easily, without having to specify specific starting formats. 
+
+The `ymd` function from lubridate can be used to parse a column into a Date clase, regardless of the original format of the date, as long as the date elements are in the order: year, month, day. For example:
+
+```{r message = FALSE}
+library(lubridate)
+ymd("2008-10-13")
+ymd("'08 Oct 13")
+ymd("'08 Oct 13")
+```
+
+The `lubridate` package has similar functions for other date orders or for date-times, including: 
+
+- `dmy`
+- `mdy`
+- `ymd_h`
+- `ymd_hm`
+
+We could have used these to transform the date in `daily_show`, using the following pipe chain: 
+
+```{r message = FALSE}
+daily_show <- read_csv("data/daily_show_guests.csv",
+                       skip = 4) %>%
+  rename(job = GoogleKnowlege_Occupation, 
+         date = Show,
+         category = Group,
+         guest_name = Raw_Guest_List) %>%
+  select(-YEAR) %>%
+  mutate(date = mdy(date)) %>%
+  filter(category == "Science")
+head(daily_show, 2)
+```
+
+The `lubridate` package also includes functions to pull out certain elements of a date, including: 
+
+- `wday`
+- `mday`
+- `yday`
+- `month`
+- `quarter`
+- `year`
+
+For example, we could use `wday` to create a new column with the weekday of each show: 
+
+```{r}
+mutate(daily_show,
+       show_day = wday(date, label = TRUE)) %>%
+  select(date, show_day, guest_name) %>%
+  slice(1:5)
+```
 
 ## In-course Exercise
 
