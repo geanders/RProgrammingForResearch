@@ -1001,7 +1001,9 @@ ebola_liberia[1:3, ]
 If you have extra time:
 
 - Limit the `ebola_liberia` dataset just to the days with non-missing case data. How many observations do you have now?
+- Write a pipe chain for the full data cleaning process for creating `ebola_liberia` up to this point. *Hint: Try using the `arrange` function from `dplyr` to re-order the data by dates in this pipe.*
 - Try using the basic plotting function, `plot()`, to plot the number of cases over time. Do you think that the `cases` variable is measuring the count of cases for that day, or the cumulative number of cases up to that day? See if you can figure out more on Caitlin Rivers' GitHub documentation. Do you notice any potential data quality issues in this data? *Hint: The `plot()` function takes, as required arguments, the vector you want to plot on the x-axis and then the vector you want to plot on the y-axis, like `plot([x vector], [y vector])`. If you are pulling the vectors from a dataset, you will need to use indexing to pull out the column you want as a vector, like `plot([dataframe name]$[column name for x], [dataframe]$[column name for y])`.*
+
 
 Example R code: 
 
@@ -1009,6 +1011,14 @@ Example R code:
 ## Remove observations with missing cases
 ebola_liberia <- filter(ebola_liberia, !is.na(cases))
 nrow(ebola_liberia)
+
+## Rewrite the data cleaning for `ebola_liberia` using a pipe chain
+ebola_liberia <- ebola %>%
+  select(Date, Cases_Liberia, Deaths_Liberia) %>%
+  rename(date = Date, cases = Cases_Liberia, deaths = Deaths_Liberia) %>%
+  mutate(date = mdy(date)) %>%
+  arrange(date) %>%
+  filter(!is.na(cases))
 
 ## Plot the data
 plot(ebola_liberia$date, ebola_liberia$cases)
