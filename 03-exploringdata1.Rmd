@@ -2,6 +2,93 @@
 
 [Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week3.pdf) a pdf of the lecture slides covering this topic.
 
+## Data from a package
+
+So far you have gotten data to use in R three ways:
+
+1. From flat files (either on your computer or online)
+2. From files like SAS and Excel
+3. From R objects (i.e., using `load()`)
+
+Many R packages come with their own data, which is very easy to load and use.
+
+For example, the `faraway` package has a dataset called `worldcup` that you'll use today. To load it, use the `data()` function once you've loaded the package:
+
+```{r}
+library(faraway)
+data("worldcup")
+```
+
+Unlike most data objects you'll work with, the data that comes with an R package will often have its own help file. You can access this using the `?` operator:
+
+```{r, eval = FALSE}
+?worldcup
+```
+
+To find out all the datasets that are available in the packages you currently have loaded, run `data()` without an option inside the parentheses:
+
+```{r, eval = FALSE}
+data()
+```
+
+As a note, you can similarly use `library()`, without the name of a package, to list all of the packages you have installed that you could call with `library()`:
+
+```{r, eval = FALSE}
+library()
+```
+
+
+## Plots to explore data
+
+Plots can be invaluable in exploring your data. In this section, I will focus on teaching you the basics of `ggplot2` plotting. This section will focus on making **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data at this stage. In a later section, I will discuss customization of `ggplot2` plots, to help you make more attractive plots that would go into final reports. 
+
+This chapter covers how to make the following types of basic plots using functions from the `ggplot2` package (another member of the tidyverse!):
+
+```{r echo = FALSE}
+plot_funcs <- data.frame(type = c("Histogram",
+                                  "Scatterplot",
+                                  "Boxplot"), 
+                         aes = c("one numeric variable",
+                                 "two numeric variables",
+                                 "one numeric variable, possibly stratified by a factor variable"),
+                         ggplot2_func = c("`geom_histogram`",
+                                          "`geom_point`",
+                                          "`geom_boxplot`"))
+knitr::kable(plot_funcs, col.names = c("Plot type",
+                                       "Aesthetics",
+                                       "ggplot2 function"))
+```
+
+The following options will work in many of the `ggplot2` geoms plotting functions:
+
+```{r echo = FALSE}
+plot_opts <- data.frame(opt = c("`color`", "`fill`",
+                                "`size`", "`shape`", 
+                                "`linetype`", "`alpha`"),
+                        desc = c("Color of a plotting element",
+                                 "Color used to fill the plotting element",
+                                 "Size of points on plot (> 1 for larger, < 1 for smaller)", 
+                                 "Shape to use for the point",
+                                 "Type of line to use (e.g., solid, dashed)",
+                                 "Transparency (closer to 1 for more opaque, closer to 0 for more transparent)"))
+knitr::kable(plot_opts, col.names = c("Option", "Description"))
+```
+
+For the example plots, I'll use a dataset in the `faraway` package called `nepali`. This gives data from a study of the health of a group of Nepalese children. 
+
+```{r}
+library(faraway)
+data(nepali)
+```
+
+I'll be using functions from `dplyr` and `ggplot2`:
+
+```{r message = FALSE, warning = FALSE}
+library(dplyr)
+library(ggplot2)
+```
+
+
 ## In-course exercise
 
 ### Loading data from an R package
