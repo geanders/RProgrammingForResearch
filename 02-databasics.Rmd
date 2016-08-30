@@ -273,7 +273,7 @@ read.table.funcs <- data.frame(func = c("`read.table`", "`read.csv`", "`read.csv
 knitr::kable(read.table.funcs, col.names = c("Function", "Separator", "Decimial point"))
 ```
 
-You can use `read.table` to read in any delimited file, regardless of the separator and the value used for the decimal point. However, you will need to specify these values using the `sep` and `dec` parameters if they differ from the defaults for `read.table` (a space for the delimiter and period for the decimal). If you remember the more specialized function call, therefore, you can save yourself some typing. There are a few other default values besides `sep` and `dec` that differ between different functions in this family, as well (`header`, for example, which specifies whether the first row should be used as column names).
+You can use `read.table` to read in any delimited file, regardless of the separator and the value used for the decimal point. However, you will need to specify these values using the `sep` and `dec` parameters if they differ from the defaults for `read.table` (a space for the delimiter and period for the decimal). If you remember the more specialized function call, therefore, you can save yourself some typing. There are a few other default values besides `sep` and `dec` that differ between different functions in this family: `header`, for example, specifies whether the first row should be used as column names.
 
 For example, to read in the Ebola data, which is comma-delimited, you could either use `read.table` with a `sep` argument specified or use `read.csv`, in which case you don't have to specify `sep`:
 
@@ -328,15 +328,15 @@ library(readr)
 daily_show <- read_csv("data/daily_show_guests.csv", skip = 4)
 ```
 
-The message that R prints after this call ("Parsed with column specification:.. ") lets you know what classes R used for each column (this function tries to guess the appropriate function and, unlike the `readr` functions, will assign characters to a character rather than factor class, which is usually what you want).
+The message that R prints after this call ("Parsed with column specification:.. ") lets you know what classes R used for each column (this function tries to guess the appropriate function and, unlike the `readr` functions, will assign characters to a character rather than factor class -- this is usually what you want).
 
 ```{block, type = 'rmdnote'}
-The `readr` package is a member of the tidyverse of packages. The *tidyverse* describes an evolving collection of R packages with a common philosophy, and they are unquestionably changing the way people code in R. Most were developed in part or full by Hadley Wickham and others at RStudio. Many of these packages are only a few years old, but have been rapidly adapted by the R community. As a result, newer examples of R code will often look very different from the code in older R scripts, including books that are more than a few years old. In this course, I'll focus on "tidyverse" functions when possible, but I do put in details about base R equivalent functions or processes at some points, to help you be able to interpret older code.
+The `readr` package is a member of the tidyverse of packages. The *tidyverse* describes an evolving collection of R packages with a common philosophy, and they are unquestionably changing the way people code in R. Most were developed in part or full by Hadley Wickham and others at RStudio. Many of these packages are only a few years old, but have been rapidly adapted by the R community. As a result, newer examples of R code will often look very different from the code in older R scripts, including examples in books that are more than a few years old. In this course, I'll focus on "tidyverse" functions when possible, but I do put in details about base R equivalent functions or processes at some points -- this will help you interpret older code.
 ```
 
 ### Reading online flat files
 
-So far, I've only shown you how to read in data from files that are saved to your computer. R can also read in data directly from the web. If a flat file is posted online, you can read it into R in almost exactly the same way that you read in a local file. The only difference is that you will use the file's url instead of a local file path for the `file` argument.
+So far, I've only shown you how to read in data from files that are saved to your computer. R can also read in data directly from the web. If a flat file is posted online, you can read it into R in almost exactly the same way that you would read in a local file. The only difference is that you will use the file's url instead of a local file path for the `file` argument.
 
 With the `read_*` family of functions, you can do this both for flat files from a non-secure webpage (i.e., one that starts with `http`) and for files from a secure webpage (i.e., one that starts with `https`), including GitHub and Dropbox. With the `read.table` family of functions, you can read in online flat files from non-secure webpages, but not from secure ones. 
 
@@ -358,10 +358,9 @@ ebola <- read_csv(url)
 ebola[1:3, 1:3]
 ```
 
-### Saving / loading R objects
+### Saving and loading R objects
 
 You can save an R object you've created as an `.RData` file. 
-
 
 To save an R object in a `.RData` file, use the `save` function:
 
@@ -386,7 +385,7 @@ list.files()
 ## [25] "toc.css"                       "vocabulary.Rmd"
 ```
 
-You can notice that, once you save the object, a new file named "Ebola.RData" is listed in the files in your current working directory. The default is for R to save the R object in your current working directory; to save it elsewhere, use a full relative or absolute pathname for the `file` argument.
+Notice that, once you save the object, a new file named "Ebola.RData" is listed in the files in your current working directory. The default is for R to save the R object in your current working directory; to save it elsewhere, use a full relative or absolute pathname for the `file` argument.
 
 Once you've saved an R object, you can re-load it later using the `load` function with the object's file path. For example, since I've saved this R object, I can remove it from my current R workspace using the `rm` function, after which it will not show up when I run `ls`:
 
@@ -410,16 +409,16 @@ ls()
 ## [1] "ebola"       "ld_genetics" "my_dir"      "url"
 ```
 
-There is one caveat for saving R objects: some people suggest you avoid this if possible, to make your research more reproducible. Imagine someone wants to look at your data and code in 30 years. R might not work the same, so you might not be able to read an `.RData` file. Notice that, if you try to open an `.RData` file in a text edit, it won't make any sense. However, you can open flat files (e.g., `.csv`, `.txt`) and R scripts (`.R`) in text editors-- you should still be able to do this regardless of what happens to R. Some potential exceptions, when it might be useful to save an R object, include when: 
+There is one caveat for saving R objects: some people suggest you avoid this if possible, to make your research more reproducible. Imagine someone wants to look at your data and code in 30 years. R might not work the same way, so you might not be able to read an `.RData` file. Notice that, if you try to open an `.RData` file in a text edit, it won't make any sense. However, you can open flat files (e.g., `.csv`, `.txt`) and R scripts (`.R`) in text editors -- you should still be able to do this regardless of what happens to R. Some potential exceptions, when it might be useful to save an R object, include when: 
 
 - You have an object that you need to save that has a structure that won't work well in a flat file (a list rather than a dataframe, for example); or
-- Your starting dataset is really, really large, and it would take a long time for you to read in your data fresh every time. In this case it may make sense to do some data cleaning and then save the cleaned R object as a `.RData` file, but be sure to also save the script you used to clean the raw data.
+- Your starting dataset is very large, and it would take a long time for you to read in your data fresh every time. In this case it may make sense to do some data cleaning and then save the cleaned R object as a `.RData` file, but be sure to also save the script you used to clean the raw data.
 
 ### Reading other file types
 
 Later in the course, we'll talk about how to open a variety of other file types in R. However, you might find it immediately useful to be able to read in files from other statistical programs. 
 
-There are two "tidyverse" packages-- `readxl` and `haven`-- that help with this. They allow you to read in files from the following formats: 
+There are two "tidyverse" packages -- `readxl` and `haven` -- that help with this. They allow you to read in files from the following formats: 
 
 ```{r echo = FALSE}
 read_funcs <- data.frame(file_type = c("Excel",
@@ -439,7 +438,7 @@ knitr::kable(read_funcs, col.names = c("File type", "Function", "Package"))
 
 ## Data cleaning
 
-Once you have loaded data into R, you'll likely need to clean it up some before you're ready to analyze it. Here, I'll go over the first steps of how to do that with functions from `dplyr`, another package in the tidyverse. Here are some of the most common data-cleaning tasks, along with the corresponding `dplyr` function for each: 
+Once you have loaded data into R, you'll likely need to clean it up a little before you're ready to analyze it. Here, I'll go over the first steps of how to do that with functions from `dplyr`, another package in the tidyverse. Here are some of the most common data-cleaning tasks, along with the corresponding `dplyr` function for each: 
 
 ```{r echo = FALSE}
 dc_func <- data.frame(task = c("Renaming columns",
@@ -523,7 +522,7 @@ select(daily_show, job, date, category, guest_name)
 ```
 
 ```{block, type = 'rmdwarning'}
-Don't forget that, if you want to change column names in the saved object, you must reassign the object to be the output of `rename`. If you run one of these cleaning functions without reassigning the object, R will print out the result, but the object itself won't change. You can take advantage of this, as I've done in this example, to look at the result of applying a function to a dataframe without changing the original dataframe, which can be helpful as you're figuring out how to write your code.
+Don't forget that, if you want to change column names in the saved object, you must reassign the object to be the output of `rename`. If you run one of these cleaning functions without reassigning the object, R will print out the result, but the object itself won't change. You can take advantage of this, as I've done in this example, to look at the result of applying a function to a dataframe without changing the original dataframe. This can be helpful as you're figuring out how to write your code.
 ```
 
 The `select` function also provides some time-saving tools. For example, in the last example, we wanted all the columns except one. Instead of writing out all the columns we want, we can use `-` with the columns we don't want to save time: 
@@ -674,13 +673,13 @@ Class        | Example
 `Date`       | "2010-01-01" [underlying number: 14,610]
 `logical`    | TRUE, FALSE
 
-To find out the class of a vector (including a column in a dataframe-- remember each column can be thought of as a vector), you can use `class()`:
+To find out the class of a vector (including a column in a dataframe -- remember each column can be thought of as a vector), you can use `class()`:
 
 ```{r}
 class(daily_show$date)
 ```
 
-It is especially common to need to convert dates during the data cleaning process, since date columns will usually be read into R as characters or factors, and you can do some interesting things with vectors that are in a Date class that you cannot do with a vector in a character class. To convert a vector to the `Date` class, you can use the `as.Date` function. For example, to convert the `date` column in the `daily_show` data into a Date class, you can run:
+It is especially common to need to convert dates during the data cleaning process, since date columns will usually be read into R as characters or factors -- you can do some interesting things with vectors that are in a Date class that you cannot do with a vector in a character class. To convert a vector to the `Date` class, you can use the `as.Date` function. For example, to convert the `date` column in the `daily_show` data into a Date class, you can run:
 
 ```{r}
 daily_show <- mutate(daily_show,
