@@ -70,29 +70,14 @@ Next week, we will talk more about customization, to help you make more attracti
 ```{r echo = FALSE}
 plot_funcs <- data.frame(type = c("Histogram (1 numeric variable)",
                                   "Scatterplot (2 numeric variables)",
-                                  "Boxplot (1 numeric variable, possibly 1 factor variable)"), 
+                                  "Boxplot (1 numeric variable, possibly 1 factor variable)",
+                                  "Line graph (2 numeric variables)"), 
                          ggplot2_func = c("`geom_histogram`",
                                           "`geom_point`",
-                                          "`geom_boxplot`"))
+                                          "`geom_boxplot`",
+                                          "`geom_line`"))
 knitr::kable(plot_funcs, col.names = c("Plot type",
                                        "ggplot2 function"))
-```
-
-## Useful plot options
-
-The following options will work for all or most of these plotting functions:
-
-```{r echo = FALSE}
-plot_opts <- data.frame(opt = c("`color`", "`fill`",
-                                "`size`", "`shape`", 
-                                "`linetype`", "`alpha`"),
-                        desc = c("Color of a plotting element",
-                                 "Color used to fill the plotting element",
-                                 "Size of points on plot (> 1 for larger, < 1 for smaller)", 
-                                 "Shape to use for the point",
-                                 "Type of line to use (e.g., solid, dashed)",
-                                 "Transparency (closer to 1 for more opaque, closer to 0 for more transparent"))
-knitr::kable(plot_opts, col.names = c("Option", "Description"))
 ```
 
 ## Example plots
@@ -111,10 +96,11 @@ library(dplyr)
 library(ggplot2)
 ```
 
-
 ## Example plots
 
-Each observation is a single measurement for a child; there can be multiple observations per child. I'll subset out child id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
+Each observation is a single measurement for a child; there can be multiple observations per child. \medskip 
+
+I'll subset out child id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
 
 ```{r message = FALSE}
 nepali <- nepali %>%
@@ -144,6 +130,41 @@ ggplot(nepali, aes(x = ht)) +
   geom_histogram()
 ```
 
+
+## Useful plot options
+
+The following options will work for all or most of these plotting functions:
+
+```{r echo = FALSE}
+plot_opts <- data.frame(opt = c("`color`", "`fill`",
+                                "`size`", "`shape`", 
+                                "`linetype`", "`alpha`"),
+                        desc = c("Color of a plotting element",
+                                 "Color used to fill the plotting element",
+                                 "Size of points on plot (> 1 for larger, < 1 for smaller)", 
+                                 "Shape to use for the point",
+                                 "Type of line to use (1: solid, 2: dashed, etc.)",
+                                 "Transparency (1: opaque; 0: transparent"))
+knitr::kable(plot_opts, col.names = c("Option", "Description"))
+```
+
+Different geoms will also have their own specific parameters. 
+
+## Useful plot additions
+
+There are also a number of elements that you can add onto a `ggplot` object using `+`. A few very frequently used ones are: 
+
+```{r echo = FALSE}
+plot_adds <- data.frame(add = c("`ggtitle`",
+                                "`xlab`, `ylab`",
+                                "`xlim`, `ylim`"),
+                        descrip = c("Plot title",
+                                    "x- and y-axis labels",
+                                    "Limits of x- and y-axis"))
+knitr::kable(plot_adds, col.names = c("Element", "Description"))
+```
+
+
 ## `hist()` example
 
 You can try out some of the options on the histogram, like `main`, `xlab`, `xlim`, and `col`:
@@ -167,7 +188,7 @@ ggplot(nepali, aes(x = ht)) +
 
 ## `plot()` example
 
-The main arguments for the `plot()` function are the vectors to plot on the x- and y-axes. You can use `x=` and `y=` to specify these, or you can just put them in the correct order into the function (x value first, y value second):
+You can use the `geom_point` geom to create a scatterplot. For example, to create a scatterplot of height versus age for the Nepali data: 
 
 ```{r, fig.width = 2.5, fig.height = 2, warning = FALSE, fig.align = "center"}
 ggplot(nepali, aes(x = ht, y = wt)) + 
@@ -176,7 +197,7 @@ ggplot(nepali, aes(x = ht, y = wt)) +
 
 ## `plot()` example
 
-Again, you can use some of the options to change the plot appearance:
+Again, you can use some of the options and additions to change the plot appearance:
 
 ```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
 ggplot(nepali, aes(x = ht, y = wt)) + 
@@ -185,11 +206,33 @@ ggplot(nepali, aes(x = ht, y = wt)) +
   xlab("Height (cm)") + ylab("Weight (kg)")
 ```
 
+## `boxplot()` example
+
+To create a boxplot, use `geom_boxplot`: 
+
+```{r, fig.height = 2, fig.width = 2, warning = FALSE, fig.align="center"}
+ggplot(nepali, aes(x = 1, y = ht)) + 
+  geom_boxplot() + 
+  xlab("")+ ylab("Height (cm)")
+```
+
+## `boxplot()` example
+
+You can also do separate boxplots by a factor. In this case, you'll need to include two aesthetics (`x` and `y`) when you initialize the ggplot object. 
+
+```{r, fig.height = 2, fig.width = 2.5, fig.align = "center", warning = FALSE}
+ggplot(nepali, aes(x = sex, y = ht, group = sex)) + 
+  geom_boxplot() + 
+  xlab("Sex")+ ylab("Height (cm)") 
+```
+
 ## `ggpairs()` example
 
-You can use the `ggpairs` function from the `GGally` package to plot all pairs of scatterplots for several variables. 
+There are lots of R extensions for creating other interesting plots. \medskip
 
-Usually, you just do this for numeric variables. However, you could also include factors or logical variables, since R saves them, underneath the form you see, as a numeric value (e.g `TRUE` = 1). The argument is a matrix with the columns to plot. 
+For example, you can use the `ggpairs` function from the `GGally` package to plot all pairs of scatterplots for several variables. \medskip
+
+Notice how this output shows continuous and binary variables differently. \medskip
 
 The next slide shows the output for:
 
@@ -200,55 +243,10 @@ ggpairs(nepali[, c("sex", "wt", "ht", "age")])
 
 ***
 
-```{r echo = FALSE, fig.height = 5, fig.width = 6, fig.align = "center", message = FALSE, warning = FALSE}
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center", message = FALSE, warning = FALSE}
 library(GGally)
 ggpairs(nepali[, c("sex", "wt", "ht", "age")])
 ```
-
-## `boxplot()` example
-
-The main argument of `boxplot()` is the (numeric) vector you want to plot:
-
-```{r, fig.height = 2, fig.width = 2, warning = FALSE, fig.align="center"}
-ggplot(nepali, aes(x = 1, y = ht)) + 
-  geom_boxplot() + 
-  xlab("")+ ylab("Height (cm)")
-```
-
-## `boxplot()` example
-
-You can also do separate boxplots by a factor. This call uses the formula notation we'll talk about in a few minutes, when we talk about regression models:
-
-```{r, fig.height = 2, fig.width = 2.5, fig.align = "center", warning = FALSE}
-ggplot(nepali, aes(x = sex, y = ht)) + 
-  geom_boxplot() + 
-  xlab("Sex")+ ylab("Height (cm)") 
-```
-
-# `with()` digression
-
-## `with()` digression
-
-You'll notice that, in some of these functions, you have to type out the dataframe's object name more than once. You can use the `with()` function to save a bit of time. 
-
-`with()` wraps around another function, and it tells the function it's wrapping to look inside a certain dataframe first when it's looking for objects. For example:
-
-```{r}
-summary(nepali$wt)
-with(nepali, summary(wt))
-```
-
-## `with()` digression
-
-Some of you may have heard of `attach()` and `detach()` as an alternative to this. You can use these to attach a dataframe, so R looks there first for objects for any code until you detach the dataframe. 
-
-Most heavy-duty R users don't use `attach()` and `detach()`. They can create confusion or errors in your code. I would recommend using `with` in cases when it will save you time, but not `attach` or `detach`.
-
-## `with()` digression
-
-From [Google's style page for R](https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml):
-
-> "The possibilities for creating errors when using attach are numerous. Avoid it."
 
 # Simple statistics to explore data
 
@@ -274,6 +272,16 @@ mean(nepali$wt, na.rm = TRUE)
 range(nepali$ht, na.rm = TRUE)
 table(nepali$sex)
 ```
+
+## Simple statistic examples
+
+You can also get all these tasks done using `dplyr`:
+
+```{r}
+nepali %>%
+  summarize(mean_wt = mean(wt, na.rm = TRUE))
+```
+
 
 ## Simple statistic examples
 
