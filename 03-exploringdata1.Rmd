@@ -4,7 +4,7 @@
 
 ## Data from a package
 
-So far you have gotten data to use in R three ways:
+So far we've covered three ways to get data into R:
 
 1. From flat files (either on your computer or online)
 2. From files like SAS and Excel
@@ -95,7 +95,7 @@ library(ggplot2)
 
 The data we'll be using today is from a dataset called `worldcup` in the package `faraway`. Load that data so you can use it on your computer (note: you will need to load and install the `faraway` package to do this). Use the help file for the data to find out more about the dataset. Use some basic functions, like `head`, `tail`, `colnames`, `str`, and `summary` to check out the data a bit. See if you can figure out:
 
-- What variables are included in this dataset (check the column names)?
+- What variables are included in this dataset? (Check the column names.)
 - What class is each column currently? In particular, which are numbers and which are factors?
 
 #### Example R code:
@@ -104,7 +104,7 @@ Load the `faraway` package using `load()` and then load the data using `data()`:
 
 ```{r}
 ## Uncomment the next line if you need to install the package
-# install.packages("faraway"")
+# install.packages("faraway")
 library(faraway)
 data("worldcup")
 ```
@@ -163,7 +163,7 @@ ggplot(worldcup, aes(x = Time, y = Passes)) +
 
 Use the `ggpairs` function from the `GGally` package to plot scatterplots of all combinations of several numeric variables.
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(GGally)
 library(dplyr)
 ggpairs(select(worldcup, Time, Shots, Passes, Tackles, Saves))
@@ -198,7 +198,7 @@ ggplot(top_teams, aes(x = Team, y = Saves)) +
 
 #### If you have extra time:
 
-- If you wanted to do the same plot for several different variables, you could loop through your code (we'll be covering more about loops in a few weeks). For example, to create histograms for all of the numeric variables (if you do this in RStudio, you'll need to use the arrows on the plot window to move through and see all the different plots once you've created them):
+If you wanted to do the same plot for several different variables, you could loop through your code (we'll be covering more about loops in a few weeks). For example, you could create histograms for all of the numeric variables (if you do this in RStudio, you'll need to use the arrows on the plot window to move through and see all the different plots once you've created them):
 
 ```{r, fig.width = 3, fig.height = 3}
 ## Create an object with the column names for all of the numeric variables
@@ -237,7 +237,7 @@ worldcup %>%
   filter(Time == max(Time))
 ```
 
-Here are some extra lines of code that do things you might want to do related to this. First, if you wanted to create a vector that had the team names of the teams of the players that played the max time, you could again use the square bracket indexing to pull the right rows, and then specify in the indexing that you just wanted the values of the column `Team` for those rows. 
+Here are some extra lines of code for tasks related to these questions. First, if you wanted to create a vector that had the team names of the teams of the players that played the max time, you could again use the square bracket indexing to pull the right rows, and then specify in the indexing that you just wanted the values of the column `Team` for those rows. 
 
 ```{r}
 worldcup %>%
@@ -313,7 +313,7 @@ Save this model as the object `mod_1`.
 - Plot temperature (x-axis) versus dewpoint temperature (y-axis) for Chicago. Add in the regression line from the model you fit.
 - Use `plot()` on the model object to check if some of the assumptions for the regression model seem appropriate.
 - Try fitting the regression as a GLM, using `glm()`. Are your coefficients different?
-- Does PM10 vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable, and then run `anova()` on that model, and R will compare it to an intercept-only model.) What day of the week is PM10 generally highest (check the model coefficients to figure this out)? Try to write out (on paper) the regression equation for the model you're fitting.
+- Does PM10 vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable, and then run `anova()` on that model, and R will compare it to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you're fitting.
 - Try using `glm()` to run a Poisson regression of respiratory deaths (`resp`) on temperature during summer days. Start by creating a subset with just summer days called `summer`. (Hint: Use the `month` variable to do this-- just pull out the subset where the month is 6, 7, or 8, for June, July, and August.) Try to write out the regression equation for the model you're fitting.
 - The coefficient for the temperature variable in this model is our best estimate (based on this model) of the **log relative risk** for a one degree Celcius increase in temperature. What is the **relative risk** associated with a one degree Celsius increase?
 
@@ -359,7 +359,7 @@ ggplot(chic, aes(x = temp, y = dptp)) +
 Plot some various plots to check model assumptions for the model you fit using the `plot()` function on your model object:
 
 ```{r, fig.width = 6, fig.height = 6}
-par(mfrow = c(2, 2)) # Set to four plots per panel-- 2 rows, 2 columns
+par(mfrow = c(2, 2)) # Set to four plots per panel -- 2 rows, 2 columns
 plot(mod_1)
 par(mfrow = c(1, 1)) # Reset to one plot per panel
 ```
