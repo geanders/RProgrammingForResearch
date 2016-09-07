@@ -62,7 +62,7 @@ As a note, you can similarly use `library()`, without the name of a package, to 
 library()
 ```
 
-# Plots to explore data
+# Plots 
 
 ## Plots to explore data
 
@@ -375,12 +375,12 @@ ggpairs(nepali[, c("sex", "wt", "ht", "age")])
 
 ***
 
-```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center", message = FALSE, warning = FALSE}
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center", message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5}
 library(GGally)
 ggpairs(nepali[, c("sex", "wt", "ht", "age")])
 ```
 
-# Simple statistics to explore data
+# Simple statistics
 
 ## Simple statistics functions
 
@@ -407,16 +407,6 @@ table(nepali$sex)
 
 ## Simple statistic examples
 
-You can also perform most of these tasks using `dplyr`:
-
-```{r}
-nepali %>%
-  summarize(mean_wt = mean(wt, na.rm = TRUE))
-```
-
-
-## Simple statistic examples
-
 The `cor` function can take two or more vectors. If you give it multiple values, it will give the correlation matrix for all the vectors.
 
 ```{r}
@@ -435,11 +425,30 @@ summary(nepali$sex)
 
 We'll see more of this when we do regression models.
 
-# A bit more on logical statements
+## Simple statistic examples
+
+You can also perform many of these tasks using `dplyr`. For example, to get the mean weight, you can use the `summarize` function: 
+
+```{r}
+nepali %>%
+  summarize(mean_wt = mean(wt, na.rm = TRUE))
+```
+
+## Simple statistic examples
+
+If you want to get summaries by group using `dplyr` (e.g., mean weight by sex), use `group_by` before running `summarize`:
+
+```{r}
+nepali %>%
+  group_by(sex) %>%
+  summarize(mean_wt = mean(wt, na.rm = TRUE))
+```
+
+# Logical statements
 
 ## Logical statements
 
-Last week, you learned a lot about logical statements and how to use them with the `subset()` function. 
+Last week, you learned a lot about logical statements and how to use them with the `subset()` function. \medskip
 
 You can also use logical vectors, created with these statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`).
 
@@ -496,7 +505,7 @@ sum(is_male); sum(!is_male)
 table(is_male)
 ```
 
-# Using regression models to explore data
+# Regression models 
 
 ## Formula structure
 
@@ -532,7 +541,7 @@ where:
 Some functions you can use on model objects:
 
 Function    | Description
------------ | -----------------
+----------- | -------------------------------------------------------------
 `summary()` | Get a variety of information on the model, including coefficients and p-values for the coefficients
 `coef()`    | Pull out just the coefficients for a model
 `residuals()` | Get the model residuals
