@@ -16,7 +16,7 @@ options(width = 50)
 
 ## Data from R packages
 
-So far you have gotten data to use in R three ways:
+So far we've covered three ways to get data into R:
 
 1. From flat files (either on your computer or online)
 2. From files like SAS and Excel
@@ -26,7 +26,7 @@ Many R packages come with their own data, which is very easy to load and use.
 
 ## Data from R packages
 
-For example, the `faraway` package has a dataset called `worldcup` that you'll use today. To load it, use the `data()` function once you've loaded the package:
+For example, the `faraway` package has a dataset called `worldcup` that you'll use today. To load it, use the `data()` function once you've loaded the package with the name of the dataset as its argument:
 
 ```{r}
 library(faraway)
@@ -49,7 +49,7 @@ To find out all the datasets that are available in the packages you currently ha
 data()
 ```
 
-To find out all of the datasets available within a certain package, run `data` with a `package` argument:
+To find out all of the datasets available within a certain package, run `data` with the argument `package`:
 
 ```{r}
 data(package = "faraway")
@@ -96,7 +96,7 @@ Use the following conventions to initialize a ggplot object:
 object <- ggplot(dataframe, aes(x = column_1, y = column_2))
 ```
 
-Notice that you first specify the dataframe with the data you want to plot and then you might specify either **mappings** or constant values for some or all of the aesthetics. 
+Notice that you first specify the dataframe with the data you want to plot and then you might specify either **mappings** or constant values for some or all of the aesthetics (`aes`). 
 
 ## Plot aesthetics
 
@@ -118,7 +118,7 @@ nepali %>%
 
 In this graph, the mapped aesthetics are color, x, and y. \medskip
 
-*Note*: Any of these aesthetics could also be given a constant value, instead of mapped to an element of the data. For example, all the points could be red, instead of showing gender. 
+*Note*: Any of these aesthetics could also be given a constant value, instead of being mapped to an element of the data. For example, all the points could be red, instead of showing gender. 
 
 ## Plot aesthetics
 
@@ -134,53 +134,24 @@ aes_vals <- data.frame(aes = c("`x`", "`y`", "`shape`",
                                 "Color of border of elements", 
                                 "Color of inside of elements",
                                 "Size", 
-                                "Transparency",
+                                "Transparency (1: opaque; 0: transparent)",
                                 "Type of line (e.g., solid, dashed)"))
 knitr::kable(aes_vals, col.names = c("Code", "Description"))
 ```
 
 ## Plot aesthetics
 
-Which aesthetics you need to specify depend on which geoms (more on those in a second) you're adding to the plot. \medskip 
+Which aesthetics you must specify depend on which geoms (more on those in a second) you're adding to the plot. \medskip 
 
-You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file. \medskip 
+You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file (e.g., `?geom_point`). \medskip 
 
-Required aesthetics are in bold and optional ones are not. 
-
-## Adding geoms
-
-Now you can add one or more `geom` to the object to create a plot. Here are some common ones:
-
-- `geom_point()`
-- `geom_line()`, `geom_segment()`
-- `geom_path()`, `geom_polygon()`
-- `geom_histogram()`
-- `geom_abline()`, `geom_hline()`, `geom_vline()`
-- `geom_boxplot()`
-- `geom_smooth()`, `geom_text()`
+Required aesthetics are in bold in this section of the help file and optional ones are not. 
 
 ## Adding geoms
 
-For example:
+Next, you'll want to add one or more `geoms` to create the plot. You can add these with `+` after the `ggplot` statement to initialize the ggplot object. \medskip
 
-```{r, fig.width = 3.5, fig.height = 3, eval = FALSE}
-ggplot(chic_july, aes(x = temp, y = death)) + 
-        geom_point()
-```
-
-## Adding geoms
-
-For example:
-
-```{r, fig.width = 8, fig.height = 3, message = FALSE, eval = FALSE}
-ggplot(worldcup, aes(x = Time)) + 
-        geom_histogram(binwidth = 10) + 
-        geom_vline(aes(xintercept = 90 * 0:6),
-                   color = "blue", alpha = 0.5)
-```
-
-
-## Plots to explore data
+Some of the most common geoms are:
 
 ```{r echo = FALSE}
 plot_funcs <- data.frame(type = c("Histogram (1 numeric variable)",
@@ -193,6 +164,75 @@ plot_funcs <- data.frame(type = c("Histogram (1 numeric variable)",
                                           "`geom_line`"))
 knitr::kable(plot_funcs, col.names = c("Plot type",
                                        "ggplot2 function"))
+```
+
+## Constant aesthetics
+
+Instead of mapping an aesthetic to an element of your data, you can use a constant value for it. For example, you may want to make all the points green, rather than having color map to gender: 
+
+```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+nepali %>%
+  tbl_df() %>% 
+  distinct(id, .keep_all = TRUE) %>%
+  mutate(sex = factor(sex, levels = c(1, 2), labels = c("Male", "Female"))) %>%
+  ggplot(aes(x = ht, y = wt)) + 
+  geom_point(color = "darkgreen") + 
+  xlab("Height (cm)") + ylab("Weight (kg)")
+```
+
+In this case, you'll define that aesthetic when you add the geom, outside of an `aes` statement.
+
+## Constant aesthetics
+
+If you're using a constant shape, you specify the shape with a number. \medskip
+
+Here are the shapes that correspond to the numbers 1 to 25:
+
+```{r echo = FALSE, out.width = "0.6\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center"}
+x <- rep(1:5, 5)
+y <- rep(1:5, each = 5)
+shape <- 1:25
+to_plot <- data_frame(x = x, y = y, shape = shape)
+ggplot(to_plot, aes(x = x, y = y)) + 
+  geom_point(shape = shape, size = 4, color = "black", fill = "red") + 
+  geom_text(label = shape, nudge_x = -0.25) +
+  xlim(c(0.5, 5.5)) + 
+  theme_void() + 
+  scale_y_reverse()
+```
+
+## Constant aesthetics
+
+If you are using a constant color, R has character names for different colors. For example: 
+
+```{r echo = FALSE, out.width = "0.18\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center"}
+x <- rep(0, 6)
+y <- 1:6
+color <- c("blue", "blue4", "darkorchid", "deepskyblue2", 
+           "steelblue1", "dodgerblue3")
+to_plot <- data_frame(x = x, y = y, color = color)
+ggplot(to_plot, aes(x = x, y = y)) + 
+  geom_point(color = color, size = 2) + 
+  geom_text(label = color, hjust = 0, nudge_x = 0.05) + 
+  theme_void() + 
+  xlim(c(-1, 1.5)) +
+  scale_y_reverse()
+```
+
+Google "R colors" and search the images to find links to listings of different R colors.
+
+## Useful plot additions
+
+There are also a number of elements that you can add onto a `ggplot` object using `+`. A few very frequently used ones are: 
+
+```{r echo = FALSE}
+plot_adds <- data.frame(add = c("`ggtitle`",
+                                "`xlab`, `ylab`",
+                                "`xlim`, `ylim`"),
+                        descrip = c("Plot title",
+                                    "x- and y-axis labels",
+                                    "Limits of x- and y-axis"))
+knitr::kable(plot_adds, col.names = c("Element", "Description"))
 ```
 
 ## Example plots
@@ -222,8 +262,9 @@ nepali <- nepali %>%
   # Subset to certain columns
   select(id, sex, wt, ht, age) %>%
   # Convert id and sex to factors
-  mutate(id = factor(id, levels = c(1, 2), labels = c("Male", "Female")),
-         sex = factor(sex)) %>%
+  mutate(id = factor(id),
+         sex = factor(sex, levels = c(1, 2),
+                      labels = c("Male", "Female"))) %>%
   # Limit to first obs. per child
   distinct(id, .keep_all = TRUE)
 ```
@@ -236,53 +277,18 @@ The data now looks like:
 head(nepali)
 ```
 
-## `hist()` example
+## Histogram example
 
-For `hist()`, the main argument is the (numeric) vector for which you want to create a histogram:
+For `hist()`, the main aesthetic is `x`, the (numeric) vector for which you want to create a histogram:
 
 ```{r, fig.width = 2.5, fig.height = 2, message = FALSE, warning = FALSE, fig.align = "center"}
 ggplot(nepali, aes(x = ht)) + 
   geom_histogram()
 ```
 
+## Histogram example
 
-## Useful plot options
-
-The following options will work for all or most of these plotting functions:
-
-```{r echo = FALSE}
-plot_opts <- data.frame(opt = c("`color`", "`fill`",
-                                "`size`", "`shape`", 
-                                "`linetype`", "`alpha`"),
-                        desc = c("Color of a plotting element",
-                                 "Color used to fill the plotting element",
-                                 "Size of points on plot (> 1 for larger, < 1 for smaller)", 
-                                 "Shape to use for the point",
-                                 "Type of line to use (1: solid, 2: dashed, etc.)",
-                                 "Transparency (1: opaque; 0: transparent"))
-knitr::kable(plot_opts, col.names = c("Option", "Description"))
-```
-
-Different geoms will also have their own specific parameters. 
-
-## Useful plot additions
-
-There are also a number of elements that you can add onto a `ggplot` object using `+`. A few very frequently used ones are: 
-
-```{r echo = FALSE}
-plot_adds <- data.frame(add = c("`ggtitle`",
-                                "`xlab`, `ylab`",
-                                "`xlim`, `ylim`"),
-                        descrip = c("Plot title",
-                                    "x- and y-axis labels",
-                                    "Limits of x- and y-axis"))
-knitr::kable(plot_adds, col.names = c("Element", "Description"))
-```
-
-
-## `hist()` example
-
-You can try out some of the options on the histogram, like `main`, `xlab`, `xlim`, and `col`:
+You can try out some of the options on the histogram, like `main`, `xlab`, and `xlim`:
 
 ```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
 ggplot(nepali, aes(x = ht)) + 
@@ -291,7 +297,7 @@ ggplot(nepali, aes(x = ht)) +
   xlab("Height (cm)") + xlim(c(0, 120))
 ```
 
-## `hist()` example
+## Histogram example
 
 `geom_histogram` also has its own special argument, `bins`. You can use this to change the number of bins that are used to make the histogram:
 
@@ -301,7 +307,7 @@ ggplot(nepali, aes(x = ht)) +
                  bins = 40) 
 ```
 
-## `plot()` example
+## Scatterplot example
 
 You can use the `geom_point` geom to create a scatterplot. For example, to create a scatterplot of height versus age for the Nepali data: 
 
@@ -310,7 +316,7 @@ ggplot(nepali, aes(x = ht, y = wt)) +
   geom_point()
 ```
 
-## `plot()` example
+## Scatterplot example
 
 Again, you can use some of the options and additions to change the plot appearance:
 
@@ -321,7 +327,7 @@ ggplot(nepali, aes(x = ht, y = wt)) +
   xlab("Height (cm)") + ylab("Weight (kg)")
 ```
 
-## `boxplot()` example
+## Boxplot example
 
 To create a boxplot, use `geom_boxplot`: 
 
@@ -331,7 +337,7 @@ ggplot(nepali, aes(x = 1, y = ht)) +
   xlab("")+ ylab("Height (cm)")
 ```
 
-## `boxplot()` example
+## Boxplot example
 
 You can also do separate boxplots by a factor. In this case, you'll need to include two aesthetics (`x` and `y`) when you initialize the ggplot object. 
 
@@ -339,73 +345,6 @@ You can also do separate boxplots by a factor. In this case, you'll need to incl
 ggplot(nepali, aes(x = sex, y = ht, group = sex)) + 
   geom_boxplot() + 
   xlab("Sex")+ ylab("Height (cm)") 
-```
-
-## `ggplot` conventions
-
-Note that there are a few ways you could have done this:
-
-Without saving the plot as an object:
-```{r eval = FALSE}
-ggplot(chic_july, aes(x = date, y = death)) + 
-        geom_point()
-```
-
-Saving as an object, then save on the added geom, then print:
-```{r eval = FALSE}
-first_graph <- ggplot(chic_july,
-                      aes(x = date, y = death))
-first_graph <- first_graph + geom_point()
-first_graph
-```
-
-## `ggplot` conventions
-
-```{r, fig.width = 4, fig.height = 3, eval = FALSE}
-first_graph <- ggplot(chic_july,
-                      aes(x = date, y = death))
-first_graph <- first_graph + geom_point()
-
-first_graph
-first_graph + geom_line() +
-        xlab("Date in 1995") + 
-        ylim(0, 500)
-```
-
-## `ggplot` conventions
-
-Code conventions are different for `ggplot` than for base R graphics. 
-
-First, you need to initialize a ggplot object using the `ggplot()` function. You can use this to specify the dataframe and map variables in your data to `x` and `y` components of the graph. 
-
-```{r eval = FALSE}
-first_graph <- ggplot(chic_july,
-                      aes(x = date, y = death))
-```
-
-This is not enough to plot something-- you will need to add one or more `geom` to plot.
-
-## `ggplot` conventions
-
-To add a scatterplot, you can add a `geom_point()`:
-
-```{r, fig.width = 4, fig.height = 3, eval = FALSE}
-first_graph + geom_point()
-```
-
------------------
-
-```{r echo = FALSE, eval = FALSE}
-first_graph <- ggplot(chic_july,
-                      aes(x = date, y = death))
-first_graph <- first_graph + geom_point()
-```
-
-```{r, echo = FALSE, fig.width = 4, fig.height = 3, eval = FALSE}
-first_graph
-first_graph + geom_line() +
-        xlab("Date in 1995") + 
-        ylim(0, 500)
 ```
 
 ## `ggpairs()` example
@@ -457,7 +396,7 @@ table(nepali$sex)
 
 ## Simple statistic examples
 
-You can also get all these tasks done using `dplyr`:
+You can also perform most of these tasks using `dplyr`:
 
 ```{r}
 nepali %>%
@@ -498,7 +437,7 @@ You can also use logical vectors, created with these statements, for a lot of ot
 A logical statement run on a vector will create a logical vector the same length as the original vector:
 
 ```{r}
-is_male <- nepali$sex == "male"
+is_male <- nepali$sex == "Male"
 length(nepali$sex)
 length(is_male)
 ```
