@@ -68,9 +68,7 @@ Notice that you first specify the dataframe with the data you want to plot and t
 
 ### Plot aesthetics
 
-**Aesthetics** are elements that can show certain elements of the data. \medskip
-
-For example, color might show gender, x-position might show height, and y-position might show weight. \medskip
+**Aesthetics** are elements that can show certain elements of the data. For example, color might show gender, x-position might show height, and y-position might show weight. 
 
 ```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
 library(dplyr)
@@ -84,7 +82,7 @@ nepali %>%
   xlab("Height (cm)") + ylab("Weight (kg)")
 ```
 
-In this graph, the mapped aesthetics are color, x, and y. \medskip
+In this graph, the mapped aesthetics are color, x, and y. 
 
 *Note*: Any of these aesthetics could also be given a constant value, instead of being mapped to an element of the data. For example, all the points could be red, instead of showing gender. 
 
@@ -105,17 +103,11 @@ aes_vals <- data.frame(aes = c("`x`", "`y`", "`shape`",
 knitr::kable(aes_vals, col.names = c("Code", "Description"))
 ```
 
-Which aesthetics you must specify depend on which geoms (more on those in a second) you're adding to the plot. \medskip 
-
-You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file (e.g., `?geom_point`). \medskip 
-
-Required aesthetics are in bold in this section of the help file and optional ones are not. 
+Which aesthetics you must specify depend on which geoms (more on those in a second) you're adding to the plot. You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file (e.g., `?geom_point`). Required aesthetics are in bold in this section of the help file and optional ones are not. 
 
 ### Adding geoms
 
-Next, you'll want to add one or more `geoms` to create the plot. You can add these with `+` after the `ggplot` statement to initialize the ggplot object. \medskip
-
-Some of the most common geoms are:
+Next, you'll want to add one or more `geoms` to create the plot. You can add these with `+` after the `ggplot` statement to initialize the ggplot object. Some of the most common geoms are:
 
 ```{r echo = FALSE}
 plot_funcs <- data.frame(type = c("Histogram (1 numeric variable)",
@@ -144,11 +136,9 @@ nepali %>%
   xlab("Height (cm)") + ylab("Weight (kg)")
 ```
 
-In this case, you'll define that aesthetic when you add the geom, outside of an `aes` statement.
+In this case, you'll define that aesthetic when you add the geom, outside of an `aes` statement. 
 
-If you're using a constant shape, you specify the shape with a number. \medskip
-
-Here are the shapes that correspond to the numbers 1 to 25:
+If you're using a constant shape, you specify the shape with a number. Here are the shapes that correspond to the numbers 1 to 25:
 
 ```{r echo = FALSE, fig.width = 5, fig.height = 3, fig.align = "center"}
 x <- rep(1:5, 5)
@@ -211,9 +201,7 @@ library(dplyr)
 library(ggplot2)
 ```
 
-Each observation is a single measurement for a child; there can be multiple observations per child. \medskip 
-
-I'll subset out child id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
+Each observation is a single measurement for a child; there can be multiple observations per child. I'll subset out child id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
 
 ```{r message = FALSE}
 nepali <- nepali %>%
@@ -306,19 +294,109 @@ ggplot(nepali, aes(x = sex, y = ht, group = sex)) +
 
 ### Extensions of `ggplot2`
 
-There are lots of R extensions for creating other interesting plots. \medskip
-
-For example, you can use the `ggpairs` function from the `GGally` package to plot all pairs of scatterplots for several variables. \medskip
-
-Notice how this output shows continuous and binary variables differently. \medskip
-
-The next slide shows the output for:
+There are lots of R extensions for creating other interesting plots. For example, you can use the `ggpairs` function from the `GGally` package to plot all pairs of scatterplots for several variables. Notice how this output shows continuous and binary variables differently.
 
 ```{r out.width = "\\textwidth", fig.align = "center", message = FALSE, warning = FALSE}
 library(GGally)
 ggpairs(nepali[, c("sex", "wt", "ht", "age")])
 ```
 
+## Simple statistics functions
+
+Here are some simple statistics functions you will likely use often:
+
+Function  | Description
+--------- | -----------------
+`range()` | Range (minimum and maximum) of vector 
+`min()`, `max()` | Minimum or maximum of vector
+`mean()`, `median()` | Mean or median of vector
+`table()` | Number of observations per level for a factor vector
+`cor()` | Determine correlation(s) between two or more vectors
+`summary()` | Summary statistics, depends on class
+
+All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`).
+
+```{r}
+mean(nepali$wt, na.rm = TRUE)
+range(nepali$ht, na.rm = TRUE)
+table(nepali$sex)
+```
+
+The `cor` function can take two or more vectors. If you give it multiple values, it will give the correlation matrix for all the vectors.
+
+```{r}
+cor(nepali$wt, nepali$ht, use = "complete.obs")
+cor(nepali[ , c("wt", "ht", "age")], use = "complete.obs")
+```
+
+R supports object-oriented programming. This shows up with `summary()`. R looks to see what type of object it's dealing with, and then uses a method specific to that object type. 
+
+```{r}
+summary(nepali$wt)
+summary(nepali$sex)
+```
+
+We'll see more of this when we do regression models.
+
+You can also perform many of these tasks using `dplyr`. For example, to get the mean weight, you can use the `summarize` function: 
+
+```{r}
+nepali %>%
+  summarize(mean_wt = mean(wt, na.rm = TRUE))
+```
+
+If you want to get summaries by group using `dplyr` (e.g., mean weight by sex), use `group_by` before running `summarize`:
+
+```{r}
+nepali %>%
+  group_by(sex) %>%
+  summarize(mean_wt = mean(wt, na.rm = TRUE))
+```
+
+## Logical vectors
+
+Last week, you learned a lot about logical statements and how to use them with the `subset()` function. You can also use logical vectors, created with these statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`).
+
+A logical statement run on a vector will create a logical vector the same length as the original vector:
+
+```{r}
+is_male <- nepali$sex == "Male"
+length(nepali$sex)
+length(is_male)
+```
+
+The logical vector will have the value `TRUE` at any position where the original vector met the logical condition you tested, and `FALSE` anywhere else:
+
+```{r}
+head(nepali$sex)
+head(is_male)
+```
+
+You can "flip" this logical vector (i.e., change every `TRUE` to `FALSE` and vice-versa) using `!`:
+
+```{r}
+head(is_male)
+head(!is_male)
+```
+
+You can do a few cool things now with this vector. For example, you can use it with indexing to pull out just the rows where `is_male` is `TRUE`:
+
+```{r}
+head(nepali[is_male, ])
+```
+
+Or, with `!`, just the rows where `is_male` is `FALSE`:
+
+```{r}
+head(nepali[!is_male, ])
+```
+
+You can also use `sum()` and `table()` to find out how many males and females are in the dataset:
+
+```{r}
+sum(is_male); sum(!is_male)
+table(is_male)
+```
 
 
 ## In-course exercise
