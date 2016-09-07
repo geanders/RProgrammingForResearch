@@ -172,7 +172,7 @@ ggplot(worldcup, aes(x = Time, y = Passes, color = Position)) +
 
 Use the `ggpairs` function from the `GGally` package to plot scatterplots of all combinations of several numeric variables.
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, fig.align = "center"}
 library(GGally)
 library(dplyr)
 ggpairs(select(worldcup, Time, Shots, Passes, Tackles, Saves))
@@ -197,7 +197,7 @@ This dataset will still have all the levels saved for the `Team` factor, even th
 
 Now, you can plot the boxplots, mapping `Team` to the `x` aesthetic and `Shots` or `Saves` to the `y` aesthetic:
 
-```{r, fig.width = 6, fig.height = 3}
+```{r, fig.width = 6, fig.height = 3, fig.align = "center"}
 ggplot(top_teams, aes(x = Team, y = Shots)) + 
   geom_boxplot() + 
   ggtitle("Shots")
@@ -239,12 +239,11 @@ A few things to note in this example:
 Next, try checking out the data using some basic commands for simple statistics, like `mean()`, `range()`, `max()`, and `min()`. Use these, along with some logical statements, to help you answer the following questions:
 
 - What is the range of time that players spent in the game? Who played the most World Cup time in this World Cup? For the minimum of the range of `Time`, how many players played this amount of time?
-- What is the mean number of saves that players made? How many of the players are goalkeepers? What is the mean number of saves just among the goalkeepers? Did any non-goalkeeper make a save?
+- What is the mean number of saves that players made? What is the mean number of saves just among the goalkeepers? How many of the players are goalkeepers? Did any non-goalkeeper make a save?
 
 #### Example R code:
 
 Use `range()` to find out the range of time these players played in the World Cup. 
-
 ```{r}
 range(worldcup$Time)
 ```
@@ -269,26 +268,11 @@ worldcup %>%
   filter(Time == max(Time))
 ```
 
-Here are some extra lines of code for tasks related to these questions. First, if you wanted to create a vector that had the team names of the teams of the players that played the max time, you could again use the square bracket indexing to pull the right rows, and then specify in the indexing that you just wanted the values of the column `Team` for those rows. 
+To calculate the mean number of saves among all the players, use the `mean` function, either by itself or within a `summarize` call:
 
 ```{r}
-worldcup %>%
-  filter(Time == max(Time)) %>%
-  select(Team) 
-```
+mean(worldcup$Saves)
 
-If you wanted just the players' names, those are saved as row names rather than as a separate column, so you could use `rownames()` to pull those out of the subsetted data frame. 
-
-```{r}
-worldcup %>%
-  mutate(name = row.names(worldcup)) %>%
-  filter(Time == max(Time)) %>%
-  select(name)
-```
-
-To calculate the mean number of saves among all the players, use `mean()`:
-
-```{r}
 worldcup %>%
   summarize(mean_saves = mean(Saves))
 ```
@@ -311,27 +295,37 @@ The `summary()` function will count up the total number of times that `goalie` i
 summary(goalie)
 ```
 
-There are a few ways to use this vector to figure out how many players were goalkeepers. First, you could use `summary()` (which I just showed) or `table()`, and just read how many times this vector has the value `TRUE`. Second, since R saves logical vectors with `TRUE` as 1 and `FALSE` as 0, you could just `sum()` the vector to find out how often it's `TRUE`.
+There are a few ways to use this vector to figure out how many players were goalkeepers. First, you could use `summary` (which I just showed) or `table`, and just read how many times this vector has the value `TRUE`. Second, since R saves logical vectors with `TRUE` as 1 and `FALSE` as 0, you could just the `sum` function to add up the vector to find out how often it's `TRUE` (`sum` adds up every value in the vector).
 
 ```{r}
 table(goalie)
 sum(goalie)
+```
 
+You could also answer this question by using `summarize` from `dplyr`. You need to `group_by` player position and then you can use the `n` function in `summarize` to count up the total number of observations in each group:
+
+```{r}
 worldcup %>%
-  mutate(goalie = Position == "Goalkeeper") %>%
-  group_by(goalie) %>%
+  group_by(Position) %>%
   summarize(n_players = n())
 ```
 
-Now, you can answer the questions about mean saves for goalies and max saves for non-goalies. If you put `goalie` in the square bracket indexing as the rows value, R will just subset out the rows where `goalie` is equal to TRUE. If you put `!goalie` in the square bracket indexing as the rows value, R will just subset out the rows where `goalie` is equal to FALSE.
+Now, you can answer the questions about mean saves for goalies and max saves for non-goalies. First, try doing that using the `goalie` logical vector you created. If you put `goalie` in the square bracket indexing for the dataframe as the rows value (i.e., the index before the comma), R will subset out just the rows where `goalie` is equal to TRUE. If you put `!goalie` in the square bracket indexing as the rows value, R will just subset out the rows where `goalie` is equal to FALSE. You can use this index subsetting to figure out the mean number of saves per goalie and also whether any non-goalie made a save (by checking the maximum value or range of saves for non-goalies).
 
 ```{r}
 head(worldcup[goalie, ])
-
-head(worldcup %>% filter(Position == "Goalkeeper"))
-
 mean(worldcup[goalie, "Saves"])
 range(worldcup[!goalie, "Saves"])
+```
+
+You could also answer this quesiton using a `dplyr` pipe chain to summarize the data after grouping it by position:
+
+```{r}
+worldcup %>%
+  group_by(Position) %>%
+  summarize(number_players = n(), 
+            mean_saves = mean(Saves),
+            max_saves = max(Saves))
 ```
 
 ### Using regression models to explore data
