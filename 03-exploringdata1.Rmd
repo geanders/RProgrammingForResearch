@@ -130,16 +130,16 @@ summary(worldcup)
 Use some basic plots to check out this data. Try the following:
 
 - Plot histograms of all the numeric variables (`Time`, `Shot`, `Passes`, `Tackles`, `Saves`)
-- Plot scatterplots of different combinations of numeric variables (e.g., `Time` vs. `Shots`). Try doing this using the `plot()` function. Also try doing it using the `pairs()` function, to plot several of these at the same time. 
+- Plot scatterplots of different combinations of numeric variables (e.g., `Time` vs. `Shots`). Try doing this using the `geom_point()` geom from `ggplot2`. Also try doing it using the `ggpairs()` function from the `GGally` package, to plot several of these at the same time. Try using different constant or mapped values with the `color` aesthetic. 
 - Create boxplots of `Time`, `Shots`, `Passes` and `Saves` by position.
 - Go online and find out which teams were the top four teams in this World Cup (i.e., first through fourth places). Create a `top_teams` subset with just these teams. Plot boxplots of `Shots` and `Saves` by team for just these teams. 
 - Did you notice any interesting features of the data when you did any of the graphs in this section?
 
 #### Example R code:
 
-Use histograms to explore the distribution of different variables. If you want to change the number of bins in the histogram, try playing around with the `bins=` option. You can use this to either say how many bins you want (e.g., `breaks = 50`) or to say where you want breaks in the bins to be (e.g., `breaks = c(1, 2, 3)` if you wanted breaks at the variables values of 1, 2, and 3).
+Use histograms to explore the distribution of different variables. If you want to change the number of bins in the histogram, try playing around with the `bins` and `binwidth` arguments. You can use the `bins` argument to say how many bins you want (e.g., `bins = 50`). You can use the `binwidth` argument to say how wide you want the bins to be (e.g., `binwidth = 10` if you wanted bins to be 10 units wide, in the units of the variable mapped to the `x` aesthetic. Try using `fill` and `color` to change the appearance of the plot. Google "R colors" and search the images to find links to listings of different R colors.
 
-```{r, fig.width = 3, fig.height = 3}
+```{r, message = FALSE, fig.align = "center", fig.width = 5, fig.height = 3}
 library(ggplot2)
 ggplot(worldcup, aes(x = Time)) + 
   geom_histogram()
@@ -149,16 +149,25 @@ ggplot(worldcup, aes(x = Time)) +
 
 ggplot(worldcup, aes(x = Time)) + 
   geom_histogram(binwidth = 100)
+
+ggplot(worldcup, aes(x = Time)) + 
+  geom_histogram(binwidth = 50, color = "white", fill = "cyan4")
 ```
 
-Create a scatterplot of `Time` versus `Passes`. To change the size of the points, use the `cex = ` option (use a number lower than 1 for smaller points, higher than 1 for larger points). If you want to save time typing out the name of the dataframe, you can try using the `with()` function, so you only have to type the dataframe name once. 
+Create a scatterplot of `Time` versus `Passes`. To change the size of the points, use the `size` argument (use a number lower than 1 for smaller points, higher than 1 for larger points). Try changing the color and transparency of the points using the aesthetics `color` and `alpha`. Try using color to show each player's position by mapping `Position` to the `color` aesthetic. 
 
-```{r, fig.width = 3, fig.height = 3}
+```{r, fig.align = "center", fig.width = 5, fig.height = 3}
 ggplot(worldcup, aes(x = Time, y = Passes)) + 
   geom_point()
 
 ggplot(worldcup, aes(x = Time, y = Passes)) + 
   geom_point(size = 0.5)
+
+ggplot(worldcup, aes(x = Time, y = Passes)) + 
+  geom_point(size = 2, color = "blue", alpha = 0.25)
+
+ggplot(worldcup, aes(x = Time, y = Passes, color = Position)) + 
+  geom_point()
 ```
 
 Use the `ggpairs` function from the `GGally` package to plot scatterplots of all combinations of several numeric variables.
@@ -171,7 +180,7 @@ ggpairs(select(worldcup, Time, Shots, Passes, Tackles, Saves))
 
 To create a boxplot of `Shots` by `Position`, you can use `geom_boxplot`:
 
-```{r, fig.width=3, fig.height=3}
+```{r, fig.width=5, fig.height=3, fig.align = "center"}
 ggplot(worldcup, aes(x = Position, y = Shots)) + 
   geom_boxplot()
 ```
