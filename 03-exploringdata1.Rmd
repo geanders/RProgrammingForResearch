@@ -193,7 +193,9 @@ top_teams <- worldcup %>%
   mutate(Team = factor(Team))
 ```
 
-This dataset will still have all the levels saved for the `Team` factor, even though it isn't using them all. You can re-set this by converting `Team` to a character and then back to a factor. When R creates a factor from a vector, its default is to only use as levels the values that show up in the vector. 
+This dataset will still have all the levels saved for the `Team` factor, even though it isn't using them all. You can re-set this by resetting `Team` as a factor, which is what I've done with the `mutate` line. When R creates a factor from a vector, its default is to only use as levels the values that show up in the vector. 
+
+Now, you can plot the boxplots, mapping `Team` to the `x` aesthetic and `Shots` or `Saves` to the `y` aesthetic:
 
 ```{r, fig.width = 6, fig.height = 3}
 ggplot(top_teams, aes(x = Team, y = Shots)) + 
@@ -209,7 +211,7 @@ ggplot(top_teams, aes(x = Team, y = Saves)) +
 
 If you wanted to do the same plot for several different variables, you could loop through your code (we'll be covering more about loops in a few weeks). For example, you could create histograms for all of the numeric variables (if you do this in RStudio, you'll need to use the arrows on the plot window to move through and see all the different plots once you've created them):
 
-```{r, fig.width = 3, fig.height = 3}
+```{r, fig.width = 3, fig.height = 2.5}
 ## Create an object with the column names for all of the numeric variables
 my_vars <- colnames(worldcup)[3:7]
 
@@ -217,9 +219,20 @@ my_vars <- colnames(worldcup)[3:7]
 ## variable, and have it print on the plot, as the main title, the 
 ## column name for that variable
 for(var in my_vars){
-        hist(worldcup[ , var], main = var, breaks = 20)
+  worldcup$to_plot <- worldcup[ , var]
+  a <- ggplot(worldcup, aes(x = to_plot)) + 
+    geom_histogram(bins = 20, color = "white", fill = "navy") + 
+    xlab(var) + 
+    ggtitle(paste("Histogram of", var))
+  plot(a)
 }
 ```
+
+A few things to note in this example: 
+
+- To map an element of the data to an aesthetic, it's easiest if that element is saved in a column in the dataframe. Within this loop, I'm making an extra column called `to_plot`, where I'm copying the column of the variable I want to plot each time the loop runs. That way, I can always use `x = to_plot` in the aesthetic mapping for the ggplot object. 
+- If you run code to create a ggplot object within a loop, it won't automatically print. Instead, you need to use `print` to get the object to print out. One way to do that is to save the final ggplot object as an R object (here I'm saving it to `a`) and then use the `print` function to print that object. 
+- Next week, we'll talk some about faceting, which can create multiple plots by variable like this in a lot less code. However, it's useful at this point to start thinking about how to extend code to use in loops, to save yourself time when you need to repeat something similar many times.
 
 ### Exploring the data using simple statistics and logical statements
 
@@ -236,13 +249,23 @@ Use `range()` to find out the range of time these players played in the World Cu
 range(worldcup$Time)
 ```
 
-To figure out who played the most time, you need to subset out the rows of the dataset where the `Time` variable equals the maximum of the `Time` variable for the whole dataset. There are a few ways to do that. Here I'm showing two: (1) using logic within the "square-bracket indexing", to pull out just rows where it is TRUE that the `Time` for that row equals `max(worldcup$Time)` and (2) using the `subset()` function to pull out just rows where where it is TRUE that the `Time` for that row equals `max(worldcup$Time)`. 
+To figure out who played the most time, you need to subset out the rows of the dataset where the `Time` variable equals the maximum of the `Time` variable for the whole dataset. There are a few ways to do that. Here I'm showing two: (1) using logic within the "square-bracket indexing", to pull out just rows where it is TRUE that the `Time` for that row equals `max(worldcup$Time)` and (2) using `filter` from the `dplyr` package to filter down to rows where where it is TRUE that the `Time` for that row equals `max(Time)` for the whole dataset. 
 
 ```{r}
 max(worldcup$Time)
 head(worldcup$Time == max(worldcup$Time))
 
+worldcup[worldcup$Time == max(worldcup$Time), ]
+
 worldcup %>%
+  filter(Time == max(Time))
+```
+
+*Note*: You may have noticed that you lost the players names when you did this using the `dplyr` pipechain. That's because `dplyr` functions convert the data to a dataframe format that does not include rownames. If you want to keep players' names, use `mutate` to move those names from the rownames of the data into a column in the dataframe:
+
+```{r}
+worldcup %>%
+  mutate(Name = rownames(worldcup)) %>%
   filter(Time == max(Time))
 ```
 
