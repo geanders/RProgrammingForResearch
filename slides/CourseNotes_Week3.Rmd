@@ -49,6 +49,13 @@ To find out all the datasets that are available in the packages you currently ha
 data()
 ```
 
+To find out all of the datasets available within a certain package, run `data` with a `package` argument:
+
+```{r}
+data(package = "faraway")
+```
+
+
 As a note, you can similarly use `library()`, without the name of a package, to list all of the packages you have installed that you could call with `library()`:
 
 ```{r, eval = FALSE}
@@ -64,6 +71,114 @@ Plots can be invaluable in exploring your data. \medskip
 This week, we will focus on **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data. \medskip
 
 Next week, we will talk more about customization, to help you make more attractive plots that would go into final reports. \medskip
+
+## `ggplot` conventions
+
+Here, we'll be using functions from the `ggplot2` library, so you'll need to install that package:
+
+```{r}
+library(ggplot2)
+```
+
+The basic steps behind creating a plot with `ggplot2` are:
+
+1. You'll create an object of the `ggplot` class, typically specifying the **aesthetics**; 
+2. You'll add on **geoms** and other elements to create and customize the plot, using `+`.
+
+*Note*: To avoid errors, end lines with `+`, don't start lines with it. 
+
+## Initializing the object
+
+Use the following conventions to initialize a ggplot object:
+
+```{r, eval = FALSE}
+## Generic code
+object <- ggplot(dataframe, aes(x = column_1, y = column_2))
+```
+
+Notice that you first specify the dataframe with the data you want to plot and then you might specify either **mappings** or constant values for some or all of the aesthetics. 
+
+## Plot aesthetics
+
+**Aesthetics** are elements that can show certain elements of the data. \medskip
+
+For example, color might show gender, x-position might show height, and y-position might show weight. \medskip
+
+```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+library(dplyr)
+data("nepali") 
+nepali %>%
+  tbl_df() %>% 
+  distinct(id, .keep_all = TRUE) %>%
+  mutate(sex = factor(sex, levels = c(1, 2), labels = c("Male", "Female"))) %>%
+  ggplot(aes(x = ht, y = wt, color = sex)) + 
+  geom_point() + 
+  xlab("Height (cm)") + ylab("Weight (kg)")
+```
+
+In this graph, the mapped aesthetics are color, x, and y. \medskip
+
+*Note*: Any of these aesthetics could also be given a constant value, instead of mapped to an element of the data. For example, all the points could be red, instead of showing gender. 
+
+## Plot aesthetics
+
+Here are some common plot aesthetics you might want to specify: 
+
+```{r echo = FALSE}
+aes_vals <- data.frame(aes = c("`x`", "`y`", "`shape`",
+                               "`color`", "`fill`", "`size`",
+                               "`alpha`", "`linetype`"),
+                       desc = c("Position on x-axis", 
+                                "Position on y-axis", 
+                                "Shape",
+                                "Color of border of elements", 
+                                "Color of inside of elements",
+                                "Size", 
+                                "Transparency",
+                                "Type of line (e.g., solid, dashed)"))
+knitr::kable(aes_vals, col.names = c("Code", "Description"))
+```
+
+## Plot aesthetics
+
+Which aesthetics you need to specify depend on which geoms (more on those in a second) you're adding to the plot. \medskip 
+
+You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file. \medskip 
+
+Required aesthetics are in bold and optional ones are not. 
+
+## Adding geoms
+
+Now you can add one or more `geom` to the object to create a plot. Here are some common ones:
+
+- `geom_point()`
+- `geom_line()`, `geom_segment()`
+- `geom_path()`, `geom_polygon()`
+- `geom_histogram()`
+- `geom_abline()`, `geom_hline()`, `geom_vline()`
+- `geom_boxplot()`
+- `geom_smooth()`, `geom_text()`
+
+## Adding geoms
+
+For example:
+
+```{r, fig.width = 3.5, fig.height = 3, eval = FALSE}
+ggplot(chic_july, aes(x = temp, y = death)) + 
+        geom_point()
+```
+
+## Adding geoms
+
+For example:
+
+```{r, fig.width = 8, fig.height = 3, message = FALSE, eval = FALSE}
+ggplot(worldcup, aes(x = Time)) + 
+        geom_histogram(binwidth = 10) + 
+        geom_vline(aes(xintercept = 90 * 0:6),
+                   color = "blue", alpha = 0.5)
+```
+
 
 ## Plots to explore data
 
@@ -107,10 +222,10 @@ nepali <- nepali %>%
   # Subset to certain columns
   select(id, sex, wt, ht, age) %>%
   # Convert id and sex to factors
-  mutate(id = factor(id),
+  mutate(id = factor(id, levels = c(1, 2), labels = c("Male", "Female")),
          sex = factor(sex)) %>%
   # Limit to first obs. per child
-  filter(!duplicated(id))
+  distinct(id, .keep_all = TRUE)
 ```
 
 ## `nepali` example data
@@ -224,6 +339,73 @@ You can also do separate boxplots by a factor. In this case, you'll need to incl
 ggplot(nepali, aes(x = sex, y = ht, group = sex)) + 
   geom_boxplot() + 
   xlab("Sex")+ ylab("Height (cm)") 
+```
+
+## `ggplot` conventions
+
+Note that there are a few ways you could have done this:
+
+Without saving the plot as an object:
+```{r eval = FALSE}
+ggplot(chic_july, aes(x = date, y = death)) + 
+        geom_point()
+```
+
+Saving as an object, then save on the added geom, then print:
+```{r eval = FALSE}
+first_graph <- ggplot(chic_july,
+                      aes(x = date, y = death))
+first_graph <- first_graph + geom_point()
+first_graph
+```
+
+## `ggplot` conventions
+
+```{r, fig.width = 4, fig.height = 3, eval = FALSE}
+first_graph <- ggplot(chic_july,
+                      aes(x = date, y = death))
+first_graph <- first_graph + geom_point()
+
+first_graph
+first_graph + geom_line() +
+        xlab("Date in 1995") + 
+        ylim(0, 500)
+```
+
+## `ggplot` conventions
+
+Code conventions are different for `ggplot` than for base R graphics. 
+
+First, you need to initialize a ggplot object using the `ggplot()` function. You can use this to specify the dataframe and map variables in your data to `x` and `y` components of the graph. 
+
+```{r eval = FALSE}
+first_graph <- ggplot(chic_july,
+                      aes(x = date, y = death))
+```
+
+This is not enough to plot something-- you will need to add one or more `geom` to plot.
+
+## `ggplot` conventions
+
+To add a scatterplot, you can add a `geom_point()`:
+
+```{r, fig.width = 4, fig.height = 3, eval = FALSE}
+first_graph + geom_point()
+```
+
+-----------------
+
+```{r echo = FALSE, eval = FALSE}
+first_graph <- ggplot(chic_july,
+                      aes(x = date, y = death))
+first_graph <- first_graph + geom_point()
+```
+
+```{r, echo = FALSE, fig.width = 4, fig.height = 3, eval = FALSE}
+first_graph
+first_graph + geom_line() +
+        xlab("Date in 1995") + 
+        ylim(0, 500)
 ```
 
 ## `ggpairs()` example
