@@ -10,52 +10,58 @@ So far we've covered three ways to get data into R:
 2. From files like SAS and Excel
 3. From R objects (i.e., using `load()`)
 
-Many R packages come with their own data, which is very easy to load and use.
-
-For example, the `faraway` package has a dataset called `worldcup` that you'll use today. To load it, use the `data()` function once you've loaded the package:
+Many R packages come with their own data, which is very easy to load and use. For example, the `faraway` package, which complements Julian Faraway's book *Linear Models with R* (available as an ebook from the CSU library), has a dataset called `worldcup` that I'll use for some examples and that you'll use for part of this week's in-course exercise. To load this dataset, first load the package with the data (`faraway`) and then use the `data()` function with the dataset name ("worldcup") as the argument to the `data` function:
 
 ```{r}
 library(faraway)
 data("worldcup")
 ```
 
-Unlike most data objects you'll work with, the data that comes with an R package will often have its own help file. You can access this using the `?` operator:
+Unlike most data objects you'll work with, datasets that are part of an R package will often have their own help files. You can access this help file for a dataset using the `?` operator with the dataset's name:
 
 ```{r, eval = FALSE}
 ?worldcup
 ```
 
-To find out all the datasets that are available in the packages you currently have loaded, run `data()` without an option inside the parentheses:
+This helpful will usually include information about the size of the dataset, as well as definitions for each of the columns.
+
+To get a list of all of the datasets that are available in the packages you currently have loaded, run `data()` without an option inside the parentheses:
 
 ```{r, eval = FALSE}
 data()
 ```
 
-As a note, you can similarly use `library()`, without the name of a package, to list all of the packages you have installed that you could call with `library()`:
-
-```{r, eval = FALSE}
-library()
+```{block, type = "rmdnote"}
+If you run the `library` function without any arguments (`library()`), it works in a similar way-- R will open a list of all the R packages that you have installed on your computer and can open with a `library` call. 
 ```
-
 
 ## Plots to explore data
 
-Plots can be invaluable in exploring your data. In this section, I will focus on teaching you the basics of `ggplot2` plotting. This section will focus on making **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data at this stage. In a later section, I will discuss customization of `ggplot2` plots, to help you make more attractive plots that would go into final reports. 
+Exploratory data analysis is a key step in data analysis, and plotting your data in different ways is an important part of this process. In this section, I will focus on the basics of `ggplot2` plotting, to get you started creating some plots to explore your data. 
+This section will focus on making **useful**, rather than **attractive** graphs, since at this stage we are focusing on exploring data for yourself rather than presenting results  to others. Next week, I will explain more about how you can customize ggplot objects, to help you make plots to communicate with others.  
 
-This chapter covers how to make the following types of basic plots using functions from the `ggplot2` package (another member of the tidyverse!):
+
+All of the plots we'll make today will use the `ggplot2` package (another member of the tidyverse!). If you don't already have that installed, you'll need to install it. You then need to load the package in your current session of R:
 
 ```{r}
+# install.packages("ggplot2")  ## Uncomment and run if you don't have `ggplot2` installed
 library(ggplot2)
 ```
 
-The basic steps behind creating a plot with `ggplot2` are:
+The process of creating a plot using `ggplot2` follows conventions that are a bit different than most of the code you've seen so far in R (although it is somewhat similar to the idea of piping I introduced in the last chapter). The basic steps behind creating a plot with `ggplot2` are:
 
-1. You'll create an object of the `ggplot` class, typically specifying the **data** and some or all of the **aesthetics**; 
-2. You'll add on **geoms** and other elements to create and customize the plot, using `+`.
+1. Create an object of the `ggplot` class, typically specifying the **data** and some or all of the **aesthetics**; 
+2. Add on **geoms** and other elements to create and customize the plot, using `+`.
 
-*Note*: To avoid errors, end lines with `+`, don't start lines with it. 
+You can add on one or many geoms and other elements to create plots that range from very simple to very customized. This week, we'll focus on simple geoms and added elements, and then explore more detailed customization next week. 
+
+```{block type = "rmdwarning"}
+If R gets to the end of a line and there is not some indication that the call is not over (e.g., `%>%` for piping or `+` for `ggplot2` plots), R interprets that as a message to run the call without reading in further code. A common error when writing `ggplot2` code is to put the `+` to add a geom or element at the beginning of a line rather than the end of a previous line-- in this case, R will try to execute the call too soon. To avoid errors, be sure to end lines with `+`, don't start lines with it. 
+```
 
 ### Initializing a ggplot object
+
+The first step in creating a plot using `ggplot2` is to create a ggplot object. This object will not, by itself, create a plot with anything in it. Instead, it typically specifies the data frame you want to use and which aesthetics will be mapped to certain columns of that data frame (aesthetics are explained more in the next subsection). 
 
 Use the following conventions to initialize a ggplot object:
 
@@ -64,13 +70,17 @@ Use the following conventions to initialize a ggplot object:
 object <- ggplot(dataframe, aes(x = column_1, y = column_2))
 ```
 
-Notice that you first specify the dataframe with the data you want to plot and then you might specify either **mappings** or constant values for some or all of the aesthetics (`aes`). 
+The data frame is the first parameter in a `ggplot` call and, if you like, you can use the parameter definition with that call (e.g., `data = dataframe`). Aesthetics are defined within an `aes` function call that typically is used within the `ggplot` call. 
+
+```{block type = "rmdnote"}
+While the `ggplot` call is the place where you will most often see an `aes` call, `aes` can also be used within the calls to add specific geoms. This can be particularly useful if you want to map aesthetics differently for different geoms in your plot. We'll see some examples of this use of `aes` more in later sections, when we talk about customizing plots. The `data` parameter can also be used in geom calls, to use a different data frame from the one defined when creating the original ggplot object, although this tends to be less common. 
+```
 
 ### Plot aesthetics
 
-**Aesthetics** are elements that can show certain elements of the data. For example, color might show gender, x-position might show height, and y-position might show weight. 
+**Aesthetics** are properties of the plot that can show certain elements of the data. For example, in Figure \@ref(fig:aesmapex), color shows (is mapped to) gender, x-position shows height, and y-position shows weight in a sample data set of measurements of children in Nepal. 
 
-```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+```{r aesmapex, echo = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, fig.align = "center", message = FALSE, fig.cap = "Example of how different properties of a plot can show different elements to the data. Here, color indicates gender, position along the x-axis shows height, and position along the y-axis shows weight. This example is a subset of data from the `nepali` dataset in the `faraway` package."}
 library(dplyr)
 data("nepali") 
 nepali %>%
@@ -82,11 +92,11 @@ nepali %>%
   xlab("Height (cm)") + ylab("Weight (kg)")
 ```
 
-In this graph, the mapped aesthetics are color, x, and y. 
+```{block type = "rmdnote"}
+Any of these aesthetics could also be given a constant value, instead of being mapped to an element of the data. For example, all the points could be red, instead of showing gender.
+```
 
-*Note*: Any of these aesthetics could also be given a constant value, instead of being mapped to an element of the data. For example, all the points could be red, instead of showing gender. 
-
-Here are some common plot aesthetics you might want to specify: 
+Which aesthetics are required for a plot depend on which geoms (more on those in a second) you're adding to the plot. You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file (e.g., `?geom_point`). Required aesthetics are in bold in this section of the help file and optional ones are not. Common plot aesthetics you might want to specify include: 
 
 ```{r echo = FALSE}
 aes_vals <- data.frame(aes = c("`x`", "`y`", "`shape`",
@@ -102,8 +112,6 @@ aes_vals <- data.frame(aes = c("`x`", "`y`", "`shape`",
                                 "Type of line (e.g., solid, dashed)"))
 knitr::kable(aes_vals, col.names = c("Code", "Description"))
 ```
-
-Which aesthetics you must specify depend on which geoms (more on those in a second) you're adding to the plot. You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file (e.g., `?geom_point`). Required aesthetics are in bold in this section of the help file and optional ones are not. 
 
 ### Adding geoms
 
