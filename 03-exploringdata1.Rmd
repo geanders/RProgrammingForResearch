@@ -860,7 +860,7 @@ Save this model as the object `mod_1`.
 - Plot temperature (x-axis) versus dewpoint temperature (y-axis) for Chicago. Add in the regression line from the model you fit.
 - Use `plot()` on the model object to check if some of the assumptions for the regression model seem appropriate.
 - Try fitting the regression as a GLM, using `glm()`. Are your coefficients different?
-- Does PM10 vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable, and then run `anova()` on that model, and R will compare it to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you're fitting.
+- Does $PM_{10}$ vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable, and then run `anova()` on that model, and R will compare it to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you're fitting.
 - Try using `glm()` to run a Poisson regression of respiratory deaths (`resp`) on temperature during summer days. Start by creating a subset with just summer days called `summer`. (Hint: Use the `month` variable to do this-- just pull out the subset where the month is 6, 7, or 8, for June, July, and August.) Try to write out the regression equation for the model you're fitting.
 - The coefficient for the temperature variable in this model is our best estimate (based on this model) of the **log relative risk** for a one degree Celcius increase in temperature. What is the **relative risk** associated with a one degree Celsius increase?
 
@@ -890,20 +890,16 @@ summary(mod_1)
 
 There does seem to be an association between temperature and dewpoint temperature: a unit increase in temperature is associated with a `r round(coef(mod_1)[2], 1)` unit increase in dewpoint temperature. The p-value for the temperature coefficient is <2e-16. This is far below 0.05, which suggests we would be very unlikely to see such a strong association by chance if the null hypothesis, that the two variables are not associated, were true.
 
-Plot these two variables and add in the regression line from the model (note: I've used the `col = ` option to make the color of the points gray). Use `abline()` to add the regression line for the model you fit. 
+Plot these two variables and add in the regression line from the model (note: I've used the `color` option to make the color of the points gray). Use the values from `coef` with a `geom_abline` to add the regression line for the model you fit. 
 
 ```{r}
-ggplot(chic, aes(x = temp, y = dptp)) + 
-  geom_point(size = 0.5, col = "gray") + 
-  geom_smooth(method = "lm", color = "black")
-
 mod_coefs <- coef(mod_1)
 ggplot(chic, aes(x = temp, y = dptp)) + 
   geom_point(size = 0.5, col = "gray") + 
   geom_abline(aes(intercept = mod_coefs[1], slope = mod_coefs[2]))
 ```
 
-Plot some various plots to check model assumptions for the model you fit using the `plot()` function on your model object:
+Plot some plots to check model assumptions for the model you fit using the `plot()` function on your model object:
 
 ```{r, fig.width = 6, fig.height = 6}
 par(mfrow = c(2, 2)) # Set to four plots per panel -- 2 rows, 2 columns
@@ -922,7 +918,7 @@ coef(mod_1a)
 
 The results from the two models are identical.
 
-Fit a model of PM10 regressed on day of week, where day of week is a factor. 
+Fit a model of $PM_{10}$ regressed on day of week, where day of week is a factor. 
 
 ```{r}
 mod_2 <- lm(pm10 ~ dow, data = chic)
@@ -939,14 +935,14 @@ The p-value for an ANOVA of the model with day-of-week coefficients versus the m
 
 Use a boxplot to visually compare PM10 by day of week. 
 
-```{r, fig.height = 3, fig.width = 6}
+```{r, fig.height = 3, fig.width = 6, warning = FALSE}
 ggplot(chic, aes(x = dow, y = pm10)) + 
   geom_boxplot()
 ```
 
 Now try the same plot, but try using the `ylim = ` option to change the limits on the y-axis for the graph, so you can get a better idea of the pattern by day of week (some of the extreme values are very high, which makes it hard to compare by eye when the y-axis extends to include them all).
 
-```{r, fig.height = 3, fig.width = 6}
+```{r, fig.height = 3, fig.width = 6, message = FALSE}
 ggplot(chic, aes(x = dow, y = pm10)) + 
   geom_boxplot() + 
   ylim(c(0, 100))
