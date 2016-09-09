@@ -401,7 +401,7 @@ Function  | Description
 
 ## Simple statistic examples
 
-All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`).
+All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`-- see help files).
 
 ```{r}
 mean(nepali$wt, na.rm = TRUE)
@@ -440,25 +440,45 @@ nepali %>%
 
 ## Simple statistic examples
 
+The basic format for using `summarize` is:
+
+```{r eval = FALSE}
+## Generic code
+dataframe %>%
+  summarize(summary_column_1 = function(existing_columns),
+            summary_column_2 = function(existing_columns))
+```
+
+There are some special functions that you can use with `summarize`. For example, `n` and `first` (see the Data Wrangling cheatsheet for more): 
+```{r}
+nepali %>%
+  summarize(n_children =n(), 
+            first_id = first(id))
+```
+
+## Simple statistic examples
+
 If you want to get summaries by group using `dplyr` (e.g., mean weight by sex), use `group_by` before running `summarize`:
 
 ```{r}
 nepali %>%
   group_by(sex) %>%
-  summarize(mean_wt = mean(wt, na.rm = TRUE))
+  summarize(mean_wt = mean(wt, na.rm = TRUE),
+            n_children =n(), 
+            first_id = first(id))
 ```
 
 # Logical statements
 
 ## Logical statements
 
-Last week, you learned a lot about logical statements and how to use them with the `subset()` function. \medskip
+Last week, you learned some about logical statements and how to use them with the `filter` function. \medskip
 
-You can also use logical vectors, created with these statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`).
+You can use *logical vectors*, created with these statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`).
 
 ## Logical vectors
 
-A logical statement run on a vector will create a logical vector the same length as the original vector:
+A logical statement run on a vector will create a logical vector. This logical vector will be the same length as the original vector:
 
 ```{r}
 is_male <- nepali$sex == "Male"
@@ -509,19 +529,38 @@ sum(is_male); sum(!is_male)
 table(is_male)
 ```
 
+## `dplyr` equivalent
+
+As a note, you could also achieve that with `dplyr` functions. One way to do this is to use `mutate` with a logical statement to create an `is_male` column, then group by that new column and summarize:
+
+```{r}
+nepali %>%
+  mutate(is_male = sex == "Male") %>%
+  group_by(is_male) %>%
+  summarize(n_children = n())
+```
+
 # Regression models 
 
 ## Formula structure
 
-In R, formulas take this structure:
+*Regression models* can be used to estimate how the expected value of a *dependent variable* changes as *independent variables* change. \medskip
+
+In R, regression formulas take this structure:
 
 ```{r eval = FALSE}
+## Generic code
 [response variable] ~ [indep. var. 1] +  [indep. var. 2] + ...
 ```
 
-Notice that `~` used to separate the independent and dependent variables and the `+` used to join independent variables.
+Notice that `~` used to separate the independent and dependent variables and the `+` used to join independent variables. This format mimics the statistical notation:
 
-You will use this type of structure in a lot of different function calls, including those for linear models (`lm`) and generalized linear models (`glm`).
+$$
+Y_i \sim X_1 + X_2 + X_3
+$$
+
+You will use this type of structure in R fo a lot of different function calls, including those for linear models (`lm`) and generalized linear models (`glm`).
+
 
 ## Linear models
 
@@ -544,14 +583,18 @@ where:
 
 Some functions you can use on model objects:
 
-Function    | Description
------------ | -------------------------------------------------------------
-`summary()` | Get a variety of information on the model, including coefficients and p-values for the coefficients
-`coef()`    | Pull out just the coefficients for a model
-`residuals()` | Get the model residuals
-`fitted()`  | Get the fitted values from the model (for the data used to fit the model)
-`plot()`    | Create plots to help assess model assumptions
-`abline()`  | Add a regression line to a scatterplot based on the model
+```{r echo = FALSE}
+mod_objects <- data.frame(Function = c("`summary`", "`coef`", 
+                                   "`fitted`",
+                                   "`plot`", "`residuals`"),
+                          Description = c("Get a variety of information on the model, including coefficients and p-values for the coefficients",
+                                   "Pull out just the coefficients for a model",
+                                   "Get the fitted values from the model (for the data used to fit the model)",
+                                   "Create plots to help assess model assumptions",
+                                   "Get the model residuals"))
+pander::pander(mod_objects, split.cells = c(1,1,58),
+               justify = c("center", "left"))
+```
 
 ## Examples of using a model object
 
@@ -561,15 +604,23 @@ For example, you can get the coefficients from the model we just fit:
 coef(mod_a)
 ```
 
-You can also pull out the residuals:
+The estimated coefficient for the intercept is always given under the name "(Intercept)". \medskip
+
+Estimated coefficients for independent variables are given based on their column names in the original data ("ht" here, for $\beta_1$, or the estimated increase in expected weight for a one unit increase in height).
+
+## Examples of using a model object
+
+You can also pull out the residuals from the model fit:
 
 ```{r}
 head(residuals(mod_a))
 ```
 
+This is a vector the same length as the number of observations (rows) in the dataframe you used to fit the model. The residuals are in the same order as the observations in the original dataframe. 
+
 ## Examples of using a model object
 
-You can also plot the data you used to fit the model and add a regression based on the model fit, using `abline()`:
+You can use the `coef` results to plot a regression line based on the model fit on top of points showing the original data:
 
 ```{r, fig.height = 1.75, fig.width = 2.5, warning = FALSE, fig.align = "center"}
 mod_coef <- coef(mod_a)
@@ -658,11 +709,13 @@ summary(mod_a)$coef
 
 You can fit other model types with `glm()` using the `family` option:
 
-Model type   | `family` option
------------- | ------------------
-Linear       | `family = gaussian(link = "identity")`
-Logistic     | `family = binomial(link = "logit")`
-Poisson      | `family = poisson(link = "log")`
+```{r echo = FALSE}
+glm_types <- data.frame(type = c("Linear", "Logistic", "Poisson"),
+                        opt = c("`family = gaussian(link = 'identity')`",
+                                "`family = binomial(link = 'logit')`", 
+                                "`family = poisson(link = 'log')`"))
+knitr::kable(glm_types, col.names = c("Model type", "`family` option"))
+```
 
 ## Logistic example
 
@@ -690,24 +743,28 @@ Here, the model coefficient gives the **log odds** of having a weight higher tha
 
 ## Formula structure
 
-Here are some conventions used in R formulas:
+There are some conventions that can be used in R formulas. Common ones include: 
 
-Convention | Meaning
----------- | -------------------------------------------------------------
-`I()`      | calculate the value inside before fitting (e.g., `I(x1 + x2)`)
-`:`        | fit the interaction between two variables (e.g., `x1:x2`)
-`*`        | fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)
-`.`        | fit all variables other than the response (e.g., `y ~ .`)
-`-`        | do not include a variable (e.g., `y ~ . - x1`)
-`1`        | intercept (e.g., `y ~ 1`)
+```{r echo = FALSE}
+for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
+                                       "`-`", "`1`"),
+                        Meaning = c("calculate the value inside before fitting (e.g., `I(x1 + x2)`)",
+                                    "fit the interaction between two variables (e.g., `x1:x2`)",
+                                    "fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)",
+                                    "fit all variables other than the response (e.g., `y ~ .`)",
+                                    "do not include a variable (e.g., `y ~ . - x1`)",
+                                    "intercept (e.g., `y ~ 1`)"))
+pander::pander(for_convs, split.cells = c(1,1,58),
+               justify = c("center", "left"))
+```
 
 ## To find out more
 
-A great (and free-to-you) resource to find out more about using R for basic statistics:
+A great (and free for CSU students) resource to find out more about using R for basic statistics:
 
 - [Introductory Statistics with R](http://discovery.library.colostate.edu/Record/.b44705323)
 
 If you want all the details about fitting linear models and GLMs in R, Faraway's books are fantastic:
 
-- [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691)
+- [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691) (also freely available through our library)
 - [Extending the Linear Model with R](http://www.amazon.com/Extending-Linear-Model-Generalized-Nonparametric/dp/158488424X/ref=sr_1_1?ie=UTF8&qid=1442252668&sr=8-1&keywords=extending+linear+model+r)
