@@ -10,11 +10,6 @@ fontsize: 10pt
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
 library(knitr)
-
-library(ggplot2)
-library(gridExtra)
-library(ggthemes)
-library(dplyr)
 ```
 
 # Plot guidelines
@@ -44,6 +39,18 @@ The guidelines are:
 4. Highlight interesting aspects of the data. 
 5. Make order meaningful. 
 6. When possible, use small multiples.
+
+## Packages for examples
+
+For the examples, I'll use `dplyr` for data cleaning and, for plotting, the packages `ggplot2`, `gridExtra`, and `ggthemes`.
+
+```{r message = FALSE}
+library(dplyr)
+
+library(ggplot2)
+library(gridExtra)
+library(ggthemes)
+```
 
 ## Example data
 
@@ -222,12 +229,14 @@ grid.arrange(a, b, ncol = 2)
 There are a few strategies you can use to make labels clearer: 
 
 - Add `xlab` and `ylab` elements to the plot, rather than relying on the column names in the original data. This can also be done with `scale` elements (e.g., `scale_x_continuous`), which give you more power to also make other changes to the x- and y-axes.
-- Include units of measurement in parentheses in axis titles when relevant. If units are dollars or percent, check out the `scales` package, which allows you to add labels directly to axis elements by including arguments like `labels = percent` when adding `scale` elements.
+- Include units of measurement in axis titles when relevant. If units are dollars or percent, check out the `scales` package, which allows you to add labels directly to axis elements by including arguments like `labels = percent` in `scale` elements.
 - If the x-variable requires longer labels (player positions in the example above), consider flipping the coordinates, rather than abbreviating or rotating the labels. You can use `coord_flip` to do this.
 
 ## References
 
-* Guideline 3: **Provide useful references.**
+Guideline 3: **Provide useful references.** \bigskip
+
+Data is easier to interpret when you add references. For example, if you show what it typical, it helps viewers interpret how unusual outliers are. The graph below on the right has added shading showing the range of daily deaths in July in Chicage for 1990--1994 and 1996--2000, to clarify how unusual July 1995 was. \bigskip
 
 ```{r echo = FALSE, fig.height = 3, fig.width = 8}
 chic_july <- subset(chic, month == 7 & year == 1995)
@@ -268,7 +277,9 @@ grid.arrange(a, b, ncol = 2)
 
 ## References
 
-* Guideline 3: **Provide useful references.**
+Guideline 3: **Provide useful references.** \bigskip
+
+Another useful way to add references is to add a linear or smooth fit to the data, to help clarify trends in the data. \bigskip
 
 ```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
 ex <- subset(worldcup, Position == "Forward")
@@ -286,9 +297,48 @@ b <- ggplot(ex, aes(x = Passes, y = Shots)) +
 grid.arrange(a, b, ncol = 2)
 ```
 
-## Interesting aspects
+## References
 
-* Guideline 3: **Highlight interesting aspects.**
+You can use the function `geom_smooth` to add a smooth or linear reference line:
+
+```{r fig.width = 3, fig.height = 3, out.width = "0.4\\textwidth", fig.align = "center"}
+ggplot(worldcup, aes(x = Passes, y = Shots)) + 
+  geom_point() + theme_few() + 
+  geom_smooth(method = "lm")
+```
+
+## References
+
+The most useful `geom_smooth` parameters to know are: 
+
+- `method`: The default is to add a loess curve if the data includes less than 1000 points and a generalized additive model for 1000 points or more. However, you can change to show the fitted line from a linear model using `method = "lm"` or from a generalized linear model using `method = "glm"`.
+- `span`: How wiggly or smooth the smooth line should be (smaller value: more wiggly; larger value: more smooth)
+- `se`: TRUE or FALSE, indicating whether to include shading for 95% confidence intervals.
+- `level`: Confidence level for confidence interval (e.g., `0.90` for 90% confidence intervals)
+
+## References
+
+Lines and polygons can also be useful for adding references. Useful geoms include: 
+
+- `geom_hline`, `geom_vline`: Add a horizontal or vertical line
+- `geom_abline`: Add a line with an intercept and slope
+- `geom_polygon`: Add a filled polygon
+- `geom_path`: Add an unfilled polygon
+
+## References
+
+When adding these references: 
+
+- Add reference elements first, so they will be plotted under the data, instead of on top of it. 
+- Use `alpha` to add transparency to these elements. 
+- Use colors that are unobtrusive (e.g., grays)
+- For lines, consider using non-solid line types (e.g., `linetype = 3`)
+
+## Highlighting
+
+Guideline 3: **Highlight interesting aspects.** \bigskip
+
+Consider adding elements to highlight noteworthy elements of the data. For example, in the graph on the right, the days of a major heat wave have been highlighted with a red line. \bigskip
 
 ```{r echo = FALSE, fig.height = 3, fig.width = 8}
 chic_july <- subset(chic, month == 7 & year == 1995)
@@ -337,9 +387,11 @@ b <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
 grid.arrange(a, b, ncol = 2)
 ```
 
-## Interesting aspects
+## Highlighting
 
-* Guideline 3: **Highlight interesting aspects.**
+Guideline 3: **Highlight interesting aspects.** \bigskip
+
+In the below graphs, the names of the players with the most shots and passes have been added to highlight these unusual points. \bigskip
 
 ```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
 ex <- subset(worldcup, Position == "Forward")
@@ -368,9 +420,65 @@ b <- ggplot(ex, aes(x = Passes, y = Shots)) +
 grid.arrange(a, b, ncol = 2)
 ```
 
+## Highlighting
+
+One helpful way to annotate is with text, using `geom_text()`. For this, you'll first need to create a dataframe with the hottest day in the data:
+
+```{r}
+hottest_day <- chic_july %>%
+  filter(temp == max(temp))
+hottest_day[ , 1:6]
+```
+
+## Highlighting
+
+```{r fig.height = 3, fig.width = 4, out.width = "0.7\\textwidth", fig.align = "center"}
+chic_plot + geom_text(data = hottest_day, 
+                      label = "Max",
+                      size = 3)
+```
+
+## Highlighting
+
+With `geom_text`, you'll often want to use position adjustment (the `position` parameter) to move the text so it won't be right on top of the data points: 
+
+```{r fig.height = 3, fig.width = 4, out.width = "0.5\\textwidth", fig.align = "center", message = FALSE}
+chic_plot + geom_text(data = hottest_day, 
+                      label = "Max",
+                      size = 3, hjust = 0, vjust = -1)
+```
+
+
+## Highlighting
+
+You can also use lines to highlight. For this, it is often useful to create a new dataframe with data for the reference. To add a line for the Chicago heat wave, I've added a dataframe called `hw` with the relevant date range. I'm setting the y-value to be high enough (425) to ensure the line will be placed above the mortality data. 
+
+```{r}
+hw <- data.frame(date = c(as.Date("1995-07-12"), 
+                          as.Date("1995-07-16")),
+                 death = c(425, 425))
+        
+b <- chic_plot + 
+        geom_line(data = hw,
+                  aes(x = date, y = death),
+                  size = 2)
+```
+
+-----
+
+```{r fig.height = 3, fig.width = 4, out.width = "0.7\\textwidth", fig.align = "center"}
+b
+```
+
 ## Order
 
-* Guideline 4: **Make order meaningful.**
+Guideline 4: **Make order meaningful.** \bigskip
+
+You can make the ranking of data clearer from a graph by using order to show rank. Often, factor or categorical variables are ordered by something that is not interesting, like alphabetical order. 
+
+## Order
+
+Guideline 4: **Make order meaningful.** \bigskip
 
 ```{r echo = FALSE, fig.width = 8, fig.height = 5}
 ex <- group_by(worldcup, Team) %>%
@@ -379,7 +487,7 @@ ex <- group_by(worldcup, Team) %>%
 a <- ggplot(ex, aes(x = mean_time, y = Team)) + 
         geom_point() + 
         theme_few() + 
-        xlab("Mean time per player (minutes)") + 
+        xlab("Mean time per player (minutes)") + ylab("") + 
         ggtitle("1. Alphabetical order")
 
 ex2 <- arrange(ex, mean_time) %>%
@@ -387,19 +495,23 @@ ex2 <- arrange(ex, mean_time) %>%
 b <- ggplot(ex2, aes(x = mean_time, y = Team)) + 
         geom_point() + 
         theme_few() + 
-        xlab("Mean time per player (minutes)") + 
+        xlab("Mean time per player (minutes)") +  ylab("") + 
         ggtitle("2. Meaningful order")
 
 grid.arrange(a, b, ncol = 2)
 ```
 
+## Order
+
+You can re-order factor variables in a graph by resetting the factor using the `factor` function and changing the order that levels are included in the `levels` parameter. 
+
 ## Small multiples
 
-* Guideline 5: **When possible, use small multiples.**
+Guideline 5: **When possible, use small multiples.** \bigskip
 
-- Many small plots showing the same thing for different facets
-- Same x- and y-axes
-- Limit axis annotation
+*Small multiples* are graphs that use many small plots showing the same thing for different facets of the data. For example, instead of using color in a single plot to show data for males and females, you could use two small plots, one each for males and females. \bigskip
+
+Typically, in small multiples, all plots with use the same x- and y-axes. This makes it easier to compare across plots, and it also allows you to save room by limiting axis annotation.
 
 ------
 
@@ -419,58 +531,19 @@ a <- ggplot(ex, aes(x = Time, y = Shots)) +
 a
 ```
 
-
-
-
-
-## Highlighting
-
-One helpful way to annotate is with text, using `geom_text()`:
-
-```{r}
-hottest_day <- chic_july[which.max(chic_july$temp),]
-hottest_day
-```
-
-## Highlighting
-
-```{r fig.height = 3, fig.width = 4}
-chic_plot + geom_text(data = hottest_day, 
-                      label = "Max",
-                      size = 3, hjust = 0.5, vjust = 0)
-```
-
-## Highlighting
-
-You can also use lines to highlight:
-
-```{r}
-chic_july <- subset(chic, month == 7 & year == 1995)
-hw <- data.frame(date = c(as.Date("1995-07-12"), 
-                          as.Date("1995-07-16")),
-                 death = c(425, 425))
-        
-b <- chic_plot + 
-        geom_line(aes(x = date, y = death),
-                  data = hw[1:2, ],
-                  size = 2)
-```
-
------
-
-```{r fig.height = 3, fig.width = 4}
-b
-```
-
 ## Small multiples
 
-You can use the facet functions to create small multiples. This separates the graph into several small graphs, one for each level of a factor.
+You can use the `facet` functions to create small multiples. This separates the graph into several small graphs, one for each level of a factor. \bigskip
+
+The `facet` functions are: 
 
 - `facet_grid()`
 - `facet_wrap()`
 
 ## Small multiples
 
+For example, to create small multiples by sex for the Nepali dataset, when plotting height versus weight, you can call:
+
 ```{r warning = FALSE, fig.width = 8, fig.height = 3}
 ggplot(nepali, aes(ht, wt)) + 
         geom_point() + 
@@ -479,35 +552,34 @@ ggplot(nepali, aes(ht, wt)) +
 
 ## Small multiples
 
-Conventions for `facet_grid`:
+The `facet_grid` function can facet by one or two variables. One will be shown by rows, and one by columns:
 
 ```{r eval = FALSE}
-## Note: This is pseudocode and won't run.
+## Generic code
 facet_grid([factor for rows] ~ [factor for columns])
 ```
 
-If you need a different "shape" for faceting, try `facet_wrap()` (in `gridExtra` package):
+The `facet_wrap()` function can only facet by one variable, but it can "wrap" the small graphs for that variable, so the don't all have to be in one row or column:
 
 ```{r eval = FALSE}
-## Note: This is pseudocode and won't run.
+## Generic code
 facet_wrap(~ [factor for faceting], ncol = [# of columns])
 ```
 
 ## Small multiples
 
-Re-naming and re-ordering factors:
 
-Often, when you do faceting, you'll want to re-name your factors levels or re-order them.
-
-For this, you'll need to use the `factor()` function on the original vector:
+Often, when you do faceting, you'll want to re-name your factors levels or re-order them. For this, you'll need to use the `factor()` function on the original vector. For example, to rename the `sex` factor levels from "1" and "2" to "Male" and "Female", you can run:
 
 ```{r}
-nepali$sex <- factor(nepali$sex,
-                     levels = c(1, 2), 
-                     labels = c("Male", "Female"))
+nepali <- nepali %>%
+  mutate(sex = factor(sex, levels = c(1, 2), 
+                      labels = c("Male", "Female")))
 ```
 
 ## Small multiples
+
+Notice that the labels for the two graphs have now changed:
 
 ```{r warning = FALSE, fig.width = 8, fig.height = 3}
 ggplot(nepali, aes(ht, wt)) + 
@@ -517,56 +589,26 @@ ggplot(nepali, aes(ht, wt)) +
 
 ## Small multiples
 
-You can do the same idea to re-order a factor:
+To re-order the factor, and show the plot for "Female" first, you can use `factor` to change the order of the levels:
 
 ```{r}
-nepali$sex <- factor(nepali$sex,
-                     levels = c("Female", "Male"))
+nepali <- nepali %>%
+  mutate(sex = factor(sex, levels = c("Female", "Male")))
 ```
 
 ## Small multiples
+
+Now notice that the order of the plots has changed:
 
 ```{r warning = FALSE, fig.width = 8, fig.height = 3}
 ggplot(nepali, aes(ht, wt)) + 
         geom_point() + 
         facet_grid(. ~ sex)
 ```
-
-## Annotation
-
-You can use the following functions for main and axis titles:
-
-- `ggtitle()`
-- `xlab()`
-- `ylab()`
-
-You can also use the "convenience" functions for limits for x- and y-axes:
-
-- `xlim()`
-- `ylim()`
 
 ## Excellent references
 
-- R Graphics Cookbook
+Some excellent further references for plotting are:
+
+- R Graphics Cookbook (book and website)
 - Google images
-
-# Odds and ends
-
-## R cheat sheets
-
-- [General (CRAN)](https://cran.r-project.org/doc/contrib/Baggott-refcard-v2.pdf)
-- [ggplot](https://www.rstudio.com/wp-content/uploads/2015/08/ggplot2-cheatsheet.pdf)
-- [R Markdown (next week)](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
-- [Data wrangling (two weeks from now)](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
-- [Data management](http://www.ualberta.ca/~ahamann/teaching/renr690/R_Cheat_Data.pdf)
-- [quandl](https://s3.amazonaws.com/quandl-static-content/Documents/Quandl+-+R+Cheat+Sheet.pdf)
-
-## Picking packages
-
-How can I find a reliable package?
-
-- Google "r [what I'm trying to do] tutorial pdf". Look for tutorials / lecture notes from courses at reputable universities
-- Find packages with an accompanying article in the *Journal of Statistical Software* or *R Journal* (or another peer-reviewed publication)
-- Use packages recommended by statistics textbooks from our library
-- Look for packages referenced in peer-reviewed research in my field
-- For a package for graphics, if it works, it works. For methods, be a bit more cautious.
