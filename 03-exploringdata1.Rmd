@@ -224,25 +224,29 @@ head(nepali)
 
 ### Histograms
 
-For `geom_histogram()`, the main aesthetic is `x`, the (numeric) vector for which you want to create a histogram:
+Histograms show the distribution of a single variable. Therefore, `geom_histogram()` requires only one main aesthetic, `x`, the (numeric) vector for which you want to create a histogram. For example, to create a histogram of children's heights for the Nepali dataset (Figure \@ref(fig:nepalihist1)), run: 
 
-```{r, fig.width = 2.5, fig.height = 2, message = FALSE, warning = FALSE, fig.align = "center"}
+```{r, nepalihist1, fig.width = 4, fig.height = 3, message = FALSE, warning = FALSE, fig.align = "center", fig.cap = "Basic example of plotting a histogram with `ggplot2`. This histogram shows the distribution of heights for the first recorded measurements of each child in the `nepali` dataset."}
 ggplot(nepali, aes(x = ht)) + 
   geom_histogram()
 ```
 
-You can add some elements to the histogram, like `ggtitle`, `xlab`, and `xlim`:
+```{block type = "rmdnote"}
+If you run the code with no arguments for `binwidth` or `bins` in `geom_histogram`, you will get a message saying "`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.". This message is just saying that a default number of bins was used to create the histogram. You can use arguments to change the number of bins used, but often this default is fine. You may also get a message that observations with missing values were removed. 
+```
 
-```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
+You can add some elements to the histogram now to customize it a bit. For example, you can add a figure title (`ggtitle`) and clearer labels for the x-axis (`xlab`). You can also change the range of values shown by the x-axis (`xlim`).
+
+```{r, fig.width = 4, fig.height = 3, fig.align = "center", message = FALSE, warning = FALSE}
 ggplot(nepali, aes(x = ht)) + 
   geom_histogram(fill = "lightblue", color = "black") + 
   ggtitle("Height of children") + 
   xlab("Height (cm)") + xlim(c(0, 120))
 ```
 
-`geom_histogram` also has its own special argument, `bins`. You can use this to change the number of bins that are used to make the histogram:
+The geom `geom_histogram` also has its own special argument, `bins`. You can use this argument to change the number of bins that are used to make the histogram:
 
-```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", warning = FALSE, message = FALSE}
+```{r, fig.width = 4, fig.height = 3, fig.align = "center", warning = FALSE, message = FALSE}
 ggplot(nepali, aes(x = ht)) + 
   geom_histogram(fill = "lightblue", color = "black",
                  bins = 40) 
@@ -250,7 +254,7 @@ ggplot(nepali, aes(x = ht)) +
 
 ### Scatterplots
 
-You can use the `geom_point` geom to create a scatterplot. For example, to create a scatterplot of height versus age for the Nepali data: 
+A scatterplot shows how one variable changes as another changes. You can use the `geom_point` geom to create a scatterplot. For example, to create a scatterplot of height versus age for the Nepali data: 
 
 ```{r, fig.width = 2.5, fig.height = 2, warning = FALSE, fig.align = "center"}
 ggplot(nepali, aes(x = ht, y = wt)) + 
