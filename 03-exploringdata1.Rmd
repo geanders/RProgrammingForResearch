@@ -177,7 +177,7 @@ ggplot(to_plot, aes(x = x, y = y)) +
 
 ### Useful plot additions
 
-There are also a number of elements that you can add onto a `ggplot` object using `+`. A few very frequently used ones are: 
+There are also a number of elements that you can add onto a `ggplot` object using `+`. A few that are used very frequently are: 
 
 ```{r echo = FALSE}
 plot_adds <- data.frame(add = c("`ggtitle`",
@@ -205,21 +205,18 @@ library(dplyr)
 library(ggplot2)
 ```
 
-Each observation is a single measurement for a child; there can be multiple observations per child. I'll subset out child id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
+Each observation is a single measurement for a child; there can be multiple observations per child. I used the following code to select only the columns for child id, sex, weight, height, and age. I also used `distinct` to limit the dataset to only include one measurement for each chile, the child's first measurement in the dataset. 
 
 ```{r message = FALSE}
 nepali <- nepali %>%
-  # Subset to certain columns
   select(id, sex, wt, ht, age) %>%
-  # Convert id and sex to factors
   mutate(id = factor(id),
          sex = factor(sex, levels = c(1, 2),
                       labels = c("Male", "Female"))) %>%
-  # Limit to first obs. per child
   distinct(id, .keep_all = TRUE)
 ```
 
-The data now looks like:
+After this cleaning, the data looks like this:
 
 ```{r}
 head(nepali)
