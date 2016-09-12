@@ -1,0 +1,573 @@
+---
+title: "Reporting data results #1"
+output: 
+  beamer_presentation:
+    theme: "Frankfurt"
+    colortheme: "seagull"
+    fonttheme: "structuresmallcapsserif"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+knitr::opts_chunk$set(fig.path='coursenotes/plot-')
+
+library(ggplot2)
+library(gridExtra)
+library(ggthemes)
+library(dplyr)
+```
+
+# Plot guidelines
+
+## Guidelines for good plots
+
+There are a number of very thoughtful books and articles about creating graphics that effectively communicate information. \medskip
+
+Some of the authors I highly recommend (and from whose work I've pulled the guidelines for good graphics we'll talk about this week) are: 
+
+- Edward Tufte
+- Howard Wainer
+- Stephen Few
+- Nathan Yau
+
+You should plan, in particular, to read *The Visual Display of Quantitative Information* by Edward Tufte before you graduate.
+
+## Guidelines for good plots
+
+This week, we'll focus on six guidelines for good graphics, based on the writings of these and other specialists in data display. \medskip
+
+The guidelines are: 
+
+1. Aim for high data density. 
+2. Use clear, meaningful labels.
+3. Provide useful references.
+4. Highlight interesting aspects of the data. 
+5. Make order meaningful. 
+6. When possible, use small multiples.
+
+## Example data
+
+You can load the data for today's examples with the following code: 
+
+```{r message = FALSE}
+library(faraway)
+data(nepali)
+data(worldcup)
+
+library(dlnm)
+data(chicagoNMMAPS)
+chic <- chicagoNMMAPS
+chic_july <- chic %>%
+  filter(month == 7 & year == 1995)
+```
+
+## High data density
+
+Guideline 1: **Aim for high data density.** \bigskip
+
+You should try to increase, as much as possible, the **data to ink ratio** in your graphs. This is the ratio of "ink" providing information to all ink used in the figure. \medskip
+
+One way to think about this is that the only graphs you make that use up a lot of your printer's ink should be packed with information.
+
+## High data density
+
+Guideline 1: **Aim for high data density.** \bigskip
+
+The two graphs below show the same information. Compare the amount of ink used in the left plot to the amount used in the right plot to see how graphs with the same information can have very different data densities. \bigskip
+
+```{r echo = FALSE, fig.height = 3, fig.width = 8}
+a <- ggplot(worldcup, aes(Position)) + 
+        geom_bar() + coord_flip() + 
+        ylab("Number of players") + 
+        ggtitle("1. Lower data density")
+
+ex <- group_by(worldcup, Position) %>%
+        summarise(n = n())
+b <- ggplot(ex, aes(x = n, y = Position)) + 
+        geom_point() +  
+        xlab("Number of players") +  ylab("") + 
+        theme_few() + 
+        xlim(0, 250) + 
+        ggtitle("2. Higher data density")
+grid.arrange(a, b, ncol = 2)
+```
+
+## High data density
+
+Guideline 1: **Aim for high data density.** \bigskip
+
+The two graphs below show another example of very different data densities in two plots showing the same information: \bigskip
+
+```{r echo = FALSE, fig.height = 3, fig.width = 8}
+a <- ggplot(chic_july, aes(x = date, y = death)) + 
+        geom_area(fill = "black") + 
+        xlab("Day in July 1995") + 
+        ylab("All-cause deaths") + 
+        ylim(0, 450) + 
+        theme_excel() + 
+        ggtitle("1. Lower data density")
+
+b <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
+                           y = death)) + 
+        geom_line() + 
+        xlab("Day in July 1995") + 
+        ylab("All-cause deaths") + 
+        ylim(0, 450) + 
+        theme_tufte() + 
+        ggtitle("2. Higher data density")
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## Data density
+
+One quick way to increase data density in `ggplot2` is to change the *theme* for the plot. This essentially changes the "background" elements to a plot, including elements like the plot grid, background color, and the font used for labeling. \bigskip
+
+Some themes come with `ggplto2`, including:
+
+- `theme_bw`
+- `theme_minimal`
+- `theme_void` 
+
+The `ggthemes` packages has some excellent additional themes.
+
+## Data density
+
+The following slides show some examples of the effects of using different themes. The following code creates a plot of daily deaths in Chicago in July 1995:
+
+```{r}
+chic_plot <- ggplot(chic_july, aes(x = date, y = death))  +
+        geom_point(color = "red")
+```
+
+Next, we can see how the graph looks with the default theme and with other themes.
+
+## Themes
+
+The left graph shows the graph with the default theme, while the right shows the effect of adding the black-and-white theme that comes with `ggplot2` as `theme_bw`:
+
+```{r, fig.height = 3, fig.width = 8}
+a <- chic_plot
+b <- chic_plot + theme_bw()
+grid.arrange(a, b, ncol = 2)
+```
+
+## Themes
+
+Stephen Few theme: 
+
+```{r, fig.height = 3, fig.width = 8}
+a <- chic_plot
+b <- chic_plot + theme_few()
+grid.arrange(a, b, ncol = 2)
+```
+
+## Themes
+
+Edward Tufte theme: 
+
+```{r, fig.height = 3, fig.width = 8}
+a <- chic_plot
+b <- chic_plot + theme_tufte()
+grid.arrange(a, b, ncol = 2)
+```
+
+## Themes
+
+You can even use themes to add some questionable choices for different elements. For example, `ggthemes` includes an Excel theme: 
+
+```{r, fig.height = 3, fig.width = 8}
+a <- chic_plot
+b <- chic_plot + theme_excel()
+grid.arrange(a, b, ncol = 2)
+```
+
+
+## Meaningful labels
+
+Guideline 2: **Use clear, meaningful labels.** \bigskip
+
+Graph defaults often use abbreviations for axis labels and other labeling. Further, text labels can sometimes be aligned in a way that makes them hard to read. The plots below give an example of the same information shown without (left) and with (right) clear, meaningful labels. \bigskip
+
+```{r echo = FALSE, fig.height = 3, fig.width = 8}
+ex <- worldcup
+ex$Position <- factor(ex$Position, 
+                      levels = c("Defender",
+                                 "Forward",
+                                 "Goalkeeper",
+                                 "Midfielder"),
+                      labels = c("DF", "FW",
+                                 "GK", "MF"))
+a <- ggplot(ex, aes(Position)) + 
+        geom_bar() + 
+        ylab("Pls") + 
+        xlab("Pos") +
+        ggtitle("1. Murkier labels") + 
+        theme(axis.text.x = 
+                      element_text(angle = 90,
+                                   vjust = 0.5,
+                                   hjust=1))
+
+b <- ggplot(worldcup, aes(Position)) + 
+        geom_bar(fill = "lightgray") + coord_flip() + 
+        ylab("Number of players") + xlab("") + 
+        theme_tufte() + 
+        ggtitle("2. Clearer labels")
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## Meaningful labels
+
+There are a few strategies you can use to make labels clearer: 
+
+- Add `xlab` and `ylab` elements to the plot, rather than relying on the column names in the original data. This can also be done with `scale` elements (e.g., `scale_x_continuous`), which give you more power to also make other changes to the x- and y-axes.
+- Include units of measurement in parentheses in axis titles when relevant. If units are dollars or percent, check out the `scales` package, which allows you to add labels directly to axis elements by including arguments like `labels = percent` when adding `scale` elements.
+- If the x-variable requires longer labels (player positions in the example above), consider flipping the coordinates, rather than abbreviating or rotating the labels. You can use `coord_flip` to do this.
+
+## References
+
+* Guideline 3: **Provide useful references.**
+
+```{r echo = FALSE, fig.height = 3, fig.width = 8}
+chic_july <- subset(chic, month == 7 & year == 1995)
+chic_july_ref <- filter(chic, month == 7 & 
+                        year %in% c(1990:1994,
+                                    1996:2000)) %>%
+        summarise(mean = mean(death),
+                  min = min(death),
+                  max = max(death))
+ref_points <- data.frame(date = c(-2, 33, 33, -2),
+        death = c(rep(chic_july_ref$max, 2),
+                  rep(chic_july_ref$min, 2)))
+        
+a <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
+                           y = death)) + 
+        geom_line() + 
+        xlab("Day in July 1995") + 
+        ylab("All-cause deaths") + 
+        ylim(0, 450) + 
+        theme_tufte() + 
+        ggtitle("1. No reference")
+
+b <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
+                           y = death)) + 
+        xlab("Day in July 1995") + 
+        ylab("All-cause deaths") + 
+        ylim(0, 450) + 
+        theme_tufte() + 
+        geom_polygon(aes(x = date, y = death), 
+                     data = ref_points,
+                     color = "lightgray", 
+                     alpha = 0.1) + 
+        geom_line() + 
+        ggtitle("2. Reference")
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## References
+
+* Guideline 3: **Provide useful references.**
+
+```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
+ex <- subset(worldcup, Position == "Forward")
+a <- ggplot(ex, aes(x = Passes, y = Shots)) + 
+        geom_point(size = 1.5) + 
+        theme_few()  + 
+        ggtitle("1. No reference")
+
+b <- ggplot(ex, aes(x = Passes, y = Shots)) + 
+        geom_point(size = 1.5) + 
+        theme_few()  + 
+        geom_smooth() + 
+        ggtitle("2. Reference")
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## Interesting aspects
+
+* Guideline 3: **Highlight interesting aspects.**
+
+```{r echo = FALSE, fig.height = 3, fig.width = 8}
+chic_july <- subset(chic, month == 7 & year == 1995)
+chic_july_ref <- filter(chic, month == 7 & 
+                        year %in% c(1990:1994,
+                                    1996:2000)) %>%
+        summarise(mean = mean(death),
+                  min = min(death),
+                  max = max(death))
+ref_points <- data.frame(date = c(-2, 33, 33, -2),
+        death = c(rep(chic_july_ref$max, 2),
+                  rep(chic_july_ref$min, 2)))
+hw <- data.frame(date = c(12, 16, 16, 12),
+                 death = c(425, 425, 0, 0))
+        
+a <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
+                           y = death)) + 
+        xlab("Day in July 1995") + 
+        ylab("All-cause deaths") + 
+        ylim(0, 450) + 
+        theme_tufte() + 
+        geom_polygon(aes(x = date, y = death), 
+                     data = ref_points,
+                     color = "lightgray", 
+                     alpha = 0.1) + 
+        geom_line() + 
+        ggtitle("1. No highlighting")
+
+b <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
+                           y = death)) + 
+        xlab("Day in July 1995") + 
+        ylab("All-cause deaths") + 
+        ylim(0, 450) + 
+        theme_tufte() + 
+        geom_polygon(aes(x = date, y = death), 
+                     data = ref_points,
+                     color = "lightgray", 
+                     alpha = 0.1) + 
+        geom_line(aes(x = date, y = death),
+                  data = hw[1:2, ],
+                     color = "red",
+                  size = 2) +
+        geom_line() + 
+        ggtitle("2. With highlighting")
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## Interesting aspects
+
+* Guideline 3: **Highlight interesting aspects.**
+
+```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
+ex <- subset(worldcup, Position == "Forward")
+a <- ggplot(ex, aes(x = Passes, y = Shots)) + 
+        geom_point(size = 1.5, alpha = 0.5) + 
+        theme_few()  + 
+        ggtitle("1. No highlighting")
+
+most_shots <- ex[which.max(ex$Shots), ]
+most_passes <- ex[which.max(ex$Passes), ]
+b <- ggplot(ex, aes(x = Passes, y = Shots)) + 
+        geom_point(size = 1.5, alpha = 0.5) + 
+        theme_few()  + 
+        ggtitle("2. Highlighting") + 
+        geom_text(data = most_shots,
+           label = paste(rownames(most_shots), ",",
+                                most_shots$Team, " "),
+                  colour = "blue", size = 3,
+                  hjust = 1, vjust = 0.4) + 
+        geom_text(data = most_passes,
+           label = paste(rownames(most_passes), ",",
+                                most_passes$Team, " "),
+                  colour = "blue", size = 3,
+                  hjust = 1, vjust = 0.4) 
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## Order
+
+* Guideline 4: **Make order meaningful.**
+
+```{r echo = FALSE, fig.width = 8, fig.height = 5}
+ex <- group_by(worldcup, Team) %>%
+        summarise(mean_time = mean(Time))
+
+a <- ggplot(ex, aes(x = mean_time, y = Team)) + 
+        geom_point() + 
+        theme_few() + 
+        xlab("Mean time per player (minutes)") + 
+        ggtitle("1. Alphabetical order")
+
+ex2 <- arrange(ex, mean_time) %>%
+        mutate(Team = factor(Team, levels = Team))
+b <- ggplot(ex2, aes(x = mean_time, y = Team)) + 
+        geom_point() + 
+        theme_few() + 
+        xlab("Mean time per player (minutes)") + 
+        ggtitle("2. Meaningful order")
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## Small multiples
+
+* Guideline 5: **When possible, use small multiples.**
+
+- Many small plots showing the same thing for different facets
+- Same x- and y-axes
+- Limit axis annotation
+
+------
+
+```{r echo = FALSE, message = FALSE, fig.height = 6, fig.width = 8}
+ex <- subset(worldcup, Position %in% c("Forward",
+                                       "Midfielder"))
+ex2 <- group_by(ex, Team) %>%
+        summarise(mean = mean(Shots)) %>%
+        arrange(desc(mean))
+ex$Team <- factor(ex$Team, 
+                      levels = ex2$Team)
+a <- ggplot(ex, aes(x = Time, y = Shots)) + 
+        geom_point() + 
+        theme_few() + 
+        facet_wrap(~ Team, ncol = 8) + 
+        geom_smooth(method = "lm", se = FALSE)
+a
+```
+
+
+
+
+
+## Highlighting
+
+One helpful way to annotate is with text, using `geom_text()`:
+
+```{r}
+hottest_day <- chic_july[which.max(chic_july$temp),]
+hottest_day
+```
+
+## Highlighting
+
+```{r fig.height = 3, fig.width = 4}
+chic_plot + geom_text(data = hottest_day, 
+                      label = "Max",
+                      size = 3, hjust = 0.5, vjust = 0)
+```
+
+## Highlighting
+
+You can also use lines to highlight:
+
+```{r}
+chic_july <- subset(chic, month == 7 & year == 1995)
+hw <- data.frame(date = c(as.Date("1995-07-12"), 
+                          as.Date("1995-07-16")),
+                 death = c(425, 425))
+        
+b <- chic_plot + 
+        geom_line(aes(x = date, y = death),
+                  data = hw[1:2, ],
+                  size = 2)
+```
+
+-----
+
+```{r fig.height = 3, fig.width = 4}
+b
+```
+
+## Small multiples
+
+You can use the facet functions to create small multiples. This separates the graph into several small graphs, one for each level of a factor.
+
+- `facet_grid()`
+- `facet_wrap()`
+
+## Small multiples
+
+```{r warning = FALSE, fig.width = 8, fig.height = 3}
+ggplot(nepali, aes(ht, wt)) + 
+        geom_point() + 
+        facet_grid(. ~ sex)
+```
+
+## Small multiples
+
+Conventions for `facet_grid`:
+
+```{r eval = FALSE}
+## Note: This is pseudocode and won't run.
+facet_grid([factor for rows] ~ [factor for columns])
+```
+
+If you need a different "shape" for faceting, try `facet_wrap()` (in `gridExtra` package):
+
+```{r eval = FALSE}
+## Note: This is pseudocode and won't run.
+facet_wrap(~ [factor for faceting], ncol = [# of columns])
+```
+
+## Small multiples
+
+Re-naming and re-ordering factors:
+
+Often, when you do faceting, you'll want to re-name your factors levels or re-order them.
+
+For this, you'll need to use the `factor()` function on the original vector:
+
+```{r}
+nepali$sex <- factor(nepali$sex,
+                     levels = c(1, 2), 
+                     labels = c("Male", "Female"))
+```
+
+## Small multiples
+
+```{r warning = FALSE, fig.width = 8, fig.height = 3}
+ggplot(nepali, aes(ht, wt)) + 
+        geom_point() + 
+        facet_grid(. ~ sex)
+```
+
+## Small multiples
+
+You can do the same idea to re-order a factor:
+
+```{r}
+nepali$sex <- factor(nepali$sex,
+                     levels = c("Female", "Male"))
+```
+
+## Small multiples
+
+```{r warning = FALSE, fig.width = 8, fig.height = 3}
+ggplot(nepali, aes(ht, wt)) + 
+        geom_point() + 
+        facet_grid(. ~ sex)
+```
+
+## Annotation
+
+You can use the following functions for main and axis titles:
+
+- `ggtitle()`
+- `xlab()`
+- `ylab()`
+
+You can also use the "convenience" functions for limits for x- and y-axes:
+
+- `xlim()`
+- `ylim()`
+
+## Excellent references
+
+- R Graphics Cookbook
+- Google images
+
+# Odds and ends
+
+## R cheat sheets
+
+- [General (CRAN)](https://cran.r-project.org/doc/contrib/Baggott-refcard-v2.pdf)
+- [ggplot](https://www.rstudio.com/wp-content/uploads/2015/08/ggplot2-cheatsheet.pdf)
+- [R Markdown (next week)](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+- [Data wrangling (two weeks from now)](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+- [Data management](http://www.ualberta.ca/~ahamann/teaching/renr690/R_Cheat_Data.pdf)
+- [quandl](https://s3.amazonaws.com/quandl-static-content/Documents/Quandl+-+R+Cheat+Sheet.pdf)
+
+## Picking packages
+
+How can I find a reliable package?
+
+- Google "r [what I'm trying to do] tutorial pdf". Look for tutorials / lecture notes from courses at reputable universities
+- Find packages with an accompanying article in the *Journal of Statistical Software* or *R Journal* (or another peer-reviewed publication)
+- Use packages recommended by statistics textbooks from our library
+- Look for packages referenced in peer-reviewed research in my field
+- For a package for graphics, if it works, it works. For methods, be a bit more cautious.
