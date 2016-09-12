@@ -235,44 +235,52 @@ ggplot(nepali, aes(x = ht)) +
 If you run the code with no arguments for `binwidth` or `bins` in `geom_histogram`, you will get a message saying "`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.". This message is just saying that a default number of bins was used to create the histogram. You can use arguments to change the number of bins used, but often this default is fine. You may also get a message that observations with missing values were removed. 
 ```
 
-You can add some elements to the histogram now to customize it a bit. For example, you can add a figure title (`ggtitle`) and clearer labels for the x-axis (`xlab`). You can also change the range of values shown by the x-axis (`xlim`).
+You can add some elements to the histogram now to customize it a bit. For example (Figure \@ref()), you can add a figure title (`ggtitle`) and clearer labels for the x-axis (`xlab`). You can also change the range of values shown by the x-axis (`xlim`).
 
-```{r, fig.width = 4, fig.height = 3, fig.align = "center", message = FALSE, warning = FALSE}
+```{r, nepalihist2, fig.width = 4, fig.height = 3, fig.align = "center", message = FALSE, warning = FALSE, fig.cap = "Example of adding ggplot elements to customize a histogram."}
 ggplot(nepali, aes(x = ht)) + 
   geom_histogram(fill = "lightblue", color = "black") + 
   ggtitle("Height of children") + 
   xlab("Height (cm)") + xlim(c(0, 120))
 ```
 
-The geom `geom_histogram` also has its own special argument, `bins`. You can use this argument to change the number of bins that are used to make the histogram:
+The geom `geom_histogram` also has special argument for setting the number of width of the bins used in the histogram. Figure \@ref(fig) shows an example of how you can use the `bins` argument to change the number of bins that are used to make the histogram of height for the `nepali` dataset.  
 
-```{r, fig.width = 4, fig.height = 3, fig.align = "center", warning = FALSE, message = FALSE}
+```{r, nepalihist3, fig.width = 4, fig.height = 3, fig.align = "center", warning = FALSE, message = FALSE, fig.cap = "Example of using the `bins` argument to change the number of bins used in a histogram."}
 ggplot(nepali, aes(x = ht)) + 
   geom_histogram(fill = "lightblue", color = "black",
                  bins = 40) 
 ```
 
+Similarly, the `binwidth` argument can be used to set the width of bins. Figure \@ref(fig:nepalihist4) shows an example of using this function to create a histogram of the Nepali children's heights with binwidths of 10 centimeters (note that this argument is set in the same units as the x variable).
+
+```{r, nepalihist4, fig.width = 4, fig.height = 3, fig.align = "center", warning = FALSE, message = FALSE, fig.cap = "Example of using the `binwidth` argument to set the width of each bin used in a histogram."}
+ggplot(nepali, aes(x = ht)) + 
+  geom_histogram(fill = "lightblue", color = "black",
+                 binwidth = 10) 
+```
+
 ### Scatterplots
 
-A scatterplot shows how one variable changes as another changes. You can use the `geom_point` geom to create a scatterplot. For example, to create a scatterplot of height versus age for the Nepali data: 
+A scatterplot shows how one variable changes as another changes. You can use the `geom_point` geom to create a scatterplot. For example, to create a scatterplot of height versus age for the Nepali data (Figure \@ref(fig:nepaliscatter1)), you can run the following code: 
 
-```{r, fig.width = 2.5, fig.height = 2, warning = FALSE, fig.align = "center"}
+```{r nepaliscatter1, fig.width = 5, fig.height = 4, warning = FALSE, fig.align = "center", fig.cap = "Example of using `geom_point` to create a scatterplot. This scatterplot shows the relationship between children's heights and weights within the `nepali` dataset."}
 ggplot(nepali, aes(x = ht, y = wt)) + 
   geom_point()
 ```
 
-Again, you can use some of the options and additions to change the plot appearance:
+Again, you can use some of the options and additions to change the plot appearance. For example, to add a title, change the x- and y-axis labels, and change the color and size of the points on the scatterplot (Figure \@ref(fig:nepaliscatter2)), you can run:
 
-```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
+```{r nepaliscatter2, fig.width = 5, fig.height = 4, fig.align = "center", message = FALSE, warning = FALSE, fig.cap = "Example of adding ggplot elements to customize a scatterplot."}
 ggplot(nepali, aes(x = ht, y = wt)) + 
   geom_point(color = "blue", size = 0.5) + 
   ggtitle("Weight versus Height") + 
   xlab("Height (cm)") + ylab("Weight (kg)")
 ```
 
-You can also try mapping another variable, `sex`, to the `color` aesthetic:
+You can also try mapping another variable in the dataset to the `color` aesthetic. For example, to use color to show the sex of each child in the scatterplot (Figure \@ref(fig:nepaliscatter3)), you can run:
 
-```{r, fig.width = 3.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
+```{r nepaliscatter3, fig.width = 5, fig.height = 4, fig.align = "center", message = FALSE, warning = FALSE, fig.cap = "Example of mapping color to an element of the data in a scatterplot."}
 ggplot(nepali, aes(x = ht, y = wt, color = sex)) + 
   geom_point(size = 0.5) + 
   ggtitle("Weight versus Height") + 
