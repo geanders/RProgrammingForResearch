@@ -818,3 +818,77 @@ shot_plot + theme_fivethirtyeight()
 shot_plot + theme_stata()
 shot_plot + theme_economist_white()
 ```
+
+### Data visualization cheatsheet
+
+RStudio comes with some excellent cheatsheets, which provide quick references to functions and code you might find useful for different tasks. For this part of the group exercise, you'll explore their cheatsheet for data visualization, both to learn some new `ggplot2` code and to become familiar with how to use this cheatsheet as you do your own analysis. 
+
+- Open the data visualization cheatsheet. You can do this from RStudio by going to "Help" -> "Cheatsheets" -> "Data Visualization with ggplot2".
+- Notice that different sections give examples with some datasets that come with either base R or ggplot2. For example, under the "Graphical Primitives" section, there is code defining the object `a` as a ggplot object using the "seals" dataset: `a <- ggplot(seals, aes(x = long, y = lat))`. 
+- Go through the cheatsheet and list all of the example datasets that are used in this cheatsheet. Open their helpfiles to learn more about the data. 
+- Create the example datasets `a` through `l` and `s` through `t` using the code given on the cheatsheet. 
+- Pick at least one example to try out from  each of the following sections: "Graphical Primitives", "One Variable", at least three subsections of "Two Variables", "Three Variables", "Scales", "Faceting", and "Position Adjustments". As you try these, try to figure out any aesthetics that you aren't familiar with (e.g., `ymin`, `ymax`). Also, use helpfiles for the geoms to look up parameters you aren't familiar with (e.g., `stat` for `geom_area`). If you can't figure out how to interpret a plot, check the helpfile for the associated geom. **Note**: For the `n` geom used in "scales", it should be defined as `n <- d + geom_bar(aes(fill = fl))`. 
+
+#### Example R code
+
+The code for opening the helpfiles for the example datasets is:
+
+```{r eval = FALSE}
+?seals
+?economics
+?mpg
+?diamonds
+?USArrests
+```
+
+Note that, for `USArrests`, only some of the columns are pulled out (e.g., `murder = USArrests$murder`) to use in the `data` example dataframe. Further, the "Visualizing error" examples use a dataframe created specifically for these examples, called `df`. 
+
+```{block type = "rmdnote"}
+Some of the base R and ggplot2 example datasets have gotten to be fairly well-known. Some that you'll see very often in examples are the `iris`, `mpg`, and `diamonds` datasets.
+```
+
+All of the code to create the datasets `a` through `l` and `s` through `t` is given somewhere on the cheatsheet. Here it is in full: 
+
+```{r message = FALSE}
+a <- ggplot(seals, aes(x = long, y = lat))
+b <- ggplot(economics, aes(date, unemploy))
+c <- ggplot(mpg, aes(hwy))
+d <- ggplot(mpg, aes(fl))
+e <- ggplot(mpg, aes(cty, hwy))
+f <- ggplot(mpg, aes(class, hwy))
+g <- ggplot(diamonds, aes(cut, color))
+h <- ggplot(diamonds, aes(carat, price))
+i <- ggplot(economics, aes(date, unemploy))
+df <- data.frame(grp = c("A", "B"), fit = 4.5, se = 1:2)
+j <- ggplot(df, aes(grp, fit, ymin = fit - se, ymax = fit + se))
+data <- data.frame(murder = USArrests$Murder,
+                   state = tolower(rownames(USArrests)))
+map <- map_data("state")
+k <- ggplot(data, aes(fill = murder))
+seals$z <- with(seals, sqrt(delta_long^2 + delta_lat^2))
+l <- ggplot(seals, aes(long, lat))
+s <- ggplot(mpg, aes(fl, fill = drv))
+t <- ggplot(mpg, aes(cty, hwy)) + geom_point()
+```
+
+Notice that, in some places, the aesthetics are defined using the full aesthetic name-value pair (e.g., `aes(x = long, y = lat)`), while in other places the code relies on position for defining which column of a dataframe maps to which aesthetic (e.g., `aes(cty, hwy)` or `aes(fl)`). Either is fine, although relying on position can result in errors if you are not very familiar with the order in which parameters are defined for a function.
+
+This code will vary based on the examples you try, but here is some code for one set of examples:
+
+```{r eval = FALSE}
+b + geom_ribbon(aes(ymin = unemploy - 900, ymax = unemploy + 900))
+c + geom_dotplot()
+f + geom_violin(scale = "area")
+h + geom_hex()
+j + geom_pointrange()
+k + geom_map(aes(map_id = state), map = map) + 
+  expand_limits(x = map$long, y = map$lat)
+l + geom_contour(aes(z = z))
+n <- d + geom_bar(aes(fill = fl))
+n + scale_fill_brewer(palette = "Blues")
+o <- c + geom_dotplot(aes(fill = ..x..))
+o + scale_fill_gradient(low = "red", high = "yellow")
+t + facet_grid(year ~ fl)
+s + geom_bar(position = "fill")
+```
+
