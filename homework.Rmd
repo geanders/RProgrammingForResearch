@@ -76,7 +76,232 @@ swirl()
 
 **Due date: Sept. 28**
 
-[R Markdown homework assignment]
+---
+output: html_document
+---
+
+Homework 2 has two parts: for part 1, you need to recreate the following R Markdown document. The code chunks here have been hidden with the option `eval = FALSE`, but you should include your code in your final document. For part 2, you should create another R Markdown document analyzing an online data set of your choosing. (One option could be a different data set from FiveThirtyEight's [GitHub data page](https://github.com/fivethirtyeight/data).) The specific elements that need to be included in this second, custom R Markdown document are listed below under Part 2. 
+
+### Part 1
+
+Recreate the follwing in R Markdown, with your code included: 
+
+#### Gender Bias in the Movie Biz 
+
+In 1985, cartoonist [Alison Bechdel](http://dykestowatchoutfor.com/) proposed "The Rule." To pass, a movie has to sastisfy three basic requirements: 
+
+1. It has to have at least two women in it,  
+2. The two women have to talk to each other, and 
+3. They have to talk to each other about something besides a man. 
+
+"The Rule" (see a copy of the original comic strip [here](http://www.npr.org/templates/story/story.php?storyId=94202522)) is commonly refered to as the Bechdel test. It's a seemingly low bar, and it's surprising how many films **fail** the test. 
+
+In 2014, [FiveThirtyEight](http://fivethirtyeight.com/) analyzed 1,615 films between 1990 and 2013 to explore the financial effect of a these films' portrayal of women in an article titled [The Dollar-And-Cents Case Against Hollywood’s Exclusion of Women](http://fivethirtyeight.com/features/the-dollar-and-cents-case-against-hollywoods-exclusion-of-women/). Their analysis relied on data sets from [BechdelTest.com](http://bechdeltest.com/) and [The-Numbers.com](http://www.the-numbers.com/). They concluded that the "the median bidget of movies that passed the test - those that featured a conversation between two women about something other than a man — was substantially lower than the median budget of all films in the sample." Overall, movies that passed the test may have a better financial return than those that don't. 
+
+##### The data
+
+The data set used by FiveThirtyEight is available for download [here](https://github.com/fivethirtyeight/data/blob/master/bechdel/movies.csv) from FiveThirtyEight's [GitHub data page](https://github.com/fivethirtyeight/data). Download and read in the data set, and look at the first few rows of the dataframe: 
+
+```{r echo = FALSE}
+setwd("~/Desktop")
+movies <- read.csv("movies.csv", header = TRUE)
+
+head(movies, 3) 
+```
+
+Here are the last few rows: 
+
+```{r echo = FALSE}
+tail(movies, 3)
+```
+
+Right now, the data set includes movies from 1970 to 2013. We want to make sure we only include movies that came out *after* 1990. Here are the new last few rows in the `year` and `title` columns:
+
+```{r echo = FALSE}
+library(dplyr)
+movies <- movies[movies$year > 1989, ]
+tail(select(movies, c(year, title)), 3)
+```
+
+We can probably clean up a few of the column names to make them easier to work with. Here are the current column names: 
+
+```{r echo = FALSE}
+colnames(movies)
+```
+
+It might be useful to rename "binary" to "Bechdel", and to remove the periods `.` from "budget_2013.", "domgross_2013.", and "intgross_2013.": 
+
+```{r echo = FALSE}
+library(dplyr)
+movies <- rename(movies, Bechdel = binary) 
+colnames(movies)[11:13] <- c("budget_2013", "domgross_2013", "intgross_2013")
+colnames(movies)
+```
+
+##### "The Rule"
+
+It looks like `binary` tells us whether a movie passed or failed. Here's how the count of movies that have failed and passed the test has changed over time: 
+
+```{r echo = FALSE}
+library(ggplot2)
+ggplot(movies, aes(year, fill = Bechdel)) + geom_histogram(bins = 23) +
+  ylab("count of movies") + 
+  theme_minimal()
+```
+
+`clean_test` offers a finer detail of the Bechdel Test than Fail vs. Pass. Here are the different levels of this variable: 
+
+```{r echo = FALSE}
+unique(movies$clean_test)
+```
+
+Based on FiveThirtyEight's [article](http://fivethirtyeight.com/features/the-dollar-and-cents-case-against-hollywoods-exclusion-of-women/), it seems like these levels correspond to the following categories: 
+
+```{r echo = FALSE}
+library(knitr)
+bechdel = data.frame(clean_test = c("nowomen", "notalk", "men", "dubious", "ok"), 
+                     Category_Description = c("Fewer than two women", "Women don't talk to each other", "Women only talk about men", "Dubious", "Passes Bechdel Test"), 
+                     Bechdel_Test = c("Fail", "Fail", "Fail", "Pass", "Pass"))
+
+kable(bechdel, format = "markdown")
+```
+
+We can check out the median budget in 2013 dollars for movies fitting into each of these categories. First, create a dataframe with the median value of `budget_2013` for each movie (in ascending order) using `dplyr`'s `group_by()`, `summarize()`, and `arrange()` functions. Change the dollar amount so that its units are in millions of dollars. 
+
+```{r echo = FALSE}
+library(dplyr)
+
+med_budget <- group_by(movies, clean_test) %>%
+  summarize(median_budget_2013 = median(budget_2013)) %>%
+  arrange(median_budget_2013)
+
+med_budget <- med_budget %>% 
+  mutate(median_budget_2013 = median_budget_2013 / 1000000)
+
+med_budget
+```
+
+Next, for the purposes of later plotting, reorder the levels of `clean_test` so that they are in *descending* order, and rename them to more verbose descriptions: "Women don't talk to each other", "Fewer than two women", "Women only talk about men", "Pass (dubious)", and "Pass", for "notalk", "nowomen", "men", "dubious", and "ok", respectively. 
+
+```{r echo = FALSE}
+med_budget$clean_test <- factor(med_budget$clean_test, levels = c("notalk", "nowomen", 
+                                                                  "men", "dubious", "ok"))
+
+med_budget <- med_budget %>%
+  mutate(clean_test = factor(clean_test, levels = c("notalk", "nowomen", "men", 
+                                                    "dubious", "ok"), 
+                             labels = c("Women don't talk to each other", 
+                                        "Fewer than two women", 
+                                        "Women only talk about men", 
+                                        "Pass (dubious)", "Pass")))
+
+med_budget
+```
+
+Add a column of corresponding Bechdel test results (one way to do this is to create a vector of "PASS" and "FAIL" values, and then `cbind` it to the dataframe): 
+
+```{r echo = FALSE}
+bechdel <- c("PASS", "PASS", "FAIL", "FAIL", "FAIL")
+med_budget <- cbind(med_budget, bechdel)
+med_budget
+```
+
+And finally, following [FiveThirtyEight's](http://fivethirtyeight.com/features/the-dollar-and-cents-case-against-hollywoods-exclusion-of-women/) lead, plot this dataframe as a bar graph:
+
+```{r echo = FALSE}
+library(dplyr)
+
+ggplot(med_budget, aes(x = clean_test, y = median_budget_2013, fill = bechdel)) + 
+  geom_bar(stat = "identity") + 
+  scale_y_continuous("Meidan budget in 2013 dollars (millions)") + 
+  xlab("Bechdel category") + 
+  coord_flip() + 
+  theme_minimal()
+```
+
+We can see that past movies that have failed the Bechdel test had higher median budgets. What about how much money these movies made? In FiveThirtyEight's analysis, they focused on "Return on investment", which involved dividing movie profits (`domgross_2013`, for example) by movie budgets. For simplicity's sake, let's compare domestic gross for movies that passed and failed the test. Again, we should `mutate` `domgross_2013` so that it is in units of millions of dollars. 
+
+First, change `domgross_2013` to numeric class. Currently, it's saved as a factor: 
+
+```{r echo = FALSE}
+class(movies$domgross_2013)
+```
+
+First convert the column class to character, and then numeric. 
+
+```{r echo = FALSE}
+movies$domgross_2013 <- as.numeric(as.character(movies$domgross_2013))
+```
+
+Here's a boxplot comparing domestic gross for movies that failed and passed the Bechdel test: 
+
+```{r echo = FALSE}
+library(dplyr)
+library(ggplot2)
+
+movies <- movies %>% 
+  mutate(domgross_2013 = domgross_2013 / 1000000)
+
+box <- ggplot(movies, aes(x = Bechdel, y = domgross_2013, fill = Bechdel)) + 
+  geom_boxplot() + 
+  ylab("Domestic gross in 2013 dollars (millions)") + 
+  theme_minimal() + 
+  theme(legend.position = "none")
+box
+```
+
+With a lot of outliers, it looks like the mean domestic gross for movies that failed is *slightly* higher than that for movies that passed. 
+
+Let's find out what the highest grossing movies in "Pass" and "Fail" are. For failed, it looks like the higest grossing movie in this data set that failed the Bechdel test earned $825.7 million (in 2013 dollars):
+
+```{r echo = FALSE}
+fail <- subset(movies, Bechdel == "FAIL")
+max(fail$domgross_2013, na.rm = TRUE)
+```
+
+And its title is "Avatar"!
+
+```{r echo = FALSE}
+subset(fail, domgross_2013 > 825)$title
+```
+
+For passed, it looks like "Titanic" made $955.9 million (in 2013 dollars). 
+
+```{r echo = FALSE} 
+pass <- subset(movies, Bechdel == "PASS")
+max(pass$domgross_2013, na.rm = TRUE)
+subset(pass, domgross_2013 > 955)$title
+```
+
+To wrap up, add both of these titles as interesting labels to the plot. (Note: to match the lables shown here, use `size = 4` and `hjust = 1.2` in your `geom_text()` addition.)
+
+```{r echo = FALSE}
+avatar <- subset(fail, domgross_2013 > 825)
+titanic <- subset(pass, domgross_2013 > 955)
+
+box + geom_text(data = avatar, 
+                label = "Avatar", 
+                size = 4, 
+                hjust = 1.2) + 
+  geom_text(data = titanic, 
+            label = "Titanic", 
+            size = 4, 
+            hjust = 1.2)
+```
+
+### Part 2
+
+Your custom R Markdown document, analyzing an online data set of your choosing, should include the following elements: 
+
+1. Read in the data from online 
+
+2. Include initial `head()` `tail()` and `summary()` results for your dataframe 
+
+3. Manipulate/clean the data set with 3 to 4 `dplyr` and/or `tidyr` functions 
+
+4. Include 1 to 2 `ggplot2` plots of the data 
+
+The more explanation of what you're doing (and why) at each step, the better. Knit each R Markdown document to Word, and email them by the start of class on Wednesday, September 28. Please email me with any questions! -Rachel 
 
 ## Homework #3
 
