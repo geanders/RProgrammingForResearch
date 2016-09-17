@@ -401,9 +401,9 @@ Don't forget that you need to save the output to a new object if you want to use
 
 ## Logical vectors
 
-Last week, you learned a lot about logical statements and how to use them with the `filter` function. You can also use logical vectors, created with these statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`).
+Last week, you learned a lot about logical statements and how to use them with the `filter` function. You can also use logical vectors, created with these logical statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`) to pull out just the rows of a dataframe that meet a certain condition.
 
-A logical statement run on a vector will create a logical vector the same length as the original vector:
+When you run a logical statement on a vector, you create a logical vector the same length as the original vector:
 
 ```{r}
 is_male <- nepali$sex == "Male"
@@ -411,7 +411,7 @@ length(nepali$sex)
 length(is_male)
 ```
 
-The logical vector will have the value `TRUE` at any position where the original vector met the logical condition you tested, and `FALSE` anywhere else:
+The logical vector (`is_male` in this example) will have the value `TRUE` at any position where the original vector (`nepali$sex` in this example) met the logical condition you tested, and `FALSE` anywhere else:
 
 ```{r}
 head(nepali$sex)
@@ -425,7 +425,9 @@ head(is_male)
 head(!is_male)
 ```
 
-You can do a few cool things now with a logical vector like this. For example, you can use it with indexing to pull out just the rows where `is_male` is `TRUE`:
+The bang operator turns out to be very useful. You will often find cases where it's difficult to write a logical vector to get what you want, but fairly easy to write the inverse (find everything you don't want). One example is filtering down to non-missing values-- the `is.na` function will return `TRUE` for any value that is `NA`, so you can use `!is.na()` to identify any non-missing values. 
+
+You can do a few cool things with a logical vector. For example, you can use it with indexing to pull out just the rows of a dataframe where `is_male` is `TRUE`:
 
 ```{r}
 head(nepali[is_male, ])
@@ -437,14 +439,17 @@ Or, with `!`, just the rows where `is_male` is `FALSE`:
 head(nepali[!is_male, ])
 ```
 
-You can also use `sum()` and `table()` to find out how many males and females are in the dataset:
+For these cases, the length of the logical vector and the number of rows in the dataframe will match. 
+
+You can also use `sum()` and `table()` with a logical vector to find out how many of the values in the vector are `TRUE` AND `FALSE`. In the example, you can use these functions to find out how many males and females are in the dataset:
 
 ```{r}
-sum(is_male); sum(!is_male)
+sum(is_male)
+sum(!is_male)
 table(is_male)
 ```
 
-As a note, you could achieve the same thing with `dplyr` functions. One way to do this is to use `mutate` with a logical statement to create an `is_male` column, then group by that new column and summarize:
+Note that you could also achieve the same thing with `dplyr` functions. For example, you could use `mutate` with a logical statement to create an `is_male` column in the `nepali` dataframe, then group by the new `is_male` column and summarize, using the `n` function to count the number of observations in each group:
 
 ```{r}
 nepali %>%
