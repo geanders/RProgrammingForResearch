@@ -289,7 +289,7 @@ ggplot(nepali, aes(x = ht, y = wt, color = sex)) +
 
 ### Boxplots 
 
-Boxplots can be used to show the distribution of a continuous variable. To create a boxplot, you can use the `geom_boxplot` geom. For example, to create a boxplot of the heights of children in the Nepali dataset (Figure \@ref(fig:nepaliboxplot1)), you can run:
+Boxplots can be used to show the distribution of a continuous variable. To create a boxplot, you can use the `geom_boxplot` geom. To plot a boxplot for a single, continuous variable, you can map that variable to `y` in the `aes` call, and map `x` to the constant `1`. For example, to create a boxplot of the heights of children in the Nepali dataset (Figure \@ref(fig:nepaliboxplot1)), you can run:
 
 ```{r nepaliboxplot1, fig.height = 4, fig.width = 4, warning = FALSE, fig.align="center", fig.cap = "Example of creating a boxplot with `geom_boxplot`. The example shows the distribution of height data for children in the `nepali` dataset."}
 ggplot(nepali, aes(x = 1, y = ht)) + 
@@ -297,9 +297,9 @@ ggplot(nepali, aes(x = 1, y = ht)) +
   xlab("")+ ylab("Height (cm)")
 ```
 
-You can also create separate boxplots, one for each level of a factor. In this case, you'll need to include two aesthetics (`x` and `y`) when you initialize the ggplot object. 
+You can also create separate boxplots, one for each level of a factor (Figure \@ref(fig:nepaliboxplot2)). In this case, you'll need to include two aesthetics (`x` and `y`) when you initialize the ggplot object The `y` variable is the variable for which the distribution will be shown, and the `x` variable should be a discrete (categorical or TRUE/FALSE) variable, and will be used to group the variable. This `x` variable should also be specified as the grouping variable, using `group` within the aesthetic call.
 
-```{r, fig.height = 4, fig.width = 5, fig.align = "center", warning = FALSE}
+```{r nepaliboxplot2, fig.height = 4, fig.width = 5, fig.align = "center", warning = FALSE, fig.cap = "Example of creating separate boxplots, divided by a categorical grouping variable in the data."}
 ggplot(nepali, aes(x = sex, y = ht, group = sex)) + 
   geom_boxplot() + 
   xlab("Sex")+ ylab("Height (cm)") 
@@ -307,14 +307,22 @@ ggplot(nepali, aes(x = sex, y = ht, group = sex)) +
 
 ### Extensions of `ggplot2`
 
-There are lots of R extensions for creating other interesting plots. For example, you can use the `ggpairs` function from the `GGally` package to plot all pairs of scatterplots for several variables. Notice how this output shows continuous and binary variables differently.
+There are lots of R extensions for creating other interesting plots. For example, you can use the `ggpairs` function from the `GGally` package to plot all pairs of scatterplots for several variables (Figure \@ref(fig:ggallyexample)). 
 
-```{r out.width = "\\textwidth", fig.align = "center", message = FALSE, warning = FALSE}
+```{r ggallyexample, out.width = "\\textwidth", fig.align = "center", message = FALSE, warning = FALSE, fig.cap = "Example of using `ggpairs` from the `GGally` package for exploratory data analysis."}
 library(GGally)
-ggpairs(nepali[, c("sex", "wt", "ht", "age")])
+ggpairs(nepali %>% select(sex, wt, ht, age))
 ```
 
+Notice how this output shows continuous and binary variables differently. For example, the center diagonal shows density plots for continuous variables, but a bar chart for the categorical variable. 
+
+See https://www.ggplot2-exts.org to find more `ggplot2` extensions.
+
 ## Simple statistics functions
+
+### Summary statistics
+
+To explore your data, you'll need to be able to calculate some simple statistics for vectors, including calculating the mean and range of continuous variables and counting the number of values in each category of a factor or logical vector. 
 
 Here are some simple statistics functions you will likely use often:
 
@@ -323,49 +331,61 @@ Function  | Description
 `range()` | Range (minimum and maximum) of vector 
 `min()`, `max()` | Minimum or maximum of vector
 `mean()`, `median()` | Mean or median of vector
+`sd()` | Standard deviation of vector
 `table()` | Number of observations per level for a factor vector
 `cor()` | Determine correlation(s) between two or more vectors
 `summary()` | Summary statistics, depends on class
 
-All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`).
+All of these functions take, as the main argument, the vector or vectors for which you want the statistic. If there are missing values in the vector, you'll typically need to add an argument to say what to do with the missing values. The parameter name for this varies by function, but for many of these functions it's `na.rm = TRUE` or `use="complete.obs"`.
 
 ```{r}
 mean(nepali$wt, na.rm = TRUE)
 range(nepali$ht, na.rm = TRUE)
+sd(nepali$ht, na.rm = TRUE)
 table(nepali$sex)
 ```
 
-The `cor` function can take two or more vectors. If you give it multiple values, it will give the correlation matrix for all the vectors.
+Most of these functions take a single vector as the input. The `cor` function, however, calculates the correlation between vectors and so takes two or more vectors. If you give it multiple values, it will give the correlation matrix for all the vectors.
 
 ```{r}
 cor(nepali$wt, nepali$ht, use = "complete.obs")
-cor(nepali[ , c("wt", "ht", "age")], use = "complete.obs")
+cor((nepali %>% select(wt, ht, age)), use = "complete.obs")
 ```
 
-R supports object-oriented programming. This shows up with `summary()`. R looks to see what type of object it's dealing with, and then uses a method specific to that object type. 
+R supports object-oriented programming. Your first taste of this shows up with the `summary` function. For the `summary` function, R does not run the same code every time. Instead, R first checks what type of object was input to `summary`, and then it runs a function (*method*) specific to that type of object. For example, if you input a continuous vector, like the `ht` column in `nepali`, to `summary`, the function will return the mean, median, range, and 25th and 75th percentile values: 
 
 ```{r}
 summary(nepali$wt)
+```
+
+However, if you submit a factor vector, like the `sex` column in `nepali`, the `summary` function will return a count of how many elements of the vector are in each factor level (as a note, you could do the same thing with the `table` function):
+
+```{r}
 summary(nepali$sex)
 ```
 
-We'll see more of this when we do regression models.
+The `summary` function can also input other data structures, including dataframes, lists, and special object types, like regression model objects. In each case, it performs different actions specific to the object type. Later in this section, we'll cover regression models, and see what the `summary` function returns when it is used with regression model objects.
 
-You can also perform many of these tasks using `dplyr`. For example, to get the mean weight, you can use the `summarize` function: 
+### `summarize` function
+
+You will often want to use these functions in conjunction with the `summarize` function in `dplyr`. For example, to create a new dataframe with the mean weight of children in the `nepali` dataset, you can use `mean` inside a `summarize` function: 
 
 ```{r}
 nepali %>%
   summarize(mean_wt = mean(wt, na.rm = TRUE))
 ```
 
-There are some special functions that you can use with `summarize`. For example, `n` and `first` (see the Data Wrangling cheatsheet for more): 
+There are also some special functions that you can use with `summarize`. For example, the `n` function will calculate the number of observations and the `first` function will return the first value of a column: 
+
 ```{r}
 nepali %>%
   summarize(n_children =n(), 
             first_id = first(id))
 ```
 
-If you want to get summaries by group using `dplyr` (e.g., mean weight by sex), use `group_by` before running `summarize`:
+See the "summary function" section of the [the RStudio Data Wrangling cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) for more examples of these special functions. 
+
+Often, you will be more interested in summaries within certain groupings of your data, rather than overall summaries. For example, you may be interested in mean height and weight by sex, rather than across all children, for the `nepali` data. It is very easy to calculate these grouped summaries using `dplyr`-- you just need to group data using the `group_by` function (also a `dplyr` function) before you run the `summarize` function:
 
 ```{r}
 nepali %>%
@@ -375,9 +395,13 @@ nepali %>%
             first_id = first(id))
 ```
 
+```{block, type = "rmdnote"}
+Don't forget that you need to save the output to a new object if you want to use it later. The above code, which creates a dataframe with summaries for Nepali children by sex, will only be printed out to your console if run as-is. If you'd like to save this output as an object to use later (for example, for a plot or table), you need to assign it to an R object. 
+```
+
 ## Logical vectors
 
-Last week, you learned a lot about logical statements and how to use them with the `subset()` function. You can also use logical vectors, created with these statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`).
+Last week, you learned a lot about logical statements and how to use them with the `filter` function. You can also use logical vectors, created with these statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`).
 
 A logical statement run on a vector will create a logical vector the same length as the original vector:
 
@@ -394,14 +418,14 @@ head(nepali$sex)
 head(is_male)
 ```
 
-You can "flip" this logical vector (i.e., change every `TRUE` to `FALSE` and vice-versa) using `!`:
+You can "flip" this logical vector (i.e., change every `TRUE` to `FALSE` and vice-versa) using the *bang operator*, `!`:
 
 ```{r}
 head(is_male)
 head(!is_male)
 ```
 
-You can do a few cool things now with this vector. For example, you can use it with indexing to pull out just the rows where `is_male` is `TRUE`:
+You can do a few cool things now with a logical vector like this. For example, you can use it with indexing to pull out just the rows where `is_male` is `TRUE`:
 
 ```{r}
 head(nepali[is_male, ])
