@@ -586,47 +586,78 @@ The result of a `residuals` call is a vector with one element for each of the no
 You can also use the shorter function `coef` as an alternative to `coefficients` and the shorter function `resid` as an alternative to `residuals`.
 ```
 
-The `summary()` function gives you a lot of information about the model: 
+As noted in the subsection on simple statistics functions, the `summary` function returns different output depending on the type of object that is input to the function. If you input a regression model object to `summary`, the function gives you a lot of information about the model. For example, here is the output returned by running `summary` for the linear regression model object we just created: 
 
-```{r, eval = FALSE}
+```{r}
 summary(mod_a)
 ```
 
-```{r, echo = FALSE}
-summary(mod_a)
+This output includes a lot of useful elements, including (1) basic summary statistics for the residuals (to meet model assumptions, the median should be around zero and the absolute values fairly similar for the first and third quantiles), (2) coefficient estimates, standard errors, and p-values, and (3) some model summary statistics, including residual standard error, degrees of freedom, number of missing observations, and F-statistic.
+
+The object returned by the `summary()` function when it is applied to an `lm` object is a list, which you can confirm using the `is.list` function: 
+
+```{r}
+is.list(summary(mod_a))
 ```
 
-The object created when you use the `summary()` function on an `lm` object has several different parts you can pull out using the `$` operator:
+With any list, you can use the `names` function to get the names of all of the different elements of the object: 
 
 ```{r}
 names(summary(mod_a))
+```
+
+You can use the `$` operator to pull out any element of the list. For example, to pull out the table with information on the estimated model coefficients, you can run:
+
+```{r}
 summary(mod_a)$coefficients
 ```
 
-You can use `plot` with an `lm` object to get a number of useful diagnostic plots to check regression assumptions:
+The `plot` function, like the `summary` function, will give different output depending on the class of the object that you input. For an `lm` object, you can use the `plot` function to get a number of useful diagnostic plots that will help you check regression assumptions (Figure \@ref(fig:plotlmexample)):
 
 ```{r eval = FALSE}
 plot(mod_a)
 ```
 
-```{r echo = FALSE, out.width = '\\textwidth', fig.align = "center"}
+```{r plotlmexample, echo = FALSE, out.width = '\\textwidth', fig.align = "center", fig.cap = "Example output from running the `plot` function with an `lm` object as the input."}
 oldpar <- par(mfrow = c(2, 2))
 plot(mod_a)
 par(oldpar)
 ```
 
-You can also use binary variables or factors as independent variables in regression models:
+You can also use binary variables or factors as independent variables in regression models. For example, in the `nepali` dataset, `sex` is a factor variable with the levels "Male" and "Female". You can fit a linear model of weight regressed on sex for this data with the call: 
 
 ```{r}
 mod_b <- lm(wt ~ sex, data = nepali)
-summary(mod_b)$coefficients
 ```
 
 This call fits the model:
 
 $$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
 
-where $X_{1,i}$ : sex of child $i$, where 0 = male; 1 = female
+where $X_{1,i}$ : sex of child $i$, where 0 = male and 1 = female. 
+
+Here are the estimated coefficients from fitting this model:
+
+```{r}
+summary(mod_b)$coefficients
+```
+
+You'll notice that, in addition to an estimated intercept (`(Intercept)`), the other estimated coefficient is `sexFemale` rather than just `sex`, although the column name in the dataframe input to `lm` for this variable is `sex`. 
+
+This is because, when a factor or binary variable is input as an independent variable in a linear regression model, R will fit an estimated coefficient for all levels of factors *except* the first factor level. By default, this first factor level is used as the baseline level, and so its estimated mean is given by the estimated intercept, while the other model coefficients give the estimated *difference* from this baseline. 
+
+For example, the model fit above tells us that the estimated mean weight of males is `r round(coef(mod_b)[1], 1)`, while the estimated mean weight of females is `r round(coef(mod_b)[1], 1)` + `r round(coef(mod_b)[2], 1)` = `r round(coef(mod_b)[1], 1) + round(coef(mod_b)[2], 1)`.
+
+If you would prefer that a different level of the factor be the baseline (for example, "Female" rather than "Male" for the previous regression), you can do that by using the `levels` argument in the `factor` function to reset factor levels. For example: 
+
+```{r}
+nepali_reset <- nepali %>%
+  mutate(sex = factor(sex, levels = c("Female", "Male")))
+mod_b_reset <- lm(wt ~ sex, data = nepali_reset)
+summary(mod_b_reset)$coef
+```
+
+Now, `(Intercept)` gives the estimated mean weight for females, while the second estimated coefficient gives the estimated mean difference for males compared to the expected value for females.
 
 ### Generalized linear models (GLMs)
 
@@ -684,13 +715,13 @@ Because this model was a logistic model, fit with a log link, here the model coe
 
 ### References-- statistics in R
 
-A great (and free for CSU students) resource to find out more about using R for basic statistics:
+One great (and free online for CSU students through our library) book to find out more about using R for basic statistics is:
 
 - [Introductory Statistics with R](http://discovery.library.colostate.edu/Record/.b44705323)
 
-If you want all the details about fitting linear models and GLMs in R, Faraway's books are fantastic:
+If you want all the details about fitting linear models and GLMs in R, Julian Faraway's books are fantastic. He has one on linear models and one on extensions including logistic and Poisson models:
 
-- [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691) (also freely available through our library)
+- [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691) (also free online through the CSU library)
 - [Extending the Linear Model with R](http://www.amazon.com/Extending-Linear-Model-Generalized-Nonparametric/dp/158488424X/ref=sr_1_1?ie=UTF8&qid=1442252668&sr=8-1&keywords=extending+linear+model+r)
 
 ## In-course exercise
