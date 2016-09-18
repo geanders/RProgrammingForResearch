@@ -477,19 +477,19 @@ $$
 Y_i \sim X_1 + X_2 + X_3
 $$
 
-You will use this type of structure in R fo a lot of different function calls, including those for linear models (ift with the `lm` function) and generalized linear models (fit with the `glm` function).
+You will use this type of structure in R fo a lot of different function calls, including those for linear models (fit with the `lm` function) and generalized linear models (fit with the `glm` function).
 
 There are some conventions that can be used in R formulas. Common ones include: 
 
 ```{r echo = FALSE}
 for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
-                                       "`-`", "`1`"),
-                        Meaning = c("calculate the value inside before fitting (e.g., `I(x1 + x2)`)",
-                                    "fit the interaction between two variables (e.g., `x1:x2`)",
+                                       "`1`", "`-`"),
+                        Meaning = c("evaluate the formula inside `I()` before fitting (e.g., `I(x1 + x2)`)",
+                                    "fit the interaction between `x1` and `x2` variables",
                                     "fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)",
-                                    "fit all variables other than the response (e.g., `y ~ .`)",
-                                    "do not include a variable (e.g., `y ~ . - x1`)",
-                                    "intercept (e.g., `y ~ 1` for an intercept-only model)"))
+                                    "include as independent variables all variables other than the response (e.g., `y ~ .`)",
+                                    "intercept (e.g., `y ~ 1` for an intercept-only model)",
+                                    "do not include a variable in the dataframe as an independent variables (e.g., `y ~ . - x1`); usually used in conjunction with `.` or `1`"))
 pander::pander(for_convs, split.cells = c(1,1,58),
                justify = c("center", "left"))
 ```
@@ -632,29 +632,34 @@ where $X_{1,i}$ : sex of child $i$, where 0 = male; 1 = female
 
 You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). \medskip
 
-For linear models, the only difference between `lm` and `glm` is how they're fitting the model (least squares versus maximum likelihood). You should get the same results regardless of which you pick. 
+For linear models, the only difference between `lm` and `glm` are the mechanics of how they estimate the model coefficients (`lm` uses least squares while `glm` uses maximum likelihood). You will (almost always) get exactly the same estimated coefficients regardless of whether you use `glm` or `lm` to fit a linear regression. 
 
-For example:
+For example, here is the code to fit a linear regression model for weight regressed on height from the `nepali` dataset:
 
 ```{r}
 mod_c <- glm(wt ~ ht, data = nepali)
-summary(mod_c)$coef
-summary(mod_a)$coef
 ```
 
-You can fit other model types with `glm()` using the `family` option:
+This call fits the same regression model I fit earlier with the `lm` function and saved as `mod_a`. You can see that the two methods give exactly the same coefficient estimates: 
+
+```{r}
+coef(mod_c)
+coef(mod_a)
+```
+
+Unlike the `lm` function, however, the `glm` function also allows you to fit other model types, including logistic and Poisson models. You can specify the model type using the `family` argument to the `glm` call:
 
 ```{r echo = FALSE}
 glm_types <- data.frame(type = c("Linear", "Logistic", "Poisson"),
                         opt = c("`family = gaussian(link = 'identity')`",
                                 "`family = binomial(link = 'logit')`", 
                                 "`family = poisson(link = 'log')`"))
-knitr::kable(glm_types, col.names = c("Model type", "`family` option"))
+knitr::kable(glm_types, col.names = c("Model type", "`family` argument"))
 ```
 
-For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability that a child weighs more than 13 kg is associated with the child's height. \medskip
+For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability of a child weighing more than 13 kg is associated with the child's sex. 
 
-First, create a binary variable for `wt_over_13`:
+First, create a binary variable in the `nepali` dataset, `wt_over_13`, that is `TRUE` if a child weighed more than 13 kilograms and FALSE otherwise. You can use the `mutate` function from `dplyr` to add this new column (which, as a note, is a logical vector):
 
 ```{r}
 nepali <- nepali %>% 
@@ -662,15 +667,20 @@ nepali <- nepali %>%
 head(nepali)
 ```
 
-Now you can fit a logistic regression:
+Now you can fit a logistic regression of `wt_over_13` regressed on sex, using a logistic model:
 
 ```{r}
-mod_d <- glm(wt_over_13 ~ ht, data = nepali,
+mod_d <- glm(wt_over_13 ~ sex, data = nepali,
              family = binomial(link = "logit"))
+```
+
+Elements of a GLM can be pulled out in the same way that we looked at elements from the linear model fit with `lm`. For example, to see a table of estimated model coefficients, you can run: 
+
+```{r}
 summary(mod_d)$coef
 ```
 
-Here, the model coefficient gives the **log odds** of having a weight higher than 13 kg associated with a unit increase in height.
+Because this model was a logistic model, fit with a log link, here the model coefficient estimate for `sexFemale` gives an estimate of the **log odds** of weight higher than 13 kg associated with females versus males. The p-value for this estimate (`Pr(>|z|)` = `r round(summary(mod_d)$coef[2, 4], 2)`) isn't very small, suggesting that the difference between male and female children in the odds of weighing more than 13 kg is not statistically significant. 
 
 ### References-- statistics in R
 
