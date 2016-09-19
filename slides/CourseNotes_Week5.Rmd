@@ -1,18 +1,14 @@
 ---
 title: "Reproducible research 1"
-author: "Brooke Anderson, Assistant Professor of Epidemiology"
-job: Colorado State University
-logo        : figures/CSU_ram.png
-date: "September 28, 2015"
-output: ioslides_presentation
-framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
-highlighter : highlight.js  # {highlight.js, prettify, highlight}
-hitheme     : tomorrow      # 
-mode        : selfcontained # {standalone, draft}
+output: 
+  beamer_presentation:
+    theme: "Frankfurt"
+    colortheme: "seagull"
+    fonttheme: "structuresmallcapsserif"
+fontsize: 10pt
 ---
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(fig.path='coursenotes/plot-')
 knitr::knit_hooks$set(source = function(x, options){
   if (!is.null(options$verbatim) && options$verbatim){
     opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*", "", options$params.src)
@@ -28,89 +24,9 @@ knitr::knit_hooks$set(source = function(x, options){
     )
   }
 })
-
 library(faraway)
 data(nepali)
 ```
-
-# Dates revisited
-
-## Converting to `Date` class
-
-In the `as.Date` call, the `format` option should tell R what the format **currently** looks like, not what you'd like it to look like. If you don't, you'll get an error:
-
-```{r, eval = FALSE}
-as.Date("Sept. 28, 2015")
-```
-```
-Error in charToDate(x) : 
-  character string is not in a standard unambiguous format
-```
-```{r}
-as.Date("Sep. 28, 2015", format = "%b. %d, %Y")
-```
-
-"unambiguous format" = "I don't know what to do with this"
-
-## Converting to `Date` class
-
-There are only two date formats that R can read by itself, without you using the `format` option to tell R how to interpret the character string. Those are:
-
-```{r}
-as.Date("2015-09-28")
-as.Date("2015/09/28")
-```
-
-## Converting to `Date` class
-
-A strategy for writing up the `format` code is to copy one of your date observations and then go through and change each element to its formatting code, one at a time:
-
-```
-format = "Sep. 28, 2015"
-format = "%b. 28, 2015"
-format = "%b. %d, 2015"
-format = "%b. %d, %Y"
-```
-
-Leave any spaces and punctuation from the original observation.
-
-## Converting to `Date` class
-
-Why is R so picky about this? It prevents errors. 
-
-Suppose you had the date March 2, 1981, in this format: "03-02-1981". If R assumed the format was day-month-year, it would mis-interpret this date as February 3, 1981. By insisting on `format`, R protects you from errors like this. 
-
-```{r}
-as.Date("03-02-1981", format = "%m-%d-%Y")
-as.Date("03-02-1981", format = "%d-%m-%Y")
-```
-
-## Printing `Date` class objects
-
-The default is for R to print out dates as "%Y-%m-%d":
-
-```{r}
-ex_date <- as.Date("Sep. 28, 2015", format = "%b. %d, %Y")
-ex_date
-```
-
-If you want it to print out in a different format, you can use the `format` function:
-
-```{r}
-format(ex_date, format = "%Y %B %d")
-```
-
-## Printing `Date` class objects
-
-Note that the `format` function will convert your date object to a character class of the format you specified:
-
-```{r}
-ex_date <- format(ex_date, format = "%Y %B %d")
-ex_date
-class(ex_date)
-```
-
-You would only want to use it when you're ready to save your data back to a flat file. Once you use it, the object won't act like a date in R anymore, since it's been converted to a character class.
 
 # Reproducible research
 
@@ -126,51 +42,349 @@ The *Methods* section of the future...
 
 ## Why is it important?
 
-If your research is reproducible, it means:
+Some advantages of making your research reproducible are:
 
 - You can (easily) figure out what you did six months from now.
 - You can (easily) make adjustments to code or data, even early in the process, and re-run all analysis.
 - When you're ready to publish, you can (easily) do a last double-check of your full analysis, from cleaning the raw data through generating figures and tables for the paper.
-- You can pass along (or share) a project with others.
+- You can pass along or share a project with others.
 - You can give useful code examples to people who want to extend your research.
 
 ## Why is it important?
 
-A cautionary example:
+A cautionary example (Source: The New York Times-- link below): \bigskip 
 
-![](figures/NYTimes.png)
+```{r echo = FALSE, out.width = "0.9\\textwidth"}
+knitr::include_graphics("../figures/NYTimes.png")
+```
 
-(Source: The New York Times-- see link on next page.)
+\medskip
 
-## Why is it important?
-
-A cautionary example:
+Read more from: 
 
 - [The Economist](http://www.economist.com/node/21528593)
 - [The New York Times](http://www.nytimes.com/2011/07/08/health/research/08genes.html?_r=0)
 - [Simply Statistics](http://simplystatistics.org/2012/02/27/the-duke-saga-starter-set/)
 
-## First steps to making research reproducible
 
-- Include original, "raw" data in your project directory. Include information on where it came from.
-- Include all code, as well as a description of the process for running all the code.
-- Limit or eliminate all "non-scriptable" steps (i.e., avoid doing anything by hand). If any exist, document them clearly.
+## Some steps to making research reproducible
+
+- All your raw data should be saved in the project directory. You should have clear documentation on the source of all this data.
+- Scripts should be included with all the code used to clean this data into the data set(s) used for final analyses and to create any figures and tables.
+- You should include details on the versions of any software used in analysis (for R, this includes the version of R as well as versions of all packages used). 
+- If possible, there so be no "by hand" steps used in the analysis; instead, all steps should be done using code saved in scripts. For example, you should use a script to clean data, rather than cleaning it by hand in Excel. If any "non-scriptable" steps are unavoidable, you should very clearly document those steps. 
+
+## Tools for research reproducible
+
+There are several software tools that can help you improve the reproducibility of your research: 
+
+- **`knitr`**: Create files that include both your code and text. These can be compiled to create final reports and papers. They keep code within the final file for the report.
+- **`knitr` complements**: Create fancier tables and figures within RMarkdown documents. Packages include `tikzDevice`, `animate`, `xtables`, and `pander`.
+- **`packrat`**: Save versions of each package used for the analysis, then load those package versions when code is run again in the future.
+
+Today we will focus on using `knitr` and RMarkdown files. 
+
+# Markdown
+
+## Markup languages
+
+To write RMarkdown files, you need to understand what markup languages like Markdown are and how they work. \bigskip
+
+In Word, you can add formatting using buttons and keyboard shortcuts (e.g., "Ctrl-B" for bold). The file saves the words you type. It also saves the formatting, but you see the final output, rather than the formatting markup, when you edit the file (WYSIWYG-- what you see is what you get). \bigskip
+
+In markup languages, you markup the document directly to show what formatting the final version should have (e.g., you type `**bold**` in the file to end up with a document with **bold**).
+
+## Markup languages
+
+Examples of markup languages include:
+
+- HTML (HyperText Markup Language)
+- LaTex
+- Markdown (a "lightweight" markup language)
+
+## Markup languages
+
+For example, here's some marked-up HTML code from CSU's website: \bigskip
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/example_html.png")
+```
+
+## Markup languages
+
+And here's how it looks when it's rendered by a web browser: \bigskip
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/example_output.png")
+```
+
+## Markdown conventions
+
+To write a file in Markdown, you'll need to learn the conventions for creating formatting. This table shows what you would need to write in a flat file for some common formatting choices: \medskip
+
+```{r echo = FALSE}
+markdown_format <- data.frame(Code = c("`**text**`",
+                                       "`*text*`",
+                                       "`[text](www.google.com)`", 
+                                       "`# text`", 
+                                       "`## text`"),
+                              Rendering = c("**text**",
+                                            "*text*",
+                                            "[text](www.google.com)",
+                                            "",
+                                            ""),
+                              Explanation = c("boldface",
+                                              "italicized",
+                                              "hyperlink",
+                                              "first-level header",
+                                              "second-level header"))
+knitr::kable(markdown_format)
+```
+
+
+
+## Markdown conventions
+
+Some other simple things you can do:
+
+- Lists (ordered or bulleted)
+- Equations
+- Tables
+- Figures from file
+- Block quotes
+- Superscripts
+
+\bigskip
+
+For more Markdown conventions, see (RStudio's R Markdown Reference Guide)[https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf] (link also available through "Help" in RStudio). 
+
+
+# Literate programming in R
+
+## Literate programming
+
+**Literate programming**, an idea developed by Donald Knuth, mixes code that can be executed with regular text. \medskip 
+
+```{r echo = FALSE, out.width = "0.9\\textwidth"}
+knitr::include_graphics("../figures/KnuthCheck.jpg")
+```
+
+\medskip
+
+The files you create can then be rendered, to run any embedded code. The final output will have results from your code and the regular text. 
+
+## Literate programming with `knitr`
+
+The `knitr` package can be used for literate programming in R. \bigskip
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/RMarkdownWorkflow.png")
+```
+
+(Source: RMarkdown Cheatsheet, RStudio) \bigskip
+
+In essence, `knitr` allows you to write an R Markdown file that can be rendered into a pdf, Word, or HTML document.
+
+## Basics
+
+- To open a new RMarkdown file, go to "File" -> "New File" -> "RMarkdown..." -> for now, chose a "Document" in "HTML" format.
+- This will open a new R Markdown file in RStudio. The file extension for RMarkdown files is ".Rmd". 
+- The new file comes with some example code and text. You can run the file as-is to try out the example. You will ultimately delete this example code and text and replace it with your own.
+- Once you "knit" the R Markdown file, R will render an HTML file with the output. This is automatically saved in the same directory where you saved your .Rmd file.
+- Write everything besides R code using Markdown syntax.
+
+## Chunk syntax
+
+To include R code in an RMarkdown document, separate off the code chunk using the following syntax:
+
+    `r ''````{r}
+    my_vec <- 1:10
+    ```
+
+## Naming chunks
+
+You can specify a name for each chunk, if you'd like, by including it after "r" when you begin your chunk. \medskip
+
+For example, to give the name `load_nepali` to a code chunk that loads the `nepali` dataset, specify that name in the start of the code chunk: \bigskip
+
+    `r ''````{r load_nepali}
+    library(faraway)
+    data(nepali)
+    ```
+
+\bigskip 
+
+Some tips: 
+
+- Chunk names must be unique across a document.
+- Any chunks you don't name are given numbers by `knitr`.
+
+## Naming chunks
+
+You do not have to name each chunk. However, there are some advantages: 
+
+- It will be easier to find any errors.  
+- You can use the chunk labels in referencing for figure labels. 
+- You can reference chunks later by name.
+
+## Chunk options
+
+You can add options when you start a chunk. Many of these options can be set as TRUE / FALSE and include:
+
+```{r echo = FALSE}
+chunk_opts <- data.frame(Option = c("`echo`",
+                                    "`eval`",
+                                    "`messages`",
+                                    "`warnings`",
+                                    "`include`"),
+                         Action = c("Print out the R code?",
+                                    "Run the R code?",
+                                    "Print out messages?",
+                                    "Print out warnings?",
+                                    "If FALSE, run code, but don't print code or results"))
+knitr::kable(chunk_opts)
+```
+
+## Chunk options
+
+Other chunk options take values other than TRUE / FALSE. Some you might want to include are:
+
+```{r echo = FALSE}
+chunk_opts2 <- data.frame(Option = c("`results`",
+                                     "`fig.width`",
+                                     "`fig.height`"),
+                          Action = c("How to print results (e.g., `hide` runs the code, but doesn't print the results)",
+                                     "Width to print your figure, in inches (e.g., `fig.width = 4`)",
+                                     "Height to print your figure"))
+pander::pander(chunk_opts2, split.cells = c(10, 50),
+               justify = c("center", "left"))
+```
+
+## Chunk options
+
+Add these options in the opening brackets and separate multiple ones with commas:
+
+    `r ''````{r  messages = FALSE, echo = FALSE}
+    nepali[1, 1:3]
+    ```
+
+\bigskip 
+
+We will go over other options later, once you've gotten the chance to try writting R Markdown files.
+
+## Global options
+
+You can set "global" options at the beginning of the document. This will create new defaults for all of the chunks in the document. \bigskip
+
+For example, if you want `echo`, `warning`, and `message` to be `FALSE` by default in all code chunks, you can run: \bigskip
+
+    `r ''````{r  global_options}
+    knitr::opts_chunk$set(echo = FALSE, message = FALSE,
+      warning = FALSE)
+    ```
+
+## Global options
+
+Options that you set specifically for a chunk will take precedence over global options. \bigskip
+
+For example, running a document with:
+
+    `r ''````{r  global_options}
+    knitr::opts_chunk$set(echo = FALSE, message = FALSE,
+      warning = FALSE)
+    ```
+
+
+    `r ''````{r  check_nepali, echo = TRUE}
+    head(nepali, 1)
+    ```
+    
+would print the code for the `check_nepali` chunk.
+
+## Inline code
+
+You can also include R output directly in your text ("inline") using backticks: \bigskip
+
+There are `` `r '\x60r nrow(nepali)\x60'` `` observations in the `nepali` data set. The average age is `` `r '\x60r mean(nepali$age, na.rm = TRUE)\x60'` `` months.
+
+\bigskip
+
+Once the file is rendered, this gives: \bigskip
+
+There are `r nrow(nepali)` observations in the `nepali` data set. The average age is `r mean(nepali$age, na.rm = TRUE)` months.
+
+# Working with Rmd files
+
+## R Markdown tips
+
+Here are two tips that will help you diagnose some problems rendering R Markdown files:
+
+- Be sure to save your R Markdown file before you run it.
+- All the code in the file will run "from scratch"-- as if you just opened a new R session.
+- The code will run using, as a working directory, the directory where you saved the R Markdown file.
+
+## Running code
+
+You'll want to try out pieces of your code as you write an R Markdown document. There are a few ways you can do that:
+
+- You can run code in chunks just like you can run code from a script (Ctrl-Return or the "Run" button). 
+- You can run all the code in a chunk (or all the code in all chunks) using the different options under the "Run" button in RStudio. 
+- All the "Run" options have keyboard shortcuts, so you can use those.
+
+## Compiling to other formats
+
+You can compile R Markdown documents to other formats:
+
+- Word
+- Pdf (requires that you've installed "Tex" on your computer.)
+- Slides (ioslides)
+
+\bigskip
+
+Click the button to the right of "Knit" to see different options for rendering on your computer. 
+
+## RPubs
+
+You can freely post your RMarkdown documents at [RPubs](http://rpubs.com). \bigskip
+
+If you want to post to RPubs, you need to create an account. Once you do, you can click the "Publish" button on the window that pops up with your compiled file. \bigskip
+
+RPubs can also be a great place to look for interesting example code, although it sometimes can be pretty overwhelmed with MOOC homework. 
+
+## Find out more
+
+Here are two good how-to books on reproducible research in R (our library has both):
+
+- *Reproducible Research with R and RStudio*, Christopher Gandrud
+- *Dynamic Documents with R and knitr*, Yihui Xie
 
 # R Style
 
 ## Why is style important?
 
+**R style guidelines** provide rules for how to format code in an R script. \medskip
+
+Some people develop their own style as they learn to code. However, it is easy to get in the habit of following style guidelines, and they offer some important advantages: \medskip
+
 - Clean code is easier to read and interpret later.
 - It's easier to catch and fix mistakes when code is clear.
 - Others can more easily follow and adapt your code if it's clean.
-- Some style guidelines will help prevent possible problems (e.g., use of `attach()`).
+- Some style guidelines will help prevent possible problems (e.g., avoiding `.` in function names).
+
+## Style guidelines
+
+For this course, we will use R style guidelines from two sources: 
+
+- [Google's R style guidelines](https://google.github.io/styleguide/Rguide.xml)
+- [Hadley Wickham's R style guidelines](http://adv-r.had.co.nz/Style.html)
+
+These two sets of style guidelines are very similar. 
 
 ## Style guideline review
 
-Building on a few guidelines we've already seen:
+Hear are a few guidelines we've already covered in class:
 
 - Use `<-`, not `=`, for assignment.
-- Do not use `attach()`.
 - Guidelines for naming objects:
     + All lowercase letters or numbers
     + Use underscore (`_`) to separate words, not camelCase or a dot (`.`)
@@ -179,7 +393,7 @@ Building on a few guidelines we've already seen:
 
 ## Line length
 
-Google: **Keep lines to 80 characters or less**
+Google: **Keep lines to 80 characters or less** \medskip
 
 To set your script pane to be limited to 80 characters, go to "RStudio" -> "Preferences" -> "Code" -> "Display", and set "Margin Column" to 80.
 
@@ -190,6 +404,8 @@ my_df <- data.frame(n = 1:3,
                     letter = c("a", "b", "c"),
                     cap_letter = c("A", "B", "C"))
 ```
+
+This guideline helps ensure that your code is formatted in a way that you can see all of the code without scrolling horizontally (left and right).
 
 ## Spacing
 
@@ -229,9 +445,9 @@ a <- 1:10; b <- 3
 - Hadley Wickham: "Use commented lines of - and = to break up your file into easily readable chunks."
 
 ```{r eval = FALSE}
-# Load data ---------------------------
+# Read in health data ---------------------------
 
-# Plot data ---------------------------
+# Clean exposure data ---------------------------
 ```
 
 ## Indentation
@@ -267,212 +483,10 @@ nepali$sex <- factor(nepali$sex,
                      labels = c("Male", "Female"))
 ```
 
+Note that this grouping often happens naturally when using tidyverse functions, since they encourage piping (`%>%` and `+`).
+
 ## Broader guidelines
 
 - Omit needless code.
 - Don't repeat yourself.
-
-# Markdown
-
-## Mark-up languages
-
-In Word, you can add formatting using buttons and keyboard shortcuts (e.g., "Ctrl-B" for bold). The file saves the words you type. It also saves the formatting, but you see the final output, rather than the formatting markup, when you edit the file.
-
-In mark-up languages, you markup the document directly to show what formatting the final version should have (e.g., `**bold**` for **bold**).
-
-## Mark-up languages
-
-Examples of mark-up languages include:
-
-- markdown
-- html
-- LaTex
-
-## Mark-up languages
-
-For example, here's some marked-up html code from CSU's front page:
-
-![](figures/example_html.png)
-
-## Mark-up languages
-
-And here's how it looks when it's rendered by a web browser:
-
-![](figures/example_output.png)
-
-## Markdown conventions
-
-Code     | Rendering
----------|------------
-`**text**` | **text** (bold)
-`*text*`   | *text* (italics)
-``text``   | `text` (computer code)
-`[text](www.google.com)` | [text](www.google.com) (link)
-`# text`   | First-level header
-`## text`  | Second-level header
-
-## Markdown conventions
-
-For more Markdown conventions, you can click on the question mark on the panel of an .Rmd script and choose "Markdown Quick Reference". 
-
-Some other simple things you can do:
-
-- Lists (ordered or bulleted)
-- Equations
-- Tables
-- Outside figures
-
-# `knitr` and RMarkdown
-
-## Literate programming
-
-*Literate programming* mixes code that can be executed with regular text. 
-
-The files you create can then be run, in order, through a few different compilers. The final output will have results from your code and the regular text.
-
-![](figures/KnuthCheck.jpg)
-
-## Literate programming with `knitr`
-
-![](figures/RMarkdownWorkflow.png)
-
-(Source: RMarkdown Cheatsheet, RStudio)
-
-## Basics
-
-- To open a new RMarkdown file, go to "File" -> "New File" -> "RMarkdown..." -> for now, chose a "Document" in "HTML" format.
-- The file extension for RMarkdown files is ".Rmd"
-- Once you "knit", there will be an HTML file with the output in the same directory where you've saved your .Rmd file.
-- Write everything besides code in markdown syntax.
-
-## More basics
-
-- All the code in the file will run "from scratch"-- as if you just opened a new R session.
-- The code will run using the directory where you saved the .Rmd as the working directory.
-
-## Chunk syntax
-
-To include R code in an RMarkdown document, separate off the code chunk using the following syntax:
-
-<pre><code>```{r}
-my_vec <- 1:10
-```</pre></code>
-
-## Naming chunks
-
-You can specify a name for each chunk, if you'd like, by including it after "r" when you begin your chunk:
-
-<pre><code>```{r load_nepali}
-library(faraway)
-data(nepali)
-```</code></pre>
-
-If you name chunks, it will be easier to find any errors. Any chunks you don't name are given numbers by `knitr`.
-
-Chunk names must be unique.
-
-## Chunk options
-
-You can add options when you start a chunk.
-
-TRUE / FALSE options you might want to use include:
-
-Option    | Action
---------- | -----------------------
-`echo`    | Print out the R code?
-`eval`    | Run the R code?
-`messages` | Print out messages?
-`warnings` | Print out warnings?
-`include` | If FALSE, run, but don't print code or results
-
-## Chunk options
-
-Other options you might want to include:
-
-Option    | Action
---------- | -----------------------
-`results` | How to print results (e.g., `hide` runs the code, but doesn't print the results)
-`fig.width` | Width to print your figure, in inches (e.g., `fig.width = 4`)
-`fig.height` | Height to print your figure
-
-## Chunk options
-
-Add these options in the opening brackets and separate multiple ones with commas:
-
-<pre><code>```{r  messages = FALSE, echo = FALSE}
-nepali[1, 1:3]
-```</code></pre>
-
-There are other options as well, but we'll save discussion of those for later in the course.
-
-## Global options
-
-You can set "global" options at the beginning of the document. This will create new defaults for all of the chunks in the document. 
-
-<pre><code>```{r global_options}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE,
-  warning = FALSE, fig.path = `Figs/`)
-```</code></pre>
-
-## Global options
-
-Chunk options take precedence over global options.
-
-For example:
-
-<pre><code>```{r global_options}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE,
-  warning = FALSE, fig.path = `Figs/`)
-```</code></pre>
-
-<pre><code>```{r echo = TRUE}
-head(nepali, 1)
-```</code></pre>
-
-would print the code for the `check_nepali` chunk.
-
-## Inline code
-
-You can also include R output directly in your text ("inline"):
-
->There are`` `r '\x60r nrow(nepali)\x60'` `` observations in the `nepali` dataset. The average age is `` `r '\x60r mean(nepali$age, na.rm = TRUE)\x60'` `` months.
-
-Compiled, this gives:
-
->There are `r nrow(nepali)` observations in the `nepali` dataset. The average age is `r mean(nepali$age, na.rm = TRUE)` months.
-
-# Working with Rmd files
-
-## Running code
-
-You can run code in chunks just like you can run code from a script (Ctrl-Return or the "Run" button). 
-
-Also, you can run all the code in a chunk (or all the code in all chunks) using the different options under the "Chunks" button. These all also have keyboard shortcuts.
-
-## Compiling to other formats
-
-You can compile RMarkdown documents to other formats:
-
-- Word
-- Pdf (requires that you've installed "Tex" on your computer.)
-- Slides (ioslides)
-
-Click the button to the right of "Knit HTML" to see different options for rendering. 
-
-## RPubs
-
-You can freely post your RMarkdown documents:
-
-[RPubs](http://rpubs.com)
-
-If you want to post, you need to create an account. Once you do, you can click the "Publish" button on the top right of the window that pops up with your compiled file.
-
-RPubs can also be a great place to look for interesting example code, although it looks like it's currently pretty overwhelmed with homework and Coursera examples. 
-
-## References to find out more
-
-Two good how-to books on reproducible research in R (our library has both):
-
-- *Reproducible Research with R and RStudio*, Christopher Gandrud
-- *Dynamic Documents with R and knitr*, Yihui Xie
 
