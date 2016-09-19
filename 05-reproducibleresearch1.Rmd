@@ -1,6 +1,101 @@
-# Reporting data results #1
+# Reproducible research
 
 [Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week5.pdf) a pdf of the lecture slides covering this topic.
+
+## What is reproducible research?
+
+A data analysis is **reproducible** if all the information (data, files, etc.) is available required for someone else re-do your entire analysis.
+
+This includes: 
+
+- Data available
+- All code for cleaning raw data
+- All code and software (specific versions, packages) for analysis
+
+Some advantages of making your research reproducible are:
+
+- You can (easily) figure out what you did six months from now.
+- You can (easily) make adjustments to code or data, even early in the process, and re-run all analysis.
+- When you're ready to publish, you can (easily) do a last double-check of your full analysis, from cleaning the raw data through generating figures and tables for the paper.
+- You can pass along or share a project with others.
+- You can give useful code examples to people who want to extend your research.
+
+Here is a famous research example of the dangers of writing code that is hard to double-check or confirm:  
+
+- [The Economist](http://www.economist.com/node/21528593)
+- [The New York Times](http://www.nytimes.com/2011/07/08/health/research/08genes.html?_r=0)
+- [Simply Statistics](http://simplystatistics.org/2012/02/27/the-duke-saga-starter-set/)
+
+Some of the steps required to making research reproducible are:
+
+- All your raw data should be saved in the project directory. You should have clear documentation on the source of all this data.
+- Scripts should be included with all the code used to clean this data into the data set(s) used for final analyses and to create any figures and tables.
+- You should include details on the versions of any software used in analysis (for R, this includes the version of R as well as versions of all packages used). 
+- If possible, there so be no "by hand" steps used in the analysis; instead, all steps should be done using code saved in scripts. For example, you should use a script to clean data, rather than cleaning it by hand in Excel. If any "non-scriptable" steps are unavoidable, you should very clearly document those steps. 
+
+There are several software tools that can help you improve the reproducibility of your research: 
+
+- **`knitr`**: Create files that include both your code and text. These can be compiled to create final reports and papers. They keep code within the final file for the report.
+- **`knitr` complements**: Create fancier tables and figures within RMarkdown documents. Packages include `tikzDevice`, `animate`, `xtables`, and `pander`.
+- **`packrat`**: Save versions of each package used for the analysis, then load those package versions when code is run again in the future.
+
+In this section, I will focus on using `knitr` and RMarkdown files. 
+
+## Markdown
+
+R Markdown files are mostly written using Markdown. To write R Markdown files, you need to understand what markup languages like Markdown are and how they work. 
+
+In Word and other word processing programs you have used, you can add formatting using buttons and keyboard shortcuts (e.g., "Ctrl-B" for bold). The file saves the words you type. It also saves the formatting, but you see the final output, rather than the formatting markup, when you edit the file (WYSIWYG-- what you see is what you get). 
+
+In markup languages, on the other hand, you markup the document directly to show what formatting the final version should have (e.g., you type `**bold**` in the file to end up with a document with **bold**).
+
+Examples of markup languages include:
+
+- HTML (HyperText Markup Language)
+- LaTex
+- Markdown (a "lightweight" markup language)
+
+For example, Figure \@ref(fig:htmlexample) some marked-up HTML code from CSU's website, while Figure \@ref(fig:renderedexample) shows how that file looks when it's rendered by a web browser. 
+
+```{r htmlexample, echo = FALSE, out.width = "\\textwidth", fig.align = "center", fig.cap = "Example of the source of an HTLM file."}
+knitr::include_graphics("figures/example_html.png")
+```
+
+```{r renderedexample, echo = FALSE, out.width = "\\textwidth", fig.align = "center", fig.cap = "Example of a rendered HTLM file."}
+knitr::include_graphics("figures/example_output.png")
+```
+
+To write a file in Markdown, you'll need to learn the conventions for creating formatting. This table shows what you would need to write in a flat file for some common formatting choices:
+
+```{r echo = FALSE}
+markdown_format <- data.frame(Code = c("`**text**`",
+                                       "`*text*`",
+                                       "`[text](www.google.com)`", 
+                                       "`# text`", 
+                                       "`## text`"),
+                              Rendering = c("**text**",
+                                            "*text*",
+                                            "[text](www.google.com)",
+                                            "",
+                                            ""),
+                              Explanation = c("boldface",
+                                              "italicized",
+                                              "hyperlink",
+                                              "first-level header",
+                                              "second-level header"))
+knitr::kable(markdown_format)
+```
+
+Some other simple things you can do in Markdown include:
+
+- Lists (ordered or bulleted)
+- Equations
+- Tables
+- Figures from file
+- Block quotes
+- Superscripts
+
+For more Markdown conventions, see [RStudio's R Markdown Reference Guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) (link also available through "Help" in RStudio). 
 
 
 
