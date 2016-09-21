@@ -401,11 +401,13 @@ Google: **Keep lines to 80 characters or less** \medskip
 To set your script pane to be limited to 80 characters, go to "RStudio" -> "Preferences" -> "Code" -> "Display", and set "Margin Column" to 80.
 
 ```{r eval = FALSE}
-my_df <- data.frame(n = 1:3, letter = c("a", "b", "c"), cap_letter = c("A", "B", "C"))
-
+# Do
 my_df <- data.frame(n = 1:3,
                     letter = c("a", "b", "c"),
                     cap_letter = c("A", "B", "C"))
+
+# Don't
+my_df <- data.frame(n = 1:3, letter = c("a", "b", "c"), cap_letter = c("A", "B", "C"))
 ```
 
 This guideline helps ensure that your code is formatted in a way that you can see all of the code without scrolling horizontally (left and right).
@@ -418,14 +420,15 @@ This guideline helps ensure that your code is formatted in a way that you can se
 - Put spaces before and after `=` when assigning parameter arguments
 
 ```{r eval = FALSE}
-# Good
-average <- mean(feet / 12 + inches, na.rm = T)
-diamonds[5, ]
-1:10
-# Bad
-average<-mean(feet/12+inches,na.rm=T)
-diamonds[5,]
-1 : 10
+# Do
+shots_per_min <- worldcup$Shots / worldcup$Time
+#Don't 
+shots_per_min<-worldcup$Shots/worldcup$Time
+
+#Do
+ave_time <- mean(worldcup[1:10 , "Time"])
+#Don't
+ave_time<-mean(worldcup[1 : 10 ,"Time"])
 ```
 
 ## Semicolons
@@ -433,10 +436,11 @@ diamonds[5,]
 Although you can use a semicolon to put two lines of code on the same line, you should avoid it. 
 
 ```{r eval = FALSE}
-# Good
+# Do
 a <- 1:10
 b <- 3
-# Bad
+
+# Don't
 a <- 1:10; b <- 3
 ```
 
@@ -456,10 +460,9 @@ a <- 1:10; b <- 3
 
 Google:
 
-- Indent with two spaces, not a tab or a mix of tabs and spaces. 
-- Exception: Line up new lines with first letter after opening parenthesis for parameters to function calls:
+- Within function calls, line up new lines with first letter after opening parenthesis for parameters to function calls:
 
-Example of exception:
+Example:
 
 ```{r eval = FALSE}
 # Relabel sex variable
