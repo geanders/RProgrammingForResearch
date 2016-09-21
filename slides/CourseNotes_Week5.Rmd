@@ -387,9 +387,12 @@ Hear are a few guidelines we've already covered in class:
 - Use `<-`, not `=`, for assignment.
 - Guidelines for naming objects:
     + All lowercase letters or numbers
-    + Use underscore (`_`) to separate words, not camelCase or a dot (`.`)
-    + Give meaningful objects meaningful names
+    + Use underscore (`_`) to separate words, not camelCase or a dot (`.`) (this differs for Google and Wickhmam style guides)
     + Have some consistent names to use for "throw-away" objects (e.g., `df`, `ex`, `a`, `b`)
+- Make names meaningful
+    + Descriptive names for R scripts ("random_group_assignment.R")
+    + Nouns for objects (`todays_groups` for an object with group assignments)
+    + Verbs for functions (`make_groups` for the function to assign groups)
 
 ## Line length
 
@@ -409,11 +412,10 @@ This guideline helps ensure that your code is formatted in a way that you can se
 
 ## Spacing
 
-Hadley Wickham: 
-
-- Put spaces around binary operators, like `<-`, `+`, `-`.
-- Put a space after a comma, but not before.
-- Don't put spaces around colons (`:`).
+- Binary operators (e.g., `<-`, `+`, `-`) should have a space on either side
+- A comma should have a space after it, but not before.
+- Colons should not have a space on either side. 
+- Put spaces before and after `=` when assigning parameter arguments
 
 ```{r eval = FALSE}
 # Good
@@ -440,9 +442,9 @@ a <- 1:10; b <- 3
 
 ## Commenting
 
-- For a comment on its own line, use a single `#`, then a space, then the comment. 
+- For a comment on its own line, use `#`. Follow with a space, then the comment. 
 - You can put a short comment at the end of a line of R code. In this case, put two spaces after the end of the code, one `#`, and one more space before the comment.
-- Hadley Wickham: "Use commented lines of - and = to break up your file into easily readable chunks."
+- If it helps make it easier to read your code, separate sections using a comment character followed by many hyphens (e.g., `#------------`). Anything after the comment character is "muted". 
 
 ```{r eval = FALSE}
 # Read in health data ---------------------------
@@ -454,17 +456,16 @@ a <- 1:10; b <- 3
 
 Google:
 
-- When indenting your code, use two spaces. Never use tabs or mix tabs and spaces.
-- Exception: When a line break occurs inside parentheses, align the wrapped line with the first character inside the parenthesis.
+- Indent with two spaces, not a tab or a mix of tabs and spaces. 
+- Exception: Line up new lines with first letter after opening parenthesis for parameters to function calls:
 
-Example from Hadley Wickham:
+Example of exception:
 
 ```{r eval = FALSE}
-long_function_name <- function(a = "a long argument", 
-                               b = "another argument",
-                               c = "another long argument") {
-  # As usual code is indented by two spaces.
-}
+# Relabel sex variable
+nepali$sex <- factor(nepali$sex, 
+                     levels = c(1, 2),
+                     labels = c("Male", "Female"))
 ```
 
 ## Code grouping
@@ -490,3 +491,168 @@ Note that this grouping often happens naturally when using tidyverse functions, 
 - Omit needless code.
 - Don't repeat yourself.
 
+We'll learn more about satisfying these guidelines when we talk about writing your own functions in the next part of the class.
+
+# More with knitr
+
+## Equations in `knitr`
+
+You can write equations in RMarkdown documents by setting them apart with dollar signs (`$`). For an equation on a line by itself (**display equation**), you two `$`s before and after the equation, on separate lines, then use LaTex syntax for writing the equations. \bigskip
+
+To help with this, you may want to use this [LaTex math cheat sheet.](http://reu.dimacs.rutgers.edu/Symbols.pdf). You may also find an online LaTex equation editor like [Codecogs.com](https://www.codecogs.com/latex/eqneditor.php) helpful.\bigskip
+
+Note: Equations denoted this way will always compile for pdf documents, but won't always come through on Markdown files (for example, GitHub won't compile these math).  
+
+## Equations in `knitr`
+
+For example, writing this in your R Markdown file: 
+
+    $$
+    E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
+    $$
+
+will result in this rendered equation:
+
+$$
+E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
+$$
+
+## Equations in `knitr`
+
+To put math within a sentence (**inline equation**), just use one `$` on either side of the math. For example, writing this in a R Markdown file:
+
+    "We are trying to model $E(Y_{t})$."
+
+The rendered document will show up as: \medskip
+
+"We are trying to model $E(Y_{t})$."
+
+## Figures
+
+You can include not only figures that you create with R, but also figures that you have saved on your computer. \bigskip
+
+The best way to do that is with the `include_graphics` function in `knitr`:
+
+```{r out.width = "0.3\\textwidth", fig.align = "center"}
+library(knitr)
+include_graphics("../figures/CSU_ram.png")
+```
+
+## Figures
+
+```{r eval = FALSE}
+library(knitr)
+include_graphics("../figures/CSU_ram.png")
+```
+
+This example would include a figure with the filename "MyFigure.png" that is saved in the "figures" sub-directory "figures" of the parent directory of the directory where your .Rmd is saved. \bigskip
+
+Don't forget that you will need to give an absolute pathway or the relative pathway **from the directory where the .Rmd file is saved**.
+
+## Saving graphics files
+
+You can save figures that you create in R. Typically, you won't need to save figures for an R Markdown file, since you can include figure code directly. \bigskip
+
+However, you will sometimes want to save a figure from a script. You have two options:
+
+- Use the "Export" choice in RStudio
+- Write code to export the figure in your R script
+
+To make your research more reproducible, use the second choice.
+
+## Saving graphics files
+
+To use code export a figure you created in R, take three steps: 
+
+1. Open a graphics device (e.g., `pdf("MyFile.pdf")`).
+2. Write the code to print your plot. 
+3. Close the graphics device using `dev.off()`.
+
+## Saving graphics files
+
+For example, the following code would save a scatterplot of time versus passes as a pdf named "MyFigure" in the "figures" subdirectory of the current working directory:
+
+```{r eval = FALSE}
+pdf("figures/MyFigure.pdf", width = 8, height = 6)
+ggplot(worldcup, aes(x = Time, y = Passes)) + 
+        geom_point(aes(color = Position)) + 
+        theme_bw()
+dev.off()
+```
+
+If you create multiple plots before you close the device, they'll all save to different pages of the same pdf file. 
+
+## Saving graphics files
+
+You can open a number of different graphics devices. Here are some of the functions you can use to open graphics devices: 
+
+- `pdf`
+- `png`
+- `bmp`
+- `jpeg`
+- `tiff`
+- `svg`
+
+## Saving graphics files
+
+You will use a device-specific function to open a graphics device (e.g., `pdf`). However, you will always close these devices with `dev.off`. \bigskip
+
+Most of the functions to open graphics devices include parameters like `height` and `width`. These can be used to specify the size of the output figure. The units for these depend on the device (e.g., inches for `pdf`, pixels by default for `png`). Use the helpfile for the function to determine these details. 
+
+## `kable` 
+
+If you want to create a nice, formatted table from an R dataframe, you can do that using `kable` from the `knitr` package. \bigskip
+
+```{r}
+my.df <- data.frame(letters = c("a", "b", "c"),
+                numbers = 1:3)
+kable(my.df)
+```
+
+## `kable` 
+
+There are a few options for the `kable` function:
+
+```{r echo = FALSE, results = 'asis'}
+kable_opts <- data.frame(arg = c("`colnames`",
+                                 "`align`",
+                                 "`caption`",
+                                 "`digits`"),
+                         expl = c("Column names (default: column name in the dataframe)",
+                                  "A vector giving the alignment for each column ('l', 'c', 'r')",
+                                  "Table caption",
+                                  "Number of digits to round to. If you want to round columns different amounts, use a vector with one element for each column."))
+pander::pandoc.table(kable_opts, split.cells = c(10, 50),
+               justify = "rl", style = "multiline")
+```
+
+## `kable` 
+
+```{r}
+my.df <- data.frame(letters = c("a", "b", "c"),
+                numbers = rnorm(3))
+kable(my.df, digits = 2, align = c("r", "c"),
+      caption = "My new table", 
+      col.names = c("First 3 letters", 
+                    "First 3 numbers"))
+```
+
+## `xtable`, `pander`
+
+From Yihui:
+
+>"**Want more features?** No, that is all I have. You should turn to other packages for help. I'm not
+going to reinvent their wheels."
+
+If you want to do fancier tables, you may want to explore the `xtable` and `pander` packages. \bigskip 
+
+These might both be more effective when compiling to pdf, rather than html.
+
+## Presentations
+
+R Markdown can also be used to make presentations, including with: 
+
+- Beamer (pdf)
+- ioslides (HTML)
+- Slidy (HTML)
+s
