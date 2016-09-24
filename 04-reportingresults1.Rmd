@@ -4,9 +4,7 @@
 
 ## Guidelines for good plots
 
-There are a number of very thoughtful books and articles about creating graphics that effectively communicate information. \medskip
-
-Some of the authors I highly recommend (and from whose work I've pulled the guidelines for good graphics we'll talk about this week) are: 
+There are a number of very thoughtful books and articles about creating graphics that effectively communicate information. Some of the authors I highly recommend (and from whose work I've pulled the guidelines for good graphics we'll talk about this week) are: 
 
 - Edward Tufte
 - Howard Wainer
@@ -15,9 +13,7 @@ Some of the authors I highly recommend (and from whose work I've pulled the guid
 
 You should plan, in particular, to read *The Visual Display of Quantitative Information* by Edward Tufte before you graduate.
 
-This week, we'll focus on six guidelines for good graphics, based on the writings of these and other specialists in data display. \medskip
-
-The guidelines are: 
+This week, we'll focus on six guidelines for good graphics, based on the writings of these and other specialists in data display. The guidelines are: 
 
 1. Aim for high data density. 
 2. Use clear, meaningful labels.
@@ -29,9 +25,7 @@ The guidelines are:
 For the examples, I'll use `dplyr` for data cleaning and, for plotting, the packages `ggplot2`, `gridExtra`, and `ggthemes`.
 
 ```{r message = FALSE}
-library(dplyr)
-
-library(ggplot2)
+library(tidyverse) ## Loads `dplyr` and `ggplot2`
 library(gridExtra)
 library(ggthemes)
 ```
@@ -52,16 +46,13 @@ chic_july <- chic %>%
 
 ## High data density
 
-Guideline 1: **Aim for high data density.** \bigskip
+> Guideline 1: **Aim for high data density.** 
 
-You should try to increase, as much as possible, the **data to ink ratio** in your graphs. This is the ratio of "ink" providing information to all ink used in the figure. \medskip
+You should try to increase, as much as possible, the **data to ink ratio** in your graphs. This is the ratio of "ink" providing information to all ink used in the figure. One way to think about this is that the only graphs you make that use up a lot of your printer's ink should be packed with information.
 
-One way to think about this is that the only graphs you make that use up a lot of your printer's ink should be packed with information.
+The two graphs in Figure \@ref(fig:datainkratio1) show the same information, but use very different amounts of ink. Each shows the number of players in each of four positions in the `worldcup` dataset. Notice how, in the plot on the right, a single dot for each category shows the same information that a whole filled bar is showing on the left. Further, the plot on the right has removed the gridded background, removing even more "ink". 
 
-
-The two graphs below show the same information. Compare the amount of ink used in the left plot to the amount used in the right plot to see how graphs with the same information can have very different data densities. \bigskip
-
-```{r echo = FALSE, fig.height = 3, fig.width = 8}
+```{r datainkratio1, echo = FALSE, fig.height = 3, fig.width = 8, fig.align = "center", fig.cap = "Example of plots with lower (left) and higher (right) data-to-ink ratios. Each plot shows the number of players in each position in the worldcup dataset from the faraway package."}
 a <- ggplot(worldcup, aes(Position)) + 
         geom_bar() + coord_flip() + 
         ylab("Number of players") + 
@@ -78,9 +69,9 @@ b <- ggplot(ex, aes(x = n, y = Position)) +
 grid.arrange(a, b, ncol = 2)
 ```
 
-The two graphs below show another example of very different data densities in two plots showing the same information: \bigskip
+Figure \@ref(fig:datainkratio2) gives another example of two plots that show the same information but with very different data densities. This figure uses the `chicagoNMMAPS` data from the `dlnm` package, which includes daily mortality, weather, and air pollution data for Chicago, IL. Both plots show daily mortality counts during July 1995, when a very severe heat wave hit Chicago. Notice how many of the elements in the plot on the left, including the shading under the mortality time series and the colored background and grid lines, are unnecessary for interpreting the message from the data. 
 
-```{r echo = FALSE, fig.height = 3, fig.width = 8}
+```{r datainkratio2, echo = FALSE, fig.height = 3, fig.width = 8, fig.align = "center", fig.cap = "Example of plots with lower (left) and higher (right) data-to-ink ratios. Each plot shows daily mortality in Chicago, IL, in July 1995 using the chicagoNMMAPS data from the dlnm package."}
 a <- ggplot(chic_july, aes(x = date, y = death)) + 
         geom_area(fill = "black") + 
         xlab("Day in July 1995") + 
@@ -101,61 +92,33 @@ b <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
 grid.arrange(a, b, ncol = 2)
 ```
 
-One quick way to increase data density in `ggplot2` is to change the *theme* for the plot. This essentially changes the "background" elements to a plot, including elements like the plot grid, background color, and the font used for labeling. \bigskip
+By increasing the data-to-ink ratio in a plot, you can help viewers see the message of the data more quickly. A cluttered plot is harder to interpret. Further, you leave room to add some of the other elements I'll talk about, including highlighting interesting data and adding useful references. Notice how the plots on the left in Figures \@ref(fig:datainkratio1) and \@ref(fig:datainkratio2) are already cluttered and leave little room for adding extra elements, while the plots on the right of those figures have much more room for additions. 
 
-Some themes come with `ggplto2`, including:
+One quick way to increase data density in `ggplot2` is to change the *theme* for the plot. The theme specifies a number of the "background" elements to a plot, including elements like the plot grid, background color, and the font used for labeling. Some themes come with `ggplot2`, including:
 
 - `theme_bw`
 - `theme_minimal`
 - `theme_void` 
 
-The `ggthemes` packages has some excellent additional themes.
+You can find more themes in packages that extend `ggplot2`. The `ggthemes` package, in particular, has some excellent additional themes.
 
-The following slides show some examples of the effects of using different themes. The following code creates a plot of daily deaths in Chicago in July 1995:
+Figures \@ref(fig:themeexamples) shows some examples of the effects of using different themes. All show the same information-- a plot of daily deaths in Chicago in July 1995. The top left graph shows the graph with the default theme. The other plots show the effects of adding different themes, including the black-and-white theme that comes with `ggplot2` (top right) and various themes from the `ggthemes` package. You can even use themes to add some questionable choices for different elements, like the Excel theme (bottom left).
 
-```{r}
+```{r themeexamples, echo = FALSE, fig.height = 9, fig.width = 8, fig.align = "center", fig.cap = "Daily mortality in Chicago, IL, in July 1995. This figure gives an example of the plot using different themes."}
 chic_plot <- ggplot(chic_july, aes(x = date, y = death))  +
         geom_point(color = "red")
+a <- chic_plot + ggtitle("Default theme")
+b <- chic_plot + theme_bw() + ggtitle("`theme_bw`")
+c <- chic_plot + theme_few() + ggtitle("`theme_few`")
+d <- chic_plot + theme_tufte() + ggtitle("`theme_tufte`")
+e <- chic_plot + theme_excel() + ggtitle("`theme_excel`")
+
+grid.arrange(a, b, c, d, e, ncol = 2)
 ```
 
-Next, we can see how the graph looks with the default theme and with other themes.
+### Meaningful labels
 
-The left graph shows the graph with the default theme, while the right shows the effect of adding the black-and-white theme that comes with `ggplot2` as `theme_bw`:
-
-```{r, fig.height = 3, fig.width = 8}
-a <- chic_plot
-b <- chic_plot + theme_bw()
-grid.arrange(a, b, ncol = 2)
-```
-
-Stephen Few theme: 
-
-```{r, fig.height = 3, fig.width = 8}
-a <- chic_plot
-b <- chic_plot + theme_few()
-grid.arrange(a, b, ncol = 2)
-```
-
-Edward Tufte theme: 
-
-```{r, fig.height = 3, fig.width = 8}
-a <- chic_plot
-b <- chic_plot + theme_tufte()
-grid.arrange(a, b, ncol = 2)
-```
-
-You can even use themes to add some questionable choices for different elements. For example, `ggthemes` includes an Excel theme: 
-
-```{r, fig.height = 3, fig.width = 8}
-a <- chic_plot
-b <- chic_plot + theme_excel()
-grid.arrange(a, b, ncol = 2)
-```
-
-
-## Meaningful labels
-
-Guideline 2: **Use clear, meaningful labels.** \bigskip
+> Guideline 2: **Use clear, meaningful labels.** 
 
 Graph defaults often use abbreviations for axis labels and other labeling. Furthermore, text labels can sometimes be aligned in a way that makes them hard to read. The plots below give an example of the same information shown without (left) and with (right) clear, meaningful labels. \bigskip
 
