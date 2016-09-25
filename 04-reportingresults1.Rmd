@@ -116,13 +116,17 @@ e <- chic_plot + theme_excel() + ggtitle("`theme_excel`")
 grid.arrange(a, b, c, d, e, ncol = 2)
 ```
 
-### Meaningful labels
+## Meaningful labels
 
 > Guideline 2: **Use clear, meaningful labels.** 
 
-Graph defaults often use abbreviations for axis labels and other labeling. Furthermore, text labels can sometimes be aligned in a way that makes them hard to read. The plots below give an example of the same information shown without (left) and with (right) clear, meaningful labels. \bigskip
+Graphs often default to use abbreviations for axis labels and other labeling. For example, the default is for `ggplot2` plots to use column names for the x- and y-axes of a scatterplot. While this is convenient for exploratory plots, it's often not adequate for plots for presentations and papers. You'll want to use short and easy-to-type column names in your dataframe to make coding easier, but you should use longer and more meaningful labeling in plots and tables that others need to interpret.
 
-```{r echo = FALSE, fig.height = 3, fig.width = 8}
+Furthermore, text labels can sometimes be aligned in a way that makes them hard to read. For example, when plotting a categorical variable along the x-axis, it can be difficult to fit labels for each category that are long enough to be meaningful. 
+
+Figure \@ref(fig:labelsexample) gives an example of the same information shown with labels that are harder to interpret (left) versus with clear, meaningful labels (right). Notice how the graph on the left is using abbreviations for the categorical variable ("DF" for "Defense"), abbreviations for axis labels ("Pos" for "Position" and "Pls" for "Number of players"), and has the player position labels in a vertical alignment. On the right graph, I have made the graph easier to quickly read and interpret by spelling out all labels and switching the x- and y-axes, so that there's room to fully spell out each position while still keeping the alignment horizontal, so the reader doesn't have to turn the page (or their head) to read the values.
+
+```{r labelsexample, echo = FALSE, fig.height = 3, fig.width = 8, fig.align = "center", fig.cap = "The number of players in each position in the worldcup data from the faraway package. Both graphs show the same information, but the left graph has murkier labels, while the right graph has labels that are easier to read and interpret."}
 ex <- worldcup
 ex$Position <- factor(ex$Position, 
                       levels = c("Defender",
@@ -150,19 +154,21 @@ b <- ggplot(worldcup, aes(Position)) +
 grid.arrange(a, b, ncol = 2)
 ```
 
-There are a few strategies you can use to make labels clearer: 
+There are a few strategies you can use to make labels clearer when plotting with `ggplot2`: 
 
-- Add `xlab` and `ylab` elements to the plot, rather than relying on the column names in the original data. This can also be done with `scale` elements (e.g., `scale_x_continuous`), which give you more power to also make other changes to the x- and y-axes.
-- Include units of measurement in axis titles when relevant. If units are dollars or percent, check out the `scales` package, which allows you to add labels directly to axis elements by including arguments like `labels = percent` in `scale` elements.
-- If the x-variable requires longer labels (player positions in the example above), consider flipping the coordinates, rather than abbreviating or rotating the labels. You can use `coord_flip` to do this.
+- Add `xlab` and `ylab` elements to the plot, rather than relying on the column names in the original data. You can also relabel x- and y-axes with `scale` elements (e.g., `scale_x_continuous`), and the `scale` functions give you more power to also make other changes to the x- and y-axes (e.g., changing break points for the axis ticks). However, if you only need to change axis labels, `xlab` and `ylab` are often quicker.
+- Include units of measurement in axis titles when relevant. If units are dollars or percent, check out the `scales` package, which allows you to add labels directly to axis elements by including arguments like `labels = percent` in `scale` elements. See the helpfile for `scale_x_continuous` for some examples.
+- If the x-variable requires longer labels, as is often the case with categorical data (for example, player positions Figure \@ref(fig:labelsexample)), consider flipping the coordinates, rather than abbreviating or rotating the labels. You can use `coord_flip` to do this.
 
 ## References
 
-Guideline 3: **Provide useful references.** \bigskip
+> Guideline 3: **Provide useful references.**
 
-Data is easier to interpret when you add references. For example, if you show what it typical, it helps viewers interpret how unusual outliers are. The graph below on the right has added shading showing the range of daily deaths in July in Chicage for 1990--1994 and 1996--2000, to clarify how unusual July 1995 was. \bigskip
+Data is easier to interpret when you add references. For example, if you show what it typical, it helps viewers interpret how unusual outliers are. 
 
-```{r echo = FALSE, fig.height = 3, fig.width = 8}
+Figure \@ref(fig:referenceexample1) shows daily mortality during July 1995 in Chicago, IL. The graph on the right has added shading showing the range of daily death counts in July in Chicago for neighboring years (1990--1994 and 1996--2000). This added reference helps clarify for viewers how unusual the number of deaths during the July 1995 heat wave was.
+
+```{r referenceexample1, echo = FALSE, fig.height = 3, fig.width = 8, fig.align = "center", fig.cap = "Daily mortality during July 1995 in Chicago, IL. In the graph on the right, I have added a shaded region showing the range of daily mortality counts for neighboring years, to show how unusual this event was."}
 chic_july <- subset(chic, month == 7 & year == 1995)
 chic_july_ref <- filter(chic, month == 7 & 
                         year %in% c(1990:1994,
@@ -199,10 +205,10 @@ b <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
 grid.arrange(a, b, ncol = 2)
 ```
 
-Another useful way to add references is to add a linear or smooth fit to the data, to help clarify trends in the data. \bigskip
+Another useful way to add references is to add a linear or smooth fit to the data, to help clarify trends in the data. Figure \@ref(fig:referenceexample2) shows the relationship between passes and shots for Forwards in the `worldcup` dataset. The plot on the right has added a smooth function of the relationship between these two variables.
 
-```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
-ex <- subset(worldcup, Position == "Forward")
+```{r referenceexample2, echo = FALSE, message = FALSE, fig.width = 8, fig.height = 4, fig.align = "center", fig.cap = "Relationship between passes and shots taken among Forwards in the worldcup dataset from the faraway package. The plot on the right has a smooth function added to help show the relationship between these two variables."}
+ex <- filter(worldcup, Position == "Forward")
 a <- ggplot(ex, aes(x = Passes, y = Shots)) + 
         geom_point(size = 1.5) + 
         theme_few()  + 
@@ -217,12 +223,13 @@ b <- ggplot(ex, aes(x = Passes, y = Shots)) +
 grid.arrange(a, b, ncol = 2)
 ```
 
-You can use the function `geom_smooth` to add a smooth or linear reference line:
+For scatterplots created with `ggplot2`, you can use the function `geom_smooth` to add a smooth or linear reference line. Here is the code that produces Figure \@ref(fig:referenceexample2):
 
-```{r fig.width = 3, fig.height = 3, out.width = "0.4\\textwidth", fig.align = "center"}
-ggplot(worldcup, aes(x = Passes, y = Shots)) + 
-  geom_point() + theme_few() + 
-  geom_smooth(method = "lm")
+```{r eval = FALSE}
+ggplot(filter(worldcup, Position == "Forward"),
+        geom_point(size = 1.5) + 
+        theme_few()  + 
+        geom_smooth()
 ```
 
 The most useful `geom_smooth` parameters to know are: 
@@ -232,27 +239,27 @@ The most useful `geom_smooth` parameters to know are:
 - `se`: TRUE or FALSE, indicating whether to include shading for 95% confidence intervals.
 - `level`: Confidence level for confidence interval (e.g., `0.90` for 90% confidence intervals)
 
-Lines and polygons can also be useful for adding references. Useful geoms include: 
+Lines and polygons can also be useful for adding references, as in Figure \@ref(fig:referenceexample1). Useful geoms for such shapes include: 
 
 - `geom_hline`, `geom_vline`: Add a horizontal or vertical line
 - `geom_abline`: Add a line with an intercept and slope
 - `geom_polygon`: Add a filled polygon
 - `geom_path`: Add an unfilled polygon
 
-When adding these references: 
+You want these references to support the main data shown in the plot, but not overwhelm it. When adding these references: 
 
 - Add reference elements first, so they will be plotted under the data, instead of on top of it. 
 - Use `alpha` to add transparency to these elements. 
-- Use colors that are unobtrusive (e.g., grays)
-- For lines, consider using non-solid line types (e.g., `linetype = 3`)
+- Use colors that are unobtrusive (e.g., grays).
+- For lines, consider using non-solid line types (e.g., `linetype = 3`).
 
 ## Highlighting
 
-Guideline 3: **Highlight interesting aspects.** \bigskip
+> Guideline 4: **Highlight interesting aspects.** 
 
-Consider adding elements to highlight noteworthy elements of the data. For example, in the graph on the right, the days of a major heat wave have been highlighted with a red line. \bigskip
+Consider adding elements to highlight noteworthy elements of the data. For example, in the graph on the right of Figure \@ref(fig:highlightexample1), the days of the heat wave (based on temperature measurements) have been highlighted over the mortality time series by using a thick red line. 
 
-```{r echo = FALSE, fig.height = 3, fig.width = 8}
+```{r highlightexample1, echo = FALSE, fig.height = 3, fig.width = 8, fig.align = "center", fig.cap = "Mortality in Chicago, July 1995. In the plot on the right, a thick red line has been added to show the dates of a heat wave."}
 chic_july <- subset(chic, month == 7 & year == 1995)
 chic_july_ref <- filter(chic, month == 7 & 
                         year %in% c(1990:1994,
@@ -369,7 +376,7 @@ b
 
 ## Order
 
-Guideline 4: **Make order meaningful.** \bigskip
+> Guideline 5: **Make order meaningful.** 
 
 You can make the ranking of data clearer from a graph by using order to show rank. Often, factor or categorical variables are ordered by something that is not interesting, like alphabetical order. 
 
@@ -398,7 +405,7 @@ You can re-order factor variables in a graph by resetting the factor using the `
 
 ## Small multiples
 
-Guideline 5: **When possible, use small multiples.** \bigskip
+> Guideline 6: **When possible, use small multiples.** \bigskip
 
 *Small multiples* are graphs that use many small plots showing the same thing for different facets of the data. For example, instead of using color in a single plot to show data for males and females, you could use two small plots, one each for males and females. \bigskip
 
