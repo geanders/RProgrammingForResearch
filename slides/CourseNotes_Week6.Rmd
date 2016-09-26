@@ -10,6 +10,7 @@ fontsize: 10pt
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
+library(knitr)
 library(faraway)
 data(worldcup)
 data(nepali)
@@ -164,49 +165,65 @@ In the following slides, I'll give examples of each of these problems.
 
 (1.) Column headers are values, not variable names.
 
-![](../figures/TidyDataProblem1.png)
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("../figures/TidyDataProblem1.png")
+```
 
 ## Five common problems
 
 Solution: 
 
-![](../figures/TidyDataSolution1.png)
+```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
+include_graphics("../figures/TidyDataSolution1.png")
+```
 
 ## Five common problems
 
 (2.) Multiple variables are stored in one column.
 
-![](../figures/TidyDataProblem2.png)
+```{r echo = FALSE, out.width = "0.4\\textwidth", fig.align = "center"}
+include_graphics("../figures/TidyDataProblem2.png")
+```
 
 ## Five common problems
 
 Solution: 
 
-![](../figures/TidyDataSolution2.png)
+```{r echo = FALSE, out.width = "0.4\\textwidth", fig.align = "center"}
+include_graphics("../figures/TidyDataSolution2.png")
+```
 
 ## Five common problems
 
 (3.) Variables are stored in both rows and columns.
 
-![](../figures/TidyDataProblem3.png)
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("../figures/TidyDataProblem3.png")
+```
 
 ## Five common problems
 
 Solution: 
 
-![](../figures/TidyDataSolution3.png)
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("../figures/TidyDataSolution3.png")
+```
 
 ## Five common problems
 
 (4.) Multiple types of observational units are stored in the same table.
 
-![](../figures/TidyDataProblem4.png)
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("../figures/TidyDataProblem4.png")
+```
 
 ## Five common problems
 
 Solution: 
 
-![](../figures/TidyDataSolution4.png)
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("../figures/TidyDataSolution4.png")
+```
 
 ## Five common problems
 
@@ -219,7 +236,16 @@ Example: exposure and outcome data stored in different files:
 
 ## `gather` / `spread`
 
-There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wide and long data: `gather()` and `spread()`. (Example from `tidyr` help files.) \bigskip
+There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wide and long data: `gather` and `spread`. \bigskip
+
+Here is a description of these two functions:
+
+- `gather`: Take several columns and gather them into two columns, one with the former column names, and one with the former cell values
+- `spread`: Take two columns and spread them into multiple columns. Column names for the new columns will come from one of the two original columns, while cell values will come from the other of the original columns.
+
+## `gather` / `spread`
+
+The following examples are from `tidyr` help files and show the effects of gathering and spreading a dataset. \bigskip
 
 Here is some wide data:
 
@@ -238,21 +264,99 @@ wide_stocks[1:3, ]
 
 ## `gather` / `spread`
 
-Use `gather` to convert wide data to long data:
+In the `wide_stocks` dataset, there are separate columns for three different stocks (`X`, `Y`, and `Z`). Each cell gives the value for a certain stock on a certain day. \bigskip
+
+This data isn't "tidy", because the identify of the stock (`X`, `Y`, or `Z`) is a variable, and you'll probably want to include it as a variable in modeling. 
 
 ```{r}
-long_stocks <- gather(wide_stocks, stock, price, -time)
+wide_stocks[1:3, ]
+```
+
+## `gather` / `spread`
+
+If you want to convert the dataframe to have all stock values in a single column, you can use `gather` to convert wide data to long data: 
+
+```{r}
+long_stocks <- gather(wide_stocks, key = stock,
+                      value = price, -time)
 long_stocks[1:5, ]
 ```
 
 ## `gather` / `spread`
 
-Use `spread` to convert long data to wide data:
+In this "long" dataframe, there is now one column that gives the identify of the stock (`stock`) and another column that gives the price of that stock that day (`price`):
 
 ```{r}
-stocks <- spread(long_stocks, stock, price)
+long_stocks[1:5, ]
+```
+
+## `gather` / `spread`
+
+The format for a `gather` call is: 
+
+```{r eval = FALSE}
+## Generic code
+new_df <- gather(old_df,
+                 key = [name of column with old column names],
+                 value = [name of column with cell values],
+                 - [name of column(s) you want to 
+                    exclude from gather])
+```
+
+Three important notes: 
+
+- Everything is gathered into one of two columns-- one column with the old column names, and one column with the old cell values
+- With the `key` and `value` arguments, you are just providing column names for the two columns that everything's gathered into.
+- If there is a column you don't want to gather (`date` in the example), use `-` to exclude it in the `gather` call.
+
+## `gather` / `spread`
+
+Notice how easy it is, now that the data is gathered, to use `stock` for aesthetics of faceting in a `ggplot2` call:
+
+```{r fig.width = 7, fig.height = 2.5}
+ggplot(long_stocks, aes(x = time, y = price)) + 
+  geom_line() + 
+  facet_grid(. ~ stock)
+```
+
+## `gather` / `spread`
+
+If you have data in a "long" format and would like to spread it out, you can use `spread` to do that:
+
+```{r}
+stocks <- spread(long_stocks, key = stock, value = price)
 stocks[1:5, ]
 ```
+
+Notice that this reverses the action of `gather`. 
+
+## `gather` / `spread`
+
+"Spread" data is typically not tidy, so you often won't want to use `spread` when you are preparing data for analysis. However, `spread` can be very helpful in creating clean tables for final reports and presentations. \bigskip 
+
+## `gather` / `spread`
+
+For example, if you wanted to create a table with means and standard deviationsfor each of the three stocks, you could use `spread` to rearrange the final summary to create an attractive table. 
+
+```{r}
+stock_summary <- long_stocks %>% 
+  group_by(stock) %>%
+  summarize(N = n(), mean = mean(price), sd = sd(price))
+stock_summary
+```
+
+## `gather` / `spread`
+
+```{r}
+stock_summary %>%
+  mutate("Mean (Std.dev.)" = paste0(round(mean, 2), " (",
+                                    round(sd, 2), ")")) %>%
+  select(- mean, - sd) %>%
+  gather(key = "Statistic", value = "Value", -stock) %>%
+  spread(key = stock, value = Value) %>%
+  knitr::kable()
+```
+
 
 # Tidying with `dplyr` 
 
