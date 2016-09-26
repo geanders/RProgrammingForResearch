@@ -1,0 +1,402 @@
+---
+title: "Getting / cleaning data 2"
+output: 
+  beamer_presentation:
+    theme: "Frankfurt"
+    colortheme: "seagull"
+    fonttheme: "structuresmallcapsserif"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(faraway)
+data(worldcup)
+data(nepali)
+```
+
+# Final group project
+
+## Final group project
+
+- Group size: Three or four students
+- If you'd like, you may form your own groups. For any students who do not form a group, I will randomly assign groups (or add on to groups that have started).
+
+## Final group project
+
+Important dates: 
+
+- October 17: Due date for creating groups. Email me your group members.
+- October 24: Due date (by start of class) for a two-paragraph summary of the question you'd like to answer, including some ideas on where you might find the data. 
+- December 5: First submission of written report will be due.
+- Week of December 12: Final presentation and final draft of written report due.
+
+## Final group project
+
+- You will have in-class group work time during weeks 10--12 to work on this. This will also require some work with your group outside of class. 
+- You will be able to get feedback and help from me during the in-class group work time. 
+- Your project should not use any datasets from your own research or from other classes.
+- Part of the grade will be on the writing and presentation of the final project.
+
+## Final group project
+
+To get an idea of what your final product should look like, check out these links:
+
+- [Does Christmas come earlier each year?](http://www.statslife.org.uk/culture/1892-does-christmas-really-come-earlier-every-year)
+- [Hilary: the most poisoned baby name in US history](http://hilaryparker.com/2013/01/30/hilary-the-most-poisoned-baby-name-in-us-history/)
+- [Every Guest Jon Stewart Ever Had On "The Daily Show"](http://fivethirtyeight.com/datalab/every-guest-jon-stewart-ever-had-on-the-daily-show/)
+- [Should Travelers Avoid Flying Airlines That Have Had Crashes in the Past?](http://fivethirtyeight.com/features/should-travelers-avoid-flying-airlines-that-have-had-crashes-in-the-past/)
+- [Billion-Dollar Billy Beane](http://fivethirtyeight.com/features/billion-dollar-billy-beane/)
+
+## Final group project
+
+Part of your final project will be to design a Shiny app. \bigskip
+
+To see some examples of Shiny apps, see the [Shiny gallery](http://shiny.rstudio.com/gallery/).
+
+
+
+# Joining datasets
+
+## Joining datasets
+
+So far, you have only worked with a single data source at a time. When you work on your own projects, however, you typically will need to merge together two or more datasets to create the a data frame to answer your research question. \bigskip
+
+For example, for air pollution epidemiology, you will often have to join several datasets: 
+
+- Health outcome data (e.g., number of deaths per day)
+- Air pollution concentrations
+- Weather measurements (since weather can be a confounder)
+- Demographic data
+
+## `*_join` functions
+
+The `dplyr` package has a family of different functions to join two dataframes together, the `*_join` family of functions. All combine two dataframes, which I'll call `x` and `y` here. \medskip
+
+The functions include:
+
+- `inner_join(x, y)`: Keep only rows where there are observations in both `x` and `y`.
+- `left_join(x, y)`: Keep all rows from `x`, whether they have a match in `y` or not. 
+- `right_join(x, y)`: Keep all rows from `y`, whether they have a match in `x` or not. 
+- `full_join(x, y)`: Keep all rows from both `x` and `y`, whether they have a match in the other dataset or not.
+
+## `*_join` functions
+
+In the examples, I'll use two datasets, `x` and `y`. Both datasets include the column `course`. The other column in `x` is `grade`, while the other column in `y` is `day`. Observations exist for courses `x` and `y` in both datasets, but for `w` and `z` in only one dataset.
+
+```{r}
+x <- data.frame(course = c("x", "y", "z"),
+                grade = c(90, 82, 78))
+y <- data.frame(course = c("w", "x", "y"),
+                day = c("Tues", "Mon / Fri", "Tue"))
+```
+
+## `*_join` functions
+
+Here is what these two example datasets look like:
+
+```{r}
+x
+y
+```
+
+## `*_join` functions
+
+With `inner_join`, you'll only get the observations that show up in both datasets. That means you'll lose data on `z` (only in the first dataset) and `w` (only in the second dataset). 
+
+```{r warning = FALSE}
+inner_join(x, y)
+```
+
+## `*_join` functions
+
+With `left_join`, you'll keep everything in `x` (the "left" dataset), but not keep things in `y` that don't match something in `x`. That means that, here, you'll lose `w`:
+
+```{r, warning = FALSE}
+left_join(x, y)
+```
+
+## `*_join` functions
+
+`right_join` is the opposite:
+
+```{r, warning = FALSE}
+right_join(x, y)
+```
+
+## `*_join` functions
+
+`full_join` keeps everything from both datasets:
+
+```{r warning = FALSE}
+full_join(x, y)
+```
+
+# Tidy data
+
+## Tidy data
+
+All of the material in this section comes directly from Hadley Wickham's [paper on tidy data](http://vita.had.co.nz/papers/tidy-data.pdf). You will need to read this paper to prepare for the quiz on this section.
+
+## Characteristics of tidy data
+
+Characteristics of tidy data are:
+
+1. Each variable forms a column.
+2. Each observation forms a row.
+3. Each type of observational unit forms a table.
+
+Getting your data into a "tidy" format makes it easier to model and plot. By taking the time to tidy your data at the start of an analysis, you will save yourself time, and make it easier to plan out, later steps. 
+
+## Five common problems
+
+Here are five common problems that Hadley Wickham has identified that keep data from being tidy:
+
+1. Column headers are values, not variable names.
+2. Multiple variables are stored in one column.
+3. Variables are stored in both rows and columns.
+4. Multiple types of observational units are stored in the same table.
+5. A single observational unit is stored in multiple tables.
+
+In the following slides, I'll give examples of each of these problems.
+
+## Five common problems
+
+(1.) Column headers are values, not variable names.
+
+![](../figures/TidyDataProblem1.png)
+
+## Five common problems
+
+Solution: 
+
+![](../figures/TidyDataSolution1.png)
+
+## Five common problems
+
+(2.) Multiple variables are stored in one column.
+
+![](../figures/TidyDataProblem2.png)
+
+## Five common problems
+
+Solution: 
+
+![](../figures/TidyDataSolution2.png)
+
+## Five common problems
+
+(3.) Variables are stored in both rows and columns.
+
+![](../figures/TidyDataProblem3.png)
+
+## Five common problems
+
+Solution: 
+
+![](../figures/TidyDataSolution3.png)
+
+## Five common problems
+
+(4.) Multiple types of observational units are stored in the same table.
+
+![](../figures/TidyDataProblem4.png)
+
+## Five common problems
+
+Solution: 
+
+![](../figures/TidyDataSolution4.png)
+
+## Five common problems
+
+(5.) A single observational unit is stored in multiple tables. \bigskip
+
+Example: exposure and outcome data stored in different files: 
+
+- File 1: Daily mortality counts
+- File 2: Daily air pollution measurements
+
+## `gather` / `spread`
+
+There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wide and long data: `gather()` and `spread()`. (Example from `tidyr` help files.) \bigskip
+
+Here is some wide data:
+
+```{r, include = FALSE}
+wide_stocks <- data.frame(
+  time = as.Date('2009-01-01') + 0:9,
+  X = rnorm(10, 0, 1),
+  Y = rnorm(10, 0, 2),
+  Z = rnorm(10, 0, 4)
+)
+```
+
+```{r}
+wide_stocks[1:3, ]
+```
+
+## `gather` / `spread`
+
+Use `gather` to convert wide data to long data:
+
+```{r}
+long_stocks <- gather(wide_stocks, stock, price, -time)
+long_stocks[1:5, ]
+```
+
+## `gather` / `spread`
+
+Use `spread` to convert long data to wide data:
+
+```{r}
+stocks <- spread(long_stocks, stock, price)
+stocks[1:5, ]
+```
+
+# Tidying with `dplyr` 
+
+## Tidy `nepali` data
+
+Say we wanted to tidy up the data by:
+
+- Move variables that are constant for each child across all measurements (e.g., `mage`, `lit`, `died`, `alive`) to another dataset
+- Determine each child's age at first measurement
+- Limit the measurement dataset to just males
+- Add new variables for (1) height-to-weight ratio and (2) months since first measurement
+
+## Tidy `nepali` data
+
+Move variables that are constant for each child across all measurements (e.g., `mage`, `lit`, `died`, `alive`) to another dataset:
+
+```{r}
+child_constants <- select(nepali, id, mage, lit, died, alive) %>%
+        group_by(id) %>%
+        summarize(mage = mean(mage), lit = mean(lit), 
+                  died = mean(died), alive = mean(alive))
+child_constants[1:2, ]
+```
+
+## Tidy `nepali` data
+
+Determine each child's age at first measurement:
+
+```{r}
+first_age <- group_by(nepali, id) %>%
+        summarize(first_age = min(age))
+first_age[1:2, ]
+```
+
+## Tidy `nepali` data
+
+- Limit the measurement dataset with just males
+- Add new variables for (1) height-to-weight ratio and (2) months since first measurement
+
+```{r}
+child_measures <- select(nepali, -mage, -lit, -died, -alive) %>%
+        filter(sex == 1) %>%
+        left_join(first_age, by = "id") %>%
+        mutate(ht_wt_ratio = ht / wt, 
+               months = age - first_age)
+
+child_measures[1:2, ]
+```
+
+
+# More with `dplyr`
+
+## `dplyr`
+
+So far, you've used several `dplyr` functions: 
+
+- `rename`
+- `filter`
+- `select`
+- `mutate`
+- `group_by`
+- `summarize`
+
+Some other useful `dplyr` functions to add to your toolbox are: 
+
+- `arrange` (including with `desc`)
+- `slice`
+- `mutate` with `group_by`
+
+## `arrange`
+
+Re-order data:
+
+```{r}
+nepali[1:2, ]
+arrange(nepali, desc(wt))[1:2, ]
+```
+
+## `slice`
+
+## Grouping with `mutate` versus `summarize`
+
+
+# Quotation marks
+
+## Quotation marks
+
+Related to this is the question of when you must use quotation marks.
+
+For example, if you are indexing using square brackets, you must use quotations when you reference column or row names:
+
+```{r}
+worldcup[1:2, c("Shots", "Passes")]
+```
+
+## Quotation marks
+
+If you do not, R looks for an object with that name. If it can't find it, it gives you an error:
+
+```{r, eval = FALSE}
+worldcup[1:2, c(Shots, Passes)]
+```
+
+```
+Error in `[.data.frame`(worldcup, 1:2, c(Shots, Passes)) : 
+  object 'Shots' not found
+```
+
+## Quotation marks
+
+If it can find it, it uses whatever's saved in that object to index:
+
+```{r}
+Shots <- "Team"
+Passes <- "Position"
+worldcup[1:2, c(Shots, Passes)]
+```
+
+We will take advantage of this when we write loops and functions.
+
+## Quotation marks
+
+There are, however, several examples of functions that ask you to name the dataframe, and then you don't have to include quotations around the column names. 
+
+For example:
+
+```{r}
+mod_1 <- glm(Shots ~ Time, data = worldcup,
+             family = poisson(link = "log"))
+coef(mod_1)
+```
+
+## Quotation marks
+
+Other examples:
+
+```{r, eval = FALSE}
+ggplot(worldcup, aes(x = Time, y = Shots)) + geom_point()
+```
+
+```{r, eval = FALSE}
+goalies <- subset(worldcup, Position == "Goalkeeper")
+```
+
+Note that, in all of these, you are specifying which dataframe to use. R will look in that dataframe first for a column with that name. If it can't find one, only then will it look for an object outside the dataframe with the name. 
+
+Many of the functions we'll use today fall under this category.
