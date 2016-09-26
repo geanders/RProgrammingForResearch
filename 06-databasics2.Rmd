@@ -3,3 +3,472 @@
 # Entering and cleaning data #2
 
 [Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6.pdf) a pdf of the lecture slides covering this topic.
+
+```{r echo = FALSE, message = FALSE}
+library(tidyverse)
+library(knitr)
+```
+
+
+## Joining datasets
+
+So far, you have only worked with a single data source at a time. When you work on your own projects, however, you typically will need to merge together two or more datasets to create the a data frame to answer your research question. For example, for air pollution epidemiology, you will often have to join several datasets: 
+
+- Health outcome data (e.g., number of deaths per day)
+- Air pollution concentrations
+- Weather measurements (since weather can be a confounder)
+- Demographic data
+
+The `dplyr` package has a family of different functions to join two dataframes together, the `*_join` family of functions. All combine two dataframes, which I'll call `x` and `y` here. \medskip
+
+The functions include:
+
+- `inner_join(x, y)`: Keep only rows where there are observations in both `x` and `y`.
+- `left_join(x, y)`: Keep all rows from `x`, whether they have a match in `y` or not. 
+- `right_join(x, y)`: Keep all rows from `y`, whether they have a match in `x` or not. 
+- `full_join(x, y)`: Keep all rows from both `x` and `y`, whether they have a match in the other dataset or not.
+
+In the examples, I'll use two datasets, `x` and `y`. Both datasets include the column `course`. The other column in `x` is `grade`, while the other column in `y` is `day`. Observations exist for courses `x` and `y` in both datasets, but for `w` and `z` in only one dataset.
+
+```{r}
+x <- data.frame(course = c("x", "y", "z"),
+                grade = c(90, 82, 78))
+y <- data.frame(course = c("w", "x", "y"),
+                day = c("Tues", "Mon / Fri", "Tue"))
+```
+
+Here is what these two example datasets look like:
+
+```{r}
+x
+y
+```
+
+With `inner_join`, you'll only get the observations that show up in both datasets. That means you'll lose data on `z` (only in the first dataset) and `w` (only in the second dataset). 
+
+```{r warning = FALSE}
+inner_join(x, y)
+```
+
+With `left_join`, you'll keep everything in `x` (the "left" dataset), but not keep things in `y` that don't match something in `x`. That means that, here, you'll lose `w`:
+
+```{r, warning = FALSE}
+left_join(x, y)
+```
+
+`right_join` is the opposite:
+
+```{r, warning = FALSE}
+right_join(x, y)
+```
+
+`full_join` keeps everything from both datasets:
+
+```{r warning = FALSE}
+full_join(x, y)
+```
+
+## Tidy data
+
+All of the material in this section comes directly from Hadley Wickham's [paper on tidy data](http://vita.had.co.nz/papers/tidy-data.pdf). You will need to read this paper to prepare for the quiz on this section.
+
+Getting your data into a "tidy" format makes it easier to model and plot. By taking the time to tidy your data at the start of an analysis, you will save yourself time, and make it easier to plan out, later steps. 
+
+Characteristics of tidy data are:
+
+1. Each variable forms a column.
+2. Each observation forms a row.
+3. Each type of observational unit forms a table.
+
+Here are five common problems that Hadley Wickham has identified that keep data from being tidy:
+
+1. Column headers are values, not variable names.
+2. Multiple variables are stored in one column.
+3. Variables are stored in both rows and columns.
+4. Multiple types of observational units are stored in the same table.
+5. A single observational unit is stored in multiple tables.
+
+Here are examples (again, from Hadley Wickham's [paper on tidy data](http://vita.had.co.nz/papers/tidy-data.pdf), which is required reading for this week of the course) of each of these problems.
+
+> 1. Column headers are values, not variable names.
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("figures/TidyDataProblem1.png")
+```
+
+Solution: 
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+include_graphics("figures/TidyDataSolution1.png")
+```
+
+> 2. Multiple variables are stored in one column.
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+include_graphics("figures/TidyDataProblem2.png")
+```
+
+Solution: 
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+include_graphics("figures/TidyDataSolution2.png")
+```
+
+> 3. Variables are stored in both rows and columns.
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("figures/TidyDataProblem3.png")
+```
+
+Solution: 
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("figures/TidyDataSolution3.png")
+```
+
+> 4. Multiple types of observational units are stored in the same table.
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("figures/TidyDataProblem4.png")
+```
+
+Solution: 
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+include_graphics("figures/TidyDataSolution4.png")
+```
+
+> 5. A single observational unit is stored in multiple tables.
+
+Example: exposure and outcome data stored in different files: 
+
+- File 1: Daily mortality counts
+- File 2: Daily air pollution measurements
+
+## Gathering
+
+There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wide and long data: `gather` and `spread`. Here is a description of these two functions:
+
+- `gather`: Take several columns and gather them into two columns, one with the former column names, and one with the former cell values
+- `spread`: Take two columns and spread them into multiple columns. Column names for the new columns will come from one of the two original columns, while cell values will come from the other of the original columns.
+
+The following examples are from `tidyr` help files and show the effects of gathering and spreading a dataset. 
+
+Here is some simulated wide data:
+
+```{r, include = FALSE}
+wide_stocks <- data.frame(
+  time = as.Date('2009-01-01') + 0:9,
+  X = rnorm(10, 0, 1),
+  Y = rnorm(10, 0, 2),
+  Z = rnorm(10, 0, 4)
+)
+```
+
+```{r}
+wide_stocks[1:3, ]
+```
+
+In the `wide_stocks` dataset, there are separate columns for three different stocks (`X`, `Y`, and `Z`). Each cell gives the value for a certain stock on a certain day. This data isn't "tidy", because the identify of the stock (`X`, `Y`, or `Z`) is a variable, and you'll probably want to include it as a variable in modeling. 
+
+```{r}
+wide_stocks[1:3, ]
+```
+
+If you want to convert the dataframe to have all stock values in a single column, you can use `gather` to convert wide data to long data: 
+
+```{r}
+long_stocks <- gather(wide_stocks, key = stock,
+                      value = price, -time)
+long_stocks[1:5, ]
+```
+
+In this "long" dataframe, there is now one column that gives the identify of the stock (`stock`) and another column that gives the price of that stock that day (`price`):
+
+```{r}
+long_stocks[1:5, ]
+```
+
+The format for a `gather` call is: 
+
+```{r eval = FALSE}
+## Generic code
+new_df <- gather(old_df,
+                 key = [name of column with old column names],
+                 value = [name of column with cell values],
+                 - [name of column(s) you want to 
+                    exclude from gather])
+```
+
+Three important notes: 
+
+- Everything is gathered into one of two columns-- one column with the old column names, and one column with the old cell values
+- With the `key` and `value` arguments, you are just providing column names for the two columns that everything's gathered into.
+- If there is a column you don't want to gather (`date` in the example), use `-` to exclude it in the `gather` call.
+
+Notice how easy it is, now that the data is gathered, to use `stock` for aesthetics of faceting in a `ggplot2` call:
+
+```{r fig.width = 7, fig.height = 2.5}
+ggplot(long_stocks, aes(x = time, y = price)) + 
+  geom_line() + 
+  facet_grid(. ~ stock)
+```
+
+If you have data in a "long" format and would like to spread it out, you can use `spread` to do that:
+
+```{r}
+stocks <- spread(long_stocks, key = stock, value = price)
+stocks[1:5, ]
+```
+
+Notice that this reverses the action of `gather`. 
+
+"Spread" data is typically not tidy, so you often won't want to use `spread` when you are preparing data for analysis. However, `spread` can be very helpful in creating clean tables for final reports and presentations. 
+
+For example, if you wanted to create a table with means and standard deviationsfor each of the three stocks, you could use `spread` to rearrange the final summary to create an attractive table. 
+
+```{r}
+stock_summary <- long_stocks %>% 
+  group_by(stock) %>%
+  summarize(N = n(), mean = mean(price), sd = sd(price))
+stock_summary
+```
+
+```{r}
+stock_summary %>%
+  mutate("Mean (Std.dev.)" = paste0(round(mean, 2), " (",
+                                    round(sd, 2), ")")) %>%
+  select(- mean, - sd) %>%
+  gather(key = "Statistic", value = "Value", -stock) %>%
+  spread(key = stock, value = Value) %>%
+  knitr::kable()
+```
+
+## In-course exercise 
+
+For today's exercise, we'll be using the following three datasets (click on the file name to access the correct file for today's class for each dataset): 
+
+File name                | Description
+--------------------     | -----------------------------------------------
+[`country_timeseries.csv`](https://github.com/geanders/RProgrammingForResearch/raw/master/data/country_timeseries.csv) | Ebola cases by country for the 2014 outbreak
+[`mexico_exposure.csv`](https://github.com/geanders/RProgrammingForResearch/raw/master/data/mexico_exposure.csv) and [`mexico_deaths.csv`](https://github.com/geanders/RProgrammingForResearch/raw/master/data/mexico_deaths.csv)     | Daily death counts and environmental measurements for Mexico City, Mexico, for 2008
+[`measles_data/`](https://github.com/geanders/RProgrammingForResearch/tree/master/data/measles_data)          | Number of cases of measles in CA since end of Dec. 2014
+
+Note that you likely have already downloaded all the files in the `measles_data` folder, since we used them in an earlier in-course exercise. If so, there is no need to re-download those files. 
+
+Here are the sources for this data:
+
+- `country_timeseries.csv` : [Caitlin Rivers' Ebola repository](https://github.com/cmrivers/ebola) (Caitlin originally collected this data from the WHO and WHO Situation reports)
+- `mexico_exposure.csv` and `mexico_deaths.csv` : [one of Hadley Wickham's GitHub repos](https://github.com/hadley/mexico-mortality/tree/master/disease) (Hadley got the data originally from the Secretaria de Salud of Mexico's website, although it appears the link is now broken. I separated the data into two dataframes so students could practice merging.)
+- `measles_data/`: [one of scarpino's GitHub repos](https://github.com/scarpino/measles-CA-2015) (Data originally from pdfs from the [California Department of Public Health](https://www.cdph.ca.gov/HealthInfo/discond/Pages/MeaslesSurveillanceUpdates.aspx))
+
+```{block type = "rmdwarning"}
+If you want to use these data further, you should go back and pull them from their original sources. They are here only for use in R code examples for this course.
+```
+
+Here are some of the packages you will need for this exercise:
+
+```{r, message=FALSE}
+library(tidyverse)
+library(gridExtra)
+library(ggthemes)
+```
+
+### Designing tidy data
+
+1. Check out the [`country_timeseries.csv` file](https://github.com/geanders/RProgrammingForResearch/raw/master/data/country_timeseries.csv) on Ebola for this week's example data. Talk with your partner and decide what changes you would need to make to this dataset to turn it into a "tidy" dataset, in particular which of the five common "untidy" problems the data currently has and why. 
+2. Do the same for the data on daily mortality and daily weather in Mexico.
+3. Do the same for the set of files with measles data.
+
+### Easier data wrangling
+
+- Use `read_csv` to read the mexico data (exposure and mortality) directly from GitHub into your R session. Call the dataframes `mex_deaths` and `mex_exp`.
+- Merge the two datasets together to create the dataframe `mexico`. Exclude all columns except the outcome (deaths), date, and mean temperature. Convert the date to a date class.
+- Try combining all the steps in the previous task into one "chained" command using the pipe operator, `%>%`.
+- Use this new dataframe to plot deaths by date using `ggplot`.
+
+#### Example R code
+
+Use `read_csv` to read the mexico data (exposure and mortality) directly from GitHub into your R session. Call the dataframes `mex_deaths` and `mex_exp`:
+
+```{r message = FALSE}
+deaths_url <- paste0("https://github.com/geanders/RProgrammingForResearch/",
+                     "raw/master/data/mexico_deaths.csv")
+mex_deaths <- read_csv(deaths_url)
+head(mex_deaths)
+
+exposure_url <- paste0("https://github.com/geanders/RProgrammingForResearch/",
+                       "raw/master/data/mexico_exposure.csv")
+mex_exp <- read_csv(exposure_url)
+head(mex_exp)
+```
+
+Merge the two datasets together to create the dataframe `mexico`. Exclude all columns except the outcome (deaths), date, and mean temperature. Convert the date to a date class. 
+
+```{r message = FALSE}
+mexico <- full_join(mex_deaths, mex_exp, by = "day") 
+mexico <- select(mexico, day, deaths, temp_mean)
+
+library(lubridate) ## For parsing dates
+mexico <- mutate(mexico, day = mdy(day))
+```
+
+Try combining all the steps in the previous task into one "chained" command:
+
+```{r}
+mexico <- full_join(mex_deaths, mex_exp, by = "day") %>%
+        select(day, deaths, temp_mean) %>%
+        mutate(day = mdy(day))
+head(mexico)
+```
+
+Use this new dataframe to plot deaths by date using `ggplot`:
+
+```{r fig.width = 4, fig.height = 2.5}
+ggplot(mexico, aes(x = day, y = deaths)) + 
+        geom_point(size = 1.5, alpha = 0.5) + 
+        xlab("Date in 2008") + ylab("# of deaths") + 
+        ggtitle("Deaths by date") + 
+        theme_few()
+```
+
+### More extensive data wrangling
+
+- Read the ebola data directly from GitHub into your R session. Call the dataframe `ebola`.
+- Use `dplyr` functions to create a tidy dataset. First, change it from "wide" data to "long" data. Name the new column with the key `variable` and the new column with the values `count`. 
+- Run the following code to create new columns named `type` and `country` that split up the `variable` column into type ("Cases" or "Deaths") and country ("Guinea", "Liberia", etc.). (This type of code is moving towards using regular expressions to clean up really messy data, which we'll talk about some in the third section.)
+
+```{r, eval = FALSE}
+foo <- strsplit(as.character(ebola$variable), split = "_")
+bar <- matrix(unlist(foo), ncol = 2, byrow = TRUE)
+
+ebola$type <- factor(bar[ , 1])
+ebola$country <- factor(bar[ , 2])
+```
+
+- Use `dplyr` functions and piping to remove `Day` and `variable` (now that you've split it into `type` and `country`) and to convert `Date` to a date class.
+- Use the `dplyr` function `spread()` to convert the data so you have separate columns for the two variables of numbers of `Cases` and `Deaths`.
+- Remove any observations where counts of cases or deaths are missing for that country.
+- Challenge question (you can do the next step without doing this, but your graphs won't be in order): Create a dataframe called `case_sum` that gives the total number of cases recorded for each country. (Hint: Use the `dplyr` functions `group_by()` and `summarize()`.) Use `arrange()` to re-order this dataset by the order of the number of cases, and then use this arrangement to re-order the levels in `country` in your main `ebola` dataset, so that your graphs in the next step will be ordered from the country with the most ebola cases to the one with the least.
+- Now that your data is tidy, create one plot showing ebola cases by date, faceted by country, and one showing ebola deaths by date, also faceted by country. Try using the option `scales = "free_y"` in the `facet_wrap()` function (in the `gridExtra` package) and see how that changes these graphs.
+- Based on these plots, what would your next questions be about this data before you used it for an analysis?
+- Super-challenge question: Can you put all of the steps of this cleaning process into just a few "chaining" calls? 
+
+#### Example R code
+
+Read the data in using `read_csv`. (Review question: Why can't you read it directly using `read.csv()`?)
+
+```{r message = FALSE}
+ebola_url <- paste0("https://github.com/geanders/RProgrammingForResearch/",
+              "raw/master/data/country_timeseries.csv")
+ebola <- read_csv(ebola_url)
+
+head(ebola)
+```
+
+Change the data to long data using the `gather()` function from `dplyr`:
+
+```{r}
+ebola <- gather(ebola, variable, count, -Date, -Day)
+head(ebola)
+```
+
+Split `variable` into `type` and `country`:
+
+```{r}
+foo <- strsplit(as.character(ebola$variable), split = "_")
+ebola[ , c("type", "country")] <- matrix(unlist(foo), ncol = 2, byrow = TRUE)
+
+head(ebola)
+```
+
+Use `dplyr` functions and piping to remove `Day` and `variable` and to convert `Date` to a date class:
+
+```{r}
+ebola <- select(ebola, -Day, -variable) %>%
+         mutate(Date = mdy(Date))
+head(ebola)
+```
+
+Convert the data so you have separate columns for the two variables of numbers of `Cases` and `Deaths`:
+
+```{r}
+ebola <- spread(ebola, type, count)
+head(ebola)
+```
+
+Remove any observations where counts of cases or deaths are missing for that country:
+
+```{r}
+ebola <- filter(ebola, !is.na(Cases) & !is.na(Deaths))
+head(ebola)
+```
+
+Create a dataframe called `case_sum` that gives the total number of cases recorded for each country. Use `arrange()` to re-order this dataset by the order of the number of cases:
+
+```{r}
+case_sum <- group_by(ebola, country) %>%
+            summarize(Cases = sum(Cases, na.rm = TRUE))
+case_sum
+```
+
+Use this arrangement to re-order the levels in `country` in your main `ebola` dataset, so that your graphs in the next step will be ordered from the country with the most ebola cases to the one with the least:
+
+```{r}
+case_sum <- arrange(case_sum, desc(Cases))
+case_sum
+
+ebola <- mutate(ebola, 
+                country = factor(country, levels = case_sum$country))
+levels(ebola$country)
+```
+
+Now that your data is tidy, create one plot showing ebola cases by date, faceted by country, and one showing ebola deaths by date, also faceted by country:
+
+```{r fig.width = 8, fig.height = 4}
+ggplot(ebola, aes(x = Date, y = Cases)) + 
+        geom_line() + 
+        facet_wrap(~ country, ncol = 4) + 
+        theme_few()
+ggplot(ebola, aes(x = Date, y = Deaths)) + 
+        geom_line() + 
+        facet_wrap(~ country, ncol = 4) + 
+        theme_few()
+```
+
+Try using the option `scales = "free_y"` in the `facet_wrap()` function (in the `gridExtra` package) and see how that changes these graphs:
+
+```{r fig.width = 8, fig.height = 4}
+ggplot(ebola, aes(x = Date, y = Cases)) + 
+        geom_line() + 
+        facet_wrap(~ country, ncol = 4, scales = "free_y") + 
+        theme_few()
+ggplot(ebola, aes(x = Date, y = Deaths)) + 
+        geom_line() + 
+        facet_wrap(~ country, ncol = 4, scales = "free_y") + 
+        theme_few()
+```
+
+Put all of the steps of this cleaning process into just a few "chaining" calls. (Note: I'm using `sub` here instead of `strsplit` for the variable-splitting step, just to keep the code a bit cleaner. Again, this is using regular expressions, which we're cover more later in the course.)
+
+```{r, message = FALSE}
+ebola <- read_csv(ebola_url) %>%
+        gather(variable, count, -Date, -Day) %>%
+        mutate(type = sub("_.*", "", variable),
+               country = sub(".*_", "", variable)) %>%
+        select(-Day, -variable) %>%
+        mutate(Date = mdy(Date)) %>%
+        spread(type, count) %>%
+        filter(!is.na(Cases) & !is.na(Deaths))
+
+case_sum <- group_by(ebola, country) %>%
+        summarize(Cases = sum(Cases, na.rm = TRUE)) %>%
+        arrange(desc(Cases))
+
+ebola <- mutate(ebola, 
+                country = factor(country, levels = case_sum$country))
+
+case_sum
+head(ebola)
+```
+
