@@ -34,7 +34,7 @@ Important dates:
 
 ## Final group project
 
-- You will have in-class group work time during the "Advanced" weeks to work on this. This projectwill also require work with your group outside of class.
+- You will have in-class group work time during the "Advanced" weeks to work on this. This project will also require work with your group outside of class.
 - You will be able to get feedback and help from me during the in-class group work time. 
 - Your project should not use any datasets from your own research or from other classes.
 - Part of the grade will be on the writing and presentation of the final project.
@@ -334,7 +334,7 @@ Notice that this reverses the action of `gather`.
 
 ## `gather` / `spread`
 
-For example, if you wanted to create a table with means and standard deviationsfor each of the three stocks, you could use `spread` to rearrange the final summary to create an attractive table. 
+For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use `spread` to rearrange the final summary to create an attractive table. 
 
 ```{r}
 stock_summary <- long_stocks %>% 
@@ -355,56 +355,6 @@ stock_summary %>%
   knitr::kable()
 ```
 
-
-# Tidying with `dplyr` 
-
-## Tidy `nepali` data
-
-Say we wanted to tidy up the data by:
-
-- Move variables that are constant for each child across all measurements (e.g., `mage`, `lit`, `died`, `alive`) to another dataset
-- Determine each child's age at first measurement
-- Limit the measurement dataset to just males
-- Add new variables for (1) height-to-weight ratio and (2) months since first measurement
-
-## Tidy `nepali` data
-
-Move variables that are constant for each child across all measurements (e.g., `mage`, `lit`, `died`, `alive`) to another dataset:
-
-```{r}
-child_constants <- select(nepali, id, mage, lit, died, alive) %>%
-        group_by(id) %>%
-        summarize(mage = mean(mage), lit = mean(lit), 
-                  died = mean(died), alive = mean(alive))
-child_constants[1:2, ]
-```
-
-## Tidy `nepali` data
-
-Determine each child's age at first measurement:
-
-```{r}
-first_age <- group_by(nepali, id) %>%
-        summarize(first_age = min(age))
-first_age[1:2, ]
-```
-
-## Tidy `nepali` data
-
-- Limit the measurement dataset with just males
-- Add new variables for (1) height-to-weight ratio and (2) months since first measurement
-
-```{r}
-child_measures <- select(nepali, -mage, -lit, -died, -alive) %>%
-        filter(sex == 1) %>%
-        left_join(first_age, by = "id") %>%
-        mutate(ht_wt_ratio = ht / wt, 
-               months = age - first_age)
-
-child_measures[1:2, ]
-```
-
-
 # More with `dplyr`
 
 ## `dplyr`
@@ -420,85 +370,323 @@ So far, you've used several `dplyr` functions:
 
 Some other useful `dplyr` functions to add to your toolbox are: 
 
-- `arrange` (including with `desc`)
 - `slice`
-- `mutate` with `group_by`
-
-## `arrange`
-
-Re-order data:
-
-```{r}
-nepali[1:2, ]
-arrange(nepali, desc(wt))[1:2, ]
-```
+- `arrange` (including with `desc`)
+- `separate` and `unite`
+- `mutate` (with `group_by`, special functions)
 
 ## `slice`
 
+If you want to pull out only a few rows of the data, you can use `slice`. 
+
+```{r}
+nepali %>%
+  slice(1:3)
+```
+
+Note: This function is very similar to `head`-- it will filter the dataset down to only to the first few rows. You could have achieved the same thing with `head(nepali, 3)` or `nepali[1:3, ]`.
+
+## `slice`
+
+You can also group by a factor variable first using `group_by`. Then, when you use `slice`, you will get the first few rows for each level of the group.  
+
+```{r}
+nepali %>%
+  group_by(sex) %>%
+  slice(1:2)
+```
+
+## `arrange`
+
+You can use `arrange` to re-order the data by one of the variables:
+
+```{r}
+nepali %>% slice(1:2)
+nepali %>% arrange(ht) %>% slice(1:4)
+```
+
+## `arrange`
+
+To order from highest to lowest (default is lowest to highest) use `arrange` with the function `desc` (for "descending"):
+
+```{r}
+nepali %>% 
+  arrange(desc(ht)) %>% 
+  slice(1:4)
+```
+
+## `arrange`
+
+You can use `arrange` to order by more than one column. 
+
+```{r}
+nepali %>% 
+  arrange(id, desc(ht)) %>% 
+  slice(1:4)
+```
+
+The data will be sorted first by the first variable listed (`id` here), then by the next listed variable (`ht`), etc. 
+
+## `arrange`
+
+You can also group by a factor before arranging. In this case, all data for the first level of the factor will show up first, in the order given in `arrange`, then all data from the second level will show up in the specified order, etc.
+
+```{r}
+nepali %>% 
+  group_by(sex) %>%
+  arrange(desc(ht)) %>% 
+  slice(1:2)
+```
+
+## `separate`
+
+Sometimes, you want to take one column and split it into two columns. For example, you may have information for two variables in one column: 
+
+```{r echo = FALSE}
+ebola <- data_frame(ebola_key = c("Liberia_Cases", "Liberia_Deaths", 
+                              "Spain_Cases", "Spain_Deaths"))
+```
+
+```{r}
+ebola
+```
+
+The only issue is that you need the same character to always identify where you'd like to split between the two columns. In the example, the character `_` always splits the information you want in the first versus second column.
+
+## `separate`
+
+If you have a consistent "split" character, you can use the `separate` function to split one column into two: 
+
+```{r}
+ebola %>%
+  separate(col = ebola_key, into = c("country", "outcome"),
+           sep = "_")
+```
+
+## `separate`
+
+Here is the generic code for `separate`: 
+
+```{r eval = FALSE}
+## Generic code
+separate([dataframe], 
+         col = [name of the single column you want to split],
+         into = [vector of the names of the columns 
+                 you want to create],
+         sep = [the character that designates where 
+                you want to split])
+```
+
+## `separate`
+
+The default is to drop the original column and only keep the columns into which it was split. However, you can use the argument `remove = FALSE` to keep the first column, as well: 
+
+```{r}
+ebola %>%
+  separate(col = ebola_key, into = c("country", "outcome"),
+           sep = "_", remove = FALSE)
+```
+
+## `separate`
+
+You can use the `fill` argument (`fill = "right"` or `fill = "left"`) to control what happens when there are some observations that do not have the split character. For example, say your original column looked like this:
+
+```{r echo = FALSE}
+ebola <- data_frame(ebola_key = c("Liberia_Cases", "Liberia", 
+                              "Spain_Cases", "Spain_Deaths"))
+ebola
+```
+
+## `separate`
+
+You can use `fill = "right"` to set how to split observations like the second one, where there is no separator character ("_"):
+
+```{r}
+ebola %>%
+  separate(col = ebola_key, into = c("country", "outcome"),
+           sep = "_", fill = "right")
+```
+
+## `unite`
+
+The `unite` function does the reverse of the `separate` function: it lets you join several columns into a single column. For example, say you have data where year, month, and day are split into different columns: 
+
+```{r echo = FALSE}
+date_example <- data_frame(year = 2016, month = 10, day = 1:4)
+date_example
+```
+
+## `unite`
+
+For example: 
+
+```{r}
+date_example %>%
+  unite(col = date, year, month, day, sep = "-")
+```
+
+## `unite`
+
+If the columns you want to unite are in a row (and in the right order), you can use the `:` syntax: 
+
+```{r}
+date_example %>%
+  unite(col = date, year:day, sep = "-")
+```
+
 ## Grouping with `mutate` versus `summarize`
 
+So far, we have never used `mutate` with grouping. You can use `mutate` after grouping-- unlike `summarize`, the data will not be collapsed to fewer columns, but the summaries created by `mutate` will be added within each group. \bigskip
 
-# Quotation marks
+For example, if you wanted to add the mean height and weight by sex to the `nepali` dataset, you could do that with `group_by` and `mutate` (see next slide).
 
-## Quotation marks
-
-Related to this is the question of when you must use quotation marks.
-
-For example, if you are indexing using square brackets, you must use quotations when you reference column or row names:
+## Grouping with `mutate` versus `summarize`
 
 ```{r}
-worldcup[1:2, c("Shots", "Passes")]
+nepali %>%
+  group_by(sex) %>%
+  mutate(mean_ht = mean(ht, na.rm = TRUE),
+         mean_wt = mean(wt, na.rm = TRUE)) %>%
+  slice(1:3) %>% select(id, sex, wt, ht, mean_ht, mean_wt)
 ```
 
-## Quotation marks
+## More on `mutate` 
 
-If you do not, R looks for an object with that name. If it can't find it, it gives you an error:
+There are also some special functions that work well with `mutate`: 
 
-```{r, eval = FALSE}
-worldcup[1:2, c(Shots, Passes)]
+- `lead`: Measured value for following observation
+- `lag`: Measured value for previous observation
+- `cumsum`: Sum of all values up to this point
+- `cummax`: Highest value up to this point
+- `cumany`: For TRUE / FALSE, have any been TRUE up to this point
+
+## More on `mutate` 
+
+Here is an example of using `lead` and `lag` with mutate:
+
+```{r message = FALSE}
+library(lubridate)
+date_example %>% 
+  unite(col = date, year:day, sep = "-") %>%
+  mutate(date = ymd(date),
+         yesterday = lag(date),
+         tomorrow = lead(date))
 ```
 
-```
-Error in `[.data.frame`(worldcup, 1:2, c(Shots, Passes)) : 
-  object 'Shots' not found
-```
 
-## Quotation marks
+# Tidying with `dplyr` 
 
-If it can find it, it uses whatever's saved in that object to index:
+## `VADeaths` data
+
+For this example, I'll use the `VADeaths` dataset that comes with R. \bigskip
+
+This dataset gives the death rates per 1,000 people in Virginia in 1940. It gives death rates by age, gender, and rural / urban:
 
 ```{r}
-Shots <- "Team"
-Passes <- "Position"
-worldcup[1:2, c(Shots, Passes)]
+data("VADeaths")
+VADeaths
 ```
 
-We will take advantage of this when we write loops and functions.
+## `VADeaths` data
 
-## Quotation marks
+There are a few things that make this data untidy: 
 
-There are, however, several examples of functions that ask you to name the dataframe, and then you don't have to include quotations around the column names. 
+- One variable (age category) is saved as row names, rather than a column.
+- Other variables (gender, rural / urban) are in column names.
+- Once you gather the data, you will have two variables (gender, rural / urban) in the same column.
 
-For example:
+In the following slides, we'll walk through how to tidy this data. 
+
+## Tidying the `VADeaths` data
+
+(1) One variable (age category) is saved as row names, rather than a column. \bigskip
+
+To fix this, we need to convert the row names into a new column. We can do this using `mutate`:
 
 ```{r}
-mod_1 <- glm(Shots ~ Time, data = worldcup,
-             family = poisson(link = "log"))
-coef(mod_1)
+VADeaths %>%
+  as.data.frame() %>% ## Convert from matrix to dataframe
+  mutate(age = rownames(VADeaths))
 ```
 
-## Quotation marks
+## Tidying the `VADeaths` data
 
-Other examples:
+(2) Two variables (gender, rural / urban) are in column names. \bigskip
 
-```{r, eval = FALSE}
-ggplot(worldcup, aes(x = Time, y = Shots)) + geom_point()
+Gather the data to convert column names to a new column:
+
+```{r}
+VADeaths %>%
+  as.data.frame() %>% 
+  mutate(age = rownames(VADeaths)) %>%
+  gather(key = gender_loc, value = mort_rate, - age) %>%
+  slice(1:4)
 ```
 
-```{r, eval = FALSE}
-goalies <- subset(worldcup, Position == "Goalkeeper")
+## Tidying the `VADeaths` data
+
+(3) Two variables (gender, rural / urban) in the same column. \bigskip
+
+Separate the column into two separate columns for "gender" and "loc" (rural / urban):
+
+```{r}
+VADeaths %>%
+  as.data.frame() %>% 
+  mutate(age = rownames(VADeaths)) %>%
+  gather(key = gender_loc, value = mort_rate, - age) %>%
+  separate(col = gender_loc, into = c("gender", "loc"),
+           sep = " ") %>%
+  slice(1:4)
 ```
 
-Note that, in all of these, you are specifying which dataframe to use. R will look in that dataframe first for a column with that name. If it can't find one, only then will it look for an object outside the dataframe with the name. 
+## Tidying the `VADeaths` data
 
-Many of the functions we'll use today fall under this category.
+Now that the data is tidy, it's much easier to plot: 
+
+```{r echo = FALSE}
+VADeaths <- VADeaths %>%
+  as.data.frame() %>% 
+  mutate(age = rownames(VADeaths)) %>%
+  gather(key = gender_loc, value = mort_rate, - age) %>%
+  separate(col = gender_loc, into = c("loc", "gender"),
+           sep = " ")
+```
+
+```{r fig.width = 8, fig.height = 3}
+ggplot(VADeaths, aes(x = age, y = mort_rate,
+                     color = gender)) + 
+  geom_point() + 
+  facet_wrap( ~ loc, ncol = 2) + 
+  xlab("Age category") + ylab("Death rate (per 1,000)") + 
+  theme_minimal()
+```
+
+# FARS data
+
+## FARS data
+
+The US Department of Transportation runs the Fatality Analysis Reporting System (FARS), which gathers data on all fatal motor vehicle accidents. Here is a description from their documentation:
+
+- Motor vehicle on a public road
+- Resulted in a death within 30 days of the crash
+- Includes crashes in the 50 states, DC, and Puerto Rico
+
+## FARS data
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/FARSdata.png")
+```
+
+Source: Max Galka 
+
+http://metrocosm.com/10-years-of-traffic-accidents-mapped.html
+
+## FARS data
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/FARSdata2.png")
+```
+
+Source: Max Galka 
+
+http://metrocosm.com/10-years-of-traffic-accidents-mapped.html
