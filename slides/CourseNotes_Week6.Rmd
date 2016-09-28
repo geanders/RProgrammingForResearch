@@ -129,6 +129,47 @@ right_join(x, y)
 full_join(x, y)
 ```
 
+## `*_join` functions
+
+For some more complex examples of using join, I'll use these example datasets:
+
+```{r echo = FALSE}
+x <- data_frame(course = c("x", "x", "y", "z"),
+                grade = c(92, 90, 82, 78),
+                student = c("a", "b", "a", "b"))
+y <- data_frame(class = c("w", "x", "x", "y"),
+                day = c("Tues", "Mon / Fri", "Mon / Fri", "Tue"), 
+                student = c("a", "a", "b", "a"))
+x
+y
+```
+
+## `*_join` functions
+
+If you have two datasets you want to join, but the column names for the joining column are different, you can use the `by` argument: 
+
+```{r}
+full_join(x, y, by = list(x = "course", y = "class"))
+```
+
+## `*_join` functions
+
+A few things to note about this example: 
+
+- The joining column name for the "left" dataframe (`x` in this case) is used as the column name for the joined data
+- `student` was a column name in both `x` and `y`. If we're not using it to join the data, the column names are changed in the joined data to `student.x` and `student.y`.
+- Values are recycled for rows where there were multiple matches across the dataframe (e.g., rows for course "x")
+
+## `*_join` functions
+
+Sometimes, you will want to join by more than one column. In this example data, it would make sense to join the data by matching both course and student. You can do this by using a vector of all columns to join on: 
+
+```{r}
+full_join(x, y, by = list(x = c("course", "student"),
+                          y = c("class", "student")))
+```
+
+
 # Tidy data
 
 ## Tidy data
@@ -388,7 +429,7 @@ Note: This function is very similar to `head`-- it will filter the dataset down 
 
 ## `slice`
 
-You can also group by a factor variable first using `group_by`. Then, when you use `slice`, you will get the first few rows for each level of the group.  
+You can also group by a factor first using `group_by`. Then, when you use `slice`, you will get the first few rows for each level of the group.  
 
 ```{r}
 nepali %>%
@@ -401,13 +442,12 @@ nepali %>%
 You can use `arrange` to re-order the data by one of the variables:
 
 ```{r}
-nepali %>% slice(1:2)
-nepali %>% arrange(ht) %>% slice(1:4)
+nepali %>% arrange(ht) %>% slice(1:6)
 ```
 
 ## `arrange`
 
-To order from highest to lowest (default is lowest to highest) use `arrange` with the function `desc` (for "descending"):
+The default is to arrange from lowest to highest. To order from highest to lowest instead, use `arrange` with the function `desc` (for "descending"):
 
 ```{r}
 nepali %>% 
@@ -417,15 +457,13 @@ nepali %>%
 
 ## `arrange`
 
-You can use `arrange` to order by more than one column. 
+You can use `arrange` with multiple columns. The data will be sorted first by the first variable listed (`id` here), then by the next listed variable (`ht`), etc. 
 
 ```{r}
 nepali %>% 
   arrange(id, desc(ht)) %>% 
-  slice(1:4)
+  slice(1:7)
 ```
-
-The data will be sorted first by the first variable listed (`id` here), then by the next listed variable (`ht`), etc. 
 
 ## `arrange`
 
@@ -451,7 +489,6 @@ ebola <- data_frame(ebola_key = c("Liberia_Cases", "Liberia_Deaths",
 ebola
 ```
 
-The only issue is that you need the same character to always identify where you'd like to split between the two columns. In the example, the character `_` always splits the information you want in the first versus second column.
 
 ## `separate`
 
@@ -489,7 +526,9 @@ ebola %>%
 
 ## `separate`
 
-You can use the `fill` argument (`fill = "right"` or `fill = "left"`) to control what happens when there are some observations that do not have the split character. For example, say your original column looked like this:
+You can use the `fill` argument (`fill = "right"` or `fill = "left"`) to control what happens when there are some observations that do not have the split character. \bigskip
+
+For example, say your original column looked like this:
 
 ```{r echo = FALSE}
 ebola <- data_frame(ebola_key = c("Liberia_Cases", "Liberia", 
@@ -518,7 +557,7 @@ date_example
 
 ## `unite`
 
-For example: 
+You can use `unite` to join these into a single column: 
 
 ```{r}
 date_example %>%
@@ -527,7 +566,7 @@ date_example %>%
 
 ## `unite`
 
-If the columns you want to unite are in a row (and in the right order), you can use the `:` syntax: 
+If the columns you want to unite are in a row (and in the right order), you can use the `:` syntax with `unite`: 
 
 ```{r}
 date_example %>%
@@ -536,7 +575,9 @@ date_example %>%
 
 ## Grouping with `mutate` versus `summarize`
 
-So far, we have never used `mutate` with grouping. You can use `mutate` after grouping-- unlike `summarize`, the data will not be collapsed to fewer columns, but the summaries created by `mutate` will be added within each group. \bigskip
+So far, we have never used `mutate` with grouping. \bigskip
+
+You can use `mutate` after grouping-- unlike `summarize`, the data will not be collapsed to fewer columns, but the summaries created by `mutate` will be added within each group. \bigskip
 
 For example, if you wanted to add the mean height and weight by sex to the `nepali` dataset, you could do that with `group_by` and `mutate` (see next slide).
 
