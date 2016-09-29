@@ -72,7 +72,7 @@ full_join(x, y)
 
 All of the material in this section comes directly from Hadley Wickham's [paper on tidy data](http://vita.had.co.nz/papers/tidy-data.pdf). You will need to read this paper to prepare for the quiz on this section.
 
-Getting your data into a "tidy" format makes it easier to model and plot. By taking the time to tidy your data at the start of an analysis, you will save yourself time, and make it easier to plan out, later steps. 
+Getting your data into a "tidy" format makes it easier to model and plot. By taking the time to tidy your data at the start of an analysis, you will save yourself time, and make it easier to plan out later steps. 
 
 Characteristics of tidy data are:
 
@@ -149,7 +149,7 @@ Example: exposure and outcome data stored in different files:
 
 There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wide and long data: `gather` and `spread`. Here is a description of these two functions:
 
-- `gather`: Take several columns and gather them into two columns, one with the former column names, and one with the former cell values
+- `gather`: Take several columns and gather them into two columns, one with the former column names, and one with the former cell values.
 - `spread`: Take two columns and spread them into multiple columns. Column names for the new columns will come from one of the two original columns, while cell values will come from the other of the original columns.
 
 The following examples are from `tidyr` help files and show the effects of gathering and spreading a dataset. 
@@ -202,7 +202,7 @@ new_df <- gather(old_df,
 
 Three important notes: 
 
-- Everything is gathered into one of two columns-- one column with the old column names, and one column with the old cell values
+- Everything is gathered into one of two columns -- one column with the old column names, and one column with the old cell values
 - With the `key` and `value` arguments, you are just providing column names for the two columns that everything's gathered into.
 - If there is a column you don't want to gather (`date` in the example), use `-` to exclude it in the `gather` call.
 
@@ -225,7 +225,7 @@ Notice that this reverses the action of `gather`.
 
 "Spread" data is typically not tidy, so you often won't want to use `spread` when you are preparing data for analysis. However, `spread` can be very helpful in creating clean tables for final reports and presentations. 
 
-For example, if you wanted to create a table with means and standard deviationsfor each of the three stocks, you could use `spread` to rearrange the final summary to create an attractive table. 
+For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use `spread` to rearrange the final summary to create an attractive table. 
 
 ```{r}
 stock_summary <- long_stocks %>% 
@@ -449,7 +449,7 @@ ggplot(ebola, aes(x = Date, y = Deaths)) +
         theme_few()
 ```
 
-Put all of the steps of this cleaning process into just a few "chaining" calls. (Note: I'm using `sub` here instead of `strsplit` for the variable-splitting step, just to keep the code a bit cleaner. Again, this is using regular expressions, which we're cover more later in the course.)
+Put all of the steps of this cleaning process into just a few "chaining" calls. (Note: I'm using `sub` here instead of `strsplit` for the variable-splitting step, just to keep the code a bit cleaner. Again, this is using regular expressions, which we'll cover more later in the course.)
 
 ```{r, message = FALSE}
 ebola <- read_csv(ebola_url) %>%
@@ -476,7 +476,7 @@ head(ebola)
 
 R comes with a dataset called `VADeaths` that gives death rates per 1,000 people in Virginia in 1940 by age, sex, and rural / urban. 
 
-- Use `data("VADeaths")` to load this data. Make sure you understand what each column and row is showing-- use the helpfile (`?VADeaths`) if you need.
+- Use `data("VADeaths")` to load this data. Make sure you understand what each column and row is showing -- use the helpfile (`?VADeaths`) if you need.
 - Go through the three characteristics of tidy data and the five common problems in untidy data that we talked about in class. Sketch out (you're welcome to use the whiteboards) what a tidy version of this data would look like. 
 - Open a new R script file. Write R code to transform this dataset into a tidy dataset. Try using a pipe chain, with `%>%` and tidyverse functions, to clean the data. 
 - Use the tidy data to create the following graph:
@@ -496,7 +496,7 @@ ggplot(VADeaths, aes(x = age, y = mort_rate,
   theme_minimal()
 ```
 
-There is no example R code for this-- try to figure out the code yourselves. We will go over a solution in class. You may find the RStudio Data Wrangling cheatsheet helpful for remembering which tidyverse functions do what. 
+There is no example R code for this -- try to figure out the code yourselves. We will go over a solution in class. You may find the RStudio Data Wrangling cheatsheet helpful for remembering which tidyverse functions do what. 
 
 ### Exploring Fatality Analysis Reporting System (FARS) data
 
