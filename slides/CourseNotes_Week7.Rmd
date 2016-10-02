@@ -1,0 +1,612 @@
+---
+title: "Exploring data 2"
+output: 
+  beamer_presentation:
+    theme: "Frankfurt"
+    colortheme: "seagull"
+    fonttheme: "structuresmallcapsserif"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(fig.path='coursenotes/plot-')
+
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(faraway)
+data(worldcup)
+data(nepali)
+```
+
+# Parentheses
+
+## Parentheses
+
+If you put parentheses around an entire code statement, it will both run the code and print out the answer.
+
+```{r}
+study_months <- c("Jan", "Feb", "Mar")
+study_months
+
+(study_months <- c("Jan", "Feb", "Mar"))
+```
+
+# Loops
+
+## Loops
+
+Loops allow you to "walk through" and repeat the same code for different values of an index. \bigskip
+
+For each run of the loop, R is told that, for **some index** in **some vector**, do **some code**. \bigskip
+
+For `i` in `1:3`, `print(i)`:
+
+```{r}
+for(i in c(1, 2, 3)){
+        print(i)
+}
+```
+
+## Loops
+
+Note that this code is equivalent to: 
+
+```{r}
+i <- 1
+print(i)
+i <- 2
+print(i)
+i <- 3
+print(i)
+```
+
+
+## Loops
+
+Often, the index will be set to a number for each cycle of the loop, and then the index will be used within the code to index vectors or dataframes: 
+
+```{r}
+study_months <- c("Jan", "Feb", "Mar")
+for(i in c(1, 3)){
+        print(study_months[i])
+}
+```
+
+## Loops
+
+Often, you want to set the index to sequential numbers (e.g., 1, 2, 3, 4). In this case, you can save time by using the `:` notation to create a vector of a sequence of numbers:
+
+```{r}
+for(i in 1:3){
+        print(i)
+}
+```
+
+## Loops
+
+With this notation, sometimes it may be helpful to use the `length` function to set the largest index value for the loop as the length of a vector (or `nrow` for indexing a dataframe). For example:
+
+```{r}
+study_months <- c("Jan", "Feb", "Mar")
+for(i in 1:length(study_months)){
+        print(study_months[i])
+}
+```
+
+## Loops
+
+Sometimes, you want to set the index for each cycle of the loop to something that is not a number. You can set the index to any class of vector. \bigskip
+
+Remember that a loop works by saying for **some index** in **some vector**, do **some code**. \bigskip
+
+For example, you may want to run: for `study_month` in `study_months`, `print(study_month)`:
+
+```{r}
+study_months <- c("Jan", "Feb", "Mar")
+for(study_month in study_months){
+        print(study_month)
+}
+```
+
+## Loops
+
+Note that this is equivalent to: 
+
+```{r}
+study_month <- "Jan"
+print(study_month)
+study_month <- "Feb"
+print(study_month)
+study_month <- "Mar"
+print(study_month)
+```
+
+
+
+## Loops
+
+What would this loop do?
+
+```{r, eval = FALSE}
+vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
+for(i in 1:length(vars)){
+        var_mean <- mean(worldcup[ , vars[i]])
+        print(var_mean)
+}
+```
+
+## Loops
+
+```{r}
+vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
+for(i in 1:length(vars)){
+        var_mean <- mean(worldcup[ , vars[i]])
+        print(var_mean)
+}
+```
+
+## Loops
+
+What would this loop do?
+
+```{r, eval = FALSE}
+vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
+for(i in 1:length(vars)){
+        var_mean <- mean(worldcup[ , vars[i]])
+        var_mean <- round(var_mean, 1)
+        out <- paste0("mean of ", vars[i], ": ", var_mean)
+        print(out)
+}
+```
+
+## Loops
+
+To figure out, you can set `i <- 1` and then walk through the loop:
+
+```{r}
+i <- 1
+(var_mean <- mean(worldcup[ , vars[i]]))
+(var_mean <- round(var_mean, 1))
+(out <- paste0("mean of ", vars[i], ": ", var_mean))
+```
+
+## Loops
+
+```{r}
+vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
+for(i in 1:length(vars)){
+        var_mean <- mean(worldcup[ , vars[i]])
+        var_mean <- round(var_mean, 1)
+        out <- paste0("mean of ", vars[i], ": ", var_mean)
+        print(out)
+}
+```
+
+## Loops
+
+Often, it's convenient to create a dataset to fill up as you loop through:
+
+```{r, eval = FALSE}
+vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
+my_df <- data.frame(variable = vars, mean = NA)
+for(i in 1:nrow(my_df)){
+        var_mean <- mean(worldcup[ , vars[i]])
+        my_df[i , "mean"] <- round(var_mean, 1)
+}
+```
+
+## Loops
+
+```{r}
+vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
+(my_df <- data.frame(variable = vars, mean = NA))
+```
+
+## Loops
+```{r}
+i <- 1
+(var_mean <- mean(worldcup[ , vars[i]]))
+my_df[i , "mean"] <- round(var_mean, 1)
+my_df
+```
+
+## Loops
+
+```{r}
+for(i in 1:nrow(my_df)){
+        var_mean <- mean(worldcup[ , vars[i]])
+        my_df[i , "mean"] <- round(var_mean, 1)
+}
+my_df
+```
+
+## Loops
+
+Note: This is a pretty simplistic example. There are some easier ways to have done this:
+
+```{r}
+summarize(worldcup, Time = mean(Time), 
+          Passes = mean(Passes), Tackles = mean(Tackles),
+          Saves = mean(Saves)) %>%
+        gather(var, mean) %>%
+        mutate(mean = round(mean, 1))
+```
+
+## Loops
+
+Note: This is a pretty simplistic example. There are some easier ways to have done this:
+
+```{r}
+means <- apply(worldcup[ , vars], 2, mean)
+(means <- round(means, 1))
+```
+
+However, you can use this same looping process for much more complex tasks that you can't do as easily with `apply` or `dplyr` tools.
+
+## Loops
+
+Loops can be very useful for more complex repeated tasks. For example:
+
+```{r, echo = FALSE, fig.width = 6, fig.height = 4}
+positions <- unique(worldcup$Position)
+pos_est <- data.frame(position = positions, est = NA, se = NA)
+
+for(i in 1:nrow(pos_est)){
+        pos_df <- subset(worldcup, Position == positions[i]) 
+        pos_mod <- glm(Passes ~ Time,
+                       data = pos_df,
+                       family = poisson(link = "log"))
+        pos_coefs <- summary(pos_mod)$coefficients["Time", 1:2]
+        pos_est[i, c("est", "se")] <- pos_coefs
+}
+
+pos_est$lower_ci <- with(pos_est, est - 1.96 * se)
+pos_est$upper_ci <- with(pos_est, est + 1.96 * se)
+
+rr_per90 <- function(est){
+        out <- exp(est * 90)
+        return(out)
+}
+
+pos_est[ , c("rr_est", "rr_low", "rr_high")] <- 
+        apply(pos_est[ , c("est", "lower_ci", "upper_ci")], 2, rr_per90)
+
+pos_est <- arrange(pos_est, rr_est) %>%
+        mutate(position = factor(position, levels = position))
+
+ggplot(pos_est, aes(x = rr_low, y = position)) + 
+        geom_segment(aes(xend = rr_high, yend = position)) + 
+        geom_point(aes(x = rr_est, y = position)) + 
+        theme_few() + 
+        ylab("") + 
+        scale_x_continuous("Relative rate of passes\nper 90 minute increase in minutes played",
+                           limits = c(1.0, max(pos_est$rr_high))) + 
+        geom_vline(aes(xintercept = 1), color = "lightgray")
+```
+
+## Loops
+
+Creating this graph requires: 
+
+- Create a subset limited to each of the four positions
+- Fit a Poisson regression of Passes on Time within each subset
+- Pull the regression coefficient and standard error from each model
+- Use those values to calculate 95% confidence intervals
+- Convert everything from log relative rate to relative rate
+- Plot everything
+
+## Loops
+
+Create a vector with the names of all positions. Create an empty dataframe to store regression results.
+
+```{r}
+(positions <- unique(worldcup$Position))
+(pos_est <- data.frame(position = positions, est = NA, se = NA))
+```
+
+## Loops
+
+Loop through and fit a Poisson regression model for each subset of data. Save regression coefficients in the empty dataframe.
+
+```{r}
+for(i in 1:nrow(pos_est)){
+        pos_df <- subset(worldcup, Position == positions[i]) 
+        pos_mod <- glm(Passes ~ Time,
+                       data = pos_df,
+                       family = poisson(link = "log"))
+        pos_coefs <- summary(pos_mod)$coefficients["Time", 1:2]
+        pos_est[i, c("est", "se")] <- pos_coefs
+}
+pos_est[1:2, ]
+```
+
+## Loops
+
+Calculate 95% confidence intervals for log relative risk values.
+
+```{r}
+pos_est$lower_ci <- with(pos_est, est - 1.96 * se)
+pos_est$upper_ci <- with(pos_est, est + 1.96 * se)
+pos_est[1:2, c("position", "lower_ci", "upper_ci")]
+```
+
+## Loops
+
+Calculate relative risk per 90 minute increase in minutes played. 
+
+```{r}
+pos_est[ , c("rr_est", "rr_low", "rr_high")] <- 
+        exp(90 * pos_est[ , c("est", "lower_ci", "upper_ci")])
+pos_est[1:2, c("position", "rr_est", "rr_low", "rr_high")]
+```
+
+## Loops
+
+Re-level the `position` factor so the plot will be ordered from highest to lowest estimates.
+
+```{r}
+pos_est <- arrange(pos_est, rr_est) %>%
+        mutate(position = factor(position, levels = position))
+pos_est[ , c("position", "est")]
+```
+
+## Loops
+
+Create the plot.
+
+```{r, eval = FALSE}
+ggplot(pos_est, aes(x = rr_low, y = position)) + 
+        geom_segment(aes(xend = rr_high, yend = position)) + 
+        geom_point(aes(x = rr_est, y = position)) + 
+        theme_few() + 
+        ylab("") + 
+        scale_x_continuous(paste("Relative rate of", 
+                                 "passes\nper 90 minute", 
+                                 "increase in minutes played"),
+                           limits = c(1.0, 
+                                      max(pos_est$rr_high))) + 
+        geom_vline(aes(xintercept = 1), color = "lightgray")
+```
+
+## Loops
+
+```{r, echo = FALSE, fig.width = 6, fig.height = 4}
+ggplot(pos_est, aes(x = rr_low, y = position)) + 
+        geom_segment(aes(xend = rr_high, yend = position)) + 
+        geom_point(aes(x = rr_est, y = position)) + 
+        theme_few() + 
+        ylab("") + 
+        scale_x_continuous(paste("Relative rate of passes\nper",
+                                 "90 minute increase in minutes played"),
+                           limits = c(1.0, max(pos_est$rr_high))) + 
+        geom_vline(aes(xintercept = 1), color = "lightgray")
+```
+
+## Functions
+
+You can write your own functions for tasks you do a lot. If you find yourself cutting and pasting a lot, convert the code to a function.
+
+```{r}
+add_one <- function(number){
+        out <- number + 1
+        return(out)
+}
+
+add_one(number = 3)
+add_one(number = -1)
+```
+
+## Functions
+
+You can name a function anything you want (although try to avoid names of pre-existing functions). You then include options (including any defaults) and the code to run:
+
+```{r, eval = FALSE}
+## Note: this code will not run
+[function name] <- function([any options and defaults]){
+        [code to run]
+}
+```
+
+## Functions
+
+Example: You want to take a log relative rate estimate determined per minute and convert it to a relative rate per 90 minutes.
+
+```{r}
+rr_per90 <- function(log_rr){
+        out <- exp(log_rr * 90)
+        return(out)
+}
+rr_per90(pos_est$est[1])
+```
+
+## Functions
+
+Example: You want to take a vector of values for a log relative rate estimate and its standard error and convert it to a pretty format of relative rate and confidence intervals per 90 minute increase in playing time:
+
+```{r}
+pretty_rr90 <- function(vec){
+        ests <- vec[1] + c(0, -1, 1) * 1.96 * vec[2]
+        ests <- round(exp(90 * ests), 2)
+        out <- paste0(ests[1], " (", ests[2], ", ", ests[3], ")")
+        return(out)
+}
+pretty_rr90(c(0.0031, 0.00017))
+```
+
+## Functions
+
+You can test out functions by walking through them, just like you can with loops.
+
+```{r}
+vec <- c(0.0031, 0.00017)
+(ests <- vec[1] + c(0, -1, 1) * 1.96 * vec[2])
+(ests <- round(exp(90 * ests), 2))
+(out <- paste0(ests[1], " (", ests[2], ", ", ests[3], ")"))
+```
+
+## Functions
+
+You can use `apply` to apply a function you've created to many rows at a time. For example, you have log relative risk estimates and standard errors for each position in `pos_est`:
+
+```{r}
+pos_est[ , c("est", "se")]
+```
+
+## Functions
+
+You can apply `pretty_rr90` to each row (`MARGIN = 1`) of this part of the dataframe to get pretty estimates for each position:
+
+```{r}
+apply(pos_est[ , c("est", "se")], MARGIN = 1, FUN = pretty_rr90)
+```
+
+## Functions
+
+You can use this to create a table to print:
+
+```{r}
+out_tab <- data.frame("Position" = pos_est$position,
+                      "Effect Estimate" = apply(pos_est[ , c("est", "se")],
+                                                MARGIN = 1,
+                                                FUN = pretty_rr90))
+out_tab
+```
+
+## Functions
+
+And use `knitr`'s `kable()` function to print it:
+
+```{r}
+kable(out_tab, format = "markdown")
+```
+
+# `apply` family
+
+## Matrices and lists
+
+First, you need to know about two more object types in R:
+
+- `matrix`
+- `list`
+
+## `matrix`
+
+A matrix is like a dataframe, but all the values in all columns must be of the same class (e.g., numeric, character):
+
+```{r}
+foo <- matrix(1:10, ncol = 5)
+foo
+```
+
+## `matrix`
+
+The matrix will default to make all values the most general class of any of the values, in any column. For example, if we replaced one numeric value with the character "a", everything would turn into a character:
+
+```{r}
+foo[1, 1] <- "a"
+foo
+```
+
+## `matrix`
+
+R uses matrices a lot for its underlying math (e.g., for the linear algebra operations required for fitting regression models). R can do matrix operations quite quickly.
+
+## `list`
+
+A list has different elements, just like a dataframe has different columns. However, the different elements of a list can have different lengths (unlike the columns of a dataframe). The different elements can also have different classes.
+
+```{r}
+bar <- list(a = c("a", "b", "c"),
+            b = 1:5, 
+            c = c(TRUE, FALSE))
+bar
+```
+
+## `list`
+
+To index an element from a list, use double square brackets. You can use this either with numbers (which element in the list?) or with names or the `$` operator:
+
+```{r}
+bar[[1]]
+bar[["b"]]
+bar$c
+```
+
+## `list`
+
+Lists can be used to contain data with an unusual structure and / or lots of different components. For example, the information from fitting a regression is often stored as a list:
+
+```{r}
+my_mod <- glm(rnorm(10) ~ c(1:10))
+is.list(my_mod)
+```
+
+## `list`
+
+```{r}
+head(names(my_mod))
+my_mod[["coefficients"]]
+```
+
+## `apply` family 
+
+There is also a whole family of `apply` functions, as part of R's based package. These include:
+
+- `apply`: Apply a function over all the rows (`MARGIN = 1`) or columns (`MARGIN = 2`) of a matrix
+- `lapply`: Apply a function over elements of a list.
+- `sapply`: Like `lapply`, but returns a vector instead of a list.
+
+## `apply`
+
+Convention for `apply`: 
+
+```{r, eval = FALSE}
+apply([matrix], MARGIN = [margin (1: rows, 2: columns)], FUN =  [function])
+```
+
+```{r}
+ex <- worldcup[ , c("Shots", "Passes", "Tackles", "Saves")]
+head(ex)
+```
+
+## `apply`
+
+```{r}
+apply(ex, MARGIN = 2, mean)
+head(apply(ex, MARGIN = 1, sum))
+```
+
+## `lapply`
+
+`lapply()` will apply a function across a list. The different elements of the list do not have to be the same length (unlike a dataframe, where the columns all have to have the same length).
+
+```{r}
+(ex <- list(a = c(1:5), b = rnorm(3), c = c(5, 3, 3, 2)))
+```
+
+## `lapply`
+
+```{r}
+lapply(ex, FUN = mean)
+```
+
+## `sapply`
+
+`sapply()` also applies a function over a list, but it returns a vector rather than a list:
+
+```{r}
+sapply(ex, FUN = mean)
+```
+
+This can often be convenient in the context of a large data analysis. 
+
+## `apply` family 
+
+In practice, I do use `apply()` some, but I can often find a way to do similar things to other `apply` family functions using the tools in `dplyr`. 
+
+You should know that `apply` family functions take advantage of the matrix structure in R. This can be one of the fastest way to run code in R. It is definitely faster than doing the same things with loops. However, unless you are working with large datasets, you may not notice a difference. 
+
+I would recommend using whichever method makes the most sense to you until you run into an analysis that takes a noticable amount of time to run, and then you might want to work a bit more to optimize your code. 
