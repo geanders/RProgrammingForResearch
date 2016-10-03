@@ -9,8 +9,6 @@ fontsize: 10pt
 ---
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(fig.path='coursenotes/plot-')
-
 library(knitr)
 library(ggplot2)
 library(dplyr)
@@ -124,8 +122,6 @@ study_month <- "Mar"
 print(study_month)
 ```
 
-
-
 ## Loops
 
 What would this loop do?
@@ -228,11 +224,12 @@ my_df
 Note: This is a pretty simplistic example. There are some easier ways to have done this:
 
 ```{r}
-summarize(worldcup, Time = mean(Time), 
-          Passes = mean(Passes), Tackles = mean(Tackles),
-          Saves = mean(Saves)) %>%
-        gather(var, mean) %>%
-        mutate(mean = round(mean, 1))
+worldcup %>% 
+  summarize(Time = mean(Time), Passes = mean(Passes),
+            Shots = mean(Shots), Tackles = mean(Tackles),
+            Saves = mean(Saves)) %>%
+  gather(key = var, value = mean) %>%
+  mutate(mean = round(mean, 1))
 ```
 
 ## Loops
@@ -252,19 +249,22 @@ Loops can be very useful for more complex repeated tasks. For example:
 
 ```{r, echo = FALSE, fig.width = 6, fig.height = 4}
 positions <- unique(worldcup$Position)
-pos_est <- data.frame(position = positions, est = NA, se = NA)
+pos_est <- data.frame(position = positions,
+                      est = NA, se = NA)
 
 for(i in 1:nrow(pos_est)){
-        pos_df <- subset(worldcup, Position == positions[i]) 
+        pos_df <- worldcup %>% 
+          filter(Position == positions[i]) 
         pos_mod <- glm(Passes ~ Time,
                        data = pos_df,
                        family = poisson(link = "log"))
-        pos_coefs <- summary(pos_mod)$coefficients["Time", 1:2]
+        pos_coefs <- summary(pos_mod)$coefficients[2, 1:2]
         pos_est[i, c("est", "se")] <- pos_coefs
 }
 
-pos_est$lower_ci <- with(pos_est, est - 1.96 * se)
-pos_est$upper_ci <- with(pos_est, est + 1.96 * se)
+pos_est <- pos_est %>%
+  mutate(lower_ci = est - 1.96 * se,
+         upper_ci = est + 1.96 * se)
 
 rr_per90 <- function(est){
         out <- exp(est * 90)
@@ -304,7 +304,8 @@ Create a vector with the names of all positions. Create an empty dataframe to st
 
 ```{r}
 (positions <- unique(worldcup$Position))
-(pos_est <- data.frame(position = positions, est = NA, se = NA))
+(pos_est <- data.frame(position = positions,
+                       est = NA, se = NA))
 ```
 
 ## Loops
@@ -313,11 +314,12 @@ Loop through and fit a Poisson regression model for each subset of data. Save re
 
 ```{r}
 for(i in 1:nrow(pos_est)){
-        pos_df <- subset(worldcup, Position == positions[i]) 
+        pos_df <- worldcup %>%
+          filter(Position == positions[i]) 
         pos_mod <- glm(Passes ~ Time,
                        data = pos_df,
                        family = poisson(link = "log"))
-        pos_coefs <- summary(pos_mod)$coefficients["Time", 1:2]
+        pos_coefs <- summary(pos_mod)$coefficients[2, 1:2]
         pos_est[i, c("est", "se")] <- pos_coefs
 }
 pos_est[1:2, ]
@@ -328,9 +330,12 @@ pos_est[1:2, ]
 Calculate 95% confidence intervals for log relative risk values.
 
 ```{r}
-pos_est$lower_ci <- with(pos_est, est - 1.96 * se)
-pos_est$upper_ci <- with(pos_est, est + 1.96 * se)
-pos_est[1:2, c("position", "lower_ci", "upper_ci")]
+pos_est <- pos_est %>%
+  mutate(lower_ci = est - 1.96 * se,
+         upper_ci = est + 1.96 * se)
+
+pos_est %>%
+  select(position, est, lower_ci, upper_ci) 
 ```
 
 ## Loops
@@ -338,9 +343,12 @@ pos_est[1:2, c("position", "lower_ci", "upper_ci")]
 Calculate relative risk per 90 minute increase in minutes played. 
 
 ```{r}
-pos_est[ , c("rr_est", "rr_low", "rr_high")] <- 
-        exp(90 * pos_est[ , c("est", "lower_ci", "upper_ci")])
-pos_est[1:2, c("position", "rr_est", "rr_low", "rr_high")]
+pos_est <- pos_est %>%
+  mutate(rr_est = exp(90 * est),
+         rr_low = exp(90 * lower_ci),
+         rr_high = exp(90 * upper_ci))
+pos_est %>%
+  select(position, rr_est, rr_low, rr_high) 
 ```
 
 ## Loops
@@ -349,13 +357,14 @@ Re-level the `position` factor so the plot will be ordered from highest to lowes
 
 ```{r}
 pos_est <- arrange(pos_est, rr_est) %>%
-        mutate(position = factor(position, levels = position))
-pos_est[ , c("position", "est")]
+        mutate(position = factor(position,
+                                 levels = position))
+pos_est %>% select(position, est)
 ```
 
 ## Loops
 
-Create the plot.
+Create the plot:
 
 ```{r, eval = FALSE}
 ggplot(pos_est, aes(x = rr_low, y = position)) + 
@@ -385,9 +394,17 @@ ggplot(pos_est, aes(x = rr_low, y = position)) +
         geom_vline(aes(xintercept = 1), color = "lightgray")
 ```
 
+# Functions
+
 ## Functions
 
-You can write your own functions for tasks you do a lot. If you find yourself cutting and pasting a lot, convert the code to a function.
+You can write your own functions for tasks you do a lot. \bigskip 
+
+If you find yourself cutting and pasting a lot, convert the code to a function. 
+
+## Functions
+
+Here is an example of a very basic function. This function takes a number as input and adds 1 to that number. 
 
 ```{r}
 add_one <- function(number){
