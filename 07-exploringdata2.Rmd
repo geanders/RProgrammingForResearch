@@ -311,11 +311,130 @@ ggplot(pos_est, aes(x = rr_low, y = position)) +
         geom_vline(aes(xintercept = 1), color = "lightgray")
 ```
 
+## Other control structures
+
+### if / else loops 
+
+There are other control structures you can use in your R code. Two that you will commonly use within R functions are `if` and `ifelse` statements. \bigskip
+
+An `if` statement tells R that, **if** a certain condition is true, **do** run some code. For example, if you wanted to print out only odd numbers between 1 and 5, one way to do that is with an `if` statement: 
+
+```{r}
+for(i in 1:5){
+  if(i %% 2 == 1){
+    print(i)
+  }
+}
+```
+
+The `if` statement runs some code if a condition is true, but does nothing if it is false. If you'd like different code to run depending on whether the condition is true or false, you can us an if / else or an if / else if / else statement. 
+
+```{r}
+for(i in 1:5){
+  if(i %% 2 == 1){
+    print(i)
+  } else {
+    print(paste(i, "is even"))
+  }
+}
+```
+
+What would this code do? \bigskip 
+
+```{r eval = FALSE}
+for(i in 1:100){
+  if(i %% 3 == 0 & i %% 5 == 0){
+    print("FizzBuzz")
+  } else if(i %% 3 == 0){
+    print("Fizz")
+  } else if(i %% 5 == 0){
+    print("Buzz")
+  } else {
+    print(i)
+  }
+}
+```
+
+If / else statements are extremely useful in functions. \bigskip
+
+In R, the `if` statement evaluates everything in the parentheses and, if that evaluates to `TRUE`, runs everything in the braces. This means that you can trigger code in an `if` statement with a single-value logical vector: 
+
+```{r}
+weekend <- TRUE
+if(weekend){
+  print("It's the weekend!")
+}
+```
+
+This functionality can be useful with parameters you choose to include when writing your own functions (e.g., `print = TRUE`).
+
+### Some other control structures
+
+The control structures you are most likely to use in data analysis with R are "for" loops and "if / else" statements. However, there are a few other control structures you may occasionally find useful: 
+
+- `next`
+- `break`
+- `while`
+
+You can use the `next` structure to skip to the next round of a loop when a certain condition is met. For example, we could have used this code to print out odd numbers between 1 and 5:
+
+```{r}
+for(i in 1:5){
+  if(i %% 2 == 0){
+    next
+  }
+  print(i)
+}
+```
+
+You can use `break` to break out of a loop if a certain condition is met. For example, the final code will break out of the loop once `i` is over 3, so it will only print the numbers 1 through 3:
+
+```{r}
+for(i in 1:5){
+  if(i > 3){
+    break
+  }
+  print(i)
+}
+```
+
+```{r}
+my_sum <- 1
+while(my_sum < 10){
+  my_sum <- my_sum * 2
+  print(my_sum)
+}
+```
+
 ## Functions
 
-You can write your own functions for tasks you do a lot. \bigskip 
+As you move to larger projects, you will find yourself using the same code a lot. \bigskip
 
-If you find yourself cutting and pasting a lot, convert the code to a function. 
+Examples include: 
+
+- Reading in data from a specific type of equipment (air pollution monitor, accelerometer)
+- Running a specific type of analysis
+- Creating a specific type of plot or map
+
+\bigskip 
+
+If you find yourself cutting and pasting a lot, convert the code to a function.
+
+Advantages of writing functions include: 
+
+- Coding is more efficient
+- Easier to change your code (if you've cut and paste code and you want to change something, you have to change it everywhere)
+- Easier to share code with others
+
+You can name a function anything you want (although try to avoid names of preexisting-existing functions). You then define any inputs (arguments; separate multiple arguments with commas) and put the code to run in braces:
+
+```{r, eval = FALSE}
+## Note: this code will not run
+[function name] <- function([any arguments]){
+        [code to run]
+}
+```
+
 Here is an example of a very basic function. This function takes a number as input and adds 1 to that number. 
 
 ```{r}
@@ -328,171 +447,408 @@ add_one(number = 3)
 add_one(number = -1)
 ```
 
-You can name a function anything you want (although try to avoid names of pre-existing functions). You then include options (including any defaults) and the code to run:
+- Functions can input any type of R object (for example, vectors, data frames, even other functions and ggplot objects)
+- Similarly, functions can output any type of R object
+- When defining a function, you can set default values for some of the parameters
+- You can explicitly specify the value to return from the function
+- There are ways to check for errors in the arguments a user inputs to the function
 
-```{r, eval = FALSE}
-## Note: this code will not run
-[function name] <- function([any options and defaults]){
-        [code to run]
+For example, the following function inputs a data frame (`datafr`) and a one-element vector (`child_id`) and returns only rows in the data frame where it's `id` column matches `child_id`. It includes a default value for `datafr`, but not for `child_id`. 
+
+```{r}
+subset_nepali <- function(datafr = nepali, child_id){
+  datafr <- datafr %>%
+    filter(id == child_id)
+  return(datafr)
 }
 ```
 
-Example: You want to take a log relative rate estimate determined per minute and convert it to a relative rate per 90 minutes.
+If an argument is not given for a parameter with a default, the function will run using the default value for that parameter. For example:
 
 ```{r}
-rr_per90 <- function(log_rr){
-        out <- exp(log_rr * 90)
-        return(out)
+subset_nepali(child_id = "120011")
+```
+
+
+If an argument is not given for a parameter without a default, the function call will result in an error. For example:
+
+```{r error = TRUE}
+subset_nepali(datafr = nepali)
+```
+
+By default, the function will return the last defined object, although the choice of using `return` can affect printing behavior when you run the function. For example, I could have written the `subset_nepali` function like this: 
+
+```{r}
+subset_nepali <- function(datafr = nepali, child_id){
+  datafr <- datafr %>%
+    filter(id == child_id)
 }
-rr_per90(pos_est$est[1])
 ```
 
-Example: You want to take a vector of values for a log relative rate estimate and its standard error and convert it to a pretty format of relative rate and confidence intervals per 90 minute increase in playing time:
+In this case, the output will not automatically print out when you call the function without assigning it to an R object:
 
 ```{r}
-pretty_rr90 <- function(vec){
-        ests <- vec[1] + c(0, -1, 1) * 1.96 * vec[2]
-        ests <- round(exp(90 * ests), 2)
-        out <- paste0(ests[1], " (", ests[2], ", ", ests[3], ")")
-        return(out)
+subset_nepali(child_id = "120011")
+```
+
+However, the output can be assigned to an R object in the same way as when the function was defined without `return`:
+
+```{r}
+first_childs_data <- subset_nepali(child_id = "120011")
+first_childs_data
+```
+
+The `return` function can also be used to return an object other than the last defined object (although doesn't tend to be something you need to do very often). For example, if you did not use `return` in the following code, it will output "Test output":
+
+```{r}
+subset_nepali <- function(datafr = nepali, child_id){
+  datafr <- datafr %>%
+    filter(id == child_id)
+  a <- "Test output"
 }
-pretty_rr90(c(0.0031, 0.00017))
+(subset_nepali(child_id = "120011"))
 ```
 
-You can test out functions by walking through them, just like you can with loops.
+Conversely, you can use `return` to output `datafr`, even though it's not the last object defined:
 
 ```{r}
-vec <- c(0.0031, 0.00017)
-(ests <- vec[1] + c(0, -1, 1) * 1.96 * vec[2])
-(ests <- round(exp(90 * ests), 2))
-(out <- paste0(ests[1], " (", ests[2], ", ", ests[3], ")"))
+subset_nepali <- function(datafr = nepali, child_id){
+  datafr <- datafr %>%
+    filter(id == child_id)
+  a <- "Test output"
+  return(datafr)
+}
+subset_nepali(child_id = "120011")
 ```
 
-You can use `apply` to apply a function you've created to many rows at a time. For example, you have log relative risk estimates and standard errors for each position in `pos_est`:
+You can use `stop` to stop execution of the function and give the user an error message. For example, the `subset_nepali` function will fail if the user inputs a data frame that does not have a column named "id":
+
+```{r eval = FALSE}
+subset_nepali(datafr = data.frame(wt = rnorm(10)),
+              child_id = "12011")
+```
+```
+ Error: comparison (1) is possible only for 
+ atomic and list types 
+```
+
+You can rewrite the function to stop if the input `datafr` does not have a column named "id":
+
+```{r eval = FALSE}
+subset_nepali <- function(datafr = nepali, child_id){
+  if(!("id" %in% colnames(datafr))){
+    stop("`datafr` must include a column named `id`")
+  }
+  datafr <- datafr %>%
+    filter(id == child_id)
+  return(datafr)
+}
+subset_nepali(datafr = data.frame(wt = rnorm(10)),
+              child_id = "12011")
+```
+
+```
+Error in subset_nepali(datafr = data.frame(wt = rnorm(10)),
+child_id = "12011") : 
+  `datafr` must include a column named `id`
+```
+
+The `stop` function is particularly important if the function would keep running with the wrong input, but would result in the wrong output. \bigskip
+
+You can also output warnings and messages using the functions `warning` and `message`.
+
+
+## Regular expressions
+
+For these examples, we'll use some data on passengers of the Titanic. You can load this data using:
 
 ```{r}
-pos_est[ , c("est", "se")]
+# install.packages("titanic")
+library(titanic)
+data("titanic_train")
 ```
 
-You can apply `pretty_rr90` to each row (`MARGIN = 1`) of this part of the dataframe to get pretty estimates for each position:
+We will be using the `stringr` package:
 
 ```{r}
-apply(pos_est[ , c("est", "se")], MARGIN = 1, FUN = pretty_rr90)
+library(stringr)
 ```
 
-You can use this to create a table to print:
+This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). Here are the first few values of "Name": 
 
 ```{r}
-out_tab <- data.frame("Position" = pos_est$position,
-                      "Effect Estimate" = apply(pos_est[ , c("est", "se")],
-                                                MARGIN = 1,
-                                                FUN = pretty_rr90))
-out_tab
+titanic_train %>% select(Name) %>% slice(1:3)
 ```
 
-And use `knitr`'s `kable()` function to print it:
+We've already done some things to manipulate strings. For example, if we wanted to separate "Name" into last name and first name (including title), we could actually do that with the `separate` function: 
 
 ```{r}
-kable(out_tab, format = "markdown")
+titanic_train %>% 
+  select(Name) %>% 
+  slice(1:3) %>% 
+  separate(Name, c("last_name", "first_name"), sep = ", ")
 ```
 
-## `apply` family of functions
 
-First, you need to know about two more object types in R:
+Notice that `separate` is looking for a regular pattern (", ") and then doing something based on the location of that pattern in each string (splitting the string). \bigskip
 
-- `matrix`
-- `list`
+There are a variety of functions in R that can perform manipulations based on finding regular patterns in character strings. 
 
-A matrix is like a dataframe, but all the values in all columns must be of the same class (e.g., numeric, character):
+
+The `str_detect` function will look through each element of a character vector for a designated pattern. If the pattern is there, it will return `TRUE`, and otherwise `FALSE`. The convention is: 
+
+```
+## Generic code
+str_detect(string = [vector you want to check], 
+           pattern = [pattern you want to check for])
+```
+
+For example, to create a logical vector specifying which of the Titanic passenger names include "Mrs.", you can call:
 
 ```{r}
-foo <- matrix(1:10, ncol = 5)
-foo
+mrs <- str_detect(titanic_train$Name, "Mrs.")
+head(mrs)
 ```
 
-The matrix will default to make all values the most general class of any of the values, in any column. For example, if we replaced one numeric value with the character "a", everything would turn into a character:
+
+The result is a logical vector, so `str_detect` can be used in `filter` to subset data to only rows where the passenger's name includes "Mrs.":
 
 ```{r}
-foo[1, 1] <- "a"
-foo
+titanic_train %>%
+  filter(str_detect(Name, "Mrs.")) %>%
+  select(Name) %>%
+  slice(1:3)
 ```
 
-R uses matrices a lot for its underlying math (e.g., for the linear algebra operations required for fitting regression models). R can do matrix operations quite quickly.
 
-A list has different elements, just like a dataframe has different columns. However, the different elements of a list can have different lengths (unlike the columns of a dataframe). The different elements can also have different classes.
+There is an older, base R function called `grepl` that does something very similar (although note that the order of the arguments is reversed).
 
 ```{r}
-bar <- list(a = c("a", "b", "c"),
-            b = 1:5, 
-            c = c(TRUE, FALSE))
-bar
+titanic_train %>%
+  filter(grepl("Mrs.", Name)) %>%
+  select(Name) %>%
+  slice(1:3)
 ```
 
-To index an element from a list, use double square brackets. You can use this either with numbers (which element in the list?) or with names or the `$` operator:
+The `str_extract` function can be used to extract a string (if it exists) from each value in a character vector. It follows similar conventions to `str_detect`:
+
+```
+## Generic code
+str_extract(string = [vector you want to check], 
+           pattern = [pattern you want to check for])
+```
+
+
+For example, you might want to extract "Mrs." if it exists in a passenger's name:
 
 ```{r}
-bar[[1]]
-bar[["b"]]
-bar$c
+titanic_train %>%
+  mutate(mrs = str_extract(Name, "Mrs.")) %>%
+  select(Name, mrs) %>%
+  slice(1:3)
 ```
 
-Lists can be used to contain data with an unusual structure and / or lots of different components. For example, the information from fitting a regression is often stored as a list:
+Notice that now we're creating a new column (`mrs`) that either has "Mrs." (if there's a match) or is missing (`NA`) if there's not a match. 
+
+
+For this first example, we were looking for an exact string ("Mrs"). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find "Mr." or "Mrs.": 
 
 ```{r}
-my_mod <- glm(rnorm(10) ~ c(1:10))
-is.list(my_mod)
+titanic_train %>%
+  mutate(title = str_extract(Name, "Mr\\.|Mrs\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
 ```
+
+Note that this pattern uses a special operator (`|`) to find one pattern **or** another. Double backslashs (`\\`) **escape** the special character ".". 
+
+
+As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally: 
+
+```
+. * + ^ ? $ \ | ( ) [ ] { }
+```
+
+
+Notice that "Mr." and "Mrs." both start with "Mr", end with ".", and may or may not have an "s" in between. 
 
 ```{r}
-head(names(my_mod))
-my_mod[["coefficients"]]
+titanic_train %>%
+  mutate(title = str_extract(Name, "Mr(s)*\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
 ```
 
-There is also a whole family of `apply` functions, as part of R's based package. These include:
+This pattern uses `(s)*` to match zero or more "s"s at this spot in the pattern. 
 
-- `apply`: Apply a function over all the rows (`MARGIN = 1`) or columns (`MARGIN = 2`) of a matrix
-- `lapply`: Apply a function over elements of a list.
-- `sapply`: Like `lapply`, but returns a vector instead of a list.
 
-Convention for `apply`: 
-
-```{r, eval = FALSE}
-apply([matrix], MARGIN = [margin (1: rows, 2: columns)], FUN =  [function])
-```
+In the previous code, we found "Mr." and "Mrs.", but missed "Miss.". We could tweak the pattern again to try to capture that, as well. For all three, we have the pattern that it starts with "M", has some lowercase letters, and then ends with ".".  
 
 ```{r}
-ex <- worldcup[ , c("Shots", "Passes", "Tackles", "Saves")]
-head(ex)
+titanic_train %>%
+  mutate(title = str_extract(Name, "M[a-z]+\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
 ```
+
+
+The last pattern used `[a-z]+` to match one or more lowercase letters. The `[a-z]`is a **character class**. \bigskip 
+
+You can also match digits (`[0-9]`), uppercase letters (`[A-Z]`), just some letters (`[aeiou]`), etc. \bigskip
+
+You can negate a character class by starting it with `^`. For example, `[^0-9]` will match anything that **isn't** a digit. 
+
+
+Sometimes, you want to match a pattern, but then only subset a part of it. For example, each passenger seems to have a title ("Mr.", "Mrs.", etc.) that comes after ", " and before ". ". We can use this pattern to find the title, but then we get some extra stuff with the match: 
 
 ```{r}
-apply(ex, MARGIN = 2, mean)
-head(apply(ex, MARGIN = 1, sum))
+titanic_train %>%
+  mutate(title = str_extract(Name, ",\\s[A-Za-z]*\\.\\s")) %>%
+  select(title) %>%
+  slice(1:3)
 ```
 
-`lapply()` will apply a function across a list. The different elements of the list do not have to be the same length (unlike a dataframe, where the columns all have to have the same length).
+As a note, in this pattern, `\\s` is used to match a space. 
+
+
+We are getting things like ", Mr. ", when we really want "Mr". We can use the `str_match` function to do this. We group what we want to extract from the pattern in parentheses, and then the function returns a matrix. The first column is the full pattern match, and each following column gives just what matches within the groups. 
 
 ```{r}
-(ex <- list(a = c(1:5), b = rnorm(3), c = c(5, 3, 3, 2)))
+head(str_match(titanic_train$Name,
+          pattern = ",\\s([A-Za-z]*)\\.\\s"))
 ```
+
+
+To get just the title, then, we can run:
 
 ```{r}
-lapply(ex, FUN = mean)
+titanic_train %>%
+  mutate(title = 
+           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
+  select(Name, title) %>%
+  slice(1:3)
 ```
 
-`sapply()` also applies a function over a list, but it returns a vector rather than a list:
+The `[ , 2]` pulls out just the second column from the matrix returned by `str_match`. 
+
+
+Here are some of the most common titles: 
 
 ```{r}
-sapply(ex, FUN = mean)
+titanic_train %>%
+  mutate(title = 
+           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
+  group_by(title) %>% summarize(n = n()) %>%
+  arrange(desc(n)) %>% slice(1:5)
 ```
 
-This can often be convenient in the context of a large data analysis. 
 
-In practice, I do use `apply()` some, but I can often find a way to do similar things to other `apply` family functions using the tools in `dplyr`. 
+The following slides have a few other examples of regular expressions in action with this dataset. \bigskip
 
-You should know that `apply` family functions take advantage of the matrix structure in R. This can be one of the fastest way to run code in R. It is definitely faster than doing the same things with loops. However, unless you are working with large datasets, you may not notice a difference. 
+Get just names that start with ("^") the letter "A":
 
-I would recommend using whichever method makes the most sense to you until you run into an analysis that takes a noticable amount of time to run, and then you might want to work a bit more to optimize your code. 
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "^A")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+
+Get names with "II" or "III" (`{2,}` says to match at least two times):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "I{2,}")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+
+Get names with "Andersen" or "Anderson" (alternatives in square brackets):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "Anders[eo]n")) %>%
+  select(Name)
+```
+
+
+
+Get names that start with ("^" outside of brackets) the letters "A" and "B":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "^[AB]")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+
+Get names that end with ("$") the letter "b" (either lowercase or uppercase):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "[bB]$")) %>%
+  select(Name) 
+```
+
+
+Some useful regular expression operators include: 
+
+```{r echo = FALSE}
+reg_exp <- data_frame("Operator" = c(".",
+                                     "*",
+                                     "*?",
+                                     "+",
+                                     "+?",
+                                     "^",
+                                     "$", 
+                                     "[...]"),
+                      "Meaning" = c("Any character", 
+                                    "Match 0 or more times (greedy)",
+                                    "Match 0 or more times (non-greedy)",
+                                    "Match 1 or more times (greedy)",
+                                    "Match 1 or more times (non-greedy)",
+                                    "Starts with (in brackets, negates)",
+                                    "Ends with",
+                                    "Character classes"))
+knitr::kable(reg_exp)
+```
+
+
+For more on these patterns, see: 
+
+- Help file for the `stringi-search-regex` function in the `stringi` package (which should install when you install `stringr`)
+- [Introduction to stringr](https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html) by Hadley Wickham
+- [Handling and Processing Strings in R](http://gastonsanchez.com/Handling_and_Processing_Strings_in_R.pdf) by Gaston Sanchez (seven chapter ebook)
+- http://gskinner.com/RegExr and http://www.txt2re.com: Interactive tools for helping you build regular expression pattern strings
+
+## String operations
+
+
+
+The `str_trim` function from the `stringr` package allows you to trim leading and trailing whitespace: 
+
+```{r}
+with_spaces <- c("    a ", "  bob", " gamma")
+with_spaces
+str_trim(with_spaces)
+```
+
+This is rarer, but if you ever want to, you can add leading and / or trailing whitespace to elements of a character vector with `str_pad` from the `stringr` package.
+
+
+There are also functions to change a full character string to uppercase, lowercase, or title case: 
+
+```{r}
+titanic_train$Name[1]
+str_to_upper(titanic_train$Name[1])
+str_to_lower(titanic_train$Name[1])
+str_to_title(str_to_lower(titanic_train$Name[1]))
+```
+
+
 
 ## In-course exercise
 
