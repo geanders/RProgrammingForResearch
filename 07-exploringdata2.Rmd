@@ -860,9 +860,40 @@ str_to_title(str_to_lower(titanic_train$Name[1]))
 - Read the `accident.csv` file for 2015 into R (this is one of the files you'll get if you download the raw data for 2015). Use the documentation to figure out what each column represents. 
 - Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format. (Hint: Functions from the `lubridate` package will be very helpful, including `yday` and `wday`).
 - Discuss which of the variables in this dataset could be used to merge the dataset with other appropriate data, either other datasets in the FARS raw data, or outside datasets. 
-- Try to write the code to create the plot below. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I'd like you to try to figure it out yourselves first.
+- Try to write the code to create the plot below. This will include some code for cleaning the data and some code for plotting. There is an example answer below, but I'd like you to try to figure it out yourselves first.
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+
+accident <- read_csv("data/accident.csv") %>%
+  select(DAY:MINUTE) %>%
+  select(-DAY_WEEK) %>%
+  unite(date, DAY:MINUTE, sep = "-", remove = FALSE) %>%
+  mutate(date = dmy_hm(date), 
+         yday = yday(date),
+         weekday = wday(date, label = TRUE, abbr = FALSE),
+         weekend = weekday %in% c("Saturday", "Sunday")) 
+
+accident %>% 
+  filter(!is.na(yday)) %>%
+  group_by(yday) %>%
+  summarize(accidents = n(),
+            weekend = first(weekend)) %>%
+  ggplot(aes(x = yday, y = accidents, color = weekend)) + 
+  geom_point(alpha = 0.5) + 
+  xlab("Day of the year in 2015") + 
+  ylab("# of fatal accidents") + 
+  theme_few() + 
+  geom_smooth(se = FALSE)
+```
+
+#### Example R code
+
+Here is example code for the section above: 
+
+```{r warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 library(tidyverse)
 library(lubridate)
 library(ggthemes)
