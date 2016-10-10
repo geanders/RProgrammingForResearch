@@ -75,7 +75,7 @@ You can index matrices with square brackets, just like data frames:
 foo[1, 1:2]
 ```
 
-You cannot, however, use `dplyr` functions with matrices: 
+You cannot, however, use "tidyverse" functions with matrices: 
 
 ```{r eval = FALSE}
 foo %>% filter(col_1 == 1)
@@ -237,13 +237,13 @@ I would recommend using whichever method makes the most sense to you until you r
 
 ## Point maps 
 
-It is very easy now to create point maps in R based on longitude and latitude values of specific locations. \bigskip
+It is very easy to create point maps in R based on longitude and latitude values of specific locations. \bigskip
 
-You can use the `map_data` function from the `ggplot2` package to pull data for maps at different levels ("usa", "state", "world", "county").
+To get a base map, you can use the `map_data` function from the `ggplot2` package to pull data for maps at different levels ("usa", "state", "world", "county").
 
 ## Point maps 
 
-The maps you pull using `map_data` are just data to use to plot polygon shapes for areas like states and counties. 
+The maps you pull using `map_data` are just data frames. They include the data you need to plot polygon shapes for areas like states and counties. 
 
 ```{r warning = FALSE, message = FALSE}
 library(ggplot2)
@@ -368,18 +368,18 @@ head(baltimore, 3)
 
 ## Point maps
 
-From that, I subset out just rows where the `subregion` column was "baltimore city" or "baltimore". 
+From that, I filter to just rows where the `subregion` column was "baltimore city" or "baltimore". 
 
 ```{r}
-baltimore <- subset(baltimore, 
-                    subregion %in% c("baltimore city",
-                                     "baltimore"))
+baltimore <- baltimore %>%
+  filter(subregion %in% c("baltimore city",
+                          "baltimore"))
 head(baltimore, 3)
 ```
 
 ## Point maps
 
-I used `geom_point` to plot the points. `ggplot` uses the `group` column to group together counties, but we don't need that in the points, so I needed to set `group = NA` in the `geom_point` statement. I put `color = tower` inside the `aes` statement so that the points would be one color for cell towers and another color for everything else. 
+I used `geom_point` to plot the points. When you plot points, you need to "ungroup" the `group` column you used to plot the polygons for counties. To do that, set `group = NA` in the `geom_point` statement. 
 
 ```{r}
 balt_plot <- ggplot(baltimore, 
