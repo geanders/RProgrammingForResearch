@@ -705,7 +705,7 @@ If you have time, you can try some exercises with mapping.
 
 - Read in and clean up the FARS data and save it to an R object called `accident`. The `accident` data frame should include location (longitude / latitude), state, and whether the accident involved drunk driving. Once you're done cleaning, the dataset should look like this: 
 
-```{r message = FALSE, warning = FALSE, echo = FALSE}
+```{r message = FALSE, warning = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   dplyr::rename(state = STATE,
@@ -727,7 +727,7 @@ accident %>% slice(1:5)
 
 - Next, create another R object with state-specific summaries. This object should be a data frame called `state_summaries` that gives the total number of fatal accidents in each state and the percent of all fatal accidents related to drunk driving in each state. The `state_summaries` data frame should look like this when you are done cleaning: 
 
-```{r echo = FALSE}
+```{r}
 state_summaries <- accident %>%
   dplyr::group_by(state_name) %>%
   dplyr::summarize_(n = ~ n(),
@@ -739,7 +739,7 @@ state_summaries %>% slice(1:5)
 
 - Create the following state-level choropleths of number of fatal accidents in 2015 in each state and of the percent of fatal accidents linked to drunk driving in each state. The quickest way to do this is with the `choroplethr` package. 
 
-```{r echo = FALSE}
+```{r}
 # With `choroplethr` package
 library(choroplethr)
 state_summaries %>%
@@ -759,7 +759,7 @@ state_summaries %>%
 
 - Now, you will be using the latitude and longitude of each accident to plot accident locations within a state. Check if the columns for latitude and longitude need more cleaning (spoiler alert--- they do). Filter out any values that could not reasonably be within the 50 U.S. states and D.C. 
 
-```{r echo = FALSE}
+```{r}
 # It turns out that values like 77.7777, 88.8888, and 99.9999 are used as 
 # missing values of latitude (similar for 777.777, etc., for longitude)
 accident <- accident %>%
@@ -768,7 +768,7 @@ accident <- accident %>%
 
 - Map the locations of fatal accidents in Texas in 2015 on top of a Google Map base map that shows major roads. An example map is shown below. (*Hint:* Use the `get_map` and `ggmap` functions for this part.)
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
+```{r message = FALSE, warning = FALSE}
 texas <- get_map(location = "texas", zoom = 6, maptype = "roadmap")
 ggmap(texas, extent = "device") + 
   geom_point(data = dplyr::filter(accident, state_name == "Texas"), 
@@ -777,9 +777,9 @@ ggmap(texas, extent = "device") +
 ```
 
 
-- Create a function that will take three inputs: `datafr`, a data frame like `accident` with fatal accident data; `which_state`, a state name; and `drunk_dr`, a logical value (TRUE / FALSE) specifying whether to create separate maps for accidents that were and were not linked to drunk driving. This function should output a map (or two maps if `drunk_dr` is set to TRUE) with points for all fatal accidents in the state. Use `map_data` and create the map yourself, rather than using `choroplethr` for this question. Examples of calling this function are shown below.
+- Create a function that will take three inputs: `datafr`, a data frame like `accident` with fatal accident data; `which_state`, a state name; and `drunk_dr`, a logical value (TRUE / FALSE) specifying whether to create separate maps for accidents that were and were not linked to drunk driving. This function should output a map (or two maps if `drunk_dr` is set to TRUE) with points for all fatal accidents in the state. Use `map_data` and create the map yourself, rather than using `choroplethr` for this question. Examples of calling this function are shown below the function definition.
 
-```{r echo = FALSE}
+```{r}
 map_fatal_accidents <- function(datafr = accident, which_state,
                                 drunk_dr = FALSE){
   state_accidents <- datafr %>%
