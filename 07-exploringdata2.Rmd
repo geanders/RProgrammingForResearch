@@ -234,7 +234,7 @@ ggplot(pos_est, aes(x = rr_low, y = position)) +
         geom_vline(aes(xintercept = 1), color = "lightgray")
 ```
 
-Creating this graph requires: 
+Creating this graph requires that you: 
 
 - Create a subset limited to each of the four positions
 - Fit a Poisson regression of Passes on Time within each subset
@@ -243,7 +243,7 @@ Creating this graph requires:
 - Convert everything from log relative rate to relative rate
 - Plot everything
 
-Create a vector with the names of all positions. Create an empty dataframe to store regression results.
+Create a vector with the names of all positions. Create an empty dataframe to store regression results:
 
 ```{r}
 (positions <- unique(worldcup$Position))
@@ -251,7 +251,7 @@ Create a vector with the names of all positions. Create an empty dataframe to st
                        est = NA, se = NA))
 ```
 
-Loop through and fit a Poisson regression model for each subset of data. Save regression coefficients in the empty dataframe.
+Loop through and fit a Poisson regression model for each subset of data. Save regression coefficients in the empty dataframe:
 
 ```{r}
 for(i in 1:nrow(pos_est)){
@@ -266,7 +266,7 @@ for(i in 1:nrow(pos_est)){
 pos_est[1:2, ]
 ```
 
-Calculate 95% confidence intervals for log relative risk values.
+Calculate 95% confidence intervals for log relative risk values:
 
 ```{r}
 pos_est <- pos_est %>%
@@ -277,7 +277,7 @@ pos_est %>%
   select(position, est, lower_ci, upper_ci) 
 ```
 
-Calculate relative risk per 90 minute increase in minutes played. 
+Calculate relative risk per 90 minute increase in minutes played: 
 
 ```{r}
 pos_est <- pos_est %>%
@@ -288,7 +288,7 @@ pos_est %>%
   select(position, rr_est, rr_low, rr_high) 
 ```
 
-Re-level the `position` factor so the plot will be ordered from highest to lowest estimates.
+Re-level the `position` factor so the plot will be ordered from highest to lowest estimates:
 
 ```{r}
 pos_est <- arrange(pos_est, rr_est) %>%
@@ -317,7 +317,7 @@ ggplot(pos_est, aes(x = rr_low, y = position)) +
 
 There are other control structures you can use in your R code. Two that you will commonly use within R functions are `if` and `ifelse` statements. \bigskip
 
-An `if` statement tells R that, **if** a certain condition is true, **do** run some code. For example, if you wanted to print out only odd numbers between 1 and 5, one way to do that is with an `if` statement: 
+An `if` statement tells R that, **if** a certain condition is true, **do** run some code. For example, if you wanted to print out only odd numbers between 1 and 5, one way to do that is with an `if` statement: (Note: the `%%` operator in R returns the remainder of the first value (i) divided by the second value (2).) 
 
 ```{r}
 for(i in 1:5){
@@ -423,7 +423,7 @@ If you find yourself cutting and pasting a lot, convert the code to a function.
 Advantages of writing functions include: 
 
 - Coding is more efficient
-- Easier to change your code (if you've cut and paste code and you want to change something, you have to change it everywhere)
+- Easier to change your code (if you've cut and paste code and you want to change something, you have to change it everywhere - this is an easy way to accidentally create bugs in your code)
 - Easier to share code with others
 
 You can name a function anything you want (although try to avoid names of preexisting-existing functions). You then define any inputs (arguments; separate multiple arguments with commas) and put the code to run in braces:
@@ -660,7 +660,7 @@ titanic_train %>%
   slice(1:3)
 ```
 
-Note that this pattern uses a special operator (`|`) to find one pattern **or** another. Double backslashs (`\\`) **escape** the special character ".". 
+Note that this pattern uses a special operator (`|`) to find one pattern **or** another. Double backslashes (`\\`) **escape** the special character ".". 
 
 
 As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally: 
@@ -743,7 +743,7 @@ titanic_train %>%
 ```
 
 
-The following slides have a few other examples of regular expressions in action with this dataset. \bigskip
+Here are a few other examples of regular expressions in action with this dataset. \bigskip
 
 Get just names that start with ("^") the letter "A":
 
@@ -954,7 +954,7 @@ accident %>%
   ggtitle(paste("Fatal accidents in", which_state, "in 2015"))
 ```
 
-- Write a loop to create a plot like the one you just made for Colorado for four different states-- Colorado, Texas, California, and New York. The code should write the plots out to a pdf, with one plot per page of the pdf. (*Hint*: To get a loop to print out a plot created with ggplot, you must explicitly print the plot object. For example, you could assign the plot to `a`, and then you would run `print(a)` within your loop as the last step.) 
+- Write a loop to create a plot like the one you just made for Colorado for four different states -- Colorado, Texas, California, and New York. The code should write the plots out to a pdf, with one plot per page of the pdf. (*Hint*: To get a loop to print out a plot created with ggplot, you must explicitly print the plot object. For example, you could assign the plot to `a`, and then you would run `print(a)` within your loop as the last step.) 
 
 #### Example R code
 
