@@ -50,7 +50,7 @@ foo <- matrix(1:10, ncol = 5, byrow = TRUE)
 foo
 ```
 
-If you want to convert a data frame to a matrix, you can use the `as.matrix` function: 
+In certain situations, you might want to work with a matrix instead of a data frame (for example, in cases where you were concerned about speed -- a matrix is more memory efficient than the corresponding data frame). If you want to convert a data frame to a matrix, you can use the `as.matrix` function: 
 
 ```{r}
 foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
@@ -191,7 +191,7 @@ sapply(ex, FUN = head, n = 1)
 
 In practice, I do use `apply()` some, but I can often find a way to do similar things to other `apply` family functions using the tools in `dplyr`. \bigskip
 
-You should know that `apply` family functions take advantage of the matrix structure in R. This can be one of the fastest way to run code in R. It is usually a lot faster than doing the same things with loops. However, unless you are working with large data sets, you may not notice a difference, and "tidyverse" functions are usually comparable in speed. \bigskip
+You should know that `apply` family functions take advantage of the matrix structure in R. This can be one of the fastest ways to run code in R. It is usually a lot faster than doing the same things with loops. However, unless you are working with large data sets, you may not notice a difference, and "tidyverse" functions are usually comparable in speed. \bigskip
 
 I would recommend using whichever method makes the most sense to you until you run into an analysis that takes a noticeable amount of time to run, and then you might want to work a bit more to optimize your code. \bigskip
 
@@ -297,7 +297,7 @@ baltimore <- map_data('county', region = 'maryland')
 head(baltimore, 3)
 ```
 
-From that, I subset out just rows where the `subregion` column was "baltimore city" or "baltimore". 
+From that, I subset out rows where the `subregion` column was "baltimore city" or "baltimore". 
 
 ```{r}
 baltimore <- subset(baltimore, 
@@ -521,7 +521,7 @@ For example, you can get the location of CSU:
 geocode("Colorado State University")
 ```
 
-You can also get a location by address through this:
+You can also get a location by address:
 
 ```{r message = FALSE, warning = FALSE}
 geocode("1 First St NE, Washington, DC")
@@ -545,7 +545,7 @@ with_spaces
 str_trim(with_spaces)
 ```
 
-This is rarer, but if you ever want to, you can add leading and / or trailing white space to elements of a character vector with `str_pad` from the `stringr` package.
+This is rarer, but if you ever want to, you can add leading and/or trailing white space to elements of a character vector with `str_pad` from the `stringr` package.
 
 There are also functions to change a full character string to uppercase, lowercase, or title case: 
 
@@ -612,10 +612,10 @@ make_state_plot(accident, which_state = "North Carolina")
 make_state_plot(accident, which_state = "Illinois")
 ```
 
-- In general, there is a pattern of more of the fatal accidents during the daytime are unrelated to drunk driving versus related, while the pattern is reversed for nighttime accidents. Use your function to see if you can find any states that don't follow this pattern.
+- In general, there is a pattern of more fatal accidents during the daytime being unrelated to drunk driving versus related. The pattern is reversed for nighttime accidents. Use your function to see if you can find any states that don't follow this pattern.
 - So far, we have not covered error checking in functions. In the function that you just wrote, we are assuming that the user will never give inputs that would cause errors. Look through the code for your function and see what assumptions we're making about what values a user would input for `datafr` and `which_state`. What could go wrong if a user does not comply with these assumptions?
 - The best practice when writing functions, especially for others to use, is to use the package::function syntax to identify which package each function comes from. For example, if you're using `mutate` in a function, you should write the function code as `dplyr::mutate`. Go back through the code for the function you wrote. Every time it uses a function that is not part of base R, change the code to use this package::function syntax.
-- If you have time: Can you combine your function, a loop (or `lapply`), and regular expressions to create plots for all states that start with "C"? That have "North" in their names? (*Hint*: One way to get a list of states is from the `accident` data frame, once you've joined in state names as a column called `state_name`: `unique(accident$state_name)`.)
+- If you have time: Can you combine your function, a loop (or `lapply`), and regular expressions to create plots for all states that start with "C"? That have "North" in their names? (*Hint*: One way to get a list of states is from the `accident` data frame. Once you've joined in state names as a column called `state_name`, you can use: `unique(accident$state_name)`.)
 
 #### Example R code
 
@@ -703,7 +703,7 @@ lapply(north_states, make_state_plot, datafr = accident)
 
 If you have time, you can try some exercises with mapping. 
 
-- Read in and clean up the FARS data and save it to an R object called `accident`. The `accident` data frame should include location (longitude / latitude), state, and whether the accident involved drunk driving. Once you're done cleaning, the dataset should look like this: 
+- Read in and clean up the FARS data and save it to an R object called `accident`. The `accident` data frame should include location (longitude and latitude), state, and whether the accident involved drunk driving. Once you're done cleaning, the dataset should look like this: 
 
 ```{r message = FALSE, warning = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
