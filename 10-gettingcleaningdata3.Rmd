@@ -140,10 +140,10 @@ hurr_meta$V2[1:2]
 
 ```{r}
 hurr_meta <- hurr_meta %>%
-  select(-V4) %>%
-  rename(storm_id = V1, storm_name = V2, n_obs = V3) %>%
-  mutate(storm_name = str_trim(storm_name),
-         n_obs = as.numeric(n_obs))
+  dplyr::select(-V4) %>%
+  dplyr::rename(storm_id = V1, storm_name = V2, n_obs = V3) %>%
+  dplyr::mutate(storm_name = str_trim(storm_name),
+                n_obs = as.numeric(n_obs))
 hurr_meta %>% slice(1:3)
 ```
 
@@ -158,9 +158,9 @@ length(hurr_obs)
 
 ```{r}
 hurr_obs <- lapply(hurr_obs, tibble::as_tibble)
-hurr_obs <- bind_rows(hurr_obs) %>%
-  mutate(storm_id = storm_id)
-hurr_obs %>% select(V1, V2, V5, V6, storm_id) %>% slice(1:3)
+hurr_obs <- dplyr::bind_rows(hurr_obs) %>%
+  dplyr::mutate(storm_id = storm_id)
+hurr_obs %>% dplyr::select(V1, V2, V5, V6, storm_id) %>% slice(1:3)
 ```
 
 To finish, you just need to clean up the data. Now that the data is in a dataframe, this process is inline with what you've been doing with `dplyr` and related packages. \bigskip
@@ -175,11 +175,11 @@ If you only need date, time, storm status, location (latitude and longitude), ma
 
 ```{r}
 hurr_obs <- hurr_obs %>%
-  select(V1, V2, V4:V8, storm_id) %>%
-  rename(date = V1, time = V2, status = V4, latitude = V5, 
-         longitude = V6, wind = V7, pressure = V8)
+  dplyr::select(V1, V2, V4:V8, storm_id) %>%
+  dplyr::rename(date = V1, time = V2, status = V4, latitude = V5, 
+                longitude = V6, wind = V7, pressure = V8)
 hurr_obs %>% slice(1:3) %>% 
-  select(date, time, status, latitude, longitude)
+  dplyr::select(date, time, status, latitude, longitude)
 ```
 
 Next, the first two columns give the date and time. You can `unite` these and then convert them to a Date-time class. 
@@ -188,10 +188,10 @@ Next, the first two columns give the date and time. You can `unite` these and th
 library(tidyr)
 library(lubridate)
 hurr_obs <- hurr_obs %>%
-  unite(date_time, date, time) %>% 
-  mutate(date_time = ymd_hm(date_time))
+  tidyr::unite(date_time, date, time) %>% 
+  dplyr::mutate(date_time = ymd_hm(date_time))
 hurr_obs %>% slice(1:3) %>% 
-  select(date_time, status, latitude, longitude)
+  dplyr::select(date_time, status, latitude, longitude)
 ```
 
 Next, you can change `status` to a factor and give the levels more meaningful names: 
@@ -206,9 +206,9 @@ storm_labels <- c("Tropical depression", "Tropical storm",
                   "Subtropical storm", "Other low",
                   "Tropical wave", "Disturbance")
 hurr_obs <- hurr_obs %>%
-  mutate(status = factor(str_trim(status), 
-                         levels = storm_levels, 
-                         labels = storm_labels))
+  dplyr::mutate(status = factor(str_trim(status), 
+                                levels = storm_levels, 
+                                labels = storm_labels))
 ```
 
 Now, you can clean up the latitude and longitude. Ultimately, we'll want numeric values for those so we can use them for mapping. You can use regular expressions to separate the numeric and non-numeric parts of these columns. For example:
@@ -222,20 +222,18 @@ Use this idea to split the numeric latitude from the direction of that latitude:
 
 ```{r}
 hurr_obs <- hurr_obs %>%
-  mutate(lat_dir = str_extract(latitude, "[A-Z]"),
-         latitude = as.numeric(str_extract(latitude,
-                                           "[^A-Z]+")),
-         lon_dir = str_extract(longitude, "[A-Z]"),
-         longitude = as.numeric(str_extract(longitude, 
-                                            "[^A-Z]+")))
+  dplyr::mutate(lat_dir = str_extract(latitude, "[A-Z]"),
+                latitude = as.numeric(str_extract(latitude, "[^A-Z]+")),
+                lon_dir = str_extract(longitude, "[A-Z]"),
+                longitude = as.numeric(str_extract(longitude, "[^A-Z]+")))
 ```
 
 Now these elements are in separate columns:
 
 ```{r}
 hurr_obs %>%
-  select(latitude, lat_dir, longitude, lon_dir) %>%
-  slice(1:2)
+  dplyr::select(latitude, lat_dir, longitude, lon_dir) %>%
+  dplyr::slice(1:2)
 unique(hurr_obs$lat_dir)
 unique(hurr_obs$lon_dir)
 ```
@@ -244,7 +242,7 @@ If we're looking at US impacts, we probably only need observations from the west
 
 ```{r}
 hurr_obs <- hurr_obs %>%
-  filter(lon_dir == "W")
+  dplyr::filter(lon_dir == "W")
 ```
 
 Next, clean up the wind column:
@@ -252,8 +250,7 @@ Next, clean up the wind column:
 ```{r}
 unique(hurr_obs$wind)[1:5]
 hurr_obs <- hurr_obs %>% 
-  mutate(wind = ifelse(wind == " -99", NA,
-                       as.numeric(wind)))
+  dplyr::mutate(wind = ifelse(wind == " -99", NA, as.numeric(wind)))
 ```
 
 Check the cleaned measurements:
@@ -269,8 +266,8 @@ Clean and check air pressure measurements in the same way:
 ```{r}
 head(unique(hurr_obs$pressure))
 hurr_obs <- hurr_obs %>% 
-  mutate(pressure = ifelse(pressure == " -999", NA,
-                           as.numeric(pressure)))
+  dplyr::mutate(pressure = ifelse(pressure == " -999", NA,
+                                  as.numeric(pressure)))
 ```
 
 ```{r  out.width = "0.8\\textwidth", fig.width = 5, fig.height = 3, message = FALSE, fig.align = "center", warning = FALSE}
@@ -281,8 +278,8 @@ ggplot(hurr_obs, aes(x = pressure)) +
 Check some of the very low pressure measurements:
 
 ```{r}
-hurr_obs %>% arrange(pressure) %>% 
-  select(date_time, wind, pressure) %>% slice(1:5)
+hurr_obs %>% dplyr::arrange(pressure) %>% 
+  dplyr::select(date_time, wind, pressure) %>% slice(1:5)
 ```
 
 ### Exploring the hurricane tracking data
@@ -299,8 +296,8 @@ Next, we want to map storms by decade. Add hurricane decade:
 
 ```{r}
 hurr_obs <- hurr_obs %>%
-  mutate(decade = substring(year(date_time), 1, 3),
-         decade = paste0(decade, "0s"))
+  dplyr::mutate(decade = substring(year(date_time), 1, 3),
+                decade = paste0(decade, "0s"))
 unique(hurr_obs$decade)
 ```
 
@@ -308,9 +305,9 @@ Add logical for whether the storm was ever category 5:
 
 ```{r}
 hurr_obs <- hurr_obs %>%
-  group_by(storm_id) %>%
-  mutate(cat_5 = max(wind) >= 137) %>%
-  ungroup()
+  dplyr::group_by(storm_id) %>%
+  dplyr::mutate(cat_5 = max(wind) >= 137) %>%
+  dplyr::ungroup()
 ```
 
 To map the hurricane tracks, you need a base map to add the tracks to. Pull data to map hurricane-prone states:
@@ -368,9 +365,9 @@ Maximum wind observed each year:
 
 ```{r warning = FALSE,  out.width = "0.8\\textwidth", fig.width = 6.5, fig.height = 3, message = FALSE, fig.align = "center"}
 hurr_obs %>%
-  mutate(storm_year = year(date_time)) %>%
-  group_by(storm_year) %>%
-  summarize(highest_wind = max(wind, na.rm = TRUE)) %>%
+  dplyr::mutate(storm_year = year(date_time)) %>%
+  dplyr::group_by(storm_year) %>%
+  dplyr::summarize(highest_wind = max(wind, na.rm = TRUE)) %>%
   ggplot(aes(x = storm_year, y = highest_wind)) + 
   geom_line() + geom_smooth(se = FALSE, span = 0.5)
 ```
@@ -388,7 +385,8 @@ First, install the package (as wll as `genderdata`, which is required to use the
 
 ```{r}
 # install.packages("gender")
-# install.packages("genderdata")
+# install.packages("genderdata", type = "source",
+#                 repos = "http://packages.ropensci.org")
 library(gender)
 gender("KATRINA", years = 2005)[ , c("name", "gender")]
 ```
@@ -411,15 +409,14 @@ Now we can use `mapply` with this wrapper function to apply it across all our na
 
 ```{r}
 hurr_genders <- hurr_meta %>%
-  filter(storm_name != "UNNAMED") %>%
-  mutate(storm_year = substring(storm_id, 5, 8),
-         storm_year = as.numeric(storm_year)) %>%
-  filter(1880 <= storm_year & storm_year <= 2012) %>%
-  select(storm_name, storm_year, storm_id) %>%
-  mutate(storm_gender = mapply(get_gender, 
-                               storm_name = storm_name,
-                               storm_year = 
-                                 as.numeric(storm_year)))
+  dplyr::filter(storm_name != "UNNAMED") %>%
+  dplyr::mutate(storm_year = substring(storm_id, 5, 8),
+                storm_year = as.numeric(storm_year)) %>%
+  dplyr::filter(1880 <= storm_year & storm_year <= 2012) %>%
+  dplyr::select(storm_name, storm_year, storm_id) %>%
+  dplyr::mutate(storm_gender = mapply(get_gender, 
+                                      storm_name = storm_name,
+                                      storm_year = as.numeric(storm_year)))
 ```
 
 
@@ -427,8 +424,8 @@ Now, plot a bar chart with the number of male, female, and unclear storms each y
 
 ```{r eval = FALSE}
 hurr_genders %>%
-  group_by(storm_year, storm_gender) %>%
-  summarize(n = n()) %>%
+  dplyr::group_by(storm_year, storm_gender) %>%
+  dplyr::summarize(n = n()) %>%
   ggplot(aes(x = storm_year, y = n, fill = storm_gender)) + 
   geom_bar(stat = "identity") + 
   coord_flip() + 
@@ -440,8 +437,8 @@ hurr_genders %>%
 
 ```{r echo = FALSE}
 hurr_genders %>%
-  group_by(storm_year, storm_gender) %>%
-  summarize(n = n()) %>%
+  dplyr::group_by(storm_year, storm_gender) %>%
+  dplyr::summarize(n = n()) %>%
   ggplot(aes(x = storm_year, y = n, fill = storm_gender)) + 
   geom_bar(stat = "identity") + 
   coord_flip() + 
@@ -455,9 +452,9 @@ Next, you can write a function to plot the track for a specific storm. You'll wa
 
 ```{r}
 hurr_obs <- hurr_obs %>%
-  left_join(hurr_meta, by = "storm_id") %>%
-  filter(storm_name != "UNNAMED") %>%
-  mutate(storm_year = year(date_time))
+  dplyr::left_join(hurr_meta, by = "storm_id") %>%
+  dplyr::filter(storm_name != "UNNAMED") %>%
+  dplyr::mutate(storm_year = year(date_time))
 ```
 
 Next, write a function to plot the track for a single storm. Use color to show storm status and size to show wind speed. 
@@ -467,7 +464,7 @@ Next, write a function to plot the track for a single storm. Use color to show s
 map_track <- function(storm, year, map_data = east_us,
                       hurr_data = hurr_obs){
   to_plot <- hurr_obs %>%
-    filter(storm_name == toupper(storm) & storm_year == year)
+    dplyr::filter(storm_name == toupper(storm) & storm_year == year)
   out <- ggplot(east_us, aes(x = long, y = lat,
                              group = group)) + 
     geom_polygon(fill = "cornsilk") + 
