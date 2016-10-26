@@ -10,6 +10,7 @@ fontsize: 10pt
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
 library(knitr)
+library(dplyr)
 ```
 
 # Cleaning very messy data
@@ -598,13 +599,340 @@ close(con)
 
 This can be particularly useful if you're cleaning a very big file, especially if there are many lines you don't want to keep. 
 
+
 # Pulling online data
 
 ## APIs
 
-## Example R packages for APIs
+API: "Application Program Interface" \bigskip
 
-## ROpenSci
+An API provides the rules for software applications to interact. In the case of open data APIs, they provide the rules you need to know to write R code to request and pull data from the organization's web server into your R session. \bigskip
 
+Often, an API can help you avoid downloading all available data, and instead only download the subset you need.
+
+## APIs
+
+Strategy for using APIs from R: 
+
+- Figure out the API rules for HTTP requests
+- Write R code to create a request in the proper format 
+- Send the request using GET or POST HTTP methods
+- Once you get back data from the request, parse it into an easier-to-use format if necessary 
+
+## API documentation
+
+Start by reading any documentation available for the API. This will often give information on what data is available and how to put together requests. 
+
+```{r echo = FALSE, out.width = "1.1\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/NASA_API_documentation.png")
+```
+
+Source: https://api.nasa.gov/api.html#EONET
+
+## API key
+
+Many organizations will require you to get an API key and use this key in each of your API requests. This key allows the organization to control API access, including enforcing rate limits per user. API rate limits restrict how often you can request data (e.g., an hourly limit of 1,000 requests per user for NASA APIs). \bigskip
+
+You should keep this key private. In particular, make sure you do not include it in code that is posted to GitHub. 
+
+## Example-- `riem` package
+
+The `riem` package, developed by Maelle Salmon and an ROpenSci package, is an excellent and straightforward example of how you can use R to pull open data through a web API. \bigskip
+
+This package allows you to pull weather data from airports around the world directly from the [Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu).
+
+## Example-- `riem` package
+
+To get a certain set of weather data from the Iowa Environmental Mesonet, you can send an HTTP request specifying a base URL, "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/", as well as some parameters describing the subset of dataset you want (e.g., date ranges, weather variables, output format). \bigskip
+
+Once you know the rules for the names and possible values of these parameters (more on that below), you can submit an HTTP GET request using the `GET` function from the `httr` package. 
+
+## Example-- `riem` package
+
+```{r echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
+knitr::include_graphics("../figures/mesonet_example.png")
+```
+
+https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=DEN&data=sknt&year1=2016&month1=6&day1=1&year2=2016&month2=6&day2=30&tz=America%2FDenver&format=comma&latlon=no&direct=no&report_type=1&report_type=2
+
+
+## Example-- `riem` package
+
+When you are making an HTTP request using the `GET` or `POST` functions from the `httr` package, you can include the key-value pairs for any query parameters as a list object in the `query` argurment of the function.
+
+```{r}
+library(httr)
+meso_url <- paste0("https://mesonet.agron.iastate.edu/",
+                   "cgi-bin/request/asos.py/")
+denver <- GET(url = meso_url,
+              query = list(station = "DEN", data = "sped",
+                           year1 = "2016", month1 = "6",
+                           day1 = "1", year2 = "2016",
+                           month2 = "6", day2 = "30",
+                           tz = "America/Denver",
+                           format = "comma"))
+```
+
+## Example-- `riem` package
+
+You can then use `content` from `httr` to retrieve the contents of the HTTP request. For this particular web data, the requested data is a comma-separated file, so you can convert it to a dataframe with `read_csv`:
+
+```{r}
+denver %>% content() %>% 
+  readr::read_csv(skip = 5, na = "M") %>%
+  slice(1:3)
+```
+
+# Example R API wrappers
+
+## rOpenSci
+
+rOpenSci (https://ropensci.org): 
+
+> "At rOpenSci we are creating packages that allow access to data repositories through the R statistical programming environment that is already a familiar part of the workflow of many scientists. Our tools not only facilitate drawing data into an environment where it can readily be manipulated, but also one in which those analyses and methods can be easily shared, replicated, and extended by other researchers."
+
+## rOpenSci
+
+rOpenSci collects a number of packages for tapping into open data for research: https://ropensci.org/packages
+
+Some examples (all descriptions from rOpenSci): 
+
+- `AntWeb`: Access data from the world's largest ant database
+- `chromer`: Interact with the chromosome counts database (CCDB)
+- `gender`: Encodes gender based on names and dates of birth
+- `musemeta`: R Client for Scraping Museum Metadata, including The Metropolitan Museum of Art, the Canadian Science & Technology Museum Corporation, the National Gallery of Art, and the Getty Museum, and more to come.
+- `rusda`: Interface to some USDA databases
+- `webchem`: Retrieve chemical information from many sources. Currently includes: Chemical Identifier Resolver, ChemSpider, PubChem, and Chemical Translation Service.
+
+## `rnoaa`
+
+> "Access climate data from NOAA, including temperature and precipitation, as well as sea ice cover data, and extreme weather events"
+
+- Buoy data from the National Buoy Data Center
+- Historical Observing Metadata Repository (HOMR))--- climate station metadata
+- National Climatic Data Center weather station data
+- Sea ice data
+- International Best Track Archive for Climate Stewardship (IBTrACS)--- tropical cyclone tracking data
+- Severe Weather Data Inventory (SWDI)
+
+## `countyweather`
+
+The `countyweather` package wraps the `rnoaa` package to let you pull and aggregate weather at the county level in the U.S. For example, you can pull all data from Miami during Hurricane Andrew: 
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/countyweather2.png")
+```
+
+## `countyweather`
+
+When you pull the data for a county, the package also maps the contributing weather stations:
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/countyweather1.png")
+```
+
+## USGS-R Packages
+
+USGS has a very nice collection of R packages that wrap USGS open data APIs: https://owi.usgs.gov/R/
+
+> "USGS-R is a community of support for users of the R scientific programming language. USGS-R resources include R training materials, R tools for the retrieval and analysis of USGS data, and support for a growing group of USGS-R developers. "
+
+## USGS R Packages
+
+USGS R packages include: 
+
+- `dataRetrieval`: Obtain water quality sample data, streamflow data, and metadata directly from either the USGS or EPA
+- `EGRET`: Analysis of long-term changes in water quality and streamflow, including the water-quality method Weighted Regressions on Time, Discharge, and Season (WRTDS)
+- `laketemps`: Lake temperature data package for Global Lake Temperature Collaboration Project
+- `lakeattributes`: Common useful lake attribute data
+- `soilmoisturetools`: Tools for soil moisture data retrieval and visualization
+
+## US Census packages
+
+A number of R packages help you access and use data from the U.S. Census: 
+
+- `tigris`: Download and use Census TIGER/Line shapefiles in R
+- `acs`: Download, manipulate, and present American Community Survey and Decennial data from the US Census
+- `USABoundaries`: Historical and contemporary boundaries of the United States of America
+- `idbr`: R interface to the US Census Bureau International Data Base API
+
+## `tigris` package
+
+- Location boundaries 
+    + States
+    + Counties
+    + Blocks
+    + Tracks
+    + School districts
+    + Congressional districts
+- Roads
+    + Primary roads
+    + Primary and secondary roads
+- Water
+    + Area-water 
+    + Linear-water
+    + Coastline
+- Other
+    + Landmarks
+    + Military
+
+## `tigris` package
+
+Example from: Kyle Walker. 2016. "tigris: An R Package to Access and Work
+with Geographic Data from the US
+Census Bureau". The R Journal.
+
+```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/tigris_example.png")
+```
+
+## Other R API wrappers
+
+Here are some examples of other R packages that faciliate use of an API for open data:
+
+- `twitteR`: Twitter 
+- `Quandl`: Quandl (financial data)
+- `RGoogleAnalytics`: Google Analytics
+- `WDI`, `wbstats`: World Bank
+- `GuardianR`, `rdian`: The Guardian Media Group
+- `blsAPI`: Bureau of Labor Statistics
+- `rtimes`: New York Times
+
+## R and APIs
+
+Find out more about writing API packages with this vignette for the httr package: https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html. \bigskip
+
+This document includes advice on error handling within R code that accesses data through an open API.
 
 # Parsing webpages
+
+## Parsing webpages
+
+You can also use R to pull and clean web-based data that is not accessible through a web API or as an online flat file. \bigskip
+
+In this case, the strategy is: 
+
+- Pull in the full web page file (often in HTML or XML) 
+- Parse or clean the file within R (e.g., with regular expressions)
+
+## `rvest`
+
+The `rvest` package should be the first thing you try if you need to pull and parse data from a webpage that is not a flat file. \bigskip
+
+This package allows you to read an HTML or XML file and pull out a certain element. Here is a very simple example of this parsing (this and later examples are from `rvest` documentation):
+
+```{r message = FALSE}
+library(rvest)
+read_html("<html><title>Hi<title></html>")
+```
+
+## `rvest`
+
+If you have an HTML or XML page you want to pull data from, you'll first need to read the page:
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/moviereviewpage.png")
+```
+
+
+## `rvest`
+
+```{r}
+library(rvest)
+lego_movie <- read_html("http://www.imdb.com/title/tt1490017/")
+lego_movie
+```
+
+## `rvest`
+
+Then you can use `html_nodes` and `html_text` to pull and parse just the elements you want: 
+
+```{r}
+rating_node <- lego_movie %>% html_nodes("strong span") 
+rating_node
+```
+
+```{r}
+rating <- rating_node %>% 
+    html_text() %>% as.numeric()
+rating
+```
+
+## `rvest`
+
+You can pull and parse tables:
+
+```{r}
+lego_movie %>%
+  html_nodes("table") %>% `[[`(1) %>%
+  html_table() %>% select(X2) %>% slice(2:8) 
+```
+
+## `rvest`
+
+The only tricky part of this is figuring out which CSS selector you can use to pull a specific element of a webpage. \bigskip
+
+You can use "Selectorgadget" to help with this. Read the vignette for that tool here: 
+ftp://cran.r-project.org/pub/R/web/packages/rvest/vignettes/selectorgadget.html
+
+## `rvest`
+
+```{r message = FALSE}
+cities <- c("denver", "boulder", "fort-collins")
+
+kitchen_addresses <- c()
+for(i in 1:length(cities)){
+  restaurant_url <- paste0("http://thekitchen.com/the-kitchen-",
+                           cities[i])
+  restaurant_page <- read_html(restaurant_url)
+  address <- restaurant_page %>%
+    html_nodes("p:nth-child(2)") %>% html_text()
+  kitchen_addresses[i] <- address[1]
+}
+kitchen_addresses
+```
+
+## `rvest`
+
+```{r message = FALSE}
+library(ggmap)
+library(stringr)
+kitchen_latlons <- geocode(kitchen_addresses)
+```
+
+## `rvest`
+
+```{r message = FALSE, eval = FALSE}
+for(i in 1:length(cities)){
+  city_map <- get_map(paste(gsub("-", " ", cities[i]),
+                            "colorado"),
+                      zoom = 14, 
+                      maptype = "roadmap")
+  city_map <- ggmap(city_map) + 
+    geom_point(data = kitchen_latlons[i, ],
+               aes(x = lon, y = lat),
+               color = "red", size = 4, alpha = 0.4) + 
+    theme_void() + 
+    ggtitle(paste("The Kitchen in",
+                  str_to_title(gsub("-", " ", cities[i]))))
+  print(city_map)
+}
+```
+
+## `rvest`
+
+```{r message = FALSE, echo = FALSE, out.width="0.33\\textwidth", fig.width = 3, fig.height = 3}
+for(i in 1:length(cities)){
+  city_map <- get_map(paste(gsub("-", " ", cities[i]), "colorado"),
+                      zoom = 14, 
+                      maptype = "roadmap")
+  city_map <- ggmap(city_map) + 
+    geom_point(data = kitchen_latlons[i, ],
+               aes(x = lon, y = lat),
+               color = "red", size = 4, alpha = 0.4) + 
+    theme_void() + 
+    ggtitle(paste("The Kitchen in",
+                  str_to_title(gsub("-", " ", cities[i]))))
+  print(city_map)
+}
+```
