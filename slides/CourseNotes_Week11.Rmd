@@ -19,7 +19,7 @@ library(stringr)
 
 ## `forcats`
 
-Hadley Wickham has developed a package called `forcats` that helps you work with categorical variables (factors). I'll show some examples of its functions using the `worldcup` dataset:
+Hadley Wickham has developed a package called `forcats` that helps you work with categorical variables (factors). I'll show some examples of its functions using the `worldcup` data set:
 
 ```{r}
 library(forcats)
@@ -75,7 +75,7 @@ levels(worldcup$Position)
 
 ## `forcats`
 
-If you want to reorder one factor by another variable (ascending order), you can use `fct_reorder` (e.g., homework 3). For example, to relevel `Position` by the average shots on goals for each position, you can run:
+If you want to reorder one factor by another variable (ascending order), you can use `fct_reorder` (e.g., homework 3). For example, to re-level `Position` by the average shots on goals for each position, you can run:
 
 ```{r}
 levels(worldcup$Position)
@@ -544,8 +544,8 @@ Simulations in the wild (just a few examples):
 
 ## Bootstrap and friends
 
-- **Bootstraping:** Sample the dataset with replacement and reestimate the statistical parameter(s) each time.
-- **Jackknifing:** Rake out one observation at a time and reestimate the statistical parameter(s) with the rest of the data.
+- **Bootstraping:** Sample the data set with replacement and re-estimate the statistical parameter(s) each time.
+- **Jackknifing:** Rake out one observation at a time and re-estimate the statistical parameter(s) with the rest of the data.
 - **Permutation tests:** See how unusual the result from the data is compared to if you shuffle your data (and so remove any relationship in observed data between variables).
 - **Cross-validation:** See how well your model performs if you pick a subset of the data, build the model just on that subset, and then test how well it predicts for the rest of the data, and repeat that many times.
 
@@ -582,4 +582,334 @@ For many examples of predictive models like this built with R (and Python): http
 
 # Speeding up R
 
+## When to worry about this
+
+**Not** until you need it! \bigskip
+
+$$
+\mbox{Total time} = \mbox{Time to write code} + \mbox{Time to run code}
+$$
+
+Optimizing code means it takes longer to write the code. Often, even if it's slow to compute, it's still faster overall to not take the time to write faster code. 
+
+## When to worry about this
+
+- Data with > 1,000,000 observations (memory + code speed)
+- Running complex models many, many times (code speed)
+- Large data created by the analytic methods (memory + code speed)
+
+## Compiled code
+
+Compiled languages: 
+
+- C
+- C++: `Rcpp`
+- Java: `rJava`
+- Fortran subroutine
+
+## Compiled code
+
+All require a *compiler* (e.g., gcc) on your computer to compile the code. You can get what you need with: 
+
+- Windows: RTools
+- Mac: XCode Tools
+
+## Compiled code
+
+Typical steps in using compiled code in R:
+
+1. Create a shared object file (.so)
+2. Use `dyn.load` to load and `dyn.unload` to unload shared objects. 
+3. Call function (`.Fortran`, `.Call`)
+4. Write a function in R that loads and calls the function, so you have a nicer interface for doing this. 
+
+## Profiling R code
+
+Strategy: Look for bottlenecks in the code, and then rewrite small sections of code that are bottlenecks in a compiled language. \bigskip
+
+You can use *code profiling* to identify bottlenecks in your code. The best option is `profvis` (currently in development version of RStudio).
+
+```{r eval = FALSE}
+## Generic code
+library(profvis)
+profvis({
+  [Code you want to profile]
+})
+```
+
+## Profiling R code
+
+The `profvis` package allows you to profile R code, and results are much easier to navigate and interpret than older methods of profiling R code. 
+
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/profvis_example.png")
+```
+
+## Rcpp
+
+Currently, the best tool for using code from a compiled language in R is `Rcpp`, which works with C++ code. Advantages include: 
+
+- Stay in R the whole time-- no need to compile from the command line
+- Compiles and loads to R with one functions (`sourceCpp`)
+- Under active development
+
+## Get a bigger machine
+
+Another way to improve R speed is to improve hardware. Options include:
+
+- Personal computer with more memory and speed
+- Server (R Studio server)
+- Cluster 
+- Cloud services (Amazon Web Services, EC2 Instance; `RAmazonS3`)
+
+Many of these options may require you to run R in *batch mode* rather than interactively. In other words, you'll need to write all your R code in an R script and then source the script using something like `R CMD BATCH` or `Rscript` from the command line, rather than running code line-by-line.
+
+## Parallel computing
+
+You can also improve speed by running code in parallel. This is particularly powerful on a large cluster or cloud services. 
+
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/MapReduce.jpg")
+```
+Source: http://gerardnico.com/wiki/algorithm/map_reduce
+
+
+## Parallel computing
+
+In R, there are some packages for setting up parallel processing for your custom code. Examples include:
+
+- `parallel`
+- `foreach`
+
+Some packages include the option to run internal code in parallel. For example:
+
+- `caret`
+- `GAMBoost`
+
+## sparklyr
+
+The `sparklyr` package was just released by RStudio earlier this fall: http://spark.rstudio.com. \bigskip
+
+It allows you to connect R with Spark (open source framework for cluster computing), but still use `dplyr` for all your code. It also connects to some distributed machine learning systems (e.g., H2O Sparkling Water), so you can build large ensemble models with big data. 
+
+## GPUs
+
+Graphics Processing Units (GPUs)--- historically, closely tied to computer gaming systems. 
+
+> "GPU-accelerated computing is the use of a graphics processing unit (GPU) together with a CPU to accelerate deep learning, analytics, and engineering applications. Pioneered in 2007 by NVIDIA, GPU accelerators now power energy-efficient data centers in government labs, universities, enterprises, and small-and-medium businesses around the world. They play a huge role in accelerating applications in platforms ranging from artificial intelligence to cars, drones, and robots." --Nvidia
+
+Source: http://www.nvidia.com/object/what-is-gpu-computing.html
+
+## GPUs
+
+Code for GPUs is written in a different programming language (e.g., CUDA). There are a few packages that provide an R interface: 
+
+- `gputools`
+- `cudaBayesreg` (application: analyzing fMRI data)
+- `gmatrix`
+- `gpuR`
+
+This is a growing area of development in R, so look for more packages in the future. 
+
 # Working with large datasets
+
+## `data.table`
+
+`data.table` is a package in R that can efficiently read in and manipulate large data sets. It offers a **substantial** speed improvement over the classic `data.frame` when working with large data sets. 
+
+## Example: US precipitation
+
+As an example, I have a file with daily precipitation measures for every US county from 1979 through 2011: 
+
+- 365 days * 33
+- ~3,000 counties
+
+This file has > 37,000,000 lines. The total file size is 2.26 GB. 
+
+## Reading in a large text file
+
+`fread` is the `data.table` equivalent of the `read.table` family of functions: 
+
+```{r echo = FALSE}
+precip_dir <- "~/Documents/CSU2016/hurricaneproject/hurricaneexposuredata/data-raw/"
+```
+
+```{r message = FALSE}
+library(data.table)
+system.time(precip <- fread(paste0(precip_dir,
+                       "nasa_precip_export_2.txt"),
+                      header = TRUE,
+                      select = c("county",
+                                 "year_month_day",
+                                 "precip"),
+                      verbose = FALSE))
+dim(precip)
+```
+
+## Reading in a large text file
+
+`fread` can also read a file directly from http and https URLs, if you'd prefer to not save the flat file locally. 
+
+## Manipulating a `data.table`
+
+The `data.table` class has a series of conventions for summarizing and indexing that runs much, much faster than if you tried to use "classic" R functions. 
+
+The general form is: 
+
+```{r eval = FALSE}
+precip[i, j, by]
+```
+
+where `i` filters by row, `j` selects or calculates on columns, and `by` groups by some grouping variable when selecting or calculating using columns.
+
+## Manipulating a `data.table`
+
+You can use the first element to filter to certain rows. For example, to pull out just values for Larimer County, CO, run: 
+
+```{r}
+precip[county == 8069 & 
+         year_month_day %in% 
+         c(19970727, 19970728), ]
+```
+
+## Manipulating a `data.table`
+
+You can use the `order` function in the first element to sort the data: 
+
+```{r}
+head(precip[order(-precip), ])
+```
+
+## Manipulating a `data.table`
+
+You can run calculations on columns using the second element: 
+
+```{r}
+precip[ , max(precip)]
+precip[ , quantile(precip,
+                   probs = c(0.99, 0.999,
+                             0.9999))]
+```
+
+## Manipulating a `data.table`
+
+You can combine filtering by rows and calculating on columns. For example, to figure out how many counties there were in 2011: 
+
+```{r}
+precip[year_month_day == 20110101,
+       length(precip)]
+```
+
+*Note*: If you want to count rows, you can also use `.N`:
+
+```{r}
+precip[year_month_day == 20110101,
+       .N]
+```
+
+## Grouped analysis
+
+You can also group by a variable before you run an analysis. For example, to get the highest recorded precipitation in each county: 
+
+```{r}
+highest_precip <- precip[ , .(max.precip = max(precip)),
+                          by = .(county)]
+head(highest_precip, 3)
+```
+
+## Highest precipitation by county
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8}
+library(dplyr)
+highest_precip <- rename(highest_precip, 
+                          region = county, 
+                          value = max.precip)
+
+library(choroplethr)
+county_choropleth(highest_precip)
+```
+
+## Chaining operation with `data.table`
+
+If you want to, you can chain together several operations. For example, to determine the number of days over the 99.9th percentile in each county:
+
+```{r}
+extreme_precip <- precip[ , .N, .(precip > 
+                                    quantile(precip,
+                                             probs = 0.999),
+                                 county)][
+                          precip == TRUE, 
+                        ]
+```
+
+## Extreme precipitation by county
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8}
+extreme_precip <- dplyr::rename(extreme_precip, 
+                          region = county, 
+                          value = N)
+county_choropleth(extreme_precip)
+```
+
+## Chaining operation with `data.table`
+
+To plot trends by month within states: 
+
+```{r}
+ts_precip <- precip[ , .(precip = precip,
+                         state = substring(sprintf("%05d",
+                                                   county),
+                                           1, 2),
+                         month = as.numeric(
+                           substring(year_month_day,
+                                           5, 6)))][
+                     , .(precip = mean(precip)),
+                     keyby = .(state, month)                        
+                     ]
+```
+
+## Precipitation by month and state
+
+```{r echo = FALSE, fig.width = 8}
+library(dplyr)
+ts_precip2 <- filter(as.data.frame(ts_precip), 
+                     state %in% c("22", "08", "51", "32")) %>%
+  mutate(state = factor(state,
+                        levels = c("22", "08", "51", "32"),
+                        labels = c("Louisiana", "Colorado",
+                                   "Virginia", "Nevada")))
+library(ggplot2)
+ggplot(ts_precip2, aes(x = month, y = precip)) + 
+  geom_line() + 
+  facet_wrap(~ state, ncol = 2)
+```
+
+## Databases
+
+R also allows you to work with data stored in a database. There are many different types of databases; the `DBI` package provides a generic interface to many of them.
+
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/RDatabaseInterface.png")
+```
+
+## Outside of memory data
+
+One way to work with really large data is to avoid loading it into R. Some R packages help with this: 
+
+- `ff`
+- `ffbase`
+- `biglm`
+- `bigmemory`
+
+Some file formats allow you to read just part of the data into memory. For example: 
+
+- NetCDF: `RNetCDF`, `ncdf4`
+- HDF5: `h5`, `rhdf5` (Bioconductor)
+
+## Find out more
+
+- *Advanced R*. Hadley Wickham. (Free online, see especially the chapter on `Rcpp`: http://adv-r.had.co.nz/Rcpp.html)
+- *Seamless R and C++ Integration with Rcpp.* Dirk Eddelbuettel. (Free online through CSU library)
+- CRAN High Performance Computing Task View: https://cran.r-project.org/web/views/HighPerformanceComputing.html
+- Rcpp website: http://www.rcpp.org
+- *Statistical Computing in C++ and R.* Eubank and Kupresanin.
