@@ -278,7 +278,7 @@ Next, I'll put some R code in the `server.R` file to create a figure and pass it
 
 I am going to create a map of all the Tweets that included certain hashtags or phrases and that were Tweeted (and geolocated) from within a five-mile radius of the center of Paris during the attacks last Friday. For this, I'm going to use data on Tweets I pulled using the `TwitteR` package, which syncs up with Twitter's API. Here's an example of what the data looks like (I've cleared out some of the extra columns I won't use):
 
-```{r}
+```{r aa}
 paris_twitter <- read.csv("data/App-1/data/final_tweets.csv", as.is = TRUE) %>%
         mutate(tag = factor(tag),
                created = ymd_hms(created, tz = "Europe/Paris"),
@@ -288,13 +288,13 @@ paris_twitter[1:2, ]
 
 About an equal number of these have and don't have location data:
 
-```{r}
+```{r ab}
 table(!is.na(paris_twitter$longitude))
 ```
 
 Here is a table of the number of tweets under the five most-tweeted tags:
 
-```{r}
+```{r ac}
 tweet_sum <- dplyr::group_by(paris_twitter, tag) %>%
         dplyr::summarize(n = dplyr::n(),
                   example = gsub("[[:punct:]]", " ", sample(text, 1))) %>%
@@ -304,7 +304,7 @@ kable(tweet_sum[1:5, ], col.names = c("Tag", "# of Tweets", "Example Tweet"))
 
 For the Tweets that are geolocated, it's possible to map the tweet locations using the following code:
 
-```{r message = FALSE, warning = FALSE}
+```{r ad, message = FALSE, warning = FALSE}
 paris_map <- get_map("paris", zoom = 12, color = "bw")
 
 paris_locations <- c("Stade de France", "18 Rue Alibert",
@@ -358,7 +358,7 @@ plot_map <- function(tag = "all", df = paris_twitter){
 }
 ```
 
-```{r fig.height = 3.5, fig.width = 3.5, fig.align = "center", echo = FALSE, message = FALSE}
+```{r ae, fig.height = 3.5, fig.width = 3.5, fig.align = "center", echo = FALSE, message = FALSE}
 plot_map()
 ```
 
