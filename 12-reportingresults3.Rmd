@@ -297,9 +297,11 @@ Here is a table of the number of tweets under the five most-tweeted tags:
 ```{r aac}
 tweet_sum <- dplyr::group_by(paris_twitter, tag) %>%
         dplyr::summarize(n = dplyr::n(),
-                  example = gsub("[[:punct:]]", " ", sample(text, 1))) %>%
-        dplyr::arrange(desc(n))
-kable(tweet_sum[1:5, ], col.names = c("Tag", "# of Tweets", "Example Tweet"))
+                  example = gsub("[[:punct:]]", " ", 
+                                 base::sample(text, 1))) %>%
+        dplyr::arrange(dplyr::desc(n))
+knitr::kable(tweet_sum[1:5, ],
+             col.names = c("Tag", "# of Tweets", "Example Tweet"))
 ```
 
 For the Tweets that are geolocated, it's possible to map the tweet locations using the following code:
