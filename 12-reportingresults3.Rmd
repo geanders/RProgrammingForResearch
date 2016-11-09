@@ -9,7 +9,9 @@ library(knitr)
 library(ggmap)
 ```
 
-## Resources for learning Shiny
+## Shiny web apps
+
+### Resources for learning Shiny
 
 There is an excellent tutorial to get you started [here](http://shiny.rstudio.com/tutorial/lesson1/) at RStudio. There are also several great sites that show you both Shiny examples and their code, [here](http://shiny.rstudio.com/gallery/) and [here](http://www.showmeshiny.com).
 
@@ -23,7 +25,7 @@ library(shiny)
 system.file("examples", package = "shiny")
 ```
 
-## Basics of Shiny apps
+### Basics of Shiny apps
 
 Once you have Shiny installed, you can run the examples using the `runExample()` command. For example, to run the first example, you would run:
 
@@ -55,7 +57,7 @@ knitr::include_graphics("figures/AppFileExample.png")
 
 This has the heart of the application (`server.R` and `ui.R`) plus a couple of R helper files and subdirectories with some figures and data that I'm using in the [that application](https://brookeanderson.shinyapps.io/App-2). If I open either of the main files in RStudio, I can run the application locally using a button at the top of the file called "Run App". Once I have the App running, if I have an account for the Shiny server, I can choose to "Publish" the application to the Shiny server, and then anyone can access and use it online (this service is free up to a certain number of visitors per time-- unless you make something that is very popular, you should be well within the free limit).
 
-## `server.R` file
+### `server.R` file
 
 The server file will be named `server.R`. This file tells R what code to run with the inputs it gets from a user making certain selections. For example, for the histogram example, this file tells R how to re-draw a histogram of the data with the number of bins that the user specified on the slider on the application. Once you get through all the code for what to do, this file also will have code telling R what to send back to the application for the user to see (in this case, a picture of a histogram made with the specified number of bars). Here is the code in the `server.R` file for the histogram example:
 
@@ -133,7 +135,7 @@ shinyServer(function(input, output) {
 
 The `server.R` file also has a line to load the `shiny` package. You should think of apps as being like Rmd files-- if there are any packages or datasets that you need to use in the code in that file, you need to load it within the file, because R won't check in your current R session to find it when it runs the file.
 
-## `ui.R` file
+### `ui.R` file
 
 The other file that a Shiny app needs is the user interface file (`ui.R`). This is the file that describes how the application should look. It will write all the buttons and sliders and all that you want for the application interface. This is also where you specify what you want to go where and put in any text that you want to show up.
 
@@ -184,7 +186,7 @@ sliderInput("bins",
              value = 30)
 ```
 
-## Making a Shiny app
+### Making a Shiny app
 
 The first step in making a Shiny app is to make a new directory somewhere and to create R scripts for that directory called `server.R` and `ui.R`. You can just make these two files the normal way-- within RStudio, do "New File", "R Script", and then just save them with the correct names to the directory you created for the App. Once you save a file as `ui.R`, notice that you'll have a button in the top right of the file called "Run App". When you're ready to run your application, you can either use this button or use the command `runApp`. 
 
@@ -464,3 +466,356 @@ This app is saved in the directory `App-1` in this week's directory if you'd lik
 ### Fancier version
 
 I've also created a (much) fancier version of a Shiny App looking at this Twitter data that you can check out [here](https://brookeanderson.shinyapps.io/TweetsParisAttacks). All the code for that is [here](https://github.com/geanders/RProgrammingForResearch/tree/master/data/App-2).
+
+## Viridis color map
+
+There is a package called `viridisLite` with some good color maps that are gaining population in visualization. From the package's GitHub repository: 
+
+> "These four color maps are designed in such a way that they will analytically be perfectly perceptually-uniform, both in regular form and also when converted to black-and-white. They are also designed to be perceived by readers with the most common form of color blindness."
+
+- Viridis is now the default color map for `Matplotlib`, a key Python plotting library. 
+- The `viridisLite` package is a simpler version of the `viridis` package (and requires fewer dependencies).
+- Several of the packages we'll look at today use Viridis as the default color map. 
+
+Here is an example of a hexbin graph of random values that uses the Viridis color map:
+
+```{r fig.width = 3.5, fig.height = 3.5, fig.align = "center"}
+library(viridisLite)
+library(hexbin)
+dat <- data.frame(x = rnorm(10000), y = rnorm(10000))
+ggplot(dat, aes(x = x, y = y)) + geom_hex() + coord_fixed() +
+  scale_fill_gradientn(colours = viridis(256, option = "D"))
+```
+
+The `option` argument allows you to pick between four color maps: Magma, Inferno, Plasma, and Viridis. Here is the code to visualize each of those:
+
+```{r}
+library(gridExtra)
+ex_plot <- ggplot(dat, aes(x = x, y = y)) + geom_hex() + coord_fixed()
+magma_plot <- ex_plot + 
+  scale_fill_gradientn(colours = viridis(256, option = "A")) + 
+  ggtitle("magma")
+inferno_plot <- ex_plot + 
+  scale_fill_gradientn(colours = viridis(256, option = "B")) + 
+  ggtitle("inferno")
+plasma_plot <- ex_plot + 
+  scale_fill_gradientn(colours = viridis(256, option = "C")) + 
+  ggtitle("plasma")
+viridis_plot <- ex_plot + 
+  scale_fill_gradientn(colours = viridis(256, option = "D")) + 
+  ggtitle("viridis")
+grid.arrange(magma_plot, inferno_plot, plasma_plot, viridis_plot, ncol = 2)
+```
+
+## htmlWidgets
+
+### Overview of htmlWidgets
+
+Very smart people have been working on creating interactive graphics in R for a long time. So far, nothing coded in R has taken off in a big way. 
+
+JavaScript has developed a number of interactive graphics libraries that can be for documents viewed in a web browser. There is now a series of R packages that allow you to create plots from these JavaScript libraries from within R. 
+
+There is a website with much more on these `htmlWidgets` at http://www.htmlwidgets.org. 
+
+Some of the packages availabe to help you create interactive graphics from R using JavaScript graphics libraries: 
+
+- `leaflet`: Mapping (we'll cover this next week)
+- `dygraphs`: Time series
+- `plotly`: A variety of plots, including maps
+- `rbokeh`: A variety of plots, including maps
+- `networkD3`: Network data
+- `d3heatmap`: Heatmaps
+- `DT`: Data tables
+- `DiagrammeR`: Diagrams and flowcharts
+
+These packages can be used to make some pretty cool interactive visualizations for HTML output from R Markdown or Shiny (you can also render any of theme in RStudio). 
+
+There are, however, a few limitations: 
+
+- Written by different people. The different packages have different styles as well as different interfaces. Learning how to use one package may not help you much with other of these packages.
+- Many are still in development, often in early development. 
+
+### `plotly` package
+
+From the package documentation: 
+
+> "Easily translate `ggplot2` graphs to an interactive web-based version and / or create custom web-based visualizations directly from R."
+
+- Like many of the packages today, draws on functionality external to R, but within a package that allows you to work exclusively within R.
+- Allows you to create interactive graphs from R. Some of the functions extend the `ggplot2` code you've learned.
+- Interactivity will only work within RStudio or on documents rendered to HTML.
+
+The `plotly` package allows an interface to let you work with `plotly.js` code directly using R code. 
+
+`plotly.js` is an open source library for creating interactive graphs in JavaScript. This JavaScript library is built on `d3.js` (Data-Driven Documents), which is a key driver in interactive web-based data graphics today.
+
+There are two main ways of create plots within `plotly`: 
+
+- Use one of the functions to create a customized interactive graphic: 
+    + `plot_ly`: Workhorse of `plotly`, renders most non-map types of graphs
+    + `plot_geo`, `plot_mapbax`: Specific functions for creating `plotly` maps. 
+- Create a `ggplot` object and then convert it to a `plotly` object using the `ggplotly` function.
+
+```{r fig.width = 6, fig.height = 4, fig.align = "center", message = FALSE, warning = FALSE}
+library(faraway) 
+data(worldcup)
+library(plotly)
+plot_ly(worldcup, type = "scatter", x = ~ Time, y = ~ Shots)
+```
+
+Just like with `ggplot2`, the mappings you need depend on the type of plot you are creating. 
+
+For example, scatterplots (`type = "scatter"`) need `x` and `y` defined, while a surface plot (`type = "surface"`) can be created with a single vector of elevation (we'll see an example in a few slides). 
+
+The help file for `plot_ly` includes a link with more documentation on the types of plots that can be made and the required mappings for each.
+
+```{r,  message = FALSE, warning = FALSE}
+plot_ly(worldcup, type = "scatter", x = ~ Time, y = ~ Shots,
+        color = ~ Position)
+```
+
+The `plotly` package is designed so you can pipe data into `plot_ly` and add elements by piping into `add_*` functions (this idea is similar to adding elements to a `ggplot` object with `+`).
+
+```{r eval = FALSE}
+worldcup %>%
+  plot_ly(x = ~ Time, y = ~ Shots, color = ~ Position) %>%
+  add_markers()
+```
+
+Some of the `add_*` functions include:
+
+- `add_markers`
+- `add_lines`
+- `add_paths`
+- `add_polygons`
+- `add_segments`
+- `add_histogram`
+
+If you pipe to the `rangeslider` function, it allows the viewer to zoom in on part of the x range. (This can be particularly nice for time series.) \bigbreak
+
+You should have a dataset available through your R session named `USAccDeaths`. This gives a montly county of accidental deaths in the US for 1973 to 1978. This code will plot it and add a range slider on the lower x-axis.
+
+```{r }
+plot_ly(x = time(USAccDeaths), y = USAccDeaths) %>% 
+  add_lines() %>%
+  rangeslider()
+```
+
+For a 3-D scatterplot, add a mapping to the `z` variable:
+
+```{r}
+worldcup %>%
+  plot_ly(x = ~ Time, y = ~ Shots, z = ~ Passes,
+          color = ~ Position, size = I(3)) %>%
+  add_markers()
+```
+
+The `volcano` data comes with R and is in a matrix format. Each value gives the elevation for a particular pair of x- and y-coordinates.
+
+```{r}
+dim(volcano)
+volcano[1:4, 1:4]
+```
+
+```{r}
+plot_ly(z = ~ volcano, type = "surface")
+```
+
+Mapping with `plotly` can build on some data that comes with base R or other packages you've likely added (or can add easily, as with the `map_data` function from `ggplot2`). For example, we can map state capitals and cities with > 40,000 people using data in the `us.cities` dataframe in the `maps` package:
+
+```{r  message = FALSE, warning = FALSE}
+head(maps::us.cities, 3)
+```
+
+Here is code you can use to map all of these cities on a US map:
+
+```{r  message = FALSE, warning = FALSE}
+ggplot2::map_data("world", "usa") %>%
+   group_by(group) %>% filter(-125 < long & long < -60 &
+                                25 < lat & lat < 52) %>%
+   plot_ly(x = ~long, y = ~lat) %>%
+   add_polygons(hoverinfo = "none") %>%
+   add_markers(text = ~paste(name, "<br />", pop), hoverinfo = "text",
+               alpha = 0.25,
+     data = filter(maps::us.cities, -125 < long & long < -60 &
+                     25 < lat & lat < 52)) %>%
+   layout(showlegend = FALSE)
+```
+
+You can also make choropleths interactive. Remember that we earlier created a choropleth of US state populations with the following code:
+
+```{r  message = FALSE, warning = FALSE}
+library(choroplethr)
+data(df_pop_state)
+state_choropleth(df_pop_state)
+```
+
+You can use the following code with `plotly` to make an interactive choropleth instead:
+
+```{r  message = FALSE, warning = FALSE}
+us_map <- list(scope = 'usa',
+  projection = list(type = 'albers usa'),
+  lakecolor = toRGB('white'))
+plot_geo() %>%
+   add_trace(z = df_pop_state$value[df_pop_state$region != 
+                                        "district of columbia"],
+             text = state.name, locations = state.abb,
+             locationmode = 'USA-states') %>%
+  add_markers(x = state.center[["x"]], y = state.center[["y"]], 
+    size = I(2), symbol = I(8), color = I("white"), hoverinfo = "none") %>%
+  layout(geo = us_map)
+```
+
+The other way to create a `plotly` graph is to first create a `ggplot` object and then transform it into an interactive graphic using the `ggplotly` function.
+
+The following code can be used to plot Time versus Shots for the World Cup date in a regular, non-interactive plot: 
+
+```{r}
+shots_vs_time <- worldcup %>%
+  mutate(Name = rownames(worldcup)) %>%
+  filter(Team %in% c("Netherlands", "Germany", "Spain", "Uruguay")) %>%
+  ggplot(aes(x = Time, y = Shots, color = Position, group = Name)) + 
+  geom_point() + 
+  facet_wrap(~ Team)
+shots_vs_time
+```
+
+To make the plot interactive, just pass the `ggplot` object to `ggplotly`:
+
+```{r}
+ggplotly(shots_vs_time)
+```
+
+With R, not only can you pull things from another website using an API, you can also upload or submit things. 
+
+There is a function in the `plotly` library, `plotly_POST`, that lets you post a plot you create in R to https://plot.ly.
+
+You need a plot.ly account to do that, but there are free accounts available.
+
+The creator of the R `plotly` package has written a bookdown book on the package that you can read [here](https://cpsievert.github.io/plotly_book/). It provides extensive details and examples for using `plotly`.
+
+*Getting Started with D3* by Mike Dewar (a short book on D3 in JavaScript) is available for free [here](http://www.gtz.com/docs/.%5C_books%5CGetting_Started_with_D3.pdf).
+
+### `rbokeh` package
+
+The `rbokeh` package provides an R interface to a Python interactive visualization library, Bokeh.
+
+There is a website with many more details on using the `rbokeh` package: https://hafen.github.io/rbokeh/ 
+
+You can find out more about the original Python library, Bokeh, at http://bokeh.pydata.org/en/latest/. 
+
+Here is an example of an interactive scatterplot of the World Cup data made with the `rbokeh` package:
+
+```{r fig.align = "center"}
+library(rbokeh)
+figure(width = 600, height = 300) %>%
+  ly_points(Time, Shots, data = worldcup,
+    color = Position, hover = list(Time, Shots))
+```
+
+This package can also be used to create interactive maps. For example, the following dataset has data on Oregon climate stations, including locations:
+
+```{r}
+orstationc <- read.csv(paste0("http://geog.uoregon.edu/bartlein/",
+                              "old_courses/geog414s05/data/orstationc.csv"))
+head(orstationc, 3)
+```
+
+You can use the following code to create an interactive map of these climate stations:
+
+```{r}
+gmap(lat = 44.1, lng = -120.767, zoom = 5, width = 500, height = 428) %>%
+  ly_points(lon, lat, data = orstationc, alpha = 0.8, col = "red",
+    hover = c(station, Name, elev, tann))
+```
+
+You can get very creative with this package. The following code comes directly from the help documentation for the package and shows how to use this to create an interactive version of the periodic table:
+
+```{r}
+# prepare data
+elements <- subset(elements, !is.na(group))
+elements$group <- as.character(elements$group)
+elements$period <- as.character(elements$period)
+
+# add colors for groups
+metals <- c("alkali metal", "alkaline earth metal", "halogen",
+  "metal", "metalloid", "noble gas", "nonmetal", "transition metal")
+colors <- c("#a6cee3", "#1f78b4", "#fdbf6f", "#b2df8a", "#33a02c",
+  "#bbbb88", "#baa2a6", "#e08e79")
+elements$color <- colors[match(elements$metal, metals)]
+elements$type <- elements$metal
+
+# make coordinates for labels
+elements$symx <- paste(elements$group, ":0.1", sep = "")
+elements$numbery <- paste(elements$period, ":0.8", sep = "")
+elements$massy <- paste(elements$period, ":0.15", sep = "")
+elements$namey <- paste(elements$period, ":0.3", sep = "")
+
+# create figure
+p <- figure(title = "Periodic Table", tools = c("resize", "hover"),
+  ylim = as.character(c(7:1)), xlim = as.character(1:18),
+  xgrid = FALSE, ygrid = FALSE, xlab = "", ylab = "",
+  height = 445, width = 800) %>%
+
+# plot rectangles
+ly_crect(group, period, data = elements, 0.9, 0.9,
+  fill_color = color, line_color = color, fill_alpha = 0.6,
+  hover = list(name, atomic.number, type, atomic.mass,
+    electronic.configuration)) %>%
+
+# add symbol text
+ly_text(symx, period, text = symbol, data = elements,
+  font_style = "bold", font_size = "10pt",
+  align = "left", baseline = "middle") %>%
+
+# add atomic number text
+ly_text(symx, numbery, text = atomic.number, data = elements,
+  font_size = "6pt", align = "left", baseline = "middle") %>%
+
+# add name text
+ly_text(symx, namey, text = name, data = elements,
+  font_size = "4pt", align = "left", baseline = "middle") %>%
+
+# add atomic mass text
+ly_text(symx, massy, text = atomic.mass, data = elements,
+  font_size = "4pt", align = "left", baseline = "middle")
+
+p
+```
+
+### `dygraphs` package
+
+The `dygraphs` package lets you create interactive time series plots from R using the `dygraphs` JavaScript library. 
+
+The main function syntax is fairly straightforward. Like many of these packages, it allows piping. 
+
+There is a website with more information on using `dygraphs` available at http://rstudio.github.io/dygraphs/index.html. 
+
+For example, here is the code to plot monthly deaths from lung diseases in the UK in the 1970s. 
+
+```{r}
+library(dygraphs)
+lungDeaths <- cbind(mdeaths, fdeaths)
+dygraph(lungDeaths) %>%
+  dySeries("mdeaths", label = "Male") %>%
+  dySeries("fdeaths", label = "Female")
+```
+
+### `DT` package
+
+The `DT` package provides a way to create interactive tables in R using the JavaScript `DataTables` library. 
+
+We've already seen some examples of this output in some of the Shiny apps I showed last week. You can also use this package to include interactive tables in R Markdown documents you plan to render to HTML. 
+
+There is a website with more information on this package at http://rstudio.github.io/DT/. 
+
+```{r}
+library(DT)
+datatable(worldcup)
+```
+
+### Creating your own widget
+
+If you find a JavaScript visualization library and would like to create bindings to R, you can create your own package for a new htmlWidget. 
+
+There is advice on creating your own widget for R available at http://www.htmlwidgets.org/develop_intro.html.
