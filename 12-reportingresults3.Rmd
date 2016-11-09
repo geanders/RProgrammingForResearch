@@ -295,11 +295,13 @@ table(!is.na(paris_twitter$longitude))
 Here is a table of the number of tweets under the five most-tweeted tags:
 
 ```{r aac}
-tweet_sum <- dplyr::group_by(paris_twitter, tag) %>%
-        dplyr::summarize(n = dplyr::n(),
-                  example = gsub("[[:punct:]]", " ", 
+head(paris_twitter)
+tweet_sum <- paris_twitter %>%
+  dplyr::group_by_(~ tag) %>%
+  dplyr::summarize_(n = ~ n(),
+                   example = ~ gsub("[[:punct:]]", " ", 
                                  base::sample(text, 1))) %>%
-        dplyr::arrange(dplyr::desc(n))
+  dplyr::arrange_(~ dplyr::desc(n))
 knitr::kable(tweet_sum[1:5, ],
              col.names = c("Tag", "# of Tweets", "Example Tweet"))
 ```
