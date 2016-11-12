@@ -2,7 +2,7 @@
 
 [Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week8.pdf) a pdf of the lecture slides covering this topic.
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
+```{r caa, echo = FALSE, message = FALSE, warning = FALSE}
 knitr::opts_knit$set(error = TRUE)
 library(dplyr)
 library(tidyr)
@@ -38,21 +38,21 @@ R uses matrices a lot for its underlying math (e.g., for the linear algebra oper
 
 You can create a matrix with the `matrix` function. Input a vector with the values to fill the matrix and `ncol` to set the number of columns:
 
-```{r}
+```{r cab}
 foo <- matrix(1:10, ncol = 5)
 foo
 ```
 
 By default, the matrix will fill up by column. You can fill it by row with the `byrow` function: 
 
-```{r}
+```{r cac}
 foo <- matrix(1:10, ncol = 5, byrow = TRUE)
 foo
 ```
 
 In certain situations, you might want to work with a matrix instead of a data frame (for example, in cases where you were concerned about speed -- a matrix is more memory efficient than the corresponding data frame). If you want to convert a data frame to a matrix, you can use the `as.matrix` function: 
 
-```{r}
+```{r cad}
 foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
                   col_3 = 5:6, col_4 = 7:8,
                   col_5 = 9:10)
@@ -61,13 +61,13 @@ foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
 
 You can index matrices with square brackets, just like data frames: 
 
-```{r}
+```{r cae}
 foo[1, 1:2]
 ```
 
 You cannot, however, use `dplyr` functions with matrices: 
 
-```{r eval = FALSE}
+```{r caf, eval = FALSE}
 foo %>% filter(col_1 == 1)
 ```
 ```
@@ -81,7 +81,7 @@ All elements in a matrix must have the same class. \bigskip
 
 The matrix will default to make all values the most general class of any of the values, in any column. For example, if we replaced one numeric value with the character "a", everything would turn into a character:
 
-```{r}
+```{r cag}
 foo[1, 1] <- "a"
 foo
 ```
@@ -90,7 +90,7 @@ foo
 
 A list has different elements, just like a data frame has different columns. However, the different elements of a list can have different lengths (unlike the columns of a data frame). The different elements can also have different classes.
 
-```{r}
+```{r cah}
 bar <- list(some_letters = letters[1:3],
             some_numbers = 1:5, 
             some_logical_values = c(TRUE, FALSE))
@@ -99,7 +99,7 @@ bar
 
 To index an element from a list, use double square brackets. You can use bracket indexing either with numbers (which element in the list?) or with names. You can also index lists with the `$` operator.
 
-```{r}
+```{r cai}
 bar[[1]]
 bar[["some_numbers"]]
 bar$some_logical_values
@@ -107,12 +107,12 @@ bar$some_logical_values
 
 Lists can be used to contain data with an unusual structure and / or lots of different components. For example, the information from fitting a regression is often stored as a list:
 
-```{r}
+```{r caj}
 my_mod <- glm(rnorm(10) ~ c(1:10))
 is.list(my_mod)
 ```
 
-```{r}
+```{r cak}
 head(names(my_mod), 3)
 my_mod[["coefficients"]]
 ```
@@ -127,7 +127,7 @@ There is a whole family of `apply` functions, as part of base R. These include:
 
 Here is the syntax for `apply`: 
 
-```{r, eval = FALSE}
+```{r cal, eval = FALSE}
 ## Generic code
 apply([matrix], MARGIN = [margin (1: rows, 2: columns)],
       FUN =  [function])
@@ -135,26 +135,26 @@ apply([matrix], MARGIN = [margin (1: rows, 2: columns)],
 
 I'll use the `worldcup` data as an example:
 
-```{r}
+```{r cam}
 ex <- worldcup[ , c("Shots", "Passes", "Tackles", "Saves")]
 head(ex)
 ```
 
 Take the mean of all columns:
 
-```{r}
+```{r can}
 apply(ex, MARGIN = 2, mean)
 ```
 
 Take the sum of all rows:
 
-```{r}
+```{r cao}
 head(apply(ex, MARGIN = 1, sum), 4)
 ```
 
 You can use your own function with any of the `apply` functions. For example, if you wanted to calculate a value for each player that is a weighted mean of some of their statistics, you could run:
 
-```{r}
+```{r cap}
 weighted_mean <- function(soccer_stats,
                           weights = c(0.40, 0.01,
                                       0.25, 1.5)){
@@ -167,25 +167,25 @@ head(apply(ex, MARGIN = 1, weighted_mean), 4)
 
 The `lapply()` function will apply a function across a list. The different elements of the list do not have to be the same length (unlike a data frame, where the columns all have to have the same length).
 
-```{r}
+```{r caq}
 (ex <- list(a = c(1:5), b = rnorm(3), c = letters[1:4]))
 ```
 
 This call will calculate the mean of each function:
 
-```{r warning = FALSE}
+```{r car, warning = FALSE}
 lapply(ex, FUN = mean)
 ```
 
 You can include arguments for the function that you specify with `FUN`, and they'll be passed to that function. For example, to get the first value of each element, you can run:
 
-```{r warning = FALSE}
+```{r cas, warning = FALSE}
 lapply(ex, FUN = head, n = 1)
 ```
 
 The `sapply()` function also applies a function over a list, but it returns a vector rather than a list:
 
-```{r}
+```{r cat}
 sapply(ex, FUN = head, n = 1)
 ```
 
@@ -201,7 +201,7 @@ It is very easy now to create point maps in R based on longitude and latitude va
 
 The maps you pull using `map_data` are just data to use to plot polygon shapes for areas like states and counties. 
 
-```{r warning = FALSE, message = FALSE}
+```{r cau, warning = FALSE, message = FALSE}
 library(ggplot2)
 us_map <- map_data("state")
 head(us_map, 3)
@@ -211,7 +211,7 @@ You can add points to these based on latitude and longitude.
 
 Mapping uses the `long` and `lat` columns from this data for location:
 
-```{r fig.width = 6, fig.height = 2.5, fig.align = "center"}
+```{r cav, fig.width = 6, fig.height = 2.5, fig.align = "center"}
 north_carolina <- us_map %>% 
   filter(region == "north carolina")
 ggplot(north_carolina, aes(x = long, y = lat)) +
@@ -220,7 +220,7 @@ ggplot(north_carolina, aes(x = long, y = lat)) +
 
 If you try to plot lines, however, you'll have a problem:
 
-```{r fig.width = 3.5, fig.height = 2.25, fig.align = "center"}
+```{r caw, fig.width = 3.5, fig.height = 2.25, fig.align = "center"}
 carolinas <- us_map %>% 
   filter(str_detect(region, "carolina"))
 ggplot(carolinas, aes(x = long, y = lat)) + 
@@ -229,7 +229,7 @@ ggplot(carolinas, aes(x = long, y = lat)) +
 
 The `group` column fixes this problem. It will plot a separate path or polygon for each separate group. For mapping, this gives separate groupings for mainland versus islands and for different states:
 
-```{r}
+```{r cax}
 carolinas %>%
   group_by(group) %>%
   slice(1)
@@ -237,7 +237,7 @@ carolinas %>%
 
 Using `group = group` avoids the extra lines from the earlier map:
 
-```{r fig.width = 3.5, fig.height = 2.25, fig.align = "center"}
+```{r cay, fig.width = 3.5, fig.height = 2.25, fig.align = "center"}
 ggplot(carolinas, aes(x = long, y = lat,
                       group = group)) + 
   geom_path()
@@ -245,7 +245,7 @@ ggplot(carolinas, aes(x = long, y = lat,
 
 To plot filled regions, use `geom_polygon` with `fill = region`. Also, the "void" theme is often useful when mapping:
 
-```{r fig.width = 4.5, fig.height = 2, fig.align = "center"}
+```{r caz, fig.width = 4.5, fig.height = 2, fig.align = "center"}
 ggplot(carolinas, aes(x = long, y = lat,
                       group = group,
                       fill = region)) + 
@@ -255,7 +255,7 @@ ggplot(carolinas, aes(x = long, y = lat,
 
 Here is an example of plotting all of the US by state:
 
-```{r}
+```{r cba}
 map_1 <- ggplot(us_map, aes(x = long, y = lat,
                             group = group)) + 
         geom_polygon(fill = "dodgerblue",
@@ -263,7 +263,7 @@ map_1 <- ggplot(us_map, aes(x = long, y = lat,
         theme_void()
 ```
 
-```{r fig.width = 6.5, fig.height = 4, fig.align = "center"}
+```{r cbb, fig.width = 6.5, fig.height = 4, fig.align = "center"}
 map_1
 ```
 
@@ -271,35 +271,35 @@ To add points to these maps, you can use `geom_point`, again using longitude and
 
 Here I'll use an example of data points related to the story told in last year's ["Serial" podcast](http://serialpodcast.org). 
 
-```{r}
+```{r cbc}
 serial <- read.csv("data/serial_map_data.csv")
 head(serial, 3)
 ```
 
 [David Robinson](https://github.com/dgrtwo/serial-ggvis/blob/master/serial-preprocessing.Rmd) figured out a way to convert the x and y coordinates in this data to latitude and longitude coordinates. I'm also adding a column for whether of not the point is a cell tower.
 
-```{r message = FALSE, warning = FALSE}
+```{r cbd, message = FALSE, warning = FALSE}
 serial <- serial %>%
     mutate(long = -76.8854 + 0.00017022 * x,
            lat  = 39.23822 + 1.371014e-04 * y,
            tower = Type == "cell-site")
 ```
 
-```{r message = FALSE, warning = FALSE}
+```{r cbe, message = FALSE, warning = FALSE}
 serial[c(1:2, (nrow(serial) - 1):nrow(serial)), 
        c("Type", "Name", "long", "lat", "tower")]
 ```
 
 Now I can map just Baltimore City and Baltimore County in Maryland and add these points. I used `map_data` to pull the "county" map and specified "region" as "maryland", to limit the map just to Maryland counties. 
 
-```{r}
+```{r cbf}
 baltimore <- map_data('county', region = 'maryland')
 head(baltimore, 3)
 ```
 
 From that, I subset out rows where the `subregion` column was "baltimore city" or "baltimore". 
 
-```{r}
+```{r cbg}
 baltimore <- subset(baltimore, 
                     subregion %in% c("baltimore city",
                                      "baltimore"))
@@ -308,7 +308,7 @@ head(baltimore, 3)
 
 I used `geom_point` to plot the points. `ggplot` uses the `group` column to group together counties, but we don't need that in the points, so I needed to set `group = NA` in the `geom_point` statement. I put `color = tower` inside the `aes` statement so that the points would be one color for cell towers and another color for everything else. 
 
-```{r}
+```{r cbh}
 balt_plot <- ggplot(baltimore, 
                     aes(x = long, y = lat, group = group)) + 
         geom_polygon(fill = "lightblue", color = "black") +
@@ -318,7 +318,7 @@ balt_plot <- ggplot(baltimore,
         theme_bw()
 ```
 
-```{r fig.width = 7, fig.height = 4}
+```{r cbi, fig.width = 7, fig.height = 4}
 balt_plot
 ```
 
@@ -328,7 +328,7 @@ There's a fantastic new(-ish) package in R to plot choropleth maps. You could al
 
 You will need to install and load the `choroplethr` package in R to use the functions below.
 
-```{r message = FALSE, warning = FALSE}
+```{r cbj, message = FALSE, warning = FALSE}
 # install.packages("choroplethr")
 library(choroplethr)
 
@@ -338,18 +338,18 @@ library(choroplethrMaps)
 
 At the most basic level, you can use this package to plot some data that comes automatically with the package (you'll just need to load the data using the `data` function). For example, if you wanted to plot state-by-state populations as of 2012, you could use:
 
-```{r warning = FALSE, message=FALSE}
+```{r cbk, warning = FALSE, message=FALSE}
 data(df_pop_state)
 map_3 <- state_choropleth(df_pop_state)
 ```
 
-```{r fig.width=8, fig.height=3.5}
+```{r cbl, fig.width=8, fig.height=3.5}
 map_3
 ```
 
 You can find out more about the `df_pop_state` data if you type `?df_pop_state`. Notice that, for the data frame, the location is given in a column called `region` and the population size to plot is in a column called `value`. 
 
-```{r}
+```{r cbm}
 head(df_pop_state, 3)
 ```
 
@@ -357,31 +357,31 @@ You could use this function to create any state-level choropleth you wanted, as 
 
 You can run similar functions at different spatial resolutions (for example, county or zip code):
 
-```{r}
+```{r cbn}
 data(df_pop_county)
 head(df_pop_county, 3)
 ```
 
 You can plot choropleths at this level, as well:
 
-```{r warning = FALSE, message = FALSE}
+```{r cbo, warning = FALSE, message = FALSE}
 map_4 <- county_choropleth(df_pop_county)
 ```
 
-```{r fig.width=8, fig.height=4}
+```{r cbp, fig.width=8, fig.height=4}
 map_4
 ```
 
 You can even do this for countries of the world:
 
-```{r fig.width = 8, fig.height = 3.5, warning=FALSE, message=FALSE}
+```{r cbq, fig.width = 8, fig.height = 3.5, warning=FALSE, message=FALSE}
 data(df_pop_country)
 country_choropleth(df_pop_country)
 ```
 
 You can zoom into states or counties. For example, to plot population by county in Colorado, you could run:
 
-```{r fig.width = 6, fig.height = 3, message = FALSE, warning = FALSE}
+```{r cbr, fig.width = 6, fig.height = 3, message = FALSE, warning = FALSE}
 county_choropleth(df_pop_county, state_zoom = "colorado")
 ```
 
@@ -393,12 +393,12 @@ These functions pull recent Census data directly from the US Census using its AP
 
 Once you put in your request, they'll email you your key. Once they give you your API key, you'll need to install it on R:
 
-```{r echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE}
+```{r cbs, echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE}
 library(acs)
 api.key.install(Sys.getenv("acskey"))
 ```
 
-```{r eval = FALSE}
+```{r cbt, eval = FALSE}
 library(acs)
 api.key.install('[your census api key]');
 ```
@@ -407,14 +407,14 @@ You can pick from a large number of American Community Survey tables-- [see here
 
 For example, table B19301 gives per-capita income, so if you wanted to plot that, you could run:
 
-```{r fig.width = 3, fig.height = 2.75, message = FALSE, eval = FALSE}
+```{r cbu, fig.width = 3, fig.height = 2.75, message = FALSE, eval = FALSE}
 county_choropleth_acs(tableId = "B19301",
                        state_zoom = c("wyoming",
                                       "colorado"))
 
 ```
 
-```{r fig.width = 10, fig.height = 6, message = FALSE, echo = FALSE, fig.align = "center", eval = FALSE}
+```{r cbv, fig.width = 10, fig.height = 6, message = FALSE, echo = FALSE, fig.align = "center", eval = FALSE}
 ex_choro <- county_choropleth_acs(tableId = "B19301",
                        state_zoom = c("wyoming",
                                       "colorado"))
@@ -422,7 +422,7 @@ save(ex_choro, file = "data/example_choropleth.Rdata")
 
 ```
 
-```{r echo = FALSE, fig.width = 10, fig.height = 6, message = FALSE, fig.align = "center"}
+```{r cbw, echo = FALSE, fig.width = 10, fig.height = 6, message = FALSE, fig.align = "center"}
 load("data/example_choropleth.Rdata")
 ex_choro
 ```
@@ -432,7 +432,7 @@ ex_choro
 
 The `ggmap` package allows you to use tools from Google Maps directly from R.
 
-```{r message=FALSE, warning = FALSE}
+```{r cbx, message=FALSE, warning = FALSE}
 ## install.packages("ggmap")
 library(ggmap)
 ```
@@ -443,12 +443,12 @@ You can use the `get_map` function to get maps for different locations. You can 
 
 If you do the second, `get_map` will actually use the Google Maps API to geocode the string to a latitude and longitude and then get the map (you can imagine that this is like searching in Google Maps in the search box for a location).
 
-```{r message = FALSE, warning = FALSE, fig.width = 3.5, fig.height = 3.5, fig.align = "center", eval = FALSE}
+```{r cby, message = FALSE, warning = FALSE, fig.width = 3.5, fig.height = 3.5, fig.align = "center", eval = FALSE}
 beijing <- get_map("Beijing", zoom = 12)
 ggmap(beijing)
 ```
 
-```{r message = FALSE, warning = FALSE, fig.width = 3.5, fig.height = 3.5, fig.align = "center", echo = FALSE}
+```{r cbz, message = FALSE, warning = FALSE, fig.width = 3.5, fig.height = 3.5, fig.align = "center", echo = FALSE}
 beijing <- get_map("Beijing", zoom = 12)
 ggmap(beijing)
 ```
@@ -462,7 +462,7 @@ With this package, you can get maps from the following different sources:
 
 Here are different examples of Beijing using different map sources. (Also, note that I'm using the option `extent = "device"` to fill up the whole plot are with the map, instead of including axis labels and titles.)
 
-```{r message = FALSE, warning = FALSE}
+```{r cca, message = FALSE, warning = FALSE}
 beijing_a <- get_map("Beijing", zoom = 12,
                      source = "stamen", maptype = "toner")
 a <- ggmap(beijing_a, extent = "device")
@@ -476,13 +476,13 @@ beijing_c <- get_map("Beijing", zoom = 12,
 c <- ggmap(beijing_c, extent = "device")
 ```
 
-```{r fig.width = 7}
+```{r ccb, fig.width = 7}
 grid.arrange(a, b, c, nrow = 1) 
 ```
 
 As with the maps from `ggplot2`, you can add points to these maps:
 
-```{r warning = FALSE, message = FALSE}
+```{r cce, warning = FALSE, message = FALSE}
 serial_phone <- read.csv("data/serial_phone_data.csv") %>% 
         mutate(Cell_Site = substring(Cell_Site, 1, 4),
                Call_Time = as.POSIXct(Call_Time, format = "%d/%m/%y %H:%M",
@@ -493,7 +493,7 @@ serial_phone <- read.csv("data/serial_phone_data.csv") %>%
         arrange(Call_Time)
 ```
 
-```{r message = FALSE, warning = FALSE, fig.width = 5}
+```{r ccf, message = FALSE, warning = FALSE, fig.width = 5}
 serial_map <- get_map(c(-76.7, 39.3), zoom = 12,
                       source = "stamen",
                       maptype = "toner")
@@ -509,7 +509,7 @@ serial_map <- ggmap(serial_map, extent = "device") +
                    size = 2)
 ```
 
-```{r warning = FALSE, message = FALSE, fig.width = 4, fig.height = 4, fig.align = "center", echo = FALSE}
+```{r ccg, warning = FALSE, message = FALSE, fig.width = 4, fig.height = 4, fig.align = "center", echo = FALSE}
 serial_map
 ```
 
@@ -517,19 +517,19 @@ You can also use the Google Maps API, through the `geocode` function, to get the
 
 For example, you can get the location of CSU:
 
-```{r message = FALSE, warning = FALSE}
+```{r cch, message = FALSE, warning = FALSE}
 geocode("Colorado State University")
 ```
 
 You can also get a location by address:
 
-```{r message = FALSE, warning = FALSE}
+```{r cci, message = FALSE, warning = FALSE}
 geocode("1 First St NE, Washington, DC")
 ```
 
 You can get distances, too, using the `mapdist` function with two locations. This will give you distance and also time. 
 
-```{r message = FALSE, warning = FALSE}
+```{r ccj, message = FALSE, warning = FALSE}
 mapdist("Fort Collins CO",
         "1 First St NE, Washington, DC") %>%
   select(from, miles, hours)
@@ -539,7 +539,7 @@ mapdist("Fort Collins CO",
 
 The `str_trim` function from the `stringr` package allows you to trim leading and trailing white space: 
 
-```{r}
+```{r cck}
 with_spaces <- c("    a ", "  bob", " gamma")
 with_spaces
 str_trim(with_spaces)
@@ -549,7 +549,7 @@ This is rarer, but if you ever want to, you can add leading and/or trailing whit
 
 There are also functions to change a full character string to uppercase, lowercase, or title case: 
 
-```{r}
+```{r ccl}
 titanic_train$Name[1]
 str_to_upper(titanic_train$Name[1])
 str_to_lower(titanic_train$Name[1])
@@ -560,7 +560,7 @@ str_to_title(str_to_lower(titanic_train$Name[1]))
 
 This exercise will continue using the Fatality Analysis Reporting System (FARS) data we started using last week. 
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
+```{r ccm, echo = FALSE, message = FALSE, warning = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   dplyr::rename(state = STATE,
@@ -586,7 +586,7 @@ accident <- read_csv("data/accident.csv") %>%
 
 - Adapt the code that you wrote for to create a loop in last week's in-course exercise and write a function that will create a state-specific plot when you call it. This function should have inputs of `datafr` and `which_state`, where `datafr` is the data frame with the full data set (`accident` in this case) and `which_state` is the name of the state for which you'd like to create the plot. Name your functions `make_state_plot`. Here are a few examples of running this function:
 
-```{r echo = FALSE}
+```{r ccn, echo = FALSE}
 make_state_plot <- function(datafr, which_state){
   a <- datafr %>%
     dplyr::filter_(~ state_name == which_state) %>%
@@ -606,7 +606,7 @@ make_state_plot <- function(datafr, which_state){
 }
 ```
 
-```{r fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r cco, fig.width = 6, fig.height = 3, fig.align = "center"}
 make_state_plot(accident, which_state = "California")
 make_state_plot(accident, which_state = "North Carolina")
 make_state_plot(accident, which_state = "Illinois")
@@ -621,7 +621,7 @@ make_state_plot(accident, which_state = "Illinois")
 
 Here is some example R code for writing the function to create state-specific plots: 
 
-```{r eval = FALSE}
+```{r ccp, eval = FALSE}
 make_state_plot <- function(datafr, which_state){
   a <- datafr %>%
     dplyr::filter(state_name == which_state) %>%
@@ -662,7 +662,7 @@ make_state_plot <- function(datafr, which_state){
 
 Example of using this function to create plots for all states that start with "C":
 
-```{r fig.width = 6, fig.height = 3, fig.align = "center", results='hide', fig.show='asis'}
+```{r ccq, fig.width = 6, fig.height = 3, fig.align = "center", results='hide', fig.show='asis'}
 states <- unique(accident$state_name)
 c_states <- states[str_detect(states, "^C")]
 
@@ -675,7 +675,7 @@ for(state in c_states){
 
 To use `lapply`, the state name needs to be the first argument in the function. We could re-write the function to comply and then use `lapply`:
 
-```{r fig.width = 6, fig.height = 3, fig.align = "center", results='hide', fig.show='asis'}
+```{r ccr, fig.width = 6, fig.height = 3, fig.align = "center", results='hide', fig.show='asis'}
 make_state_plot <- function(which_state, datafr){
   a <- datafr %>%
     dplyr::filter(state_name == which_state) %>%
@@ -705,7 +705,7 @@ If you have time, you can try some exercises with mapping.
 
 - Read in and clean up the FARS data and save it to an R object called `accident`. The `accident` data frame should include location (longitude and latitude), state, and whether the accident involved drunk driving. Once you're done cleaning, the dataset should look like this: 
 
-```{r message = FALSE, warning = FALSE}
+```{r ccs, message = FALSE, warning = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   dplyr::rename(state = STATE,
@@ -727,7 +727,7 @@ accident %>% slice(1:5)
 
 - Next, create another R object with state-specific summaries. This object should be a data frame called `state_summaries` that gives the total number of fatal accidents in each state and the percent of all fatal accidents related to drunk driving in each state. The `state_summaries` data frame should look like this when you are done cleaning: 
 
-```{r}
+```{r cct}
 state_summaries <- accident %>%
   dplyr::group_by(state_name) %>%
   dplyr::summarize_(n = ~ n(),
@@ -739,7 +739,7 @@ state_summaries %>% slice(1:5)
 
 - Create the following state-level choropleths of number of fatal accidents in 2015 in each state and of the percent of fatal accidents linked to drunk driving in each state. The quickest way to do this is with the `choroplethr` package. 
 
-```{r}
+```{r ccu}
 # With `choroplethr` package
 library(choroplethr)
 state_summaries %>%
@@ -759,7 +759,7 @@ state_summaries %>%
 
 - Now, you will be using the latitude and longitude of each accident to plot accident locations within a state. Check if the columns for latitude and longitude need more cleaning (spoiler alert--- they do). Filter out any values that could not reasonably be within the 50 U.S. states and D.C. 
 
-```{r}
+```{r ccv}
 # It turns out that values like 77.7777, 88.8888, and 99.9999 are used as 
 # missing values of latitude (similar for 777.777, etc., for longitude)
 accident <- accident %>%
@@ -768,7 +768,7 @@ accident <- accident %>%
 
 - Map the locations of fatal accidents in Texas in 2015 on top of a Google Map base map that shows major roads. An example map is shown below. (*Hint:* Use the `get_map` and `ggmap` functions for this part.)
 
-```{r message = FALSE, warning = FALSE}
+```{r ccw, message = FALSE, warning = FALSE}
 texas <- get_map(location = "texas", zoom = 6, maptype = "roadmap")
 ggmap(texas, extent = "device") + 
   geom_point(data = dplyr::filter(accident, state_name == "Texas"), 
@@ -779,7 +779,7 @@ ggmap(texas, extent = "device") +
 
 - Create a function that will take three inputs: `datafr`, a data frame like `accident` with fatal accident data; `which_state`, a state name; and `drunk_dr`, a logical value (TRUE / FALSE) specifying whether to create separate maps for accidents that were and were not linked to drunk driving. This function should output a map (or two maps if `drunk_dr` is set to TRUE) with points for all fatal accidents in the state. Use `map_data` and create the map yourself, rather than using `choroplethr` for this question. Examples of calling this function are shown below the function definition.
 
-```{r}
+```{r ccx}
 map_fatal_accidents <- function(datafr = accident, which_state,
                                 drunk_dr = FALSE){
   state_accidents <- datafr %>%
@@ -804,20 +804,20 @@ map_fatal_accidents <- function(datafr = accident, which_state,
 }
 ```
 
-```{r message = FALSE, warning = FALSE, fig.width = 4, fig.height = 2.75, fig.align = "center"}
+```{r ccy, message = FALSE, warning = FALSE, fig.width = 4, fig.height = 2.75, fig.align = "center"}
 map_fatal_accidents(accident, which_state = "Colorado")
 ```
 
-```{r message = FALSE, warning = FALSE, fig.width = 4.3, fig.height = 4.5, fig.align = "center"}
+```{r ccz, message = FALSE, warning = FALSE, fig.width = 4.3, fig.height = 4.5, fig.align = "center"}
 map_fatal_accidents(accident, which_state = "Texas")
 ```
 
-```{r message = FALSE, warning = FALSE, fig.width = 8, fig.height = 2.75, fig.align = "center"}
+```{r cda, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 2.75, fig.align = "center"}
 map_fatal_accidents(accident, which_state = "Colorado", 
                     drunk_dr = TRUE)
 ```
 
-```{r message = FALSE, warning = FALSE, fig.width = 8.6, fig.height = 4.5, fig.align = "center"}
+```{r cdb, message = FALSE, warning = FALSE, fig.width = 8.6, fig.height = 4.5, fig.align = "center"}
 map_fatal_accidents(accident, which_state = "Texas",
                     drunk_dr = TRUE)
 ```
