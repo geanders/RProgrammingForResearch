@@ -1,0 +1,443 @@
+---
+title: "Mapping in R"
+author: "Brooke Anderson"
+date: "November 16, 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r echo = FALSE}
+library(dplyr)
+library(lubridate)
+library(sp)
+library(GISTools)
+```
+
+
+## Example data
+
+```{r}
+library(tigris)
+denver_tracts <- tracts(state = "CO", county = 31, cb = TRUE)
+load("../data/fars_colorado.RData")
+accident_data <- driver_data %>%
+  dplyr::select(state, st_case, county, latitude, longitud,
+                date, fatals, drunk_dr) %>%
+  dplyr::filter(county == 31 & longitud < -104.1) %>%
+  dplyr::distinct()
+```
+
+## Leaflet
+
+"Leaflet" is a JavaScript library for making interactive maps. You can find out more about the JavaScript version here: http://leafletjs.com
+
+The `leaflet` package brings this functionality to R. The R Studio group has created a website on `leaflet`: http://rstudio.github.io/leaflet/. This website walks you through different options available with `leaflet`.
+
+```{r}
+library(leaflet)
+```
+
+## Add map background
+
+If you just run `leaflet()`, you just get a blank leaflet area: 
+
+```{r fig.width = 7, fig.height = 3}
+leaflet()
+```
+
+## Add map background
+
+In `leaflet`, the map background is composed of *tiles*. To get something more interesting, you'll need to add tiles to your leaflet map. If you don't include any other data, the leaflet map will include the world:
+
+```{r eval = FALSE}
+leaflet() %>%
+  addTiles()
+```
+
+## Add map background
+
+```{r echo = FALSE}
+leaflet() %>%
+  addTiles()
+```
+
+## Adding markers
+
+For htmlWidgets, points are often referred to as *markers*.
+
+Once you add these markers, the map will automatically scale to a reasonable size for their bounding box.
+
+```{r eval = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = accident_data, lng = ~ longitud, lat = ~ latitude)
+```
+
+Use `lng` and `lat` to tell R which columns contain data on longitude and latitude for each point. This is not needed if you are using a spatial object (e.g., `SpatialPointsDataFrame`). Further, R will try to guess the columns in a regular dataframe.
+
+## Adding markers
+
+```{r echo = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = accident_data, lng = ~ longitud, lat = ~ latitude)
+```
+
+## Adding markers
+
+You can use several types of R objects for your data for `leaflet`:
+
+- Dataframe with columns for latitude and longitude
+- Spatial objects (`SpatialPoints`, `SpatialLines`, etc.)
+- Latitude-longitude matrix
+
+## Adding markers
+
+You can choose circles for your markers instead by using `addCircleMarkers`. You can adjust the circle size with `radius`. 
+
+```{r eval = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+The `radius` argument specifies the size of the circle. For `CircleMarkers`, the size will reset as you zoom in and out. If you want something with a constant radius (e.g., in meters), you can add `Circles`.
+
+## Adding markers
+
+```{r echo = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+## Adding markers
+
+If you have a lot of overlapping data, you can also use the `clusterOptions` argument to show the markers as clusters that group together when you zoom out but split up when you zoom in:
+
+```{r eval = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = accident_data, 
+                   lng = ~ longitud, lat = ~ latitude,
+                   clusterOptions = markerClusterOptions())
+```
+
+## Adding markers
+
+```{r echo = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = accident_data, 
+                   lng = ~ longitud, lat = ~ latitude,
+                   clusterOptions = markerClusterOptions())
+```
+
+## Add map background
+
+For the background, the default is to use map tiles from OpenStreetMap. However, you can change the source of the tiles by using `addProviderTiles`. For example, to use Stamen Watercolor, you can call:
+
+```{r eval = FALSE}
+leaflet() %>%
+  addProviderTiles("Stamen.Watercolor") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+## Add map background
+
+```{r echo = FALSE}
+leaflet() %>%
+  addProviderTiles("Stamen.Watercolor") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+## Add map background
+
+```{r fig.width = 7, fig.height = 3}
+leaflet() %>%
+  addProviderTiles("Thunderforest.TransportDark") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+## Add map background
+
+```{r fig.width = 7, fig.height = 3}
+leaflet() %>%
+  addProviderTiles("Esri.WorldStreetMap") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+## Add map background
+
+You can see previews of provider choices here: http://leaflet-extras.github.io/leaflet-providers/preview/index.html.
+
+## Pop-ups
+
+You can use the `popup` option to show information when the user clicks on a marker. 
+
+It's easiest to do this if you have the information you want to show in the dataframe with the location data. For example, we have date-time, number of fatalities, and number of drunk drivers in this data: 
+
+```{r}
+accident_data %>% 
+  dplyr::select(date, fatals, drunk_dr) %>% 
+  dplyr::slice(1:3)
+```
+
+## Pop-ups
+
+If we want to show day of the week, month, hour, and number of fatalities, go ahead and calculate any value not already in the dataset:
+
+```{r}
+library(lubridate)
+accident_data <- accident_data %>%
+  mutate(weekday = wday(date, label = TRUE, abbr = FALSE),
+         month = month(date, label = TRUE, abbr = FALSE),
+         hour = format(date, format = "%H:%M"))
+```
+
+## Pop-ups
+
+The popup text needs to be a character vector, written in HTML syntax. You can create that vector first, and then pass it to the `popup` argument.
+
+```{r}
+popup_info <- paste0("<b>Weekday:</b>  ", 
+                                  accident_data$weekday, "<br/>",
+                                  "<b>Month:</b>  ",
+                                  accident_data$month, "<br/>",
+                                  "<b>Hour:</b>  ",
+                                  accident_data$hour, "<br/>",
+                                  "<b>Fatalities:</b>  ",
+                                  accident_data$fatals)
+popup_info[1:3]
+```
+
+## Pop-ups
+
+Now pass that vector to the `popup` argument for the layer you want to pair it with:
+
+```{r eval = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
+                   popup = popup_info)
+```
+
+## Pop-ups
+
+```{r echo = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
+                   popup = popup_info)
+```
+
+## Pop-ups
+
+If you aren't familiar with HTML syntax, here's one cheatsheet: http://web.stanford.edu/group/csp/cs21/htmlcheatsheet.pdf
+
+In the popups, you can use HTML to format things like color, typeface, and size. You can also add links.
+
+## Mapping values to color
+
+To use color to show a value, you need to do a few things. First, you need to the the `colorFactor` function (or another in its family) to create a function for mapping from values to colors. Then, you need to use this within the call to add the markers.
+
+```{r eval = FALSE}
+library(viridisLite)
+pal <- colorFactor(viridis(5), accident_data$drunk_dr)
+leaflet() %>%
+  addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
+                   popup = popup_info, 
+                   color = pal(accident_data$drunk_dr)) 
+```
+
+## Mapping values to color
+
+```{r echo = FALSE}
+library(viridisLite)
+pal <- colorFactor(viridis(5), accident_data$drunk_dr)
+leaflet() %>%
+  addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
+                   popup = popup_info, 
+                   color = pal(accident_data$drunk_dr)) 
+```
+
+## Mapping values to color
+
+The `colorFactor` function (and friends) are a pretty cool type of function that actually creates a new function: 
+
+```{r}
+pal <- colorFactor(viridis(5), accident_data$drunk_dr)
+class(pal)
+head(pal)
+```
+
+## Adding a legend
+
+Once you are showing something with color, you can add a legend to explain it. You can do that with the `addLegend` function, which must include values for the color palette and values for each point from this color palette.
+
+```{r eval = FALSE}
+library(viridisLite)
+pal <- colorFactor(viridis(5), accident_data$drunk_dr)
+leaflet() %>%
+  addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
+                   popup = popup_info, 
+                   color = pal(accident_data$drunk_dr)) %>%
+  addLegend(pal = pal, values = accident_data$drunk_dr)
+```
+
+## Adding a legend
+
+```{r echo = FALSE}
+library(viridisLite)
+pal <- colorFactor(viridis(5), accident_data$drunk_dr)
+leaflet() %>%
+  addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
+                   popup = popup_info, 
+                   color = pal(accident_data$drunk_dr)) %>%
+  addLegend(pal = pal, values = accident_data$drunk_dr)
+```
+
+## Adding polygons
+
+You can add polygons with the `addPolygons` function.
+
+```{r eval = FALSE}
+leaflet() %>%
+  addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
+  addPolygons(data = denver_tracts)
+```
+
+## Adding polygons
+
+```{r echo = FALSE}
+leaflet() %>%
+  addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
+  addPolygons(data = denver_tracts)
+```
+
+## Adding polygons
+
+You can add popups for polygons, as well.
+
+```{r eval = FALSE}
+polygon_popup <- paste0("Tract ID:  ", 
+                        denver_tracts@data$NAME)
+leaflet() %>%
+  addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
+  addPolygons(data = denver_tracts, popup = polygon_popup)
+```
+
+## Adding polygons
+
+```{r echo = FALSE}
+polygon_popup <- paste0("Tract ID:  ", 
+                        denver_tracts@data$NAME)
+leaflet() %>%
+  addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
+  addPolygons(data = denver_tracts, popup = polygon_popup)
+```
+
+## Adding polygons
+
+You can overlay different elements. For example, you can show both accidents and tracts:
+
+```{r eval = FALSE}
+polygon_popup <- paste0("Tract ID:  ", 
+                        denver_tracts@data$NAME)
+accident_data_sp <- accident_data
+coordinates(accident_data_sp) <- c("longitud", "latitude")
+proj4string(accident_data_sp) <- CRS(proj4string(denver_tracts))
+leaflet() %>%
+  addProviderTiles("Thunderforest.Transport") %>%
+  addPolygons(data = denver_tracts, popup = polygon_popup,
+              color = "#000000", fillColor = "969696", 
+              weight = 2) %>%
+  addCircleMarkers(data = accident_data_sp, radius = 2,
+                   popup = popup_info, opacity = 0.9,
+                   color = pal(accident_data$drunk_dr)) %>%
+  addLegend(pal = pal, values = accident_data$drunk_dr, opacity = 0.9)
+```
+
+## Adding polygons
+
+```{r echo = FALSE}
+polygon_popup <- paste0("Tract ID:  ", 
+                        denver_tracts@data$NAME)
+accident_data_sp <- accident_data
+coordinates(accident_data_sp) <- c("longitud", "latitude")
+proj4string(accident_data_sp) <- CRS(proj4string(denver_tracts))
+leaflet() %>%
+  addProviderTiles("Thunderforest.Transport") %>%
+  addPolygons(data = denver_tracts, popup = polygon_popup,
+              color = "#000000", fillColor = "969696", 
+              weight = 2) %>%
+  addCircleMarkers(data = accident_data_sp, radius = 2,
+                   popup = popup_info, opacity = 0.9,
+                   color = pal(accident_data$drunk_dr)) %>%
+  addLegend(pal = pal, values = accident_data$drunk_dr, opacity = 0.9)
+```
+
+## Adding polygons
+
+You can add the ability for the user to pick which layers to see using `addLayersControls`. 
+
+```{r eval = FALSE}
+leaflet() %>%
+  addProviderTiles("Thunderforest.Transport", group = "base map") %>%
+  addPolygons(data = denver_tracts, popup = polygon_popup,
+              color = "#000000", fillColor = "969696", 
+              weight = 2, group = "tracts") %>%
+  addCircleMarkers(data = accident_data_sp, radius = 2,
+                   popup = popup_info, opacity = 0.9,
+                   color = pal(accident_data$drunk_dr), 
+                   group = "accidents") %>%
+  addLegend(pal = pal, values = accident_data$drunk_dr, opacity = 0.9) %>%
+  addLayersControl(baseGroups = c("base map"), 
+                   overlayGroups = c("tracts", "accidents"))
+```
+
+## Adding polygons
+
+```{r echo = FALSE}
+leaflet() %>%
+  addProviderTiles("Thunderforest.Transport", group = "base map") %>%
+  addPolygons(data = denver_tracts, popup = polygon_popup,
+              color = "#000000", fillColor = "969696", 
+              weight = 2, group = "tracts") %>%
+  addCircleMarkers(data = accident_data_sp, radius = 2,
+                   popup = popup_info, opacity = 0.9,
+                   color = pal(accident_data$drunk_dr), 
+                   group = "accidents") %>%
+  addLegend(pal = pal, values = accident_data$drunk_dr, opacity = 0.9) %>%
+  addLayersControl(baseGroups = c("base map"), 
+                   overlayGroups = c("tracts", "accidents"))
+```
+
+## Find out more
+
+Here are some good tutorials for trying out other examples of `leaflet` in R:
+
+http://zevross.com/blog/2015/10/14/manipulating-and-mapping-us-census-data-in-r-using-the-acs-tigris-and-leaflet-packages-3/
+
+http://robinlovelace.net/r/2015/02/01/leaflet-r-package.html
+
+http://trendct.org/2015/06/26/tutorial-how-to-put-dots-on-a-leaflet-map-with-r/
