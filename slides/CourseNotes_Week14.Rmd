@@ -1,0 +1,498 @@
+---
+title: "R Packages"
+output: 
+  beamer_presentation:
+    theme: "Frankfurt"
+    colortheme: "seagull"
+    fonttheme: "structuresmallcapsserif"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(dplyr)
+```
+
+# Overview of R packages
+
+## What is an R package?
+
+- From [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html): "A directory of files which extend R".
+- Files bundled together using `tar` and compressed using `gzip`. The file extension is `.tar.gz`. These are the *source files* for the package, which then must be installed from this source code locally prior to use. 
+- Sometimes also called an *extension* of R.
+
+## What is an R package?
+
+Example R package:
+
+```{r echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
+knitr::include_graphics("../figures/weathermetrics_package.png")
+```
+
+## What is an R package?
+
+You can also have "binary packages" for a certain operating system. From [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html):
+
+> A binary package is "a zip file or tarball containing the files of an installed package which can be unpacked rather than installing from sources."
+
+## Motivation
+
+\begin{block}{Software development in biostatistics}
+\includegraphics[width = \textwidth]{../figures/JeffLeekQuote.png}
+\\ Source: Jeff Leek, Simply Statistics
+\end{block}
+
+## Motivation
+
+\begin{block}{Consider developing software when}
+\begin{itemize}
+\item You have developed a new method you want to share
+\item You have data you'd like to make publicly available 
+\item You find yourself doing the same task repeatedly 
+\end{itemize}
+\end{block}
+
+Why create an R package?
+
+- Share some functions broadly
+- Share some functions with a small group
+- Create a version of code for yourself that's more organized and easier to use
+    + Includes documentation (vignettes, help files)
+    + Function names linked to package namespace
+    + Once library is installed, can load easily
+    
+## NMMAPS package.
+
+\includegraphics[width = \textwidth]{../figures/NMMAPS.png} \\
+\small{Source: www.ihapss.jhsph.edu}
+
+## Contents of NMMAPS package
+
+\includegraphics[width = \textwidth]{../figures/NMMAPSPackageStructure}
+
+## Impact of NMMAPS package
+
+\begin{block}{Research impacts of NMMAPS package}
+\textit{Source: Barnett,
+  Huang, and Turner, ``Benefits of Publicly Available Data'', 
+  Epidemiology 2012}
+\begin{itemize}
+\item As of November 2011, 67 publications had been published using this
+data, with 1,781 citations to these papers 
+\item Research using NMMAPS has been used by the US EPA in creating
+  regulatory impact statements for air pollution (particulates and
+  ozone) 
+\item ``Thanks to NMMAPS, there is probably no other country in the
+  world with a greater understanding of the health effects of air
+  pollution and heat waves in its population.''
+\end{itemize}
+\end{block}
+
+## Sharing an R package
+
+If you want to share your R package, there are a number of ways you can do that:
+
+- CRAN
+- GitHub
+- [Bioconductor](https://www.bioconductor.org): "Bioconductor provides tools for the analysis and comprehension of high-throughput genomic data." (from the Bioconductor website.)
+- Other repositories
+    + Private(-ish) repositories: e.g., ROpenSci's repository (for more, see https://ropensci.org/blog/blog/2015/08/04/a-drat-repository-for-ropensci)
+    + `drat` repository: Make your own R package repository, including through GitHub pages. 
+- Compressed file: You can save a source tarball or binary package file with others without posting to a repository.
+
+## CRAN
+
+Sharing on CRAN: 
+
+- Traditional way to share an R package widely
+- Easiest way for others to get your package (`install.packages`)
+- Some barriers: 
+    + Size constraint on packages (5 MB)
+    + Must follow CRAN policies
+    + All packages must pass a submission process. This is not a guarantee that a package does what it says, just a check that required files are where they should be and that the package more or less doesn't break things. 
+
+## CRAN checks
+
+```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/trump_cran_checks.png")
+```
+
+## GitHub
+
+GitHub is becoming more and more common as a place to share R packages, both development packages that eventually are posted to CRAN and packages that are never submitted to CRAN. 
+
+- No restrictions / submission requirements
+- GitHub repository size restrictions (1 GB, no files over 100 MB) much larger than CRAN package size restrictions (5 MB)
+- GitHub packages can be installed using `install_github` from the `devtools` package
+    + Requires `devtools` package, which has some set-up requirements (`XCode` for Mac, `Rtools` for Windows)
+- Packages on CRAN cannot depend on packages available only on GitHub
+
+## Find out more
+
+To find out more about writing R packages, useful sources are: 
+
+- [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html): Guidelines for R packages from the R Core Team.
+- [R Packages](http://r-pkgs.had.co.nz) by Hadley Wickham
+- [R package development cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/06/devtools-cheatsheet.pdf)
+
+# Basic example package
+
+## `weathermetrics`
+
+```{r echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
+knitr::include_graphics("../figures/weathermetrics_cran.png")
+```
+
+## `weathermetrics`
+
+Key functions: 
+
+- `convert_temperature`: Convert between temperature metrics
+- `convert_precip`: Convert between precipitation metrics
+- `convert_wind_speed`: Convert between wind speed metrics
+- `heat.index`: Calculates heat index from air temperature and a measure of air moisture (dew point temperature or relative humidity)
+
+## Heat index
+
+\begin{figure}
+  \includegraphics[width = \textwidth]{../figures/TuscaloosaAL3}
+\end{figure}
+
+## Body-environment temperature exchange
+
+\begin{center}
+\small{Avenues of temperature exchange between the body and the environment.}
+\end{center}
+\vspace{-0.2cm}
+\begin{figure}
+\includegraphics[width = 0.8\textwidth]{../figures/HeatTransfer2.jpg}\\
+\footnotesize{Source: Koppe et al., 2003, adapted from Havenith, 2003}
+\end{figure}
+
+## Heat index as a measure of heat exposure
+
+\begin{figure}
+  \includegraphics[width = \textwidth]{../figures/heatindex.png}
+\end{figure}
+
+## Heat index algorithms
+
+\begin{figure}
+ \includegraphics[width = 0.95\textwidth]{../figures/HeatAlgorithms}
+\end{figure}
+
+## NWS heat index algorithm
+
+\vspace{-0.25cm}
+\begin{figure}
+  \includegraphics[width = 0.95\textwidth]{../figures/NWSWebApp}
+\end{figure}
+
+## Contents of weathermetrics package
+
+\includegraphics[width =
+4.5in]{../figures/WeathermetricsPackageStructure}
+
+## Convert from Celsius to Fahrenheit
+
+\begin{block}{Equation to convert from Celsius to Fahrenheit}
+\begin{equation*}
+T_F = \frac{9}{5} T_C + 32
+\end{equation*}
+\end{block} 
+
+```{r echo = 2}
+library(weathermetrics)
+celsius.to.fahrenheit
+```
+
+## Convert temperatures
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/convert_temperature_helpfile.png")
+```
+
+## NWS heat index algorithm
+
+\vspace{-0.25cm}
+\begin{figure}
+  \includegraphics[width = 0.5\textwidth]{../figures/NWSAlgorithm.pdf}
+\end{figure}
+
+## NWS heat index algorithm
+
+```{r}
+head(heat.index.algorithm, 10)
+```
+
+## NWS heat index algorithm
+
+```{r}
+data(suffolk)
+suffolk %>%
+  mutate(heat_index = heat.index(t = TemperatureF,
+                                 rh = Relative.Humidity)) %>%
+  slice(1:5)
+```
+
+# Elements of an R package
+
+## Basic elements
+
+R packages can include a number of different elements. We'll cover more of them in later classes. There are a few common elements, though. They can be split into two groups: things you edit directly, and things that are automatically written.
+
+Things you edit directly: 
+
+- DESCRIPTION file: The package's "Title page". Metadata on the package, including names and contacts of authors, package name, and description. This file also lists all the package *dependencies* (other packages with functions this package uses).
+- `R` folder: R code defining functions in the package. All code is included in one or more R scripts. If you use Roxygen for help documentation, all of that is also included in these files. 
+
+Things that are automatically written: 
+
+- `man` folder: Help documentation for each function. This files are automatically rendered if you use Roxygen. 
+- NAMESPACE file
+
+## DESCRIPTION file
+
+Required elements: 
+
+- Package: Name of the package
+- Version: Number of the current version of the package (e.g., 0.1.0)
+- Title: Short title for the package, in title case and in 65 characters or less. 
+- Author and Maintainer (these two sections can be replaced with Authors@R section that uses the `person` function)
+- Description: Paragraph describing the package
+- License: Name of the license the package is under. If necessary, you can also refer to a LICENSE file included as another file in the package. Only some licenses are easily accepted by CRAN.
+
+## DESCRIPTION file
+
+Other elements that are common but not required: 
+
+- Date: Release date of this version of the package.
+- Imports: A list of the packages on which this package depends: other packages with functions used by the code in this package. 
+- URL: If there is a webpage associated with the package, the address for it. Often, this is the web address of the package's GitHub repository.
+- BugReports: Where users can submit problems they've had. Often, the web address of the "Issues" page of the GitHub repository for the package. 
+
+## Package name
+
+The format requirements for a package name are, based on [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html):
+
+> "This should contain only (ASCII) letters, numbers and dot, have at least two characters and start with a letter and not end in a dot."
+
+Hadley Wickham's [additional guidelines](http://r-pkgs.had.co.nz/package.html): 
+
+- Make it easy to Google.
+- Make it all uppercase or all lower case
+- Base it on a word that's easy to remember, but then tweak the spelling to make it unique (and easier to Google).
+- Abbreviate.
+- Add an "r".
+
+## Package maintainer
+
+A package can have many authors, but only one maintainer. The maintainer is in charge of fixing any problems that come up with CRAN checks over time to keep the package on CRAN. The maintainer is also the person who will be emailed about bugs, etc., by other users.
+
+The package can have other authors, as well as people in other roles (e.g., contributor). See the helpfile for the `person` function for more on the codes used for different roles.
+
+## DESCRIPTION file
+
+```
+Package: weathermetrics
+Type: Package
+Title: Functions to Convert Between Weather Metrics
+Version: 1.2.2
+Date: 2016-05-19
+Authors@R: c(person("Brooke", "Anderson",
+    email = "brooke.anderson@colostate.edu",
+    role = c("aut", "cre")),
+    person("Roger", "Peng",
+    email = "rdpeng@gmail.com", role = c("aut")),
+    person("Joshua", "Ferreri",
+    email = "joshua.m.ferreri@gmail.com", role = c("aut")))
+Description: Functions to convert between weather metrics, 
+    including conversions for metrics of temperature, air 
+    moisture, wind speed, and precipitation. This package also 
+    includes functions to calculate the heat index from
+    air temperature and air moisture.
+```
+\small{(cont. on next slide)}
+
+## DESCRIPTION file
+
+```
+URL: https://github.com/geanders/weathermetrics/
+BugReports: https://github.com/geanders/weathermetrics/issues
+License: GPL-2
+LazyData: true
+RoxygenNote: 5.0.1
+Depends:
+    R (>= 2.10)
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
+```
+
+## R folder
+
+The `R` folder of the package includes: 
+
+- R scripts with code defining all functions for the package
+- Help documentation for each function (if using Roxygen)
+- Help documentation for the package data in "data.R"
+
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/weathermetrics_package.png")
+```
+
+## R folder
+
+You define functions in the R scripts just as you would anytime you want to define a function in R. For example, "temperature_conversions.R" includes the following code to define converting from Celsius to Fahrenheit:
+
+```{r eval = FALSE}
+celsius.to.fahrenheit <- function (T.celsius, round = 2) {
+    T.fahrenheit <- (9/5) * T.celsius + 32
+    T.fahrenheit <- round(T.fahrenheit, digits = round)
+    return(T.fahrenheit)
+}
+```
+
+Only exception: use `package::function` syntax to call functions from other packages (e.g., `dplyr::mutate()`).
+
+## R folder
+
+Using `roxygen2`, you put all information for the help files directly into a special type of code comments right before defining the function. 
+
+- Start each line with `#'`. 
+- To render into help files, use the `document` function from the `devtools` package.
+- This will write out help files in the `man` folder of the package. 
+- Use these comments to specify which functions should be *exported* from the package using the `@export` tag. This information will be used to render the NAMESPACE file for the package. 
+
+## R folder
+
+```
+#' Convert from Celsius to Fahrenheit.
+#'
+#' \code{celsius.to.fahrenheit} creates a numeric vector of 
+#'    temperatures in Fahrenheit from a numeric vector of 
+#'    temperatures in Celsius.
+#'
+#' @param T.celsius Numeric vector of temperatures in Celsius.
+#' @inheritParams convert_temperature
+#'
+#' @return A numeric vector of temperature values in Fahrenheit.
+#'
+#' @note Equations are from the source code for the US National 
+#'     Weather Service's
+#'     \href{http://www.wpc.ncep.noaa.gov/html/heatindex.shtml}
+#'      {online heat index calculator}.
+```
+\small{(cont. on next slide)}
+
+## R folder
+
+```
+#' @author
+#' Brooke Anderson \email{brooke.anderson@@colostate.edu},
+#' Roger Peng \email{rdpeng@@gmail.com}
+#'
+#' @seealso \code{\link{fahrenheit.to.celsius}}
+#'
+#' @examples # Convert from Celsius to Fahrenheit.
+#' data(lyon)
+#' lyon$TemperatureF <- celsius.to.fahrenheit(lyon$TemperatureC)
+#' lyon
+#'
+#' @export
+```
+
+## R folder
+
+Once you run `document`, this is all rendered as a help file. Now, when you run `?celsius.to.fahrenheit`, you'll get: 
+
+```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/c_to_f_helpfile.png")
+```
+
+## R folder
+
+The start of the NAMESPACE fill will be automatically written when you run `document` and will look like: 
+
+```
+# Generated by roxygen2: do not edit by hand
+
+export(celsius.to.fahrenheit)
+export(celsius.to.kelvin)
+export(convert_precip)
+export(convert_temperature)
+export(convert_wind_speed)
+export(dewpoint.to.humidity)
+```
+
+## R folder
+
+Some of the most common tags you'll use for `roxygen2` are: 
+
+- `@param`: Use to explain parameters for the function.
+- `@inheritParam`: If you have already explained a parameter for the help file 
+    for a different function, you can use this tag to use the same 
+    definition for this function.
+- `@return`: Explanation of the object returned by the function. 
+- `@examples`: One or more examples of using the function. 
+- `@export`: Export the function, so it's available when users load the package.
+
+By default, the first line in the `roxygen2` comments is the function title and the next section is the function description. For more on `roxygen2`, see: https://cran.r-project.org/web/packages/roxygen2/vignettes/roxygen2.html
+
+## R folder
+
+If you are automating helpfile documentation, you must also include an R script with the doumentation for each data set that comes with the package. 
+
+This file will include `roxygen2` documentation for each data set, followed by the name of the dataset in quotation marks.
+
+As an example, the next slide has the documentation in the "data.R" file for the "lyon" data set.
+
+## R folder
+
+```
+#' Weather in Lyon, France
+#'
+#' Daily values of mean temperature (Celsius) and mean dew 
+#' point temperature (Celsius) for the week of June 18, 2000,
+#' in Lyon, France.
+#'
+#' @source \href{http://www.wunderground.com/}
+#'              {Weather Underground}
+#'
+#' @format A data frame with columns:
+#'    \describe{
+#'    \item{Date}{Date of weather observation}
+#'    \item{TemperatureC}{Daily mean temperature in Celsius}
+#'    \item{DewpointC}{Daily mean dewpoint temperature in 
+#'                     Celsius}
+#'    }
+"lyon"
+```
+
+## Other common elements
+
+Some other elements, while not required, are common in many R packages: 
+
+- `data` folder: R objects with data that goes with the package. Often, these are small-ish data files for examples of how to use package functions. However, more "scientific" packages may include more substantive data in this folder. Some packages are created solely to deliver data. 
+- `vignettes` folder: One or more tutorials on why the package was created and how to use it. These can be written in RMarkdown. 
+- NEWS file: Information about changes in later versions of the package. 
+- .Rbuildignore file: Lists files and directories that should not be included in the package build
+- LICENSE file: With certain licenses (MIT is a common example), you need a separate LICENSE file, to supplement the license information in the DESCRIPTION file. 
+
+## Less common elements
+
+- `src` folder: Sources and headers for compiled code (e.g., C++).
+- `demo` folder: R scripts that give demonstrations of using the package. 
+- `tests` folder: Test code for the package. Currently, the best way to create tests for a package are with the `testthat` package. 
+- `inst` folder: Various and sundries, including a CITATION file to tell others how to cite your package and executable scripts not in R (e.g., shell scripts, Perl or Python code).
+
+
+# Creating an R package
+
+## Creating an R package
+
+Invaluable tools when creating an R package: 
+
+- The `devtools` package: Various utility functions that help you develop an R package.
+- *R Packages* by Hadley Wickham. Available from O'Reilly or free online at http://r-pkgs.had.co.nz
+- GitHub: When in doubt of how to structure something, look for examples in code for other R packages. GitHub is currently the easiest way to browse through the code for many R packages. 
+
