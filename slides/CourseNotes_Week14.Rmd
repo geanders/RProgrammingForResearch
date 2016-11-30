@@ -500,3 +500,80 @@ Invaluable tools when creating an R package:
 - *R Packages* by Hadley Wickham. Available from O'Reilly or free online at http://r-pkgs.had.co.nz
 - GitHub: When in doubt of how to structure something, look for examples in code for other R packages. GitHub is currently the easiest way to browse through the code for many R packages. 
 
+## Initializing an R package
+
+The easiest way to start a new R package project is through R Studio. Go to "File" -> "New Project" -> "Empty Directory". One of the options is "R Package". 
+
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/initialize_r_package.png")
+```
+
+## Initializing an R package
+
+You'll need to specify where you want to save the directory and the package name. You can also select if you'd like to use git (you'll still need to set-up and sync with GitHub if you want to post the package to GitHub).
+
+```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/package_setup.png")
+```
+
+## Initializing an R package
+
+Once you choose this, R Studio will create a new "skeleton" directory for you, with some of the default files and directories you need (kind of like how it starts with a template for RMarkdown documents). You can add and edit files within this structure to create your package. 
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/example_package_skeleton.png")
+```
+
+## Working on an R package
+
+Once you set-up the package, most of your work will be in writing the code for the package's functions and creating documentation. The `devtools` package has some functions that are very useful for this process: 
+
+- `load_all`: Loads the last saved version of all functions in the package. You can use this to change and check functions without rebuilding the whole package and restarting R each time. 
+- `document`: Parse all `roxygen2` comments to create the helpfiles in the `man` directory and the NAMESPACE file. As soon as you've loaded an documented the last saved version of your package, you can access the help file for each function using `?`, as with other R functions. 
+- Control-. : This is a keyboard shortcut rather than a function, but it allows you to search the package for the code where a certain function is defined. As a package grows larger, this functionality is very useful for navigating the R code in the package. 
+
+## Working on an R package
+
+The `devtools` package also has some functions that set up useful infrastructure for the package. For example, if you want to include a vignette written in RMarkdown, you need to do a few things: 
+
+1. Add a new folder called `vignettes`. 
+2. Add `inst/doc` to the `.gitignore` file. (The built pdf is written into this folder, but typically you don't want to include rendered files in git, just the code with which they were generated.)
+3. Make a few changes to the DESCRIPTION file. 
+
+Rather than having to remember how to do all this yourself, you can use the `use_vignette` function, which adds this infrastructure to the package at once. 
+
+## Working on an R package
+
+Typically, you will only use these infrastructure calls once per package. Other useful infrastructure functions are: 
+
+- `use_cran_comments`: Add a text file with comments for the people who check the package when it's submitted to CRAN. 
+- `use_readme_rmd`: Create an RMarkdown "README" file that you can use to provide information on the package (similar to the vignette, but this will show up on the first page of the GitHub repo if you have one for the package).
+- `use_news_md`: Create a text file to provide details of changes in later package versions. 
+- `use_travis`: Add the infrastructure needed to check the package on Travis when you push to GitHub. 
+- `use_rcpp`: Add an `src` directory and other infrastructure needed to use C++ code within the package. 
+- `use_testthat`: Add infrastructure for using package tests based on `testthat`. 
+
+## Working on an R package
+
+There are a few infrastructure-type functions you might use more often: 
+
+- `use_data`: Save data currently in an R object in your working session to use as data within the package. This function saves that data as an `.rda` file in the `data` folder. 
+- `use_build_ignore`: Add a file or files to the ".Rbuildignore" file, so they won't cause an error with CRAN checks (one of the checks is that there aren't any unrecognized files or directories in the top level of the package). 
+- `use_package`: Add a package that your package depends on to the DESCRIPTION file. 
+
+## Finalizing an R package
+
+Once you have included all the functions and documentation for a package, there are a few more steps before that version is ready to be shared: 
+
+- Create a vignette and / or README file to explain how others can use the package. 
+- Run the package through CRAN checks and resolve all ERRORS, WARNINGS, and NOTES. This is required if you are submitting to CRAN. It's usually a good idea and improves the package even if you're not. 
+- Change the version number to a stable version (typically, development versions end in .9000, like 0.0.0.9000). When you have a stable version of the package, you'll change this to a three-part number (e.g., 0.1.0).
+
+\small{(cont. on next slide)}
+
+## Finalizing an R package
+
+- Build the package locally. For this, you can use the "Build" tab in the upper right RStudio tab (it will show up once you have a package project open).
+- Build the package on other systems. You can use Travis (Unix / Linux) and `build_win` (Windows) to do this for those systems. 
+- Create a pdf of all help files to proofread. To do this, open a bash shell in the parent directory of the package and run `R CMD Rd2pdf <packagename>` (for example, if the package were `csupackage`, you'd run `R CMD Rd2pdf csupackage`). This will create a pdf in that directory with all helpfiles for all functions. 
+- If you want the package to be on CRAN, submit to CRAN. There is a function called `submit_cran` that will build the package and submit it to CRAN.
