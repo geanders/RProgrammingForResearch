@@ -44,7 +44,7 @@ For example, to read in three lines from the hurricane tracking data, you can ru
 
 ```{r}
 tracks_url <- paste0("http://www.nhc.noaa.gov/data/hurdat/",
-                     "hurdat2-1851-2015-070616.txt")
+                     "hurdat2-1851-2016-041117.txt")
 hurr_tracks <- readLines(tracks_url, n = 3)
 hurr_tracks
 ```
@@ -70,7 +70,7 @@ You can use this to create a list where each element of the list has the split-u
 
 ```{r}
 tracks_url <- paste0("http://www.nhc.noaa.gov/data/hurdat/",
-                     "hurdat2-1851-2015-070616.txt")
+                     "hurdat2-1851-2016-041117.txt")
 hurr_tracks <- readLines(tracks_url)
 length(hurr_tracks)
 ```
@@ -757,12 +757,14 @@ ftp://cran.r-project.org/pub/R/web/packages/rvest/vignettes/selectorgadget.html
 
 ### Scraping multiple pages
 
-```{r message = FALSE}
+[Need to update this-- Kitchen has changed their website]
+
+```{r message = FALSE, eval = FALSE}
 cities <- c("denver", "boulder", "fort-collins")
 
 kitchen_addresses <- c()
 for(i in 1:length(cities)){
-  restaurant_url <- paste0("http://thekitchen.com/the-kitchen-",
+  restaurant_url <- paste0("http://thekitchenbistros.com/the-kitchen-",
                            cities[i])
   restaurant_page <- read_html(restaurant_url)
   address <- restaurant_page %>%
@@ -772,13 +774,13 @@ for(i in 1:length(cities)){
 kitchen_addresses
 ```
 
-```{r message = FALSE}
+```{r message = FALSE, eval = FALSE}
 library(ggmap)
 library(stringr)
 kitchen_latlons <- geocode(kitchen_addresses)
 ```
 
-```{r message = FALSE}
+```{r message = FALSE, eval = FALSE}
 for(i in 1:length(cities)){
   city_map <- get_map(paste(gsub("-", " ", cities[i]),
                             "colorado"),
