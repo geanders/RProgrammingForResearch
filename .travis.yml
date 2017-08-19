@@ -1,10 +1,16 @@
 language: r
 cache: packages
+sudo: true
 pandoc_version: 1.19.2.1
 
 env:
   global:
   - secure: Vn/vEBM7epyhWbBBiM50D2F7clFmDaeASaz3hqOqNyOvEz7s4kWyAm/rcwFLPL6sGIl0g2+eXaAMq9faQxoO92/dnob0V1DsrxfHBwJq1j10s4YCVpUDfpvFxDdwIcB251fvsvTAVMU9hiGvYj0070zHuglQe6Fhm0FXUwJO2XH+ChDdotnGPS1I02Io/p5GBLvq1BaADrBwSF1WqahAHNiZ5zqLWMdnJjbPLI763uEq2kjI3rKhHIZxaTWU4iWGj8kkAQLJj1IhNwIbHhvcSfNAvxBq3K6raZFdJ0FiLSzT4D8bcrcfGqec77PIhH4wUnaNwRHD1E0k4fXe1BpNG0xvLuUvQMSiZ2PFutYYIKQyJHVHwYlv6XOo95m8u4k+tN9+vjpNyLad9SIxhB2qcJshyhsp5ZtwfXnhPljKC7L6CvuIc3QCB5tXpj/ZDO8FgXIUQ5Dear2Tqwcbm33+Xft1hTHqebEalSAB63N9fZV4dh/1pKF7gahRylIfSrQFGtZcLJ8j3TE4TSMdI8jTMVPJWhvV3wG3TxF92EPrYup9iUTXU9Kyl73euOR+tG8bKbiuX0sEZZKCDRgwr+uT8grz0GaHgZNTqzVuCTRXWB2jl8s404U3Rc/R7mVyBzG08/WKXJrEuLBRYpWexOEzdeFhg+bUpIUujs1C8fZUOXM=
+
+before_install:
+  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
+  - sudo apt-get --yes --force-yes update -qq
+  - sudo apt-get install --yes udunits-bin libproj-dev libgeos-dev libgdal-dev libgdal1-dev libudunits2-dev
 
 before_script:
   - chmod +x ./_build.sh
