@@ -182,9 +182,29 @@ letterToNumber(fedex_number)
 
 ## Alternative package::function notation
 
+The `library` function is the most common way you'll access functions from R packages, but it's not the only way to do this. There is another type of notation that will allow you to use any external function from any package you have installed on your computer: the `package::function` notation.
+
+You can call functions by specifying the package name, a double colon, and then the function name you want to use from that package. For example:
+
+```{r}
+phonenumber::letterToNumber(fedex_number)
+```
+
 ## Alternative package::function notation
 
-[Using tab notation]
+The `package::function` notation is not typically used because it substantially increases how much you have to type in your code. 
+
+However, there can be cases where a function name is ambiguous. For example, you might want to use functions from two different packages that have the same name. In this case, using the `package::function` notation makes it crystal clear which function you mean.
+
+In practice, this problem is most likely to come up when you've loaded both `plyr` and `dplyr`, which share several function names and are both popular packages.
+
+## Alternative package::function notation
+
+There is one useful trick that you can do with the `package::function` notation. 
+
+RStudio has tab complemention, which means that once you start typing an object name or function, if you press the Tab key, RStudio will give you suggestions for how you can finish the name. 
+
+If you want to scroll through the names of all the external functions in a package, you can do so by typing something like `?phonenumber::` in the console (don't press Return) and then pressing the Tab key.
 
 ## Package vignettes
 
@@ -548,13 +568,44 @@ Bravo <- c("Bob")
 c(Alpha, Bravo)
 ```
 
+# Working in R Studio
 
 ## R working session
 
-## Script files versus the R console
+## R console versus R scripts
+
+In R studio, you will have one pane called "Console". The console lets you enter R commands one at a time at the "caret" (>) prompt. Any objects you define at the R console will be available to you for the rest of your R working session. 
+
+The console can be great for quick functions to explore the data. However, for most data analysis work you'll want to use a script, so you can save all the code you used for the analysis. This improves the *reproducibility* of your analysis.
+
+## R scripts
+
+RStudio has one pane that shows any R scripts you have open. If you'd like to create new R scripts, you can do that in RStudio with the following steps:
+
+- Open a new script file in RStudio: `File` -> `New File` -> `R Script`.
+- To run code from an R script file in RStudio, you can use the `Run` button (or `Command-R`). It will run whatever's on your cursor line or whatever's highlighted.
+- To run the whole script, use `source`. 
+- Save scripts using the extension `.R`
+
+## R scripts
+
+```{r echo = FALSE, fig.align="center", out.width= "300pt"}
+knitr::include_graphics("../figures/ExampleOfRScript.jpg")
+```
+
+## Comment characters
+
+Sometimes, you'll want to include notes in your code. You can do this in all programming languages by using a *comment character* to start the line with your comment. 
+
+In R, the comment character is the hash symbol, `#`. R will skip any line that starts with `#` in a script.
+
+```{r}
+# Don't print this.
+"But print this"
+```
 
 ## In-Course Exercises
 
-We'll take a break now to get do some more of this week's in-course exercise. You can find all the instructions on the online coursebook (https://geanders.github.io/RProgrammingForResearch/r-preliminaries.html). 
+We'll take a break now to finish this week's in-course exercise. You can find all the instructions on the online coursebook (https://geanders.github.io/RProgrammingForResearch/r-preliminaries.html). 
 
 Get together with your group members and do Sections [x] through [x] of the In-Course Exercise for Week #1 ("R Preliminaries").
