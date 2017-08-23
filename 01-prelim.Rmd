@@ -460,9 +460,100 @@ If you have extra time:
 * Check out [the related article](http://fivethirtyeight.com/datalab/every-guest-jon-stewart-ever-had-on-the-daily-show/) on FiveThirtyEight. What are some specific questions they used this data to answer for this article?
 * Who is Nate Silver?
 
+### Manually creating vectors and a dataframe
+
+Start by manually creating some vectors and data frames with a small subset of this data. 
+* Use the concatenate function (`c`) to create a vector "from scratch" with the names of the five guests to appear on the show (these could be the first five guests, or you could also randomly pick five guests). Assign this vector to an object named `five_guests`. What class (numeric or character) do you think this vector will be? Will you need to use quotation marks for each element you add to the vector?
+* Use square bracket indexing to print out the following subsets of this vector (you'll have one R call per subset):
+    + The first guest in the vector
+    + The third and fifth guests
+    + The second through fourth guests
+* Create a new vector called `first_guest` with just the first set, using the square bracket indexing you used in the previous step. 
+* In the same way, create a vector with the year of each of these guests' appearances. Assign this vector to an object named `appearance_year`. What class (numeric or character) do you think this vector will be? Will you need to use quotation marks for each element you add to the vector?
+* Use the `class` function to determine the classes (e.g., numeric, character) of each of the vectors you just created.
+* Combine these two vectors to create a dataframe named `guest_list`. For the columns, use the same column names used in the original, raw data for the guest names and appearance year. Print out this dataframe at the R console to make sure it looks like you thought it would.
+* Use square bracket indexing to print out the following subsets of this dataframe (you'll have one R call per subset):
+    + The appearance year of the first guest
+    + Names of the third through fifth guests
+    + Names of all guests
+    + Both names and appearance years of the first and third guests
+* The `str` function can be used to figure out the structure of a dataframe. Run this command on the `guest_list` dataframe you created. What information does this give you? Use the helpfile for `str` to help you figure this out (which you can access by running `?str`). Do you see anything that surprises you?
+* Use the `ls` function to list all the objects you currently have defined in your R session. Compare this list to the "Environment" pane in RStudio.
+
+Example R code:
+
+```{r eval = FALSE}
+# I picked five random guests from throughout the dataset. The guests you pick will 
+# likely be different.
+
+# Create a vector with the names of five guests
+five_guests <- c("Miss Piggy", "Stanley Tucci", "Kermit the Frog",
+                 "Hank Azaria", "Al Gore")
+
+# Use square-bracket indexing to print out some subsets of the data
+five_guests[1]
+five_guests[c(3, 5)]
+five_guests[2:4]
+
+# Save just the first guest in a separate object
+first_guest <- five_guests[1]
+first_guest
+
+# Create a vector with the year of the appearance of each guest
+appearance_year <- c(1999, 2000, 2001, 2001, 2002)
+
+# Figure out the classes of the two vectors you just created
+class(five_guests)
+class(appearance_year)
+
+# Create the data frame, then print it out to make sure it looks like you thought
+# it would
+guest_list <- data.frame(Raw_Guest_List = five_guests,
+                         YEAR = appearance_year)
+guest_list
+
+# Use square bracket indexing to print subsets of the data frame
+guest_list[1, 2]
+guest_list[3:5, 1]
+guest_list[ , 1]
+guest_list[c(1, 3), ]
+
+# Use `str` to check out the structure of the data frame you created
+str(guest_list)
+```
+
+### Installing and using a package
+
+The `stringr` package includes a number of functions that make it easier to work with character strings in R. In particular, it includes functions to change the capitalization of words in character stings. Here, you'll install and load this package and then use it to work with the `five_guests` vector we created in the last section. 
+
+* If you have not already installed the `stringr` package, install it from CRAN.
+* Load the `stringr` package in your current R session, so you will be able to use its functions. 
+* Check if the package has a vignette. If so, check out out that vignette. 
+* See if you can use the `str_to_lower` function from the `stringr` package to convert all the names in your `five_guests` vector to lowercase. 
+* See if you can find a function in the `stringr` package that you can use to convert all the names in your `five_guests` vector to uppercase. (Hint: At the R console, try typing `?stringr::` and then the Tab key.)
+
+Example R code: 
+
+```{r eval = FALSE}
+# If you need to, install the package from CRAN
+install.packages("stringr")
+
+# Load the package into your current R session
+library(stringr)
+
+# Open the package's vignette
+vignette("stringr")
+
+# Convert the `five_guests` strings to lowercase
+str_to_lower(five_guests)
+
+# Convert the `five_guests` strings to uppercase
+str_to_upper(five_guests)
+```
+
 ### Getting the data onto your computer
 
-First, download the data from GitHub onto your computer. Make a directory (folder) on your computer specifically for this course (I strongly recommend that you put it somewhere where the file path will not have any spaces in it-- for example, putting it in your home directory, under the name "R_Prog_Course" would be great. Putting it in a directory called "R Prog Course" would not.). Put the *Daily Show* data in your directory for this course. 
+Next, we will work with the whole dataset. Download the data from GitHub onto your computer. Make a directory (folder) on your computer specifically for this course (I strongly recommend that you put it somewhere where the file path will not have any spaces in it-- for example, putting it in your home directory, under the name "R_Prog_Course" would be great. Putting it in a directory called "R Prog Course" would not.). Put the *Daily Show* data in your directory for this course. 
 
 **Take the following steps to get the data onto your computer**
 
