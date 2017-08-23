@@ -51,37 +51,35 @@ In practice, this means that, once you are familiar with the software, you can d
 
 It also means that you can build your own software on top of existing R software and its extensions. I explain a bit more about R packages a bit later, but this open-source nature of R (and other languages, including Python) has created a large community of people worldwide who develop and share extensions to R. As a result, you can pull in packages that let you do all kinds of things in R, like visualizing Tweets, cleaning up accelerometer data, analyzing complex surveys, fitting maching learning models, and a wealth of other cool things. 
 
+> "Despite its name, open-source software is less vulnerable to hacking than the secret, black box systems like those being used in polling places now. That’s because anyone can see how open-source systems operate. Bugs can be spotted and remedied, deterring those who would attempt attacks. This makes them much more secure than closed-source models like Microsoft’s, which only Microsoft employees can get into to fix." -- [Woolsey and Fox. *To Protect Voting, Use Open-Source Software.* New York Times. August 3, 2017.](https://www.nytimes.com/2017/08/03/opinion/open-source-software-hacker-voting.html?mcubz=3)
+
+You can download the latest version of R from [CRAN](https://cran.r-project.org). Be sure to select the distribution for your type of computer system. R is updated occasionally; you should plan to re-install R at least once a year, to make sure you're working with one of the newer versions. Check your current R version (one way is by running `sessionInfo()` at the R console) to make sure you're not using an outdated version of R. Defaults should be fine for everything.
+
 ### What is RStudio?
 
 To get the R software, you'll [download R](https://www.r-project.org) from the R Project for Statistical Computing. This is enough for you to use R on your own computer. However, I would suggest one additional, free piece of software to improve your experience while working with R, RStudio.
 
 RStudio is an integrated development environment (IDE) for R. This basically means that it provides you an interface for running R and coding in R, with a lot of nice extras that will make your life easier. 
 
-You download RStudio separately from R-- you'll want to download and install R itself first, and then you can [download RStudio](https://www.rstudio.com/products/rstudio/download2/). You want the Desktop version with the free license. 
+You download RStudio separately from R-- you'll want to download and install R itself first, and then you can [download RStudio](https://www.rstudio.com/products/rstudio/download2/). You want the Desktop version with the free license. Defaults should be fine for everything. 
 
 The company that develops this IDE is a fantastic contributer to the global R community. RStudio currently:
 
+RStudio (the company) is a leader in the R community. Currently, the company:
+
 - Develops and freely provides the RStudio IDE
-- Provides excellent resources for learning and using R (cheatsheets, )
+- Provides excellent resources for learning and using R (e.g., cheatsheets, free online books)
 - Is producing some of the most-used R packages
 - Employs some of the top people in R development
+- Is a key member of The R Consortium (others include Microsoft, IBM, and Google)
 
 R has been advancing by leaps in bounds in terms of what it can do and the elegance with which it does it, in large part because of the enormous contributions of people involved with RStudio.
-
-### Setting up
-
-If do not already have them, you will need to download and install both R and RStudio. 
-
-- Go to [CRAN](https://cran.r-project.org) and download the latest version of R for your system. Install.
-- Go to the [RStudio download page](https://www.rstudio.com/products/rstudio/download/) and download the latest version of RStudio for your system. Install. 
-
-Defaults should be fine for everything when you install both R and RStudio. You will want the latest stable version, rather than the development version, for this course.
 
 ## The "package" system
 
 ### R packages
 
-Your original download of R is only a starting point. To me, this is a bit like the toy train set that my son was obsessed with for a while. You first buy a very basic set that looks something like Figure \@ref(fig:toy-train-basic).
+Your original download of R is only a starting point. You can expand functionality of R with \textit{packages}. To me, this is a bit like the toy train set that my son was obsessed with for a while. You first buy a very basic set that looks something like Figure \@ref(fig:toy-train-basic).
 
 ```{r toy-train-basic, echo = FALSE, out.width = "400pt", fig.align = "center", fig.cap = "The toy version of base R."}
 knitr::include_graphics("figures/TrainBasic.JPG")
@@ -93,11 +91,11 @@ To take full advantage of R, you'll want to add on packages. In the case of the 
 knitr::include_graphics("figures/TrainComplex.JPG")
 ```
 
-The main source for installing packages for R remains the Comprehensive R Archive Network, or [CRAN](https://cran.r-project.org). However, [GitHub](https://github.com) is growing in popularity, especially for packages that are still in development. You can also create and share packages among your collaborators or co-workers, without ever posting them publicly.
+Each package is basically a bundle of extra R functions. You can get these "add-on" packages in a number of ways. The main source for installing packages for R remains the Comprehensive R Archive Network, or [CRAN](https://cran.r-project.org). However, [GitHub](https://github.com) is growing in popularity, especially for packages that are still in development. You can also create and share packages among your collaborators or co-workers, without ever posting them publicly. In the "Advanced" section of this course, you will learn how to write your own R package.
 
 ### Installing from CRAN
 
-The most popular place from which to get packages is currently CRAN. You can install packages from CRAN using R code. For example, telephone keypads include letters for each number (Figure \@ref(fig:phone-keypad)), which allow companies to have "named" phone numbers that are easier for people to remember, like 1-800-GO-FEDEX and 1-800-FLOWERS.
+The most popular place from which to get packages is currently CRAN, which has over 10,000 R packages available. You can install packages from CRAN using R code, with the `install.packages` function. For example, telephone keypads include letters for each number (Figure \@ref(fig:phone-keypad)), which allow companies to have "named" phone numbers that are easier for people to remember, like 1-800-GO-FEDEX and 1-800-FLOWERS.
 
 ```{r phone-keypad, echo = FALSE, out.width = "150pt", fig.align = "center", fig.cap="Telephone keypad with letters corresponding to each number."}
 knitr::include_graphics("figures/telephone_keypad.png")
@@ -111,9 +109,18 @@ install.packages("phonenumber")
 
 This downloads the package from CRAN and saves it in a special location on your computer where R can load it when you're ready to use it.
 
+Just like R itself, packages often evolve and are updated by their maintainers. You should update your packages as new versions come out. Typically, you have to reinstall packages when you update your version of R, so this is a good chance to get the most up-to-date version of the packages you use.
+
+```{r}
+library(fortunes)
+fortune("pizza")
+```
+
 ### Loading an installed package
 
-Once you have installed a package, it will be saved to your computer, but you won't be able to access it's functions until you load it in your R session. You can load a package in an R session using the `library` function, with the package name inside the parentheses. 
+When you open RStudio, unless you reload the history of a previous R session (which we typically **do not** recommend), you will start your work in a "fresh" R session. This means that, once you open RStudio, you will need to run the code to load any packages, define any objects, and read in any data that you will need for analysis in that session.
+
+Once you have installed a package, it will be saved to your computer. However, you won't be able to access its functions within an R session until you load it in that R session. Loading a package essentially makes all of the package's functions available to you. You can load a package in an R session using the `library` function, with the package name inside the parentheses. 
 
 ```{r messages = FALSE, warnings = FALSE, results = FALSE}
 library(phonenumber)
@@ -125,7 +132,7 @@ One thing that people often find confusing when they start using R is knowing wh
 One thing that makes this rule confusing is that there are a few cases in R where you really should (by this rule) use quotation marks, but the function is coded to let you be lazy and get away without them. One example is the `library` function. In the above code, you want to literally load the package "phonenumber", rather than load whatever character string is saved in the object named `phonenumber`. However, `library` is one of the functions where you can be lazy and skip the quotation marks, and it will still load "phonenumber" for you (although, if you want, this function also works if you follow the rule and call `library("phonenumber")` instead).
 ```
 
-Once a package is loaded, you can use all its exported (i.e., public) functions by calling them directly. For example, the `phonenumber` has a function called `letterToNumber` that converts a character string to a number. Once you've loaded `phonenumber` using `library`, you can use this function in your R session:
+Once a package is loaded, you can use all its exported (i.e., public) functions by calling them directly. For example, the `phonenumber` has a function called `letterToNumber` that converts a character string to a number. If you have not loaded the `phonenumber` package in your current R session and try to use this function, you will get an error. However, once you've loaded `phonenumber` using the `library` function, you can use this function in your R session:
 
 ```{r}
 fedex_number <- "GoFedEx"
@@ -134,6 +141,16 @@ letterToNumber(fedex_number)
 
 ```{block, type = "rmdnote"}
 R vectors can have several different *classes*. One common class is the character class, which is the class of the character string we're using here ("GoFedEx"). You'll always put character strings in quotation marks. Another key class is numeric (numbers). Later in the course, we'll introduce other classes that vectors can have, including factors and dates.
+```
+
+If you are using a package in academic research, you should cite it, especially if it implements an algorithm or method that is not standard. You can use the `citation` function to get the information you need about how to cite a package: 
+
+```{r}
+citation("phonenumber")
+```
+
+```{block, type = "rmdnote"}
+We've talked here about loading packages using the `library` function to access their functions. However, this is not the only way to access the package's functions. The syntax `[package name]::[function name]` (e.g., `phonenumber::letterToNumber(fedex)`) will allow you to use a function from a package you have installed on your computer, even if its package has not been loaded in the current R session. Typically, this syntax is not used much in data analysis scripts, in part because it makes the code much longer. However, you will occassionally see it used to distinguish between two functions from different packages that have the same name, as this format makes the desired function unambiguous. One example where this syntax often is needed is when both `plyr` and `dplyr` packages are loaded in an R session, since these share functions with the same name.
 ```
 
 ## Basic code conventions of R
@@ -151,7 +168,7 @@ The *gets arrow*, `<-`, is R's assignment operator. It takes whatever you've cre
 Sometimes, we'll show "generic" code in a code block, that doesn't actually work if you put it in R, but instead shows the generic structure of an R call. We'll try to always include a comment with any generic code, so you'll know not to try to run it in R.
 ```
 
-For example, if I just type `"GoFedEx"` at the R prompt, R will print that string back to me, but won't save it anywhere for me to use later:
+In R, objects are the way to save something to use again later in your code. If you do not assign something to an object with the gets arrow, R will just print it back out to you at the console. For example, if I just type `"GoFedEx"` at the R console, R will print that string back to me, but won't save it anywhere for me to use later:
 
 ```{r}
 "GoFedEx"
@@ -163,6 +180,44 @@ However, if I assign `"GoFedEx"` to an object using a gets arrow, I can print it
 fedex_number <- "GoFedEx"
 fedex_number
 letterToNumber(fedex_number)
+```
+
+You can assign the output of a function call directly to an object. For example, if you wanted to save the output of the `letterToNumber` call in the above code to its own object, you could do that with the call:
+
+```{r}
+fedex_actual_number <- letterToNumber(fedex_number)
+fedex_actual_number
+```
+
+If you give two objects the same name, the most recent definition will be used (i.e., objects can be overwritten by assigning new content to the same object name). For example: 
+
+```{r}
+a <- 1:10
+b <- LETTERS [1:3]
+
+a
+b
+
+a <- b
+a
+```
+
+If you would like to see all the R objects that are currently defined in your R session, you can do that with the `ls` command: 
+
+```{r}
+ls()
+```
+
+If you want to see the contents of an object, just print its name. For example, to see what we have stored in the `fedex_number` object, you can run: 
+
+```{r}
+fedex_number
+```
+
+In R, at heart everything is an object, so this printing even works for things like functions. For example, to see the source code with which the `letterToNumber` function is defined, you can run (notice the lack of parentheses): 
+
+```{r}
+letterToNumber
 ```
 
 ### Assignment operator wars: `<-` vs. `=`
@@ -178,6 +233,8 @@ one_to_ten
 one_to_ten = 1:10
 one_to_ten
 ```
+
+While the gets arrow takes two key strokes instead of one (like the equals sign), you can somewhat get around this limitation by using RStudio's keyboard shortcut for the gets arrow. This shortcut is Alt + - on Windows and Option + - on Macs. To see a full list of RStudio keyboard shortcuts, go to the "Help" tab in RStudio and select "Keyboard Shortcuts".
 
 ### Naming objects
 
@@ -204,23 +261,6 @@ Another good practice is to name objects after nouns (e.g., `fedex_number`) and 
 Sometimes, you'll want to create an object that you won't want to keep for very long. For example, you might want to create a small object to test some code, but you plan to not need the object again once you've done that. You may want to come up with some short, generic object names that you use for these kinds of objects, so that you'll know that you can delete them without problems when you want to clean up your R session. 
 
 There are all kinds of traditions for these placeholder variable names in computer science. `foo` and `bar` are two popular choices, as are, evidently, `xyzzy`, `spam`, `ham`, and `norf`. There are different placeholder names in different languages: for example, `toto`, `truc`, and `azerty` (French); and `pippo`, `pluto`, `paperino` (Disney character names; Italian). See the Wikipedia page on [metasyntactic variables](https://en.wikipedia.org/wiki/Metasyntactic_variable) to find out more.
-```
-
-### Commenting code
-
-Sometimes, you'll want to include notes in your code. You can do this in all programming languages by using a *comment character* to start the line with your comment. In R, the comment character is the hash symbol, `#`. R will skip any line that starts with `#` in a script. For example, if you run the following code: 
-
-```{r}
-# Don't print this.
-"But print this"
-```
-
-R will only print the second, uncommented line. 
-
-You can also use a comment in the middle of a line, to add a note on what you're doing in that line of the code. R will skip any part of the code from the hash symbol on. For example: 
-
-```{r}
-"Print this" ## But not this, it's a comment.
 ```
 
 ## R's most basic object types
@@ -443,6 +483,51 @@ head(daily_show, n = 3)
 
 ```{block, type='rmdtip'}
 Using the full parameter names for arguments can take a bit more time, since it requires more typing. However, RStudio helps you out with that by offering *code completion*. Once you start typing the first few letters of a parameter name within a function call, try pressing the tab key. All possible arguments that start with those letters should show up, and you can scroll through to pick the right one, or keep typing until the argument you want is atnthe top of the list of choices, and then press the tab key again.
+```
+
+## R scripts
+
+This is a good point in learning R for you to start putting your work in R scripts, rather than entering commands at the console. 
+
+An R script is a plain text file where you can save a series of R commands. You can save the script and open it up later to see (or re-do) what you did earlier, just like you could with something like a Word document when you're writing a paper. 
+
+To open a new R script in RStudio, go to the menu bar and select "File" -> "New File" -> "R Script". Alternatively, you can use the keyboard shortcut Command-Shift-N. Figure \@ref(fig:rscript) gives an example of an R script file opened in RStudio and points out some interesting elements.
+
+```{r rscript, echo = FALSE, fig.align="center", fig.cap = "Example of an R script in RStudio.", out.width= "600pt"}
+knitr::include_graphics("figures/ExampleOfRScript.jpg")
+```
+
+To save a script you're working on, you can click on the "Save" button (which looks like a floppy disk) at the top of your R script window in RStudio or use the keyboard shortcut Command-S. You should save R scripts using a ".R" file extension.
+
+Within the R script, you'll usually want to type your code so there's one command per line. If your command runs long, you can write a single call over multiple lines. It's unusual to put more than one command on a single line of a script file, but you can if you separate the commands with semicolons (`;`). These rules all correspond to how you can enter commands at the console. 
+
+Running R code from a script file is very easy in RStudio. You can use either the "Run" button or Command-Return, and any code that is selected (i.e., that you've highlighted with your cursor) will run at the console. You can use this functionality to run a single line of code, multiple lines of code, or even just part of a specific line of code. If no code is highlighted, then R will instead run all the code on the line with the cursor and then move the cursor down to the next line in the script. 
+
+You can also run all of the code in a script. To do this, use the "Source" button at the top of the script window. You can also run the entire script either from the console or from within another script by using the `source()` function, with the filename of the script you want to run as the argument. For example, to run all of the code in a file named "MyFile.R" that is saved in your current working directory, run:
+
+```{r, eval = FALSE}
+source("MyFile.R")
+```
+
+You can add comments into an R script to let others know (and remind yourself) what you're doing and why. To do this, use R's comment character, `#`. Any line on a script line that starts with `#` will not be read by R. You can also take advantage of commenting to comment out certain parts of code that you don't want to run at the moment.
+
+While it's generally best to write your R code in a script and run it from there rather than entering it interactively at the R console, there are some exceptions. A main example is when you're initially checking out a dataset, to make sure you've read it in correctly. It often makes more sense to run commands for this task, like `str()`, `head()`, `tail()`, and `summary()`, at the console. These are all examples of commands where you're trying to look at something about your data **right now**, rather than code that builds toward your analysis, or helps you read in or clean up your data.  
+
+### Commenting code
+
+Sometimes, you'll want to include notes in your code. You can do this in all programming languages by using a *comment character* to start the line with your comment. In R, the comment character is the hash symbol, `#`. R will skip any line that starts with `#` in a script. For example, if you run the following code: 
+
+```{r}
+# Don't print this.
+"But print this"
+```
+
+R will only print the second, uncommented line. 
+
+You can also use a comment in the middle of a line, to add a note on what you're doing in that line of the code. R will skip any part of the code from the hash symbol on. For example: 
+
+```{r}
+"Print this" ## But not this, it's a comment.
 ```
 
 ## In-course Exercise
