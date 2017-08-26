@@ -1,16 +1,24 @@
 # (PART) Part I: Preliminaries {-}
 
+```{r echo = FALSE}
+library(fortunes)
+```
+
 # R Preliminaries 
 
 [Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week1.pdf) a pdf of the lecture slides covering this topic.
 
 ## R and R Studio
 
+```{block, type = 'rmdtip'}
+One of the strengths of R is that many different programmers have developed and shared their own extensions of R, called "packages". We'll talk a lot more about packages later in this section, but we wanted to introduce one here. The `fortunes` package allows you to read some notable quotes about R. These quotes are often by leaders in the R community, and they were often originally from R help listservs. We'll use this package throughout the book to add in some of the R "fortunes" as topics they cover come up.
+```
+
 ### What is R?
 
 R in an open-source programming language that evolved from the S language. The S language was developed at Bell Labs in the 1970s, which is the same place (and about the same time) that the C programming language was developed. 
 
-R itself was developed in the 1990s--2000s at the University of Auckland. It is open-source software, freely and openly distributed under the GNU General License. The base version of R that you download when you install R on your computer includes the critical code for running R, but you can also install and run "packages" that people all over the world have developed to extend R. 
+R itself was developed in the 1990s--2000s at the University of Auckland. It is open-source software, freely and openly distributed under the GNU General Public License (GPL). The base version of R that you download when you install R on your computer includes the critical code for running R, but you can also install and run "packages" that people all over the world have developed to extend R. 
 
 With new developments, R is becoming more and more useful for a variety of programming tasks. However, where it really shines is in working with data and doing statistical analysis. R is currently popular in a number of fields, including:
 
@@ -18,12 +26,30 @@ With new developments, R is becoming more and more useful for a variety of progr
 - Machine learning
 - Data journalism / data analysis
 
+```{r}
+fortune("good data analyst")
+```
+
+```{r}
+fortune("most widely used piece of software for statistics")
+```
+
 R has some of the same strengths (quick and easy to code, interfaces well with other languages, easy to work interactively) and weaknesses (slower than compiled languages) as Python. For data-related tasks, R and Python are fairly neck-and-neck. However, R is still the first choice of statisticians in most fields, so I would argue that R has a an advantage if you want to have access to cutting-edge statistical methods.
 
 > "The best thing about R is that it was developed by statisticians. The worst thing about R is that... it was developed by statisticians."
 > -Bo Cowgill, Google, at the Bay Area R Users Group
 
+```{r}
+fortune("show it's as good as the others")
+```
+
 ### Open-source software
+
+> "Life is too short to run proprietary software." -- Bdale Garbee
+
+```{r}
+fortune("the price")
+```
 
 R is open-source software. Many other popular statistical programming languages, conversely, are proprietary. It's useful to know what it means for software to be "open-source", both conceptually and in terms of how you will be able to use and add to R in your own work. 
 
@@ -32,16 +58,34 @@ R is free, and it's tempting to think of open-source software just as "free soft
 - *Gratis*: Free as in beer
 - *Libre*: Free as in speech
 
-Open-source software software is the *libre* type of free. This means that, with software that is open-source, you can:
+```{r open-source-overview, echo = FALSE, out.width = "400pt", fig.align = "center", fig.cap = "An overview of how software can be each type of free (beer and speech). For software programs developed using a compiled programming language, the final product that you open on your computer is run by machine-readable binary code. A developer can give you this code for free (as in beer) without sharing any of the original source code with you. This means you can't dig in to figure out how the software works and how you can extend it. By contrast, open-source software (free as in speech) is software for which you have access to the human-readable code that was used as in input in creating the software binaries. With open-source code, you can figure out exactly how the program is coded."}
+knitr::include_graphics("figures/OpenSourceOverview.png")
+```
+
+Open-source software software is the *libre* type of free (Figure \@ref(fig:open-source-overview)). This means that, with software that is open-source, you can:
 
 - Access all of the code that makes up the software
 - Change the code as you'd like for your own applications
 - Build on the code with your own extensions
 - Share the software and its code, as well as your extensions, with others
 
+Popular open source languages for R and R packages include GPL and MIT.
+
+> “Making Linux GPL'd was definitely the best thing I ever did.” -- Linus Torvalds
+
 In practice, this means that, once you are familiar with the software, you can dig deeply into the code to figure out exactly how it's performing certain tasks. This can be useful for finding bugs and eliminating bugs, and also can help researchers figure out if there are any limitations in how the code works for their specific research. 
 
 It also means that you can build your own software on top of existing R software and its extensions. I explain a bit more about R packages a bit later, but this open-source nature of R (and other languages, including Python) has created a large community of people worldwide who develop and share extensions to R. As a result, you can pull in packages that let you do all kinds of things in R, like visualizing Tweets, cleaning up accelerometer data, analyzing complex surveys, fitting maching learning models, and a wealth of other cool things. 
+
+> "Despite its name, open-source software is less vulnerable to hacking than the secret, black box systems like those being used in polling places now. That’s because anyone can see how open-source systems operate. Bugs can be spotted and remedied, deterring those who would attempt attacks. This makes them much more secure than closed-source models like Microsoft’s, which only Microsoft employees can get into to fix." -- [Woolsey and Fox. *To Protect Voting, Use Open-Source Software.* New York Times. August 3, 2017.](https://www.nytimes.com/2017/08/03/opinion/open-source-software-hacker-voting.html?mcubz=3)
+
+You can download the latest version of R from [CRAN](https://cran.r-project.org). Be sure to select the distribution for your type of computer system. R is updated occasionally; you should plan to re-install R at least once a year, to make sure you're working with one of the newer versions. Check your current R version (one way is by running `sessionInfo()` at the R console) to make sure you're not using an outdated version of R. Defaults should be fine for everything.
+
+```{r}
+fortune("how do you know that the results are trustable?")
+```
+
+> “Talk is cheap. Show me the code.” - Linus Torvalds
 
 ### What is RStudio?
 
@@ -49,47 +93,45 @@ To get the R software, you'll [download R](https://www.r-project.org) from the R
 
 RStudio is an integrated development environment (IDE) for R. This basically means that it provides you an interface for running R and coding in R, with a lot of nice extras that will make your life easier. 
 
-You download RStudio separately from R-- you'll want to download and install R itself first, and then you can [download RStudio](https://www.rstudio.com/products/rstudio/download2/). You want the Desktop version with the free license. 
+You download RStudio separately from R-- you'll want to download and install R itself first, and then you can [download RStudio](https://www.rstudio.com/products/rstudio/download2/). You want the Desktop version with the free license. Defaults should be fine for everything. 
 
 The company that develops this IDE is a fantastic contributer to the global R community. RStudio currently:
 
+RStudio (the company) is a leader in the R community. Currently, the company:
+
 - Develops and freely provides the RStudio IDE
-- Provides excellent resources for learning and using R (cheatsheets, )
+- Provides excellent resources for learning and using R (e.g., cheatsheets, free online books)
 - Is producing some of the most-used R packages
 - Employs some of the top people in R development
+- Is a key member of The R Consortium (others include Microsoft, IBM, and Google)
 
 R has been advancing by leaps in bounds in terms of what it can do and the elegance with which it does it, in large part because of the enormous contributions of people involved with RStudio.
-
-### Setting up
-
-If do not already have them, you will need to download and install both R and RStudio. 
-
-- Go to [CRAN](https://cran.r-project.org) and download the latest version of R for your system. Install.
-- Go to the [RStudio download page](https://www.rstudio.com/products/rstudio/download/) and download the latest version of RStudio for your system. Install. 
-
-Defaults should be fine for everything when you install both R and RStudio. You will want the latest stable version, rather than the development version, for this course.
 
 ## The "package" system
 
 ### R packages
 
-Your original download of R is only a starting point. To me, this is a bit like the toy train set that my son was obsessed with for a while. You first buy a very basic set that looks something like Figure \@ref(fig:toy-train-basic).
+```{r}
+fortune("Take that, SAS!")
+```
+
+Your original download of R is only a starting point. You can expand functionality of R with \textit{packages}. To me, this is a bit like the toy train set that my son was obsessed with for a while. You first buy a very basic set that looks something like Figure \@ref(fig:toy-train-basic).
 
 ```{r toy-train-basic, echo = FALSE, out.width = "400pt", fig.align = "center", fig.cap = "The toy version of base R."}
-knitr::include_graphics("figures/BrioBasicSet.jpg")
+knitr::include_graphics("figures/TrainBasic.JPG")
 ```
 
 To take full advantage of R, you'll want to add on packages. In the case of the train set, at this point, a doting grandparent adds on extensively through birthday presents, so you end up with something that looks like Figure \@ref(fig:toy-train-fancy).
 
-```{r toy-train-fancy, echo = FALSE, out.width = "800pt", fig.align = "center", fig.cap = "The toy version of what your R set-up will look like once you find cool packages to use for your research."}
-knitr::include_graphics("figures/BrioFancySet.jpg")
+```{r toy-train-fancy, echo = FALSE, out.width = "400pt", fig.align = "center", fig.cap = "The toy version of what your R set-up will look like once you find cool packages to use for your research."}
+knitr::include_graphics("figures/TrainComplex.JPG")
 ```
 
-The main source for installing packages for R remains the Comprehensive R Archive Network, or [CRAN](https://cran.r-project.org). However, [GitHub](https://github.com) is growing in popularity, especially for packages that are still in development. You can also create and share packages among your collaborators or co-workers, without ever posting them publicly.
+Each package is basically a bundle of extra R functions. You can get these "add-on" packages in a number of ways. The main source for installing packages for R remains the Comprehensive R Archive Network, or [CRAN](https://cran.r-project.org). However, [GitHub](https://github.com) is growing in popularity, especially for packages that are still in development. You can also create and share packages among your collaborators or co-workers, without ever posting them publicly. In the "Advanced" section of this course, you will learn how to write your own R package.
 
 ### Installing from CRAN
 
-The most popular place from which to get packages is currently CRAN. You can install packages from CRAN using R code. For example, telephone keypads include letters for each number (Figure \@ref(fig:phone-keypad)), which allow companies to have "named" phone numbers that are easier for people to remember, like 1-800-GO-FEDEX and 1-800-FLOWERS.
+The most popular place from which to get packages is currently CRAN, which has over 10,000 R packages available. You can install packages from CRAN using R code, with the `install.packages` function. For example, telephone keypads include letters for each number (Figure \@ref(fig:phone-keypad)), which allow companies to have "named" phone numbers that are easier for people to remember, like 1-800-GO-FEDEX and 1-800-FLOWERS.
 
 ```{r phone-keypad, echo = FALSE, out.width = "150pt", fig.align = "center", fig.cap="Telephone keypad with letters corresponding to each number."}
 knitr::include_graphics("figures/telephone_keypad.png")
@@ -103,9 +145,17 @@ install.packages("phonenumber")
 
 This downloads the package from CRAN and saves it in a special location on your computer where R can load it when you're ready to use it.
 
+Just like R itself, packages often evolve and are updated by their maintainers. You should update your packages as new versions come out. Typically, you have to reinstall packages when you update your version of R, so this is a good chance to get the most up-to-date version of the packages you use.
+
+```{r}
+fortune("pizza")
+```
+
 ### Loading an installed package
 
-Once you have installed a package, it will be saved to your computer, but you won't be able to access it's functions until you load it in your R session. You can load a package in an R session using the `library` function, with the package name inside the parentheses. 
+When you open RStudio, unless you reload the history of a previous R session (which we typically **do not** recommend), you will start your work in a "fresh" R session. This means that, once you open RStudio, you will need to run the code to load any packages, define any objects, and read in any data that you will need for analysis in that session.
+
+Once you have installed a package, it will be saved to your computer. However, you won't be able to access its functions within an R session until you load it in that R session. Loading a package essentially makes all of the package's functions available to you. You can load a package in an R session using the `library` function, with the package name inside the parentheses. 
 
 ```{r messages = FALSE, warnings = FALSE, results = FALSE}
 library(phonenumber)
@@ -117,7 +167,7 @@ One thing that people often find confusing when they start using R is knowing wh
 One thing that makes this rule confusing is that there are a few cases in R where you really should (by this rule) use quotation marks, but the function is coded to let you be lazy and get away without them. One example is the `library` function. In the above code, you want to literally load the package "phonenumber", rather than load whatever character string is saved in the object named `phonenumber`. However, `library` is one of the functions where you can be lazy and skip the quotation marks, and it will still load "phonenumber" for you (although, if you want, this function also works if you follow the rule and call `library("phonenumber")` instead).
 ```
 
-Once a package is loaded, you can use all its exported (i.e., public) functions by calling them directly. For example, the `phonenumber` has a function called `letterToNumber` that converts a character string to a number. Once you've loaded `phonenumber` using `library`, you can use this function in your R session:
+Once a package is loaded, you can use all its exported (i.e., public) functions by calling them directly. For example, the `phonenumber` has a function called `letterToNumber` that converts a character string to a number. If you have not loaded the `phonenumber` package in your current R session and try to use this function, you will get an error. However, once you've loaded `phonenumber` using the `library` function, you can use this function in your R session:
 
 ```{r}
 fedex_number <- "GoFedEx"
@@ -126,6 +176,16 @@ letterToNumber(fedex_number)
 
 ```{block, type = "rmdnote"}
 R vectors can have several different *classes*. One common class is the character class, which is the class of the character string we're using here ("GoFedEx"). You'll always put character strings in quotation marks. Another key class is numeric (numbers). Later in the course, we'll introduce other classes that vectors can have, including factors and dates.
+```
+
+If you are using a package in academic research, you should cite it, especially if it implements an algorithm or method that is not standard. You can use the `citation` function to get the information you need about how to cite a package: 
+
+```{r}
+citation("phonenumber")
+```
+
+```{block, type = "rmdnote"}
+We've talked here about loading packages using the `library` function to access their functions. However, this is not the only way to access the package's functions. The syntax `[package name]::[function name]` (e.g., `phonenumber::letterToNumber(fedex)`) will allow you to use a function from a package you have installed on your computer, even if its package has not been loaded in the current R session. Typically, this syntax is not used much in data analysis scripts, in part because it makes the code much longer. However, you will occassionally see it used to distinguish between two functions from different packages that have the same name, as this format makes the desired function unambiguous. One example where this syntax often is needed is when both `plyr` and `dplyr` packages are loaded in an R session, since these share functions with the same name.
 ```
 
 ## Basic code conventions of R
@@ -143,7 +203,7 @@ The *gets arrow*, `<-`, is R's assignment operator. It takes whatever you've cre
 Sometimes, we'll show "generic" code in a code block, that doesn't actually work if you put it in R, but instead shows the generic structure of an R call. We'll try to always include a comment with any generic code, so you'll know not to try to run it in R.
 ```
 
-For example, if I just type `"GoFedEx"` at the R prompt, R will print that string back to me, but won't save it anywhere for me to use later:
+In R, objects are the way to save something to use again later in your code. If you do not assign something to an object with the gets arrow, R will just print it back out to you at the console. For example, if I just type `"GoFedEx"` at the R console, R will print that string back to me, but won't save it anywhere for me to use later:
 
 ```{r}
 "GoFedEx"
@@ -155,6 +215,44 @@ However, if I assign `"GoFedEx"` to an object using a gets arrow, I can print it
 fedex_number <- "GoFedEx"
 fedex_number
 letterToNumber(fedex_number)
+```
+
+You can assign the output of a function call directly to an object. For example, if you wanted to save the output of the `letterToNumber` call in the above code to its own object, you could do that with the call:
+
+```{r}
+fedex_actual_number <- letterToNumber(fedex_number)
+fedex_actual_number
+```
+
+If you give two objects the same name, the most recent definition will be used (i.e., objects can be overwritten by assigning new content to the same object name). For example: 
+
+```{r}
+a <- 1:10
+b <- LETTERS [1:3]
+
+a
+b
+
+a <- b
+a
+```
+
+If you would like to see all the R objects that are currently defined in your R session, you can do that with the `ls` command: 
+
+```{r}
+ls()
+```
+
+If you want to see the contents of an object, just print its name. For example, to see what we have stored in the `fedex_number` object, you can run: 
+
+```{r}
+fedex_number
+```
+
+In R, at heart everything is an object, so this printing even works for things like functions. For example, to see the source code with which the `letterToNumber` function is defined, you can run (notice the lack of parentheses): 
+
+```{r}
+letterToNumber
 ```
 
 ### Assignment operator wars: `<-` vs. `=`
@@ -170,6 +268,8 @@ one_to_ten
 one_to_ten = 1:10
 one_to_ten
 ```
+
+While the gets arrow takes two key strokes instead of one (like the equals sign), you can somewhat get around this limitation by using RStudio's keyboard shortcut for the gets arrow. This shortcut is Alt + - on Windows and Option + - on Macs. To see a full list of RStudio keyboard shortcuts, go to the "Help" tab in RStudio and select "Keyboard Shortcuts".
 
 ### Naming objects
 
@@ -190,29 +290,16 @@ In addition to these fixed rules, there are also some guidelines for naming obje
 - Use an underscore as a separator (`fedex_number`, not `fedex.number` or `fedexNumber`)
 - Avoid using names that are already defined in R (e.g., don't name an object `mean`, because a function named `mean` already exists)
 
+```{r}
+fortune("call your matrix")
+```
+
 Another good practice is to name objects after nouns (e.g., `fedex_number`) and later, when you start writing functions, name those after verbs (e.g., `call_fedex`). You'll want your object names to be short enough that they don't take forever to type as you're coding, but not so short that you can't remember what they stand for. 
 
 ```{block, type = "rmdtip"}
 Sometimes, you'll want to create an object that you won't want to keep for very long. For example, you might want to create a small object to test some code, but you plan to not need the object again once you've done that. You may want to come up with some short, generic object names that you use for these kinds of objects, so that you'll know that you can delete them without problems when you want to clean up your R session. 
 
 There are all kinds of traditions for these placeholder variable names in computer science. `foo` and `bar` are two popular choices, as are, evidently, `xyzzy`, `spam`, `ham`, and `norf`. There are different placeholder names in different languages: for example, `toto`, `truc`, and `azerty` (French); and `pippo`, `pluto`, `paperino` (Disney character names; Italian). See the Wikipedia page on [metasyntactic variables](https://en.wikipedia.org/wiki/Metasyntactic_variable) to find out more.
-```
-
-### Commenting code
-
-Sometimes, you'll want to include notes in your code. You can do this in all programming languages by using a *comment character* to start the line with your comment. In R, the comment character is the hash symbol, `#`. R will skip any line that starts with `#` in a script. For example, if you run the following code: 
-
-```{r}
-# Don't print this.
-"But print this"
-```
-
-R will only print the second, uncommented line. 
-
-You can also use a comment in the middle of a line, to add a note on what you're doing in that line of the code. R will skip any part of the code from the hash symbol on. For example: 
-
-```{r}
-"Print this" ## But not this, it's a comment.
 ```
 
 ## R's most basic object types
@@ -309,7 +396,6 @@ fibonacci_seq[5, ] # Last row, all columns
 ```{block type = "rmdnote"}
 If you forget to put the comma in the indexing for a dataframe (e.g., `fibonacci_seq[1:2]`), you will index out the *columns* that fall at that position or positions. To avoid confusion, I suggest that you always use indexing with a comma when working with dataframes.
 ```
-
 
 So far, we've only shown how to create dataframes from scratch within an R session. Usually, however, you'll create R dataframes instead by reading in data from an outside file using `read.csv` and related functions. For example, you might want to analyze data on all the guests that came on the *Daily Show*, *circa* Jon Stewart. If you have this data in a comma-separated (csv) file on your computer called "daily_show_guests.csv", you can read it into your R session with the following code:
 
@@ -438,18 +524,67 @@ head(daily_show, n = 3)
 Using the full parameter names for arguments can take a bit more time, since it requires more typing. However, RStudio helps you out with that by offering *code completion*. Once you start typing the first few letters of a parameter name within a function call, try pressing the tab key. All possible arguments that start with those letters should show up, and you can scroll through to pick the right one, or keep typing until the argument you want is atnthe top of the list of choices, and then press the tab key again.
 ```
 
+## R scripts
+
+This is a good point in learning R for you to start putting your work in R scripts, rather than entering commands at the console. 
+
+An R script is a plain text file where you can save a series of R commands. You can save the script and open it up later to see (or re-do) what you did earlier, just like you could with something like a Word document when you're writing a paper. 
+
+To open a new R script in RStudio, go to the menu bar and select "File" -> "New File" -> "R Script". Alternatively, you can use the keyboard shortcut Command-Shift-N. Figure \@ref(fig:rscript) gives an example of an R script file opened in RStudio and points out some interesting elements.
+
+```{r rscript, echo = FALSE, fig.align="center", fig.cap = "Example of an R script in RStudio.", out.width= "600pt"}
+knitr::include_graphics("figures/ExampleOfRScript.jpg")
+```
+
+To save a script you're working on, you can click on the "Save" button (which looks like a floppy disk) at the top of your R script window in RStudio or use the keyboard shortcut Command-S. You should save R scripts using a ".R" file extension.
+
+Within the R script, you'll usually want to type your code so there's one command per line. If your command runs long, you can write a single call over multiple lines. It's unusual to put more than one command on a single line of a script file, but you can if you separate the commands with semicolons (`;`). These rules all correspond to how you can enter commands at the console. 
+
+Running R code from a script file is very easy in RStudio. You can use either the "Run" button or Command-Return, and any code that is selected (i.e., that you've highlighted with your cursor) will run at the console. You can use this functionality to run a single line of code, multiple lines of code, or even just part of a specific line of code. If no code is highlighted, then R will instead run all the code on the line with the cursor and then move the cursor down to the next line in the script. 
+
+You can also run all of the code in a script. To do this, use the "Source" button at the top of the script window. You can also run the entire script either from the console or from within another script by using the `source()` function, with the filename of the script you want to run as the argument. For example, to run all of the code in a file named "MyFile.R" that is saved in your current working directory, run:
+
+```{r, eval = FALSE}
+source("MyFile.R")
+```
+
+You can add comments into an R script to let others know (and remind yourself) what you're doing and why. To do this, use R's comment character, `#`. Any line on a script line that starts with `#` will not be read by R. You can also take advantage of commenting to comment out certain parts of code that you don't want to run at the moment.
+
+While it's generally best to write your R code in a script and run it from there rather than entering it interactively at the R console, there are some exceptions. A main example is when you're initially checking out a dataset, to make sure you've read it in correctly. It often makes more sense to run commands for this task, like `str()`, `head()`, `tail()`, and `summary()`, at the console. These are all examples of commands where you're trying to look at something about your data **right now**, rather than code that builds toward your analysis, or helps you read in or clean up your data.  
+
+### Commenting code
+
+Sometimes, you'll want to include notes in your code. You can do this in all programming languages by using a *comment character* to start the line with your comment. In R, the comment character is the hash symbol, `#`. R will skip any line that starts with `#` in a script. For example, if you run the following code: 
+
+```{r}
+# Don't print this.
+"But print this"
+```
+
+R will only print the second, uncommented line. 
+
+You can also use a comment in the middle of a line, to add a note on what you're doing in that line of the code. R will skip any part of the code from the hash symbol on. For example: 
+
+```{r}
+"Print this" ## But not this, it's a comment.
+```
+
+There's typically no reason to use code comments when running commands at the R console. However, it's very important to get in the practice of including meaningful comments in R scripts. This helps you remember what you did when you revisit your code later. 
+
+> “You know you're brilliant, but maybe you'd like to understand what you did 2 weeks from now.” -- Linus Torvalds
+
 ## In-course Exercise
 
 ### About the dataset
 
-For today's class, you'll be using a dataset of all the guests on Jon Stewart's *The Daily Show*. This data was originally collected by Nate Silver's website, [FiveThirtyEight](http://fivethirtyeight.com) and is available on [FiveThirtyEight's GitHub page](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests) under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/). The only change made to the original file was to add (commented) attribution information at the start of the file.
+For today's class, you'll be using a dataset of all the guests on *The Daily Show* when Jon Stewart was the host. This data was originally collected by Nate Silver's website, [FiveThirtyEight](http://fivethirtyeight.com) and is available on [FiveThirtyEight's GitHub page](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests) under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/). I have copied this data into my GitHub repository for this class. The only change made to the original file was to add (commented) attribution information at the start of the file.
 
 **First, check out a bit more about this data and its source:**
 
 * Check out [the Creative Commons license](http://creativecommons.org/licenses/by/4.0/). What are we allowed to do with this data? What restrictions are there on using the data?
-* It's often helpful to use prior knowledge to help check out or validate your dataset. One thing we might want to know about this data is if it covers the whole time that Jon Stewart hosted *The Daily Show*. Find out the dates he started and finished as host.
-* Briefly browse around [FiveThirtyEight's GitHub data page](https://github.com/fivethirtyeight/data). What are some other datasets available that you find interesting? You can scroll to the bottom of the page to get to the compiled README.md content, which gives the full titles and links to relevant datasets. You can also click on any dataset to get more information. 
-* Look at [the GitHub page for this *Daily Show* data](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests). How many columns will be in this dataset? What kind of information does the data include?
+* It's often helpful to use prior knowledge to help check out or validate your dataset. One thing we might want to know about this data is if it covers the whole time that Jon Stewart hosted *The Daily Show*. Use Google to find out the dates he started and finished as host.
+* Briefly browse around [FiveThirtyEight's GitHub data page](https://github.com/fivethirtyeight/data). What are some other datasets available that you find interesting? For any dataset, you can scroll to the bottom of the page to get to the compiled README.md content, which gives the full titles and links to relevant datasets. You can also click on any dataset to get more information. 
+* Look at [the GitHub page for this *Daily Show* data](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests). How many columns will be in this dataset? What kind of information does the data include? What do the columns show? What do the rows show?
 
 ```{block, type = "rmdnote"}
 In this exercise, you're using data posted by [FiveThirtyEight](http://fivethirtyeight.com) on [GitHub](https://github.com). We'll be using a lot of data that's on GitHub this semester, and GitHub is being used behind-the-scenes for both this book and the course note slides. We'll talk more about GitHub later, but you might find it interesting to explore a bit now. It's a place where people can post, work on, and share code in a number of programming languages-- it's been referred to as "Facebook for Nerds". You can search GitHub repositories and code specifically by programming language, so it can be a good way to find example R code from which to learn.
@@ -460,28 +595,117 @@ If you have extra time:
 * Check out [the related article](http://fivethirtyeight.com/datalab/every-guest-jon-stewart-ever-had-on-the-daily-show/) on FiveThirtyEight. What are some specific questions they used this data to answer for this article?
 * Who is Nate Silver?
 
+### Manually creating vectors and a dataframe
+
+Start by manually creating some vectors and data frames with a small subset of this data.
+
+* Use the concatenate function (`c`) to create a vector "from scratch" with the names of the five guests to appear on the show (these could be the first five guests, or you could also randomly pick five guests). Assign this vector to an object named `five_guests`. What class (numeric or character) do you think this vector will be? Will you need to use quotation marks for each element you add to the vector?
+* Use square bracket indexing to print out the following subsets of this vector (you'll have one R call per subset): (1) The first guest in the vector; (2) The third and fifth guests; (3) The second through fourth guests.
+* Create a new vector called `first_guest` with just the first set, using the square bracket indexing you used in the previous step. 
+* In the same way, create a vector with the year of each of these guests' appearances. Assign this vector to an object named `appearance_year`. What class (numeric or character) do you think this vector will be? Will you need to use quotation marks for each element you add to the vector?
+* Use the `class` function to determine the classes (e.g., numeric, character) of each of the vectors you just created.
+* Combine these two vectors to create a dataframe named `guest_list`. For the columns, use the same column names used in the original, raw data for the guest names and appearance year. Print out this dataframe at the R console to make sure it looks like you thought it would.
+* Use square bracket indexing to print out the following subsets of this dataframe (you'll have one R call per subset): (1) The appearance year of the first guest; (2) Names of the third through fifth guests; (3) Names of all guests; (4) Both names and appearance years of the first and third guests.
+* The `str` function can be used to figure out the structure of a dataframe. Run this command on the `guest_list` dataframe you created. What information does this give you? Use the helpfile for `str` to help you figure this out (which you can access by running `?str`). Do you see anything that surprises you?
+* Use the `ls` function to list all the objects you currently have defined in your R session. Compare this list to the "Environment" pane in RStudio.
+
+Example R code:
+
+```{r eval = FALSE}
+# I picked five random guests from throughout the dataset. The guests you pick will 
+# likely be different.
+
+# Create a vector with the names of five guests
+five_guests <- c("Miss Piggy", "Stanley Tucci", "Kermit the Frog",
+                 "Hank Azaria", "Al Gore")
+
+# Use square-bracket indexing to print out some subsets of the data
+five_guests[1]
+five_guests[c(3, 5)]
+five_guests[2:4]
+
+# Save just the first guest in a separate object
+first_guest <- five_guests[1]
+first_guest
+
+# Create a vector with the year of the appearance of each guest
+appearance_year <- c(1999, 2000, 2001, 2001, 2002)
+
+# Figure out the classes of the two vectors you just created
+class(five_guests)
+class(appearance_year)
+
+# Create the data frame, then print it out to make sure it looks like you thought
+# it would
+guest_list <- data.frame(Raw_Guest_List = five_guests,
+                         YEAR = appearance_year)
+guest_list
+
+# Use square bracket indexing to print subsets of the data frame
+guest_list[1, 2]
+guest_list[3:5, 1]
+guest_list[ , 1]
+guest_list[c(1, 3), ]
+
+# Use `str` to check out the structure of the data frame you created
+str(guest_list)
+```
+
+### Installing and using a package
+
+The `stringr` package includes a number of functions that make it easier to work with character strings in R. In particular, it includes functions to change the capitalization of words in character stings. Here, you'll install and load this package and then use it to work with the `five_guests` vector we created in the last section. 
+
+* If you have not already installed the `stringr` package, install it from CRAN.
+* Load the `stringr` package in your current R session, so you will be able to use its functions. 
+* Check if the package has a vignette. If so, check out out that vignette. 
+* See if you can use the `str_to_lower` function from the `stringr` package to convert all the names in your `five_guests` vector to lowercase. 
+* See if you can find a function in the `stringr` package that you can use to convert all the names in your `five_guests` vector to uppercase. (Hint: At the R console, try typing `?stringr::` and then the Tab key.)
+
+Example R code: 
+
+```{r eval = FALSE}
+# If you need to, install the package from CRAN
+install.packages("stringr")
+
+# Load the package into your current R session
+library(stringr)
+
+# Open the package's vignette
+vignette("stringr")
+
+# Convert the `five_guests` strings to lowercase
+str_to_lower(five_guests)
+
+# Convert the `five_guests` strings to uppercase
+str_to_upper(five_guests)
+```
+
 ### Getting the data onto your computer
 
-First, download the data from GitHub onto your computer. Make a directory (folder) on your computer specifically for this course (I strongly recommend that you put it somewhere where the file path will not have any spaces in it-- for example, putting it in your home directory, under the name "R_Prog_Course" would be great. Putting it in a directory called "R Prog Course" would not.). Put the *Daily Show* data in your directory for this course. 
+Next, we will work with the whole dataset. Download the data from GitHub onto your computer. Make a directory (folder) on your computer specifically for this course (I strongly recommend that you put it somewhere where the file path will not have any spaces in it-- for example, putting it in your home directory, under the name "R_Prog_Course" would be great. Putting it in a directory called "R Prog Course" would not.). Put the *Daily Show* data in your directory for this course. 
 
 **Take the following steps to get the data onto your computer**
 
-* If you do not yet have a directory (folder) just for this course, make one someplace straightforward like in your home directory. Do not use any spaces in the directory name. 
-* Download the file [from GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv). Right click on `Raw` and then choose "Download linked file". Put the file into the directory you created for this course. 
 * Find out what your home directory is in R. To do this, make sure R is set to your home directory using `setwd("~")`, and then get R to print that home directory path using `getwd()`.
-* Outside of R, open Finder (or your system's equivalent). Go to your home directory (mine, for example, is `/Users/brookeanderson`). Figure out how to get from your home directory to the directory you created for this course. For example, from my home directory, I would go `RProgrammingForResearch` to `data`. 
+* If you do not yet have a directory (folder) just for this course, make one someplace straightforward like in your home directory. Do not use any spaces in the directory name.
+* Download the file [from GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv). Right click on `Raw` and then choose "Download linked file". Put the file into the directory you created for this course. 
+* Outside of R, open Finder (for Macs), Windows Explorer (for Windows), or your system's equivalent. Go to your home directory (mine, for example, is `/Users/brookeanderson`). Figure out how to get from your home directory to the directory you created for this course. If you create the course directory as a subdirectory in your home directory, this will just be one step from your home directory. 
 * Go back into R. Set R's working directory to your directory for this class using the `setwd` command, now that you know the pathname for the directory. For example, I would use `setwd("~/RProgrammingForResearch/data")`. 
 * Use the `list.files` command to make sure that the "daily_show_guests.csv" file is in your current working directory.
 
 The full R code for this task might look something like:
 
 ```{r, eval=FALSE}
+# Set the working directory to your home directory
 setwd("~")
+
+# Print out the current working directory
 getwd()
 
-setwd("~/RProgrammingForResearch/data")
-getwd()
+# Example code to re-set the working directory to your course directory
+setwd("~/RProgrammingForResearch")
 
+# List the files in your current working directory
 list.files()
 
 "daily_show_guests.csv" %in% list.files()
@@ -493,18 +717,19 @@ If you have extra time:
 
 ### Getting the data into R
 
-Now that you have the dataset in your working directory, you can read it into R. This dataset is in a *.csv* (comma separated values) format. (We will talk more about different file formats next week.) You can read csv files into R using the `read.csv` function. 
+Now that you have the dataset in your working directory, you can read it into R. This dataset is in a *csv* (comma separated values) format. (We will talk more about different file formats next week.) You can read csv files into R using the `read.csv` function. 
 
 **Read the data into your R session**
 
 * Use the `read.csv` function to read the data into R and save it as the object `daily_show`.
-* Use the help file for the `read.csv` function to figure out how this function works. To pull that up, use `?read.csv`. Why are we using the option `header = TRUE`? Can you figure out why we're using the `skip` option, and why it's set to 4?
+* Use the help file for the `read.csv` function to figure out how this function works. To pull that up, type `?read.csv` at the R console. Why are we using the option `header = TRUE`? Can you figure out why we're using the `skip` option, and why it's set to 4?
 * Note that you need to put the file name in quotation marks.
 * What would have happened if you'd used `read.csv` but hadn't saved the result as the object `daily_show`? (For example, you'd run the code `read.csv("daily_show_guests.csv")` rather than `daily_show <- read.csv("daily_show_guests.csv")`.)
 
 Example R code:
 
 ```{r, eval=FALSE}
+# Read in dataframe from the csv file with Daily Show guests
 daily_show <- read.csv("daily_show_guests.csv", header = TRUE, skip = 4)
 ```
 
@@ -512,9 +737,11 @@ If you have extra time:
 
 * Say this was a really big dataset. You want to check out just the first 10 rows to make sure that you've got your code right before you take the time to pull in the whole dataset. Use the help file for `read.csv` to figure out how to only read in a few rows. 
 * Look through the help file for other options available for `read.csv`. Can you think of examples when some of these options would be useful?
+* Look again at the version of this raw data on FiveThirtyEight's GitHub page (rather than the course's GitHub repository, where you downloaded the data for the course exercise). How are these two versions of the raw data different? How would you need to change your `read.csv` call if you changed to use the FiveThirtyEight version of the raw data?
 
 Example R code:
 ```{r, eval=FALSE}
+# Read in only the first 10 rows of the dataset
 daily_show_first10 <- read.csv("daily_show_guests.csv", header = TRUE,
                        skip = 4, nrows = 10)
 daily_show_first10
@@ -522,19 +749,23 @@ daily_show_first10
 
 ### Checking out the data
 
-You now have the data available in the `daily_show` option. You'll want to check it out to make sure it read in correctly, and also to get a feel for the data. Throughout, you can use the help pages to figure out more about any of the functions being used (for example, `?dim`).
+You now have the data available in your current R session as the `daily_show` object. You'll want to check it out to make sure it read in correctly, and also to get a feel for the data. Throughout, you can use the help pages to figure out more about any of the functions being used (for example, `?dim`).
 
 **Take the following steps to check out the dataset**
 
-* Use indexing to look at the first two rows of the dataset. Based on this, what does each row "measure"? What information do you get for each "measurement"? As a reminder, indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you'd use `daily_show[1:2, 1:3]`. If you wanted to get the first five rows and all the columns, you'd use `daily_show[1:5, ]`. 
 * Use the `dim` function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?
+* Use indexing to look at the first two rows of the dataset. Based on this, what does each row "measure"? What information do you get for each "measurement"? As a reminder, indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you'd use `daily_show[1:2, 1:3]`. If you wanted to get the first five rows and all the columns, you'd use `daily_show[1:5, ]`. 
 * Use the `head` function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart's first show? Does it look like this dataset covers that first show?
 * Use the `tail` function to look at the last few rows of the dataframe. What is the last show date covered by the dataframe? Who was the last guest?
+* Use the `str` function to get more details about the `daily_show` dataframe you read in. 
 
 Example R code:
 
 ```{r, eval=FALSE}
+# Use indexing to see a subset of the data
 daily_show[1:2, ]
+
+# Check the dimensions of the data
 dim(daily_show)
 head(daily_show)
 tail(daily_show)
@@ -547,6 +778,7 @@ If you have extra time:
 Example R code:
 
 ```{r, eval=FALSE}
+# Look at the first few rows of the data
 head(daily_show, n = 10)
 ```
 
@@ -556,7 +788,7 @@ Nate Silver was a guest on *The Daily Show*. Let's use this data to figure out h
 
 **Find out more about Nate Silver on The Daily Show**
 
-* Use the `subset` function to create a new dataframe that only has the rows of `daily_show` when Nate Silve was a guest. Put it in the object `nate_silver`.
+* The `subset` function can be combined with logical statements to help you create a specific subset of data. For example, if you only wanted data from guest visits in 1999, you could run `subset(daily_show, YEAR == 1999)`. Check out the helpfile for `subset` and use the function to create a new dataframe that only has the rows of `daily_show` when Nate Silve was a guest. Put it in the object `nate_silver`.
 * Print out the full `nate_silver` dataframe by typing `nate_silver`. (You could just use this to answer both questions, but still try the next steps. They would be important with a bigger dataset.)
 * To count the number of times Nate Silver was a guest, you'll need to count the number of rows in the new dataset. You can either use the `dim` function or the `nrow` function to do this. What additional information does the `dim` function give you?
 * To get the dates when Nate Silver was a guest, you can print out just the `Show` column of the dataframe. There are a few ways you can do this using indexing: `nate_silver[ , 3]` (since `Show` is the third column), `nate_silver[ , "Show"]`, or `nate_silver$Show`. Try these.
@@ -564,14 +796,16 @@ Nate Silver was a guest on *The Daily Show*. Let's use this data to figure out h
 Example R code:
 
 ```{r, eval=FALSE}
+# Create a subset of the data with just Nate Silver appearances
 nate_silver <- subset(daily_show, 
                       Raw_Guest_List == "Nate Silver")
+
+# Investigate this subset of the data
 nate_silver
 dim(nate_silver)
 nrow(nate_silver)
 nate_silver[ , 3]
 nate_silver[ , "Show"]
-
 ```
 
 If you have extra time:
@@ -610,3 +844,14 @@ subset(daily_show, GoogleKnowlege_Occupation == "Puzzle Creator")
 subset(daily_show, GoogleKnowlege_Occupation == "Scholar")
 ```
 
+### Writing your code as an R script
+
+While the R console is fine for initially exploring data, you should get in the habit of writing up R code in an R script for most of your data analysis projects in R. 
+
+* Open a new R script and save it to your current working directory (i.e., wherever you saved the data you downloaded for this exercise).
+* Take some of the code that you wrote for this exercise (including the function to read the data into R). Put it in the R script. Do not put more than one function call per line (but it's fine to have longer function calls span a few lines).
+* Use the "Run" button to run a single line of this code. Check the console to see what happens when you do.
+* Highlight a few lines of the code and use "Run" to run them.
+* Try using the keyboard shortcut (Command-Return) to run the line of code your cursor is currently on. Try doing this with a function call that runs across several lines of the R script file-- what do you see at the console?
+* Try running the whole script using "Source". Again, look at the console after you "source" the script. 
+* Close your R session (and save any changes to your R script). Do **not** save your R session history. Re-open R and see if you can re-open your R script and re-run it. Try using `ls()` to list the objects in your R session before and after you re-run your script. Does anything about the results surprise you?
