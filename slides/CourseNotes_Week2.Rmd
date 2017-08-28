@@ -60,6 +60,31 @@ For example, to print the structure of the dataframe from the previous example a
 str(data.frame(color = c("red", "blue"), value = c(1, 2)))
 ```
 
+## `paste` and `paste0`
+
+If you want to paste together several character strings to make a length-one character vector, you can use the `paste` function to do that:
+
+```{r}
+paste("abra", "ca", "dabra")
+```
+
+By default, spaces are used to separate each original character string in the final string.
+
+## `paste` and `paste0`
+
+If you want to remove these spaces, you can use the `sep` argument in the `paste` function: 
+
+```{r}
+paste("abra", "ca", "dabra", sep = "")
+```
+
+A short-cut function is `paste0`, which is identical to running `paste` with the argument `sep = ""`:
+
+```{r}
+paste0("abra", "ca", "dabra")
+```
+
+
 # Getting data into R
 
 ## Basics of getting data into R
@@ -68,8 +93,8 @@ Basic approach:
 
 - Download data to your computer
 - Make sure R is working in the directory with your data (`getwd`, `setwd`)
-- Read data into R (`read.csv`, `read.table`)
-- Check to make sure the data came in correctly (`dim`, `head`, `tail`, `str`)
+- Read data into R (functions in `readr`: `read_csv`, `read_table`, `read_delim`, `read_fwf`, etc.)
+- Check to make sure the data came in correctly (`dim`, `ncol`, `nrow`, `head`, `tail`, `str`, `colnames`)
 
 #Directories
 
@@ -112,22 +137,53 @@ getwd()
 
 ## Directories
 
+Remember that, since `~` is a shortcut for my home directory, the following two calls would give me the same result: 
+
+```{r eval = FALSE}
+setwd("~")
+getwd()
+```
+
+```
+## [1] "/Users/brookeanderson"
+```
+
+```{r eval = FALSE}
+setwd("/Users/brookeanderson")
+getwd()
+```
+
+```
+## [1] "/Users/brookeanderson"
+```
+
+## Directories
+
 The most straightforward way to read in data is often to put it in your working directory and then read it in using the file name. If you're working in the directory with the file you want, you should see the file if you list files in the working directory:
 
 ```{r}
 list.files()
 ```
 
+## Directories
+
+The "Files" pane in RStudio (often on the lower right) will also show you the files available in your current working directory. 
+
+This should line up with what you get if you run `list.files()`.
+
 ## Getting around directories
 
 There are a few abbreviations you can use to represent certain relative or absolute locations when you're using `setwd()`:
 
+\small
+
 ```{r echo = FALSE}
-dirpath_shortcuts <- data.frame(abbr = c("`~`", "`.`", "`..`", "`../..`"),
+dirpath_shortcuts <- data.frame(abbr = c("`~`", "`.`", "`..`", "`../..`", "`../data`"),
                                 meaning = c("Home directory",
                                             "Current working directory",
-                                            "One directory up from current working directory",
-                                            "Two directories up from current working directory"))
+                                            "One directory up from current working directory (parent directory)",
+                                            "Two directories up from current working directory",
+                                            "The 'data' subdirectory of the parent directory"))
 knitr::kable(dirpath_shortcuts, col.names = c("Shorthand", "Meaning"))
 ```
 
@@ -169,6 +225,19 @@ When you want to reference a directory or file, you can use one of two types of 
 
 ## Relative versus absolute pathnames
 
+If directions worked like pathnames, here is how you would tell someone to get to this building: 
+
+- *Relative pathname*: Turn right on Center, then turn right when you get to the intersection, then go to the second building on your left (only works if you started on Prospect going west right before the intersection with Center).
+- *Absolute pathname*: Go to 350 W. Lake Street, Fort Collins, CO, USA.
+
+## Computer directory structure
+
+```{r echo = FALSE, fig.align='center', out.width = "275pt"}
+knitr::include_graphics("../figures/FileDirectoryStructure.png")
+```
+
+## Relative versus absolute pathnames
+
 Say your current working directory was `/Users/brookeanderson/RProgrammingForResearch` and you wanted to get into the subdirectory `data`. Here are examples using the two types of pathnames:
 
 Absolute: 
@@ -202,6 +271,31 @@ If `data` is a subdirectory of the subdirectory `Ex` of your current working dir
 ```{r eval = FALSE}
 setwd("Ex/data")
 ```
+
+## Relative versus absolute pathnames
+
+Both methods of writing filenames have their own advantages and disadvantages: 
+
+- *Relative pathname*: Which file you are indicating depends on which working directory you are in, which means that your code will break if you try to re-run it from a different working directory. However, relative pathways in your code make it easier for you to share a working version of a project with someone else. For most of this course, we will focus on using relative pathnames, especially when you start collaborating.
+- *Absolute pathname*: No matter what working directory you're in, it is completely clear to your computer which file you mean when you use an absolute pathname. However, your code will not work on someone else's computer without modifications (because the structure of their computer's full directory will be different).
+
+## Computer directory structure
+
+```{r echo = FALSE, fig.align='center', out.width = "275pt"}
+knitr::include_graphics("../figures/FileDirectoryStructure.png")
+```
+
+## Relative versus absolute pathnames
+
+If you want to read in data from a file that is not in your working directory, there are three options: 
+
+- Move the data into your working directory (this can be done outside of R).
+- Change your working directory so that you are working in the directory that has the data (e.g., with `setwd()`).
+- Use a pathname, rather than a simple filename, to refer to the data file (this will be the recommended method for most of this course, although we'll practice other methods today).
+
+## In-course exercise
+
+We'll take a break now to do the first part of the in-course exercise (Sections 2.6.1 and 2.6.2).
 
 # Reading data into R
 
