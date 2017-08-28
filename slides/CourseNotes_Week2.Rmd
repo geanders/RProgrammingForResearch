@@ -307,8 +307,9 @@ The sky is the limit...
 - Files from other statistical packages (SAS, Excel, Stata, SPSS)
 - [Tables on webpages](http://yihui.name/en/2010/10/grabbing-tables-in-webpages-using-the-xml-package/) (e.g., the table near the end of [this page](http://en.wikipedia.org/wiki/Ebola_virus_epidemic_in_West_Africa))
 - Data in a database (e.g., SQL)
+- Data stored in XML and JSON
 - Really crazy data formats used in other disciplines (e.g., [netCDF files from climate folks](https://www.image.ucar.edu/GSP/Software/Netcdf/), [MRI data stored in Analyze, NIfTI, and DICOM formats](http://www.tractor-mri.org.uk))
-- Data through APIs (e.g., [GoogleMaps](http://www.r-bloggers.com/heatmap-of-toronto-traffic-signals-using-rgooglemaps/), [Twitter](http://davetang.org/muse/2013/04/06/using-the-r_twitter-package/))
+- Data through APIs (e.g., [GoogleMaps](http://www.r-bloggers.com/heatmap-of-toronto-traffic-signals-using-rgooglemaps/), [Twitter](http://davetang.org/muse/2013/04/06/using-the-r_twitter-package/), many government agencies)
 - Incrediably messy data using `scan` and `readLines`
 
 ## Types of flat files
@@ -365,44 +366,66 @@ knitr::include_graphics("../figures/csvEx2.jpg")
 knitr::include_graphics("../figures/fwfEx2.png")
 ```
 
+## Types of flat files
+
+To figure out the structure of a flat file, start by opening it in a text editor. 
+
+As an alternative, you can open it in RStudio (right click on the file name and then choose "Open With" and "RStudio").
+
 ## Reading in flat files
 
-R can read any of these types of files using one of the `read.table` and `read.fwf` functions. Find out more about those functions with:
+R can read any of the types of files we just looked at by using one of the functions from the `readr` package (e.g., `read_table`, `read_fwf`). Find out more about those functions with:
 
-```{r, eval = FALSE}
-?read.table
-?read.fwf
+```{r eval = FALSE}
+library(readr)
+?read_table
+?read_fwf
 ```
 
 ## `read.table` family of functions
 
-Some of the interesting options with the `read.table` family of functions are:
+Some of the interesting options with the `readr` family of functions are:
 
 Option  | Description
 ------- | -----------
-`sep`   | What is the delimiter in the data?
-`skip`  | How many lines of the start of the file should you skip?
-`header`| Does the first line you read give column names?
-`as.is` | Should you bring in strings as characters, not factors?
-`nrows` | How many rows do you want to read in?
-`na.strings` | How are missing values coded?
+`delim`   | What is the delimiter in the data?
+`skip`    | How many lines of the start of the file should you skip?
+`col_names`  | What would you like to use as the column names?
+`col_types`   | What would you like to use as the column types?
+`n_max`   | How many rows do you want to read in?
+`na` | How are missing values coded?
 
-## `read.table` family of functions
+## `readr` family of functions
 
-All members of the `read.table` family are doing the same basic thing. The only difference is what defaults they have for the separator (`sep`) and the decimal point (`dec`). \medskip
+Many members of the `readr` package that read delimited files are doing the same basic thing. The only difference is what defaults they have for the separator (`delim`). \medskip
 
-Members of the `read.table` family:
+Some key members of the `readr` family for delimited data:
 
-Function     | Separator  | Decimal point
------------- | ---------- | -------------
-`read.csv`   |  comma     |     period
-`read.csv2`  | semi-colon |     comma 
-`read.delim` |    tab     |     period
-`read.delim2`|    tab     |     comma
+Function     | Separator  
+------------ | ---------- 
+`read_csv`    |  comma     
+`read_csv2`   | semi-colon 
+`read_table2` | whitespace
+`read_tsv`    | tab
 
-## `read_*` family of functions
+## `readr` family of functions
 
-The `read.table` family of functions are part of base R. There is a newer package called `readr` that has a family of `read_*` functions. These functions are very similar, but have some more sensible defaults. \medskip
+For any type of delimited flat files, you can also use the more general `read_delim` function to read in the file. However, you will have to specify yourself what the delimiter is (e.g., `delim = ","` for a comma-separated file).
+
+## `readr` family of functions
+
+The `readr` package also includes some functions for reading in fixed width files: 
+
+- `read_fwf`
+- `read_table`
+
+These allow you to specify field widths for each fixed width field, but they will also try to determine the field-widths automatically.
+
+## `readr` family of functions
+
+You will also see code that uses functions like `read.csv` and `read.table` to read in flat files. These are from the `read.table` family of functions, which are part of base R. The `readr` functions are very similar, but have some more sensible defaults, including in determining column classes. \medskip
+
+\small
 
 ```{r}
 library(readr)
@@ -412,14 +435,6 @@ daily_show <- read_csv("../data/daily_show_guests.csv",
 
 ## `read_*` family of functions
 
-Functions in the `read_*` family include
-
-- `read_csv`, `read_tsv` (specific delimiters)
-- `read_delim`, `read_table` (generic)
-- `read_fwf`
-- `read_log`
-- `read_lines`
-
 Compared to the `read.table` family of functions, the `read_*` functions: 
 
 - Work better with large datasets: faster, includes progress bar
@@ -427,7 +442,7 @@ Compared to the `read.table` family of functions, the `read_*` functions:
 
 ## The "tidyverse"
 
-The `readr` package is part of the "tidyverse"-- a collection of new and developing packages for R, many written by Hadley Wickham. \medskip
+The `readr` package is part of the "tidyverse"-- a collection of recent and developing packages for R, many written by Hadley Wickham. \medskip
 
 ```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
 knitr::include_graphics("../figures/tidyverse_hexbin.jpeg")
@@ -461,7 +476,7 @@ ld_genetics[1:5, 1:4]
 
 ## Reading in online flat files
 
-With the `read_*` family of functions, you can also read in data from a secure webpage (e.g., one that starts with `https`). This allows you to read in data from places like [GitHub](https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv) and Dropbox public folders:
+With the `readr` family of functions, you can also read in data from a secure webpage (e.g., one that starts with `https`). This allows you to read in data from places like [GitHub](https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv) and Dropbox public folders:
 
 ```{r message = FALSE}
 url <- paste0("https://raw.githubusercontent.com/cmrivers/",
@@ -482,7 +497,7 @@ read_funcs <- data.frame(file_type = c("Excel",
                          func = c("`read_excel`",
                                   "`read_sas`",
                                   "`read_spss`",
-                                  "`read_stata"),
+                                  "`read_stata`"),
                          pkg = c("`readxl`",
                                  "`haven`",
                                  "`haven`",
@@ -496,7 +511,7 @@ You can save an R object you've created as an `.RData` file using `save()`:
 
 ```{r}
 save(ebola, file = "Ebola.RData")
-list.files()
+list.files(pattern = "E")
 ```
 
 This saves to your current working directory (unless you specify a different location).
@@ -527,6 +542,10 @@ Potential exceptions:
 
 - You have an object that you need to save that has a structure that won't work well in a flat file
 - Your starting dataset is really, really large, and it would take a long time for you to read in your data fresh every time
+
+## In-course exercise
+
+We'll take another break here to work on the next part of the In-Course Exercise (Section 2.6.3).
 
 # Data cleaning
 
