@@ -10,6 +10,56 @@ fontsize: 10pt
 options(width = 50)
 ```
 
+# Some odds and ends
+
+## Missing values
+
+In R, `NA` is used to represent a missing value in a vector. This value can show up in numerical or character vectors (or in vectors of some other classes):
+
+```{r}
+c(1, 4, NA)
+c("Jane Doe", NA)
+```
+
+## The `$` operator
+
+We've talked about how you can combine vectors of the same length to create a dataframe.
+
+To go the other direction (pull a column from a dataframe), you can use the `$` operator.
+
+For example, say you have the following dataset and want to pull the `color` column as a vector:
+
+```{r}
+example_df <- data.frame(color = c("red", "blue"), 
+                         value = c(1, 2))
+example_df
+```
+
+
+## The `$` operator
+
+You can pull the `color` column as a vector using the name of the dataframe, the dollar sign, and then the name of the column:
+
+```{r}
+example_df$color
+```
+
+```{r}
+class(example_df$color)
+```
+
+(Note: You can use tab completion in RStudio after you put in `example_df$`.)
+
+## Order of evaluation
+
+In R, you can "nest" functions within a single call. Just like with math, the order that the functions are evaluated moves from the inner set of parentheses to the outer one. 
+
+For example, to print the structure of the dataframe from the previous example after creating it, you can run: 
+
+```{r}
+str(data.frame(color = c("red", "blue"), value = c(1, 2)))
+```
+
 # Getting data into R
 
 ## Basics of getting data into R
