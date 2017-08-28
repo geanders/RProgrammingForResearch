@@ -57,7 +57,7 @@ There are a few general rules for which working directory R will start in when y
 
 If you open R by double-clicking on the R icon in "Applications" (or something similar on a PC), R will start in its default working directory. You can find out what this is, or change it, in RStudio's "Preferences". I have never had a compelling reason to change this on my own computer, as I find it very easy to just move around the directories and set a new working directory using pathnames and the `setwd()` function. 
 
-Finally, later in the course, we'll talk about using R Projects from within RStudio. If you open an R Project, R will start in that project's working dirctory (the directory in which the `.Rproj` file for the project is stored).
+Finally, later in the course, we'll talk about using R Projects from within RStudio. If you open an R Project, R will start in that project's working directory (the directory in which the `.Rproj` file for the project is stored).
 
 ### File and directory pathnames
 
@@ -170,7 +170,7 @@ The `paste()` function has an option called `sep = `. This tells R what you want
 paste("Sunday", "Monday", "Tuesday", sep = "")
 ```
 
-As a shortcut, instead of using the `sep = ""` option, you could achieve the same thing using the `paste0` function. This function is almost exacly like `paste`, but it defaults to `""` (i.e., no space) as the separator between values by default:
+As a shortcut, instead of using the `sep = ""` option, you could achieve the same thing using the `paste0` function. This function is almost exactly like `paste`, but it defaults to `""` (i.e., no space) as the separator between values by default:
 
 ```{r}
 paste0("Sunday", "Monday", "Tuesday")
@@ -188,7 +188,7 @@ You will end up using `paste()` and `paste0()` for many other applications, but 
 
 ## Reading data into R
 
-Data comes in files of all shapes and sizes. R has the capability to read data in from many of these, even priorietary files for other software (e.g., Excel and SAS files). As a small sample, here are some of the types of data files that R can read and work with: 
+Data comes in files of all shapes and sizes. R has the capability to read data in from many of these, even proprietary files for other software (e.g., Excel and SAS files). As a small sample, here are some of the types of data files that R can read and work with: 
 
 - Flat files (much more about these in just a minute)
 - Files from other statistical packages (SAS, Excel, Stata, SPSS)
@@ -522,7 +522,7 @@ scientists <- filter(daily_show, category == "Science")
 head(scientists)
 ```
 
-To build a logical statment to use in `filter`, you'll need to know some of R's logical operators. Some of the most commonly used ones are: 
+To build a logical statement to use in `filter`, you'll need to know some of R's logical operators. Some of the most commonly used ones are: 
 
 Operator  | Meaning | Example
 --------- | ------- | ---------------------------------
@@ -696,7 +696,7 @@ You must use the `format` argument to specify what your date column looks like *
 
 There is also a function in the tidyverse, called `lubridate`, that helps in parsing dates. In many cases you can use functions from this package to parse dates much more easily, without having to specify specific starting formats. 
 
-The `ymd` function from lubridate can be used to parse a column into a Date clase, regardless of the original format of the date, as long as the date elements are in the order: year, month, day. For example:
+The `ymd` function from lubridate can be used to parse a column into a Date class, regardless of the original format of the date, as long as the date elements are in the order: year, month, day. For example:
 
 ```{r message = FALSE}
 library(lubridate)
@@ -885,7 +885,7 @@ Now you'll try reading in data from a variety of types of file formats. All of t
 Try the following tasks:
 
 - What type of flat file do you think the "ld\_genetics.txt" file is? See if you can read it in and save it as the R object `ld_genetics`. Use the `summary` function to check out basic statistics on the data.
-- Check out the file "measles\_data/02-09-2015.txt". What type of flat file do you think it is? Stay in the "data" directory and use a relative pathname to read the file in and save it as the R object `ca_measles`. Use the `col.names` option to name the columns "city" and "count". What would the default column names be if you didn't use this option?
+- Check out the file "measles\_data/02-09-2015.txt". What type of flat file do you think it is? Stay in the "data" directory and use a relative pathname to read the file in and save it as the R object `ca_measles`. Use the `col_names` option to name the columns "city" and "count". What would the default column names be if you didn't use this option?
 - Read in the Excel file "icd-10.xls" and assign it to the object name `idc10`. Use the [`readxl` package to do that](https://github.com/hadley/readxl) (examples are at the bottom of the linked page).
 - Read in the SAS file `icu.sas7bdat`. To do this, use the [`haven` package](https://github.com/hadley/haven). Read the file into the R object `icu`. 
 
@@ -895,17 +895,15 @@ Example R code:
 # Load the `readr` package
 library(readr)
 
-# Use `read_delim` to read this file. You need to specify what the delimiter 
-# is with the `delim` argument. `\t` stands for "Tab".
-ld_genetics <- read_delim("data/ld_genetics.txt", delim = "\t")
+# Use `read_tsv` to read this file. 
+ld_genetics <- read_tsv("data/ld_genetics.txt")
 summary(ld_genetics)
 
-# Use `read_delim` to read this file. You need to specify what the delimiter 
-# is with the `delim` argument. `\t` stands for "Tab". Because the first line
+# Use `read_tsv` to read this file. Because the first line
 # of the file is *not* the column names, you need to specify what the column
 # names should be with the `col_names` parameter. 
-ca_measles <- read_delim("data/measles_data/02-09-2015.txt",
-                         col_names = c("city", "count"), delim = "\t")
+ca_measles <- read_tsv("data/measles_data/02-09-2015.txt",
+                       col_names = c("city", "count"))
 head(ca_measles)
 
 # You'll need the `readxl` package to read in this file. Load that. 
@@ -925,14 +923,13 @@ icu[1:5, 1:5]
 
 If you have extra time: 
 
-- Is there a way to read the "ld\_genetics.txt" file in using `read.table()` and specific options? If so, try to read the data in using that function. Why can you use both `read.delim` and `read.table` to read in this file?
+- Is there a way to read the "ld\_genetics.txt" file in using `read_delim()` and specific options? If so, try to read the data in using that function. Why can you use both `read.delim` and `read.table` to read in this file?
 
 Example R code: 
 
 ```{r}
-## Using the read.table function 
-ld_genetics <- read.table("data/ld_genetics.txt", header = TRUE,
-                          sep = "\t")
+## Using the read_delim function with the `delim` argument specified to `"\t"`.
+ld_genetics <- read_delim("data/ld_genetics.txt", delim = "\t")
 ld_genetics[1:5, 1:5]
 ```
 
