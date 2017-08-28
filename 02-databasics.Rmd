@@ -749,18 +749,14 @@ mutate(daily_show,
 
 ### Checking out directory structures
 
-Download the whole directory for this week from Github. Put the "data" directory as a subdirectory in your directory for this class. To do that, go the the [GitHub page for the course](https://github.com/geanders/RProgrammingForResearch) and, in the top right, choose "Clone or Download" and then choose "Download ZIP". Then move the "data" subdirectory into your course directory and throw away rest of what you downloaded. 
+Download the whole directory for this week from Github (https://github.com/geanders/week_2_data). To do that, go the the [GitHub page with data for this week's exercise](https://github.com/geanders/week_2_data) and, in the top right, choose "Clone or Download" and then choose "Download ZIP". This will download a compressed file with the full directory of data, probably to your computer's "Downloads" folder. Then move the directory into your course directory and "unzip" it (try double-clicking the file, or right click on the file and see if there's a "decompress" or "unzip" option). Rename this subdirectory "data" (don't do this in R, just use whatever technique you usually use on your computer to rename directories).
 
-```{block, type = 'rmdnote'}
-Unfortunately, while GitHub will let you download data files one at a time, it doesn't offer a straightforward way of downloading a whole subdirectory from a repository. For this task, where you're pulling all of the data in the "data" subdirectory of the course repository, the quickest method is to download the entire directory, find and move the subdirectory that you need, and then delete the rest. 
-```
-
-- Look through the structure of the "data" directory. What files are in the directory? What subdirectories? Sketch out the structure of this directory.
+- Look through the structure of the "data" directory. What files are in the directory? What subdirectories? Sketch out the structure of this directory (this should look similar to the "directory structure" slide we went over in the course notes).
 - Create a new R script to put all the code you use for this exercise. Create a subdirectory in your course directory called "R" and save this script there using a `.R` extension (e.g., "week_2.R"). 
 
 ### Using relative and absolute file pathnames
 
-Once you have the data, I'd like you to try using `setwd()` to move around the directories on your computer. For this section of the exercise, you'll try to open the same file from different working directories, to get practice using absolute and relative file pathnames. 
+Once you have the data, I'd like you to try using `setwd()` to move around the directories on your computer. For this section of the exercise, you'll also try to open the same file from different working directories, to get practice using absolute and relative file pathnames. 
 
 Start by changing your working directory to the "data" subdirectory you just downloaded. For me, the absolute path to that is `/Users/brookeanderson/RProgrammingForResearch/data`, so to change my working directory to this one using an absolute file pathname, I would run:
 
@@ -786,11 +782,11 @@ list.files("data")
 
 Try the following tasks: 
 
-* Read in the ebola data in `country_timeseries.csv`. Save it as the R object `ebola`. How many rows and columns does it have? What are the names of the columns?
+* Read in the ebola data in `country_timeseries.csv`. Assign it to an R object named `ebola`. How many rows and columns does it have? What are the names of the columns?
 * Now try moving up one directory from your current working directory (which should be the "data" directory), into the directory you created for this course. What happens if you use the same code as before to read in the file? What do you need to change to be able to read the file in from here? Try to read in the data from here using:
     + A relative pathname
     + An absolute pathname
-* Now move down into the subdirectory of "data" called "measles_data". Try to read in the Ebola data from this working directory using: 
+* Now move your working directory to be the subdirectory of "data" called "measles_data". Try to read in the Ebola data from this working directory using: 
     + A relative pathname
     + An absolute pathname
 * Which method (absolute or relative pathnames) always used the same code, regardless of your current working directory? Which method used different code, depending on the starting working directory?
@@ -895,19 +891,34 @@ Try the following tasks:
 
 Example R code:
 
-```{r}
-ld_genetics <- read.delim("data/ld_genetics.txt", header = TRUE)
+```{r message = FALSE}
+# Load the `readr` package
+library(readr)
+
+# Use `read_delim` to read this file. You need to specify what the delimiter 
+# is with the `delim` argument. `\t` stands for "Tab".
+ld_genetics <- read_delim("data/ld_genetics.txt", delim = "\t")
 summary(ld_genetics)
 
-ca_measles <- read.delim("data/measles_data/02-09-2015.txt",
-                         header = FALSE, col.names = c("city", "count"))
+# Use `read_delim` to read this file. You need to specify what the delimiter 
+# is with the `delim` argument. `\t` stands for "Tab". Because the first line
+# of the file is *not* the column names, you need to specify what the column
+# names should be with the `col_names` parameter. 
+ca_measles <- read_delim("data/measles_data/02-09-2015.txt",
+                         col_names = c("city", "count"), delim = "\t")
 head(ca_measles)
 
+# You'll need the `readxl` package to read in this file. Load that. 
 library(readxl)
+
+# Use the `read_excel` function to read in the file. 
 icd10 <- read_excel("data/icd-10.xls")
 head(icd10)
 
+# You'll need the `haven` function to read in this file. Load that.
 library(haven)
+
+# Use the `read_sas` function to read in this file.
 icu <- read_sas("data/icu.sas7bdat")
 icu[1:5, 1:5]
 ```
