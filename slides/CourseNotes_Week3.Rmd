@@ -60,6 +60,350 @@ As a note, you can similarly use `library()`, without the name of a package, to 
 library()
 ```
 
+## `nepali` example data
+
+For the example plots, I'll use a dataset in the `faraway` package called `nepali`. This gives data from a study of the health of a group of Nepalese children. 
+
+```{r}
+library(faraway)
+data(nepali)
+```
+
+I'll be using functions from `dplyr` and `ggplot2` during the course, so I'll load those:
+
+```{r message = FALSE, warning = FALSE}
+library(dplyr)
+library(ggplot2)
+```
+
+## `nepali` example data
+
+For the `nepali` dataset, each observation is a single measurement for a child; there can be multiple observations per child. \medskip 
+
+I'll limit it to the columns with the child's id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
+
+```{r message = FALSE}
+nepali <- nepali %>%
+  # Limit to certain columns
+  select(id, sex, wt, ht, age) %>%
+  # Convert id and sex to factors
+  mutate(id = factor(id),
+         sex = factor(sex, levels = c(1, 2),
+                      labels = c("Male", "Female"))) %>%
+  # Limit to first obs. per child
+  distinct(id, .keep_all = TRUE)
+```
+
+## `nepali` example data
+
+The first few rows of the data now looks like:
+
+```{r}
+nepali %>% 
+  slice(1:4)
+```
+
+# Logical vectors
+
+## Logical statements
+
+Last week, you learned some about logical statements and how to use them with the `filter` function. \medskip
+
+You can use *logical vectors*, created with these statements, for a lot of things. We'll review them and add some more details this week.
+
+## Logical vectors
+
+A logical statement outputs a *logical vector*. This logical vector will be the same length as the original vector tested by the logical statement:
+
+```{r}
+is_male <- nepali$sex == "Male"
+length(nepali$sex)
+length(is_male)
+```
+
+## Logical vectors
+
+Each element of the logical vector can only have one of three values (`TRUE`, `FALSE`, `NA`). The logical vector will have the value `TRUE` at any position where the original vector met the logical condition you tested, and `FALSE` anywhere else:
+
+```{r}
+head(nepali$sex)
+head(is_male)
+```
+
+## Logical vectors
+
+Because the logical vector is the same length as the vector it's testing, you can add logical vectors to dataframes with `mutate`:
+
+```{r}
+nepali <- nepali %>% 
+  mutate(is_male = sex == "Male") # Add column. Is obs. male?
+nepali %>% 
+  slice(1:3)
+```
+
+## Logical vectors
+
+As another example, you could add a column that is a logical vector of whether each child's first-measured height is over 100 centimeters:
+
+```{r}
+nepali %>% 
+  mutate(very_tall = ht > 100) %>% # Is height over 100 cm?
+  select(id, ht, very_tall) %>% 
+  slice(1:3)
+```
+
+## Logical vectors
+
+You can "flip" a logical vector (i.e., change every `TRUE` to `FALSE` and vice-versa) using the bang operator (`!`):
+
+```{r}
+nepali %>% 
+  mutate(very_tall = ht > 100,
+         not_tall = !very_tall) %>% 
+  select(id, ht, very_tall, not_tall) %>% 
+  slice(1:3)
+```
+
+## Logical vectors
+
+You can do a few cool things now with this vector. For example, you can use it with the `filter` function to pull out just the rows where `is_male` is `TRUE`:
+
+```{r}
+nepali %>% 
+  filter(is_male) %>% 
+  select(id, ht, wt, sex) %>% 
+  slice(1:5)
+```
+
+## Logical vectors
+
+Or, with `!`, just the rows where `is_male` is `FALSE`:
+
+```{r}
+nepali %>% 
+  filter(!is_male) %>% 
+  select(id, ht, wt, sex) %>% 
+  slice(1:5)
+```
+
+## Logical vectors
+
+All of the values in a logical vector are saved with a number underneath. Values of `TRUE` are saved as 1 and values of `FALSE` are saved as 0. 
+
+You can use `sum()` to get the sum of all values in a vector. Because logical vector values are linked with numerical values of 0 or 1, you can use `sum()` to find out how many males and females are in the dataset:
+
+```{r}
+sum(nepali$is_male)
+sum(!nepali$is_male)
+```
+
+## In-course exercise
+
+We'll take a break now to start the in-course exercise for this week (Sections 3.6.1 and 3.6.2).
+
+# Simple statistics
+
+## Simple statistics functions
+
+We've looked at how to subset, arrange, and add to a dataframe. Next we'll look at how to summarizes a dataframe. 
+
+We'll start by looking at some simple statistics functions from base R, and then we'll look at how some of those functions can be used with the `summarize` function from the `dplyr` package to quickly get interesting summaries of data.
+
+## Simple statistics functions
+
+Here are some simple statistics functions you will likely use often:
+
+Function  | Description
+--------- | -----------------
+`range()` | Range (minimum and maximum) of vector 
+`min()`, `max()` | Minimum or maximum of vector
+`mean()`, `median()` | Mean or median of vector
+`table()` | Number of observations per level for a factor vector
+`cor()` | Determine correlation(s) between two or more vectors
+`summary()` | Summary statistics, depends on class
+
+## Simple statistic examples
+
+All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`-- see help files).
+
+```{r}
+mean(nepali$wt, na.rm = TRUE)
+range(nepali$ht, na.rm = TRUE)
+table(nepali$sex)
+```
+
+## Simple statistic examples
+
+The `cor` function can take two or more vectors. If you give it multiple values, it will give the correlation matrix for all the vectors.
+
+```{r}
+cor(nepali$wt, nepali$ht, use = "complete.obs")
+cor(nepali[ , c("wt", "ht", "age")], use = "complete.obs")
+```
+
+## `summary()`: A bit of OOP
+
+R supports object-oriented programming. This shows up with `summary()`. R looks to see what type of object it's dealing with, and then uses a method specific to that object type. 
+
+```{r}
+summary(nepali$wt)
+summary(nepali$sex)
+```
+
+## The `summarize` function
+
+Within a "tidy" workflow, you can use the `summarize` function from the `dplyr` package to create summary statistics for a dataframe. This function inputs a dataframe and outputs a dataframe with the specified summary measures. 
+
+## The `summarize` function
+
+The basic format for using `summarize` is:
+
+```{r eval = FALSE}
+## Generic code
+summarize(dataframe, 
+          summary_column_1 = function(existing_columns),
+          summary_column_2 = function(existing_columns))
+```
+
+The output from `summarize` will be a dataframe with: 
+
+- One row (later we will look at using `summarize` within groups of data, and that will result in more rows)
+- As many columns as you have defined summaries in the `summarize` function (the generic code above would result in two columns)
+
+## The `summarize` function
+
+As an example, to summarize the `nepali` dataset to get the mean weight, median height, and minimum and maximum ages of children, you could run: 
+
+```{r}
+summarize(nepali,
+          mean_wt = mean(wt, na.rm = TRUE),
+          median_ht = median(ht, na.rm = TRUE),
+          youngest = min(age, na.rm = TRUE),
+          oldest = max(age, na.rm = TRUE))
+```
+
+Notice that the output is one row (since the summary was on ungrouped data), with four columns (since we defined four summaries in the `summarize` function).
+
+## The `summarize` function
+
+Because the first input to the `summarize` function is a dataframe, you can "pipe into" a `summarize` call. For example, we could have written the code on the previous slide as: 
+
+```{r eval = FALSE}
+nepali %>% 
+  summarize(mean_wt = mean(wt, na.rm = TRUE),
+            median_ht = median(ht, na.rm = TRUE),
+            youngest = min(age, na.rm = TRUE),
+            oldest = max(age, na.rm = TRUE))
+```
+
+As another note, because the output from `summarize` is also a dataframe, we could also "pipe into" another tidyverse function after running `summarize`. 
+
+## The `summarize` function
+
+There are some special functions that you can use with `summarize`: 
+
+Function | Description
+---------------|-------------
+`n()`          | Number of elements in a vector
+`n_distinct()` | Number of unique elements in a vector
+`first()`      | First value in a vector
+`last()`       | Last value in a vector
+
+## The `summarize` function
+
+For example, the following call would give you the total number of observations in the dataset, the number of distinct values of age measured across all children, the ID of the first child included in the dataset, and the weight of the last child included in the dataset:  
+
+```{r}
+nepali %>%
+  summarize(n_children = n(), 
+            n_distinct_ages = n_distinct(age),
+            first_id = first(id),
+            last_weight = last(wt))
+```
+
+## Grouping and summarizing
+
+Often, you'll want to get summaries of the data stratified by groups within the data. For example, in the Nepali dataset, you may want to get summaries by sex or by whether the child was short or tall. 
+
+To get grouped summaries of a dataframe, you can first use the `group_by` function from the `dplyr` package to "group" the dataset, and then when you run "summarize", it will be applied **by group** to the data. 
+
+Your final output from summarize will be a dataframe with: 
+
+- As many rows as there were unique groups in the grouping factor(s)
+- As many columns as you have defined summaries in the `summarize` function (the generic code above would result in two columns), plus columns for each of the grouping factors
+
+## Grouping and summarizing
+
+Without piping, the use of `group_by` and `summarize` looks like this:
+
+```{r eval = FALSE}
+# Generic code
+summarize(group_by(dataframe,
+                   grouping_factor_1, grouping_factor_2), 
+          summary_column_1 = function(existing_columns),
+          summary_column_2 = function(existing_columns)) 
+          
+```
+
+You can see that `group_by` is nested within the `summarize` call, because `group_by` must be applied to the dataframe before `summarize` is run if you want to get summaries by group. 
+
+## Grouping and summarizing
+
+This call tends to look much cleaner if you use piping. With piping, the generic call looks like: 
+
+```{r eval = FALSE}
+# Generic code
+dataframe %>% 
+  group_by(grouping_factor_1, grouping_factor_2) %>% 
+  summarize(summary_column_1 = function(existing_columns),
+            summary_column_2 = function(existing_columns))
+```
+
+## Grouping and summarizing
+
+For example, in the Nepali dataset, say you want to get summaries by sex. You want to get the total number of children in each group, the mean weight, and the ID of the first child.
+
+You can run:
+
+```{r}
+nepali %>%
+  group_by(sex) %>%
+  summarize(n_children = n(), 
+            mean_wt = mean(wt, na.rm = TRUE),
+            first_id = first(id))
+```
+
+## Grouping and summarizing
+
+```{r}
+nepali %>%
+  group_by(sex) %>%
+  summarize(n_children = n(), 
+            mean_wt = mean(wt, na.rm = TRUE),
+            first_id = first(id))
+```
+
+Notice that the output is a dataframe with two rows (since there were two groups in the grouping factor) and four columns (one for the grouping factor, plus one for each of the summaries defined in the `summarize` function).
+
+## Grouping and summarizing
+
+You can group by more than one variable. For example, to get summaries within groups divided by both sex and whether the child is tall (> 100 cm) or not, you could run:
+
+\small
+
+```{r}
+nepali %>%
+  mutate(tall = ht > 100) %>%
+  filter(!is.na(tall)) %>% 
+  group_by(sex, tall) %>%
+  summarize(n_children = n(),
+            mean_wt = mean(wt, na.rm = TRUE))
+```
+
+## In-course exercise
+
+We'll take a break now to start the in-course exercise for this week (Section 3.6.3).
+
 # Plots 
 
 ## Plots to explore data
@@ -237,48 +581,6 @@ plot_adds <- data.frame(add = c("`ggtitle`",
 knitr::kable(plot_adds, col.names = c("Element", "Description"))
 ```
 
-## Example plots
-
-For the example plots, I'll use a dataset in the `faraway` package called `nepali`. This gives data from a study of the health of a group of Nepalese children. 
-
-```{r}
-library(faraway)
-data(nepali)
-```
-
-I'll be using functions from `dplyr` and `ggplot2`:
-
-```{r message = FALSE, warning = FALSE}
-library(dplyr)
-library(ggplot2)
-```
-
-## Example plots
-
-Each observation is a single measurement for a child; there can be multiple observations per child. \medskip 
-
-I'll subset out child id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
-
-```{r message = FALSE}
-nepali <- nepali %>%
-  # Subset to certain columns
-  select(id, sex, wt, ht, age) %>%
-  # Convert id and sex to factors
-  mutate(id = factor(id),
-         sex = factor(sex, levels = c(1, 2),
-                      labels = c("Male", "Female"))) %>%
-  # Limit to first obs. per child
-  distinct(id, .keep_all = TRUE)
-```
-
-## `nepali` example data
-
-The data now looks like:
-
-```{r}
-head(nepali)
-```
-
 ## Histogram example
 
 For `geom_histogram()`, the main aesthetic is `x`, the (numeric) vector for which you want to create a histogram:
@@ -360,409 +662,4 @@ ggplot(nepali, aes(x = sex, y = ht, group = sex)) +
   xlab("Sex")+ ylab("Height (cm)") 
 ```
 
-## `ggpairs()` example
 
-There are lots of R extensions for creating other interesting plots. \medskip
-
-For example, you can use the `ggpairs` function from the `GGally` package to plot all pairs of scatterplots for several variables. \medskip
-
-Notice how this output shows continuous and binary variables differently. \medskip
-
-The next slide shows the output for:
-
-```{r eval = FALSE}
-library(GGally)
-ggpairs(nepali[, c("sex", "wt", "ht", "age")])
-```
-
-***
-
-```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center", message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5}
-library(GGally)
-ggpairs(nepali[, c("sex", "wt", "ht", "age")])
-```
-
-# Simple statistics
-
-## Simple statistics functions
-
-Here are some simple statistics functions you will likely use often:
-
-Function  | Description
---------- | -----------------
-`range()` | Range (minimum and maximum) of vector 
-`min()`, `max()` | Minimum or maximum of vector
-`mean()`, `median()` | Mean or median of vector
-`table()` | Number of observations per level for a factor vector
-`cor()` | Determine correlation(s) between two or more vectors
-`summary()` | Summary statistics, depends on class
-
-## Simple statistic examples
-
-All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`-- see help files).
-
-```{r}
-mean(nepali$wt, na.rm = TRUE)
-range(nepali$ht, na.rm = TRUE)
-table(nepali$sex)
-```
-
-## Simple statistic examples
-
-The `cor` function can take two or more vectors. If you give it multiple values, it will give the correlation matrix for all the vectors.
-
-```{r}
-cor(nepali$wt, nepali$ht, use = "complete.obs")
-cor(nepali[ , c("wt", "ht", "age")], use = "complete.obs")
-```
-
-## `summary()`: A bit of OOP
-
-R supports object-oriented programming. This shows up with `summary()`. R looks to see what type of object it's dealing with, and then uses a method specific to that object type. 
-
-```{r}
-summary(nepali$wt)
-summary(nepali$sex)
-```
-
-We'll see more of this when we do regression models.
-
-## Simple statistic examples
-
-You can also perform many of these tasks using `dplyr`. For example, to get the mean weight, you can use the `summarize` function: 
-
-```{r}
-nepali %>%
-  summarize(mean_wt = mean(wt, na.rm = TRUE))
-```
-
-## Simple statistic examples
-
-The basic format for using `summarize` is:
-
-```{r eval = FALSE}
-## Generic code
-dataframe %>%
-  summarize(summary_column_1 = function(existing_columns),
-            summary_column_2 = function(existing_columns))
-```
-
-There are some special functions that you can use with `summarize`. For example, `n` and `first` (see the Data Wrangling cheatsheet for more): 
-```{r}
-nepali %>%
-  summarize(n_children =n(), 
-            first_id = first(id))
-```
-
-## Simple statistic examples
-
-If you want to get summaries by group using `dplyr` (e.g., mean weight by sex), use `group_by` before running `summarize`:
-
-```{r}
-nepali %>%
-  group_by(sex) %>%
-  summarize(mean_wt = mean(wt, na.rm = TRUE),
-            n_children =n(), 
-            first_id = first(id))
-```
-
-# Logical statements
-
-## Logical statements
-
-Last week, you learned some about logical statements and how to use them with the `filter` function. \medskip
-
-You can use *logical vectors*, created with these statements, for a lot of other things. For example, you can use them directly in the square bracket indexing (`[..., ...]`).
-
-## Logical vectors
-
-A logical statement run on a vector will create a logical vector. This logical vector will be the same length as the original vector:
-
-```{r}
-is_male <- nepali$sex == "Male"
-length(nepali$sex)
-length(is_male)
-```
-
-## Logical vectors
-
-The logical vector will have the value `TRUE` at any position where the original vector met the logical condition you tested, and `FALSE` anywhere else:
-
-```{r}
-head(nepali$sex)
-head(is_male)
-```
-
-## Logical vectors
-
-You can "flip" this logical vector (i.e., change every `TRUE` to `FALSE` and vice-versa) using `!`:
-
-```{r}
-head(is_male)
-head(!is_male)
-```
-
-## Logical vectors
-
-You can do a few cool things now with this vector. For example, you can use it with indexing to pull out just the rows where `is_male` is `TRUE`:
-
-```{r}
-head(nepali[is_male, ])
-```
-
-## Logical vectors
-
-Or, with `!`, just the rows where `is_male` is `FALSE`:
-
-```{r}
-head(nepali[!is_male, ])
-```
-
-## Logical vectors
-
-You can also use `sum()` and `table()` to find out how many males and females are in the dataset:
-
-```{r}
-sum(is_male); sum(!is_male)
-table(is_male)
-```
-
-## `dplyr` equivalent
-
-As a note, you could also achieve that with `dplyr` functions. One way to do this is to use `mutate` with a logical statement to create an `is_male` column, then group by that new column and summarize:
-
-```{r}
-nepali %>%
-  mutate(is_male = sex == "Male") %>%
-  group_by(is_male) %>%
-  summarize(n_children = n())
-```
-
-# Regression models 
-
-## Formula structure
-
-*Regression models* can be used to estimate how the expected value of a *dependent variable* changes as *independent variables* change. \medskip
-
-In R, regression formulas take this structure:
-
-```{r eval = FALSE}
-## Generic code
-[response variable] ~ [indep. var. 1] +  [indep. var. 2] + ...
-```
-
-Notice that `~` used to separate the independent and dependent variables and the `+` used to join independent variables. This format mimics the statistical notation:
-
-$$
-Y_i \sim X_1 + X_2 + X_3
-$$
-
-You will use this type of structure in R fo a lot of different function calls, including those for linear models (`lm`) and generalized linear models (`glm`).
-
-
-## Linear models
-
-To fit a linear model, you can use the function `lm()`. Use the `data` option to specify the dataframe from which to get the vectors. You can save the model as an object. 
-
-```{r}
-mod_a <- lm(wt ~ ht, data = nepali)
-```
-
-This call fits the model:
-
-$$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
-
-where: 
-
-- $Y_{i}$ : weight of child $i$
-- $X_{1,i}$ : height of child $i$
-
-## Using model objects
-
-Some functions you can use on model objects:
-
-```{r echo = FALSE}
-mod_objects <- data.frame(Function = c("`summary`", "`coef`", 
-                                   "`fitted`",
-                                   "`plot`", "`residuals`"),
-                          Description = c("Get a variety of information on the model, including coefficients and p-values for the coefficients",
-                                   "Pull out just the coefficients for a model",
-                                   "Get the fitted values from the model (for the data used to fit the model)",
-                                   "Create plots to help assess model assumptions",
-                                   "Get the model residuals"))
-pander::pander(mod_objects, split.cells = c(1,1,58),
-               justify = c("center", "left"))
-```
-
-## Examples of using a model object
-
-For example, you can get the coefficients from the model we just fit:
-
-```{r}
-coef(mod_a)
-```
-
-The estimated coefficient for the intercept is always given under the name "(Intercept)". \medskip
-
-Estimated coefficients for independent variables are given based on their column names in the original data ("ht" here, for $\beta_1$, or the estimated increase in expected weight for a one unit increase in height).
-
-## Examples of using a model object
-
-You can also pull out the residuals from the model fit:
-
-```{r}
-head(residuals(mod_a))
-```
-
-This is a vector the same length as the number of observations (rows) in the dataframe you used to fit the model. The residuals are in the same order as the observations in the original dataframe. 
-
-## Examples of using a model object
-
-You can use the `coef` results to plot a regression line based on the model fit on top of points showing the original data:
-
-```{r, fig.height = 1.75, fig.width = 2.5, warning = FALSE, fig.align = "center"}
-mod_coef <- coef(mod_a)
-ggplot(nepali, aes(x = ht, y = wt)) + 
-  geom_point(size = 0.2) + 
-  xlab("Height (cm)") + ylab("Weight (kg)") + 
-  geom_abline(aes(intercept = mod_coef[1],
-                  slope = mod_coef[2]), col = "blue")
-```
-
-## Examples of using a model object
-
-The `summary()` function gives you a lot of information about the model: 
-
-```{r, eval = FALSE}
-summary(mod_a)
-```
-
-(see next slide)
-
-***
-
-```{r, echo = FALSE}
-summary(mod_a)
-```
-
-## `summary` for `lm` objects
-
-The object created when you use the `summary()` function on an `lm` object has several different parts you can pull out using the `$` operator:
-
-```{r}
-names(summary(mod_a))
-summary(mod_a)$coefficients
-```
-
-## Using `plot()` with `lm` objects
-
-You can use `plot` with an `lm` object to get a number of useful diagnostic plots to check regression assumptions:
-
-```{r eval = FALSE}
-plot(mod_a)
-```
-
-(See next slide)
-
-***
-
-```{r echo = FALSE, out.width = '\\textwidth', fig.align = "center"}
-oldpar <- par(mfrow = c(2, 2))
-plot(mod_a)
-par(oldpar)
-```
-
-## Fitting a model with a factor
-
-You can also use binary variables or factors as independent variables in regression models:
-
-```{r}
-mod_b <- lm(wt ~ sex, data = nepali)
-summary(mod_b)$coefficients
-```
-
-This call fits the model:
-
-$$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
-
-where $X_{1,i}$ : sex of child $i$, where 0 = male; 1 = female
-
-## Linear models versus GLMs
-
-You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). \medskip
-
-For linear models, the only difference between `lm` and `glm` is how they're fitting the model (least squares versus maximum likelihood). You should get the same results regardless of which you pick. 
-
-## Linear models versus GLMs
-
-For example:
-
-```{r}
-mod_c <- glm(wt ~ ht, data = nepali)
-summary(mod_c)$coef
-summary(mod_a)$coef
-```
-
-## GLMs
-
-You can fit other model types with `glm()` using the `family` option:
-
-```{r echo = FALSE}
-glm_types <- data.frame(type = c("Linear", "Logistic", "Poisson"),
-                        opt = c("`family = gaussian(link = 'identity')`",
-                                "`family = binomial(link = 'logit')`", 
-                                "`family = poisson(link = 'log')`"))
-knitr::kable(glm_types, col.names = c("Model type", "`family` option"))
-```
-
-## Logistic example
-
-For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability that a child weighs more than 13 kg is associated with the child's height. \medskip
-
-First, create a binary variable for `wt_over_13`:
-
-```{r}
-nepali <- nepali %>% 
-  mutate(wt_over_13 = wt > 13)
-head(nepali)
-```
-
-## Logistic example
-
-Now you can fit a logistic regression:
-
-```{r}
-mod_d <- glm(wt_over_13 ~ ht, data = nepali,
-             family = binomial(link = "logit"))
-summary(mod_d)$coef
-```
-
-Here, the model coefficient gives the **log odds** of having a weight higher than 13 kg associated with a unit increase in height.
-
-## Formula structure
-
-There are some conventions that can be used in R formulas. Common ones include: 
-
-```{r echo = FALSE}
-for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
-                                       "`-`", "`1`"),
-                        Meaning = c("calculate the value inside before fitting (e.g., `I(x1 + x2)`)",
-                                    "fit the interaction between two variables (e.g., `x1:x2`)",
-                                    "fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)",
-                                    "fit all variables other than the response (e.g., `y ~ .`)",
-                                    "do not include a variable (e.g., `y ~ . - x1`)",
-                                    "intercept (e.g., `y ~ 1`)"))
-pander::pander(for_convs, split.cells = c(1,1,58),
-               justify = c("center", "left"))
-```
-
-## To find out more
-
-A great (and free for CSU students) resource to find out more about using R for basic statistics:
-
-- [Introductory Statistics with R](http://discovery.library.colostate.edu/Record/.b44705323)
-
-If you want all the details about fitting linear models and GLMs in R, Faraway's books are fantastic:
-
-- [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691) (also freely available through our library)
-- [Extending the Linear Model with R](http://www.amazon.com/Extending-Linear-Model-Generalized-Nonparametric/dp/158488424X/ref=sr_1_1?ie=UTF8&qid=1442252668&sr=8-1&keywords=extending+linear+model+r)
