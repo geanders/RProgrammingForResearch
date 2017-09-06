@@ -19,6 +19,262 @@ data(worldcup)
 data(nepali)
 ```
 
+# Regression models 
+
+## `nepali` example data
+
+For the `nepali` dataset, each observation is a single measurement for a child; there can be multiple observations per child. \medskip 
+
+I'll limit it to the columns with the child's id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
+
+```{r message = FALSE}
+nepali <- nepali %>%
+  # Limit to certain columns
+  select(id, sex, wt, ht, age) %>%
+  # Convert id and sex to factors
+  mutate(id = factor(id),
+         sex = factor(sex, levels = c(1, 2),
+                      labels = c("Male", "Female"))) %>%
+  # Limit to first obs. per child
+  distinct(id, .keep_all = TRUE)
+```
+
+## `nepali` example data
+
+The data now looks like:
+
+```{r}
+head(nepali)
+```
+
+
+## Formula structure
+
+*Regression models* can be used to estimate how the expected value of a *dependent variable* changes as *independent variables* change. \medskip
+
+In R, regression formulas take this structure:
+
+```{r eval = FALSE}
+## Generic code
+[response variable] ~ [indep. var. 1] +  [indep. var. 2] + ...
+```
+
+Notice that `~` used to separate the independent and dependent variables and the `+` used to join independent variables. This format mimics the statistical notation:
+
+$$
+Y_i \sim X_1 + X_2 + X_3
+$$
+
+You will use this type of structure in R fo a lot of different function calls, including those for linear models (`lm`) and generalized linear models (`glm`).
+
+
+## Linear models
+
+To fit a linear model, you can use the function `lm()`. Use the `data` option to specify the dataframe from which to get the vectors. You can save the model as an object. 
+
+```{r}
+mod_a <- lm(wt ~ ht, data = nepali)
+```
+
+This call fits the model:
+
+$$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
+
+where: 
+
+- $Y_{i}$ : weight of child $i$
+- $X_{1,i}$ : height of child $i$
+
+## Using model objects
+
+Some functions you can use on model objects:
+
+```{r echo = FALSE}
+mod_objects <- data.frame(Function = c("`summary`", "`coef`", 
+                                   "`fitted`",
+                                   "`plot`", "`residuals`"),
+                          Description = c("Get a variety of information on the model, including coefficients and p-values for the coefficients",
+                                   "Pull out just the coefficients for a model",
+                                   "Get the fitted values from the model (for the data used to fit the model)",
+                                   "Create plots to help assess model assumptions",
+                                   "Get the model residuals"))
+pander::pander(mod_objects, split.cells = c(1,1,58),
+               justify = c("center", "left"))
+```
+
+## Examples of using a model object
+
+For example, you can get the coefficients from the model we just fit:
+
+```{r}
+coef(mod_a)
+```
+
+The estimated coefficient for the intercept is always given under the name "(Intercept)". \medskip
+
+Estimated coefficients for independent variables are given based on their column names in the original data ("ht" here, for $\beta_1$, or the estimated increase in expected weight for a one unit increase in height).
+
+## Examples of using a model object
+
+You can also pull out the residuals from the model fit:
+
+```{r}
+head(residuals(mod_a))
+```
+
+This is a vector the same length as the number of observations (rows) in the dataframe you used to fit the model. The residuals are in the same order as the observations in the original dataframe. 
+
+## Examples of using a model object
+
+You can use the `coef` results to plot a regression line based on the model fit on top of points showing the original data:
+
+```{r, fig.height = 1.75, fig.width = 2.5, warning = FALSE, fig.align = "center"}
+mod_coef <- coef(mod_a)
+ggplot(nepali, aes(x = ht, y = wt)) + 
+  geom_point(size = 0.2) + 
+  xlab("Height (cm)") + ylab("Weight (kg)") + 
+  geom_abline(aes(intercept = mod_coef[1],
+                  slope = mod_coef[2]), col = "blue")
+```
+
+## Examples of using a model object
+
+The `summary()` function gives you a lot of information about the model: 
+
+```{r, eval = FALSE}
+summary(mod_a)
+```
+
+(see next slide)
+
+***
+
+```{r, echo = FALSE}
+summary(mod_a)
+```
+
+## `summary` for `lm` objects
+
+The object created when you use the `summary()` function on an `lm` object has several different parts you can pull out using the `$` operator:
+
+```{r}
+names(summary(mod_a))
+summary(mod_a)$coefficients
+```
+
+## Using `plot()` with `lm` objects
+
+You can use `plot` with an `lm` object to get a number of useful diagnostic plots to check regression assumptions:
+
+```{r eval = FALSE}
+plot(mod_a)
+```
+
+(See next slide)
+
+***
+
+```{r echo = FALSE, out.width = '\\textwidth', fig.align = "center"}
+oldpar <- par(mfrow = c(2, 2))
+plot(mod_a)
+par(oldpar)
+```
+
+## Fitting a model with a factor
+
+You can also use binary variables or factors as independent variables in regression models:
+
+```{r}
+mod_b <- lm(wt ~ sex, data = nepali)
+summary(mod_b)$coefficients
+```
+
+This call fits the model:
+
+$$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
+
+where $X_{1,i}$ : sex of child $i$, where 0 = male; 1 = female
+
+## Linear models versus GLMs
+
+You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). \medskip
+
+For linear models, the only difference between `lm` and `glm` is how they're fitting the model (least squares versus maximum likelihood). You should get the same results regardless of which you pick. 
+
+## Linear models versus GLMs
+
+For example:
+
+```{r}
+mod_c <- glm(wt ~ ht, data = nepali)
+summary(mod_c)$coef
+summary(mod_a)$coef
+```
+
+## GLMs
+
+You can fit other model types with `glm()` using the `family` option:
+
+```{r echo = FALSE}
+glm_types <- data.frame(type = c("Linear", "Logistic", "Poisson"),
+                        opt = c("`family = gaussian(link = 'identity')`",
+                                "`family = binomial(link = 'logit')`", 
+                                "`family = poisson(link = 'log')`"))
+knitr::kable(glm_types, col.names = c("Model type", "`family` option"))
+```
+
+## Logistic example
+
+For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability that a child weighs more than 13 kg is associated with the child's height. \medskip
+
+First, create a binary variable for `wt_over_13`:
+
+```{r}
+nepali <- nepali %>% 
+  mutate(wt_over_13 = wt > 13)
+head(nepali)
+```
+
+## Logistic example
+
+Now you can fit a logistic regression:
+
+```{r}
+mod_d <- glm(wt_over_13 ~ ht, data = nepali,
+             family = binomial(link = "logit"))
+summary(mod_d)$coef
+```
+
+Here, the model coefficient gives the **log odds** of having a weight higher than 13 kg associated with a unit increase in height.
+
+## Formula structure
+
+There are some conventions that can be used in R formulas. Common ones include: 
+
+```{r echo = FALSE}
+for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
+                                       "`-`", "`1`"),
+                        Meaning = c("calculate the value inside before fitting (e.g., `I(x1 + x2)`)",
+                                    "fit the interaction between two variables (e.g., `x1:x2`)",
+                                    "fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)",
+                                    "fit all variables other than the response (e.g., `y ~ .`)",
+                                    "do not include a variable (e.g., `y ~ . - x1`)",
+                                    "intercept (e.g., `y ~ 1`)"))
+pander::pander(for_convs, split.cells = c(1,1,58),
+               justify = c("center", "left"))
+```
+
+## To find out more
+
+A great (and free for CSU students) resource to find out more about using R for basic statistics:
+
+- [Introductory Statistics with R](http://discovery.library.colostate.edu/Record/.b44705323)
+
+If you want all the details about fitting linear models and GLMs in R, Faraway's books are fantastic:
+
+- [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691) (also freely available through our library)
+- [Extending the Linear Model with R](http://www.amazon.com/Extending-Linear-Model-Generalized-Nonparametric/dp/158488424X/ref=sr_1_1?ie=UTF8&qid=1442252668&sr=8-1&keywords=extending+linear+model+r)
+
 # Parentheses
 
 ## Parentheses
