@@ -885,30 +885,11 @@ worldcup %>%
 
 Use some basic plots to check out this data. Try the following:
 
-- Plot histograms of all the numeric variables (`Time`, `Shot`, `Passes`, `Tackles`, `Saves`)
-- Plot scatterplots of different combinations of numeric variables (e.g., `Time` vs. `Shots`). Try doing this using the `geom_point()` geom from `ggplot2`. Also try doing it using the `ggpairs()` function from the `GGally` package, to plot several of these at the same time. Try using different constant or mapped values with the `color` aesthetic. 
-- Create boxplots of `Time`, `Shots`, `Passes` and `Saves` by position.
-- Go online and find out which teams were the top four teams in this World Cup (i.e., first through fourth places). Create a `top_teams` subset with just these teams. Plot boxplots of `Shots` and `Saves` by team for just these teams. 
+- Plot scatterplots of different combinations of numeric variables (e.g., `Time` vs. `Shots`). Try doing this using the `geom_point()` geom from `ggplot2`. Try using different constant or mapped values with the `color` aesthetic. 
+ 
 - Did you notice any interesting features of the data when you did any of the graphs in this section?
 
 #### Example R code:
-
-Use histograms to explore the distribution of different variables. If you want to change the number of bins in the histogram, try playing around with the `bins` and `binwidth` arguments. You can use the `bins` argument to say how many bins you want (e.g., `bins = 50`). You can use the `binwidth` argument to say how wide you want the bins to be (e.g., `binwidth = 10` if you wanted bins to be 10 units wide, in the units of the variable mapped to the `x` aesthetic. Try using `fill` and `color` to change the appearance of the plot. Google "R colors" and search the images to find links to listings of different R colors.
-
-```{r, message = FALSE, fig.align = "center", fig.width = 5, fig.height = 3}
-library(ggplot2)
-ggplot(worldcup, aes(x = Time)) + 
-  geom_histogram()
-
-ggplot(worldcup, aes(x = Time)) + 
-  geom_histogram(bins = 50)
-
-ggplot(worldcup, aes(x = Time)) + 
-  geom_histogram(binwidth = 100)
-
-ggplot(worldcup, aes(x = Time)) + 
-  geom_histogram(binwidth = 50, color = "white", fill = "cyan4")
-```
 
 Create a scatterplot of `Time` versus `Passes`. To change the size of the points, use the `size` argument (use a number lower than 1 for smaller points, higher than 1 for larger points). Try changing the color and transparency of the points using the aesthetics `color` and `alpha`. Try using color to show each player's position by mapping `Position` to the `color` aesthetic. 
 
@@ -926,13 +907,37 @@ ggplot(worldcup, aes(x = Time, y = Passes, color = Position)) +
   geom_point()
 ```
 
-Use the `ggpairs` function from the `GGally` package to plot scatterplots of all combinations of several numeric variables.
 
-```{r, message=FALSE, warning=FALSE, fig.align = "center"}
-library(GGally)
-library(dplyr)
-ggpairs(select(worldcup, Time, Shots, Passes, Tackles, Saves))
+
+### Exploring the data using basic plots #2
+
+Use some basic plots to check out this data. Try the following:
+
+- Plot histograms of all the numeric variables (`Time`, `Shot`, `Passes`, `Tackles`, `Saves`). 
+- Try customizing the number of bins used for the histogram plotted in the previous step.
+- Try using constant values for some of the aesthetics (e.g., customize the color and the fill) of the histogram created in the previous step.
+- Go online and find out which teams were the top four teams in this World Cup (i.e., first through fourth places). Create a `top_teams` subset with just these teams. Plot boxplots of `Shots` and `Saves` by team for just these teams.
+- In the previous section of the group exercise, you should have identified that the four top teams in this tournament were Spain, the Netherlands, Germany, and Uruguay. Create a histogram using data only from these four citis for the amount of time each player played. Use the color aesthetic of the histogram to show team. 
+- Create boxplots of `Time`, `Shots`, `Passes` and `Saves` by position.
+
+#### Example R code
+
+Use histograms to explore the distribution of different variables. If you want to change the number of bins in the histogram, try playing around with the `bins` and `binwidth` arguments. You can use the `bins` argument to say how many bins you want (e.g., `bins = 50`). You can use the `binwidth` argument to say how wide you want the bins to be (e.g., `binwidth = 10` if you wanted bins to be 10 units wide, in the units of the variable mapped to the `x` aesthetic. Try using `fill` and `color` to change the appearance of the plot. Google "R colors" and search the images to find links to listings of different R colors.
+
+```{r, message = FALSE, fig.align = "center", fig.width = 5, fig.height = 3}
+ggplot(worldcup, aes(x = Time)) + 
+  geom_histogram()
+
+ggplot(worldcup, aes(x = Time)) + 
+  geom_histogram(bins = 50)
+
+ggplot(worldcup, aes(x = Time)) + 
+  geom_histogram(binwidth = 100)
+
+ggplot(worldcup, aes(x = Time)) + 
+  geom_histogram(binwidth = 50, color = "white", fill = "cyan4")
 ```
+
 
 To create a boxplot of `Shots` by `Position`, you can use `geom_boxplot`:
 
@@ -963,6 +968,14 @@ ggplot(top_teams, aes(x = Team, y = Saves)) +
   ggtitle("Saves")
 ```
 
+
+```{r}
+worldcup %>% 
+  filter(Team %in% c("Spain", "Netherlands", "Germany", "Uruguay")) %>% 
+  ggplot(aes(x = Time, fill = Team)) + 
+  geom_histogram()
+```
+
 #### If you have extra time:
 
 If you wanted to do the same plot for several different variables, you could loop through your code (we'll be covering more about loops in a few weeks). For example, you could create histograms for all of the numeric variables (if you do this in RStudio, you'll need to use the arrows on the plot window to move through and see all the different plots once you've created them):
@@ -989,5 +1002,3 @@ A few things to note in this example:
 - To map an element of the data to an aesthetic, it's easiest if that element is saved in a column in the dataframe. Within this loop, I'm making an extra column called `to_plot`, where I'm copying the column of the variable I want to plot each time the loop runs. That way, I can always use `x = to_plot` in the aesthetic mapping for the ggplot object. 
 - If you run code to create a ggplot object within a loop, it won't automatically print. Instead, you need to use `print` to get the object to print out. One way to do that is to save the final ggplot object as an R object (here I'm saving it to `a`) and then use the `print` function to print that object. 
 - Next week, we'll talk some about faceting, which can create multiple plots by variable like this in a lot less code. However, it's useful at this point to start thinking about how to extend code to use in loops, to save yourself time when you need to repeat something similar many times.
-
-
