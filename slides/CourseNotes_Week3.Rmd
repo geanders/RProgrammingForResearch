@@ -402,7 +402,7 @@ nepali %>%
 
 ## In-course exercise
 
-We'll take a break now to start the in-course exercise for this week (Section 3.6.3).
+We'll take a break now to continue the in-course exercise for this week (Section 3.6.3).
 
 # Plots 
 
@@ -536,7 +536,7 @@ Let's put these ideas together to write the code to create a scatterplot for our
 
 ## Adding geoms
 
-The second step in plotting using `ggplot2` is to add one or more `geoms` to create the plot. You can add these with `+` to the ggplot object you created. \medskip
+There are a number of different `geom_*` functions you can use to add geoms to a plot. They are divided between geoms that directly map the data to an aesthetic and those that show some summary or statistic of the data. \medskip 
 
 Some of the most common direct-mapping geoms are:
 
@@ -586,11 +586,11 @@ nepali %>%
 
 ## In-course exercise
 
-We'll take a break now to start the in-course exercise for this week (Section [x]).
+We'll take a break now to continue the in-course exercise for this week (Section 3.6.4).
 
 ## Plot aesthetics
 
-Which aesthetics you must specify depend on which geoms (more on those in a second) you're adding to the plot. \medskip 
+Which aesthetics you must specify in the `aes` call depend on which geom you are adding to the plot. \medskip 
 
 You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file (e.g., `?geom_point`). \medskip 
 
@@ -598,25 +598,21 @@ Required aesthetics are in bold in this section of the help file and optional on
 
 ## Constant aesthetics
 
-Instead of mapping an aesthetic to an element of your data, you can use a constant value for it. For example, you may want to make all the points green, rather than having color map to gender: 
+Instead of mapping an aesthetic to an element of your data, you can use a constant value for the aesthetic. For example, you may want to make all the points blue, rather than having color map to gender: 
 
 ```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
 nepali %>%
-  tbl_df() %>% 
-  distinct(id, .keep_all = TRUE) %>%
-  mutate(sex = factor(sex, levels = c(1, 2), labels = c("Male", "Female"))) %>%
   ggplot(aes(x = ht, y = wt)) + 
-  geom_point(color = "darkgreen") + 
-  xlab("Height (cm)") + ylab("Weight (kg)")
+  geom_point(color = "blue")
 ```
 
-In this case, you'll define that aesthetic when you add the geom, outside of an `aes` statement.
+In this case, you can define that aesthetic as a constant for the geom, outside of an `aes` statement.
 
 ## Constant aesthetics
 
-In R, you can specify point shape with a number. \medskip
+For example, you may want to change the shape of the points in a scatterplot from their default shape, but not map them to a particular element of the data. \medskip
 
-Here are the shapes that correspond to the numbers 1 to 25:
+In R, you can specify point shape with a number. Here are the shapes that correspond to the numbers 1 to 25:
 
 ```{r echo = FALSE, out.width = "0.6\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center"}
 x <- rep(1:5, 5)
@@ -629,6 +625,16 @@ ggplot(to_plot, aes(x = x, y = y)) +
   xlim(c(0.5, 5.5)) + 
   theme_void() + 
   scale_y_reverse()
+```
+
+## Constant aesthetics
+
+Here is an example of mapping point shape to a constant value other than the default:
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+ggplot(data = nepali) + 
+  geom_point(mapping = aes(x = ht, y = wt, color = sex),
+             shape = 9)
 ```
 
 ## Constant aesthetics
@@ -651,13 +657,24 @@ ggplot(to_plot, aes(x = x, y = y)) +
 
 Google "R colors" and search the images to find links to listings of different R colors.
 
+## Constant aesthetics
+
+Here is an example of mapping point shape and color to constant values other than the defaults:
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+ggplot(data = nepali) + 
+  geom_point(mapping = aes(x = ht, y = wt),
+             shape = 9, 
+             color = "darkorchid")
+```
+
 ## Useful plot additions
 
 There are also a number of elements that you can add onto a `ggplot` object using `+`. A few very frequently used ones are: 
 
 ```{r echo = FALSE}
 plot_adds <- data.frame(add = c("`ggtitle`",
-                                "`xlab`, `ylab`",
+                                "`xlab`, `ylab`, `labs`",
                                 "`xlim`, `ylim`"),
                         descrip = c("Plot title",
                                     "x- and y-axis labels",
@@ -665,24 +682,53 @@ plot_adds <- data.frame(add = c("`ggtitle`",
 knitr::kable(plot_adds, col.names = c("Element", "Description"))
 ```
 
-## Histogram example
+## Adding geoms
 
-For `geom_histogram()`, the main aesthetic is `x`, the (numeric) vector for which you want to create a histogram:
+There are a number of different `geom_*` functions you can use to add geoms to a plot. They are divided between geoms that directly map the data to an aesthetic and those that show some summary or statistic of the data. \medskip 
 
-```{r, fig.width = 2.5, fig.height = 2, message = FALSE, warning = FALSE, fig.align = "center"}
-ggplot(nepali, aes(x = ht)) + 
-  geom_histogram()
+Some of the most common "statistical" geoms are:
+
+Geom(s)                        | Description
+-------------------------------|--------------
+`geom_histogram`               | Show distribution in 1-D
+`geom_hex`, `geom_density`     | Show distribution in 2-D
+`geom_col`, `geom_bar`         | Create bar charts
+`geom_boxplot`, `geom_dotplot` | Create boxplots and related plots
+`geom_smooth`                  | Add a fitted line to a scatterplot
+
+## Adding geoms
+
+These "statistical" geoms all input the original data and perform some calculations on that data to determine how to plot the final geom. Often, this calculation involves some kind of summarization. 
+
+For example, the geom for a hexagonal 2-D heatmap (`geom_hex`) divides the data into an evenly-sized set of hexagons and then calculates the number of points in each hexagon to provide a 2-D visualization of how the data is distributed. 
+
+## Adding geoms
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+ggplot(data = nepali) + 
+  geom_hex(aes(x = ht, y = wt))
 ```
 
+## Adding geoms
+
+A histogram geom is a similar idea, but only gives the distribution across one variable: 
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+ggplot(data = nepali) + 
+  geom_histogram(aes(x = ht))
+```
+
+
 ## Histogram example
 
-You can add some elements to the histogram, like `ggtitle`, `xlab`, and `xlim`:
+You can add some elements to the histogram, like `ggtitle`, `labs`, and `xlim`:
 
 ```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
 ggplot(nepali, aes(x = ht)) + 
   geom_histogram(fill = "lightblue", color = "black") + 
   ggtitle("Height of children") + 
-  xlab("Height (cm)") + xlim(c(0, 120))
+  labs(x = "Height (cm)", y = "Weight (kg)") + 
+  xlim(c(0, 120))
 ```
 
 ## Histogram example
@@ -691,49 +737,27 @@ ggplot(nepali, aes(x = ht)) +
 
 ```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", warning = FALSE, message = FALSE}
 ggplot(nepali, aes(x = ht)) + 
-  geom_histogram(fill = "lightblue", color = "black",
-                 bins = 40) 
+  geom_histogram(bins = 40) 
 ```
 
-## Scatterplot example
+## Bar chart
 
-You can use the `geom_point` geom to create a scatterplot. For example, to create a scatterplot of height versus age for the Nepali data: 
+You can use the `geom_bar` geom to create a barchart:
 
-```{r, fig.width = 2.5, fig.height = 2, warning = FALSE, fig.align = "center"}
-ggplot(nepali, aes(x = ht, y = wt)) + 
-  geom_point()
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+ggplot(nepali, aes(x = sex, fill = ht > 100)) + 
+  geom_bar()
 ```
 
-## Scatterplot example
-
-Again, you can use some of the options and additions to change the plot appearance:
-
-```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
-ggplot(nepali, aes(x = ht, y = wt)) + 
-  geom_point(color = "blue", size = 0.5) + 
-  ggtitle("Weight versus Height") + 
-  xlab("Height (cm)") + ylab("Weight (kg)")
-```
-
-## Scatterplot example
-
-You can also try mapping another variable, `sex`, to the `color` aesthetic:
-
-```{r, fig.width = 3.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
-ggplot(nepali, aes(x = ht, y = wt, color = sex)) + 
-  geom_point(size = 0.5) + 
-  ggtitle("Weight versus Height") + 
-  xlab("Height (cm)") + ylab("Weight (kg)")
-```
 
 ## Boxplot example
 
-To create a boxplot, use `geom_boxplot`: 
+To create a boxplot, you can use `geom_boxplot`: 
 
 ```{r, fig.height = 2, fig.width = 2, warning = FALSE, fig.align="center"}
 ggplot(nepali, aes(x = 1, y = ht)) + 
   geom_boxplot() + 
-  xlab("")+ ylab("Height (cm)")
+  labs(x = "", y = "Height (cm)")
 ```
 
 ## Boxplot example
@@ -743,7 +767,9 @@ You can also do separate boxplots by a factor. In this case, you'll need to incl
 ```{r, fig.height = 2, fig.width = 2.5, fig.align = "center", warning = FALSE}
 ggplot(nepali, aes(x = sex, y = ht, group = sex)) + 
   geom_boxplot() + 
-  xlab("Sex")+ ylab("Height (cm)") 
+  labs(x = "Sex", y = "Height (cm)")
 ```
 
+## In-course exercise
 
+We'll take a break now to finish the in-course exercise for this week (Section 3.6.5).
