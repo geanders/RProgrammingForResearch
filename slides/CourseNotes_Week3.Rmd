@@ -424,47 +424,54 @@ library(ggplot2)
 
 The basic steps behind creating a plot with `ggplot2` are:
 
-1. Create an object of the `ggplot` class, typically specifying the **data** and some or all of the **aesthetics**; 
-2. Add on one or more **geoms** and other elements to create and customize the plot, using `+`.
+1. Create an object of the `ggplot` class, typically specifying the **data** to be shown in the plot; 
+2. Add on (using `+`) one or more **geoms**, specifying the **aesthetics** for each; and 
+3. Add on (using `+`) other elements to create and customize the plot (e.g., add layers to customize scales or themes or to add facets).
 
 *Note*: To avoid errors, end lines with `+`, don't start lines with it. 
 
-## Creating a ggplot object
+## Plot data
 
-The first step in plotting using `ggplot2` is to create a ggplot object. \medskip
+The `ggplot` function requires you to input a dataframe with the data you will plot. All the columns in that dataframe can be mapped to specific aesthetics within the plot. 
 
-Use the following conventions to do this:
-
-```{r, eval = FALSE}
-## Generic code
-ggplot(dataframe, aes(x = column_1, y = column_2))
-## or
-object <- ggplot(dataframe, aes(x = column_1, y = column_2))
+```{r}
+nepali %>% 
+  slice(1:3)
 ```
 
-Notice that you first specify the **dataframe** with the data you want to plot and then you might specify either **mappings** or constant values for some or all of the aesthetics (`aes`). 
+For example, if we input the `nepali` dataframe, we would be able to create a scatterplot that shows each child's initial height on the x-axis, weight on the y-axis, and sex by the color of the point.
 
 ## Plot aesthetics
 
-**Aesthetics** are elements that can show certain elements of the data. \medskip
+**Aesthetics** are plotting elements that can show certain elements of the data. \medskip
 
-For example, color might show gender, x-position might show height, and y-position might show weight. \medskip
+For example, you may want to create a scatterplot where color shows gender, x-position shows height, and y-position shows weight. \medskip
 
 ```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-library(dplyr)
-data("nepali") 
 nepali %>%
-  tbl_df() %>% 
-  distinct(id, .keep_all = TRUE) %>%
-  mutate(sex = factor(sex, levels = c(1, 2), labels = c("Male", "Female"))) %>%
   ggplot(aes(x = ht, y = wt, color = sex)) + 
   geom_point() + 
   xlab("Height (cm)") + ylab("Weight (kg)")
 ```
 
-In this graph, the mapped aesthetics are color, x, and y. \medskip
+## Plot aesthetics
 
-*Note*: Any of these aesthetics could also be given a constant value, instead of being mapped to an element of the data. For example, all the points could be red, instead of showing gender. 
+In the previous graph, the mapped aesthetics are color, x, and y. In the `ggplot` code, all of these aesthetic mappings will be specified within an `aes` call, which will be nested in another call in the `ggplot` pipeline. \medskip
+
+Aesthetic       | `ggplot` abbreviation  | `nepali` column
+----------------|------------------------|-----------------
+x-axis position | `x = `                 | `ht`
+y-axis position | `y = `                 | `wt`
+color           | `color = `             | `sex`
+
+This is how these mappings will be specified in an `aes` call:
+
+```{r eval = FALSE}
+# Note: This code should not be run by itself. 
+# It will eventually be nested in a ggplot call.
+aes(x = ht, y = wt, color = sex)
+```
+
 
 ## Plot aesthetics
 
@@ -485,6 +492,102 @@ aes_vals <- data.frame(aes = c("`x`", "`y`", "`shape`",
 knitr::kable(aes_vals, col.names = c("Code", "Description"))
 ```
 
+## Geoms
+
+You will add **geoms** that create the actual geometric objects on the plot. For example, a scatterplot has "points" geoms, since each observation is displayed as a point. 
+
+There are `geom_*` functions that can be used to add a variety of geoms. The function to add a "points" geom is `geom_point`. 
+
+We just covered three plotting elements: 
+
+- Data
+- Aesthetics
+- Geoms
+
+These are three elements that you will almost always specify when using `ggplot`, and they are sufficient to create a number of basic plots. 
+
+## Creating a ggplot object
+
+You can create a scatterplot using `ggplot` using the following code format:
+
+```{r, eval = FALSE}
+## Generic code
+ggplot(data = dataframe) + 
+  geom_point(mapping = aes(x = column_1, y = column_2, 
+                           color = column_3))
+```
+
+\small 
+Notice that: 
+
+1. The `ggplot` call specifies the **dataframe** with the data you want to plot 
+2. A **geom** is added using the approporiate `geom_*` function for a scatterplot (`geom_point`). 
+3. The mappings between columns in the dataframe and **aesthetics** of the geom is specified within an `aes` call in the `mapping` argument of the `geom_*` function call.
+4. The `aes` call includes mappings to two aesthetics that are required from the `geom_point` geom (`x` and `y`) and one that is optional (`color`).
+
+## Creating a ggplot object
+
+Let's put these ideas together to write the code to create a scatterplot for our example data: 
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+  ggplot(data = nepali) + 
+  geom_point(mapping = aes(x = ht, y = wt, color = sex)) 
+```
+
+## Adding geoms
+
+The second step in plotting using `ggplot2` is to add one or more `geoms` to create the plot. You can add these with `+` to the ggplot object you created. \medskip
+
+Some of the most common direct-mapping geoms are:
+
+Geom(s)                     | Description
+----------------------------|--------------
+`geom_point`                | Points in 2-D (e.g. scatterplot)
+`geom_line`, `geom_path`    | Connect observations with a line
+`geom_abline`               | A line with a certain intercept and slope
+`geom_hline`, `geom_vline`  | A horizontal or vertical line
+`geom_rug`                  | A rug plot
+`geom_label`, `geom_text`   | Text labels
+
+## Creating a ggplot object
+
+You can add several geoms to the same plot as layers:
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+  ggplot(data = nepali) + 
+  geom_point(mapping = aes(x = ht, y = wt, color = sex)) + 
+  geom_line(mapping = aes(x = ht, y = wt, color = sex)) + 
+  geom_rug(mapping = aes(x = ht, y = wt, color = sex)) 
+```
+
+## Creating a ggplot object
+
+You may have noticed that all of these geoms use the same aesthetic mappings (height to x-axis position, weight to y-axis position, and sex to color). To save time, you can specify the aesthetic mappings in the first `ggplot` call. These mappings will then be the default for any of the added geoms. 
+
+```{r eval = FALSE}
+ggplot(data = nepali,
+       mapping = aes(x = ht, y = wt, color = sex)) + 
+  geom_point() + 
+  geom_line() + 
+  geom_rug() 
+```
+
+## Creating a ggplot object
+
+Because the first argument of the `ggplot` call is a dataframe, you can also "pipe into" a `ggplot` call:
+
+```{r eval = FALSE}
+nepali %>% 
+  ggplot(aes(x = ht, y = wt, color = sex)) + 
+  geom_point() + 
+  geom_line() + 
+  geom_rug() 
+```
+
+## In-course exercise
+
+We'll take a break now to start the in-course exercise for this week (Section [x]).
+
 ## Plot aesthetics
 
 Which aesthetics you must specify depend on which geoms (more on those in a second) you're adding to the plot. \medskip 
@@ -492,25 +595,6 @@ Which aesthetics you must specify depend on which geoms (more on those in a seco
 You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file (e.g., `?geom_point`). \medskip 
 
 Required aesthetics are in bold in this section of the help file and optional ones are not. 
-
-## Adding geoms
-
-The second step in plotting using `ggplot2` is to add one or more `geoms` to create the plot. You can add these with `+` to the ggplot object you created. \medskip
-
-Some of the most common geoms are:
-
-```{r echo = FALSE}
-plot_funcs <- data.frame(type = c("Histogram (1 numeric variable)",
-                                  "Scatterplot (2 numeric variables)",
-                                  "Boxplot (1 numeric variable, possibly 1 factor variable)",
-                                  "Line graph (2 numeric variables)"), 
-                         ggplot2_func = c("`geom_histogram`",
-                                          "`geom_point`",
-                                          "`geom_boxplot`",
-                                          "`geom_line`"))
-knitr::kable(plot_funcs, col.names = c("Plot type",
-                                       "ggplot2 function"))
-```
 
 ## Constant aesthetics
 
