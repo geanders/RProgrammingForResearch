@@ -404,15 +404,23 @@ nepali %>%
 
 We'll take a break now to continue the in-course exercise for this week (Section 3.6.3).
 
+## More reading / practice
+
+If you would like more reading and practice on what we've covered so far on transforming data, see chapter 5 of the "R for Data Science" book suggested at the start of the course. 
+
+As a reminder, that is available at: 
+
+http://r4ds.had.co.nz
+
 # Plots 
 
 ## Plots to explore data
 
 Plots can be invaluable in exploring your data. \medskip
 
-This week, we will focus on **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data. \medskip
+Today, we will focus on **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data. \medskip
 
-Next week, we will talk more about customization, to help you make more attractive plots that would go into final reports. \medskip
+Next lecture, we will talk more about customization, to help you make more attractive plots that would go into final reports. \medskip
 
 ## `ggplot` conventions
 
@@ -675,12 +683,29 @@ There are also a number of elements that you can add onto a `ggplot` object usin
 ```{r echo = FALSE}
 plot_adds <- data.frame(add = c("`ggtitle`",
                                 "`xlab`, `ylab`, `labs`",
-                                "`xlim`, `ylim`"),
+                                "`xlim`, `ylim`",
+                                "`expand_limits`"),
                         descrip = c("Plot title",
                                     "x- and y-axis labels",
-                                    "Limits of x- and y-axis"))
+                                    "Limits of x- and y-axis",
+                                    "Include a value in a range"))
 knitr::kable(plot_adds, col.names = c("Element", "Description"))
 ```
+
+## Useful plot additions
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+ggplot(data = nepali) + 
+  geom_point(mapping = aes(x = ht, y = wt)) + 
+  labs(x = "Height", y = "Weight") + 
+  ggtitle("Height vs. weight for Nepali children",
+          subtitle = "Based on data from West et al. (1997)") + 
+  expand_limits(x = 0, y = 0)
+```
+
+## In-course exercise
+
+We’ll take a break now to continue the in-course exercise for this week (Section 3.6.5).
 
 ## Adding geoms
 
@@ -723,7 +748,7 @@ ggplot(data = nepali) +
 
 You can add some elements to the histogram, like `ggtitle`, `labs`, and `xlim`:
 
-```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", message = FALSE, warning = FALSE}
+```{r, fig.width = 4, fig.height = 2.5, out.width="0.6\\textwidth", fig.align = "center", message = FALSE, warning = FALSE}
 ggplot(nepali, aes(x = ht)) + 
   geom_histogram(fill = "lightblue", color = "black") + 
   ggtitle("Height of children") + 
@@ -749,6 +774,14 @@ ggplot(nepali, aes(x = sex, fill = ht > 100)) +
   geom_bar()
 ```
 
+## Bar chart
+
+With the `geom_bar` geom, you can use the `position` argument to change how the bars for different groups are shown (`"stack"`, `"dodge"`, `"fill"`):
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+ggplot(nepali, aes(x = sex, fill = ht > 100)) + 
+  geom_bar(position = "dodge")
+```
 
 ## Boxplot example
 
@@ -772,4 +805,4 @@ ggplot(nepali, aes(x = sex, y = ht, group = sex)) +
 
 ## In-course exercise
 
-We'll take a break now to finish the in-course exercise for this week (Section 3.6.5).
+We'll take a break now to finish the in-course exercise for this week (Section 3.6.6).
