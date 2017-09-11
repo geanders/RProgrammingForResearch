@@ -885,40 +885,132 @@ worldcup %>%
 
 Use some basic plots to check out this data. Try the following:
 
-- Plot scatterplots of different combinations of numeric variables (e.g., `Time` vs. `Shots`). Try doing this using the `geom_point()` geom from `ggplot2`. Try using different constant or mapped values with the `color` aesthetic. 
- 
+- Create a scatterplot of the `worldcup` data, where each point is a player, the x-axis shows the amount of time the player played in the World Cup, and the y-axis shows the number of passes the player had. Try writing the code both with and withing "piping in" the data you want to plot into the `ggplot` function.
+- Create the same scatterplot, but have each point in the scatterplot show that player's position. Add "rug plots" to the margins.
+- Create a scatterplot of number of shots (x-axis) versus number of tackles (y-axis) for **just** players on one of the four teams that made the semi-finals (Spain, Netherlands, Germany, Uruguay). Use color to show player's position and shape to show player's team. (Hint: you will want to use some `dplyr` code to clean the data before plotting to do this.)
+- Create a scatterplot of player time versus passes. Use color to show whether the player was on one of the top 4 teams or not. (Hint: Again, you'll want to use some `dplyr` code before plotting to do this.) For an extra challenge, also try adding each player's name on top of each point.
 - Did you notice any interesting features of the data when you did any of the graphs in this section?
 
 #### Example R code:
 
-Create a scatterplot of `Time` versus `Passes`. To change the size of the points, use the `size` argument (use a number lower than 1 for smaller points, higher than 1 for larger points). Try changing the color and transparency of the points using the aesthetics `color` and `alpha`. Try using color to show each player's position by mapping `Position` to the `color` aesthetic. 
+Create a scatterplot of `Time` versus `Passes`. 
 
 ```{r, fig.align = "center", fig.width = 5, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Passes)) + 
-  geom_point()
+# Without piping
+ggplot(worldcup) + 
+  geom_point(mapping = aes(x = Time, y = Passes))
 
-ggplot(worldcup, aes(x = Time, y = Passes)) + 
-  geom_point(size = 0.5)
-
-ggplot(worldcup, aes(x = Time, y = Passes)) + 
-  geom_point(size = 2, color = "blue", alpha = 0.25)
-
-ggplot(worldcup, aes(x = Time, y = Passes, color = Position)) + 
-  geom_point()
+# With piping
+worldcup %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = Time, y = Passes)) 
 ```
 
+Create the same scatterplot, but have each point in the scatterplot show that player's position. 
+
+```{r}
+ggplot(worldcup,
+       mapping = aes(x = Time, y = Passes, color = Position)) + 
+  geom_point() + 
+  geom_rug()
+```
+
+Create a scatterplot of number of shots (x-axis) versus number of tackles (y-axis) for **just** players on one of the four teams that made the semi-finals (Spain, Netherlands, Germany, Uruguay). Use color to show player's position and shape to show player's team. For an extra challenge, also try adding each player's name on top of each point.
+
+```{r}
+worldcup %>% 
+  tibble::rownames_to_column(var = "Name") %>% 
+  filter(Team %in% c("Spain", "Netherlands", "Germany", "Uruguay")) %>% 
+  ggplot() + 
+  geom_point(aes(x = Shots, y = Tackles, color = Position, shape = Team)) + 
+  geom_text(mapping = aes(x = Shots, y = Tackles, 
+                          color = Position, label = Name), 
+            size = 2.5)
+```
+
+Create a scatterplot of player time versus passes. Use color to show whether the player was on one of the top 4 teams or not.
+
+```{r}
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Spain", "Netherlands", "Germany", "Uruguay")) %>% 
+  ggplot() + 
+  geom_point(aes(x = Time, y = Passes, color = top_4))
+```
 
 
 ### Exploring the data using basic plots #2
 
-Use some basic plots to check out this data. Try the following:
+Go back to the code you used in the previous section to create a scatterplot of the `worldcup` data, where each point is a player, the x-axis shows the amount of time the player played in the World Cup, and the y-axis shows the number of passes the player had. Try the following modifications: 
 
-- Plot histograms of all the numeric variables (`Time`, `Shot`, `Passes`, `Tackles`, `Saves`). 
-- Try customizing the number of bins used for the histogram plotted in the previous step.
+- Make all the points blue. 
+- Google "R colors" to find a list of color names in R. Pick your favorite and make all the points in the scatterplot that color.
+- Change the size of the points to make them smaller (hint: check out the `size` aesthetic).
+- Make it so the color of the points shows the player's position and all the points are slightly transparent.
+- Change the title of the x-axis to "Time (minutes)" and the y-axis to "Number of passes".
+- Add the title "World Cup statistics" and the subtitle "2010 World Cup".
+
+#### Example R code:
+
+Make all the points blue.
+
+```{r}
+ggplot(worldcup) + 
+  geom_point(mapping = aes(x = Time, y = Passes),
+             color = "blue")
+```
+
+Google "R colors" to find a list of color names in R. Pick your favorite and make all the points in the scatterplot that color.
+
+```{r}
+# Make the points "darkseagreen4"
+ggplot(worldcup) + 
+  geom_point(mapping = aes(x = Time, y = Passes),
+             color = "darkseagreen4")
+```
+
+Change the size of the points to make them smaller (hint: check out the `size` aesthetic).
+
+```{r}
+ggplot(worldcup) + 
+  geom_point(mapping = aes(x = Time, y = Passes),
+             size = 0.8)
+```
+Make it so the color of the points shows the player's position and all the points are slightly transparent.
+
+```{r}
+ggplot(worldcup) + 
+  geom_point(mapping = aes(x = Time, y = Passes),
+             alpha = 0.3)
+```
+
+Change the title of the x-axis to "Time (minutes)" and the y-axis to "Number of passes".
+
+```{r}
+ggplot(worldcup) + 
+  geom_point(mapping = aes(x = Time, y = Passes)) + 
+  labs(x = "Time (minutes)", y = "Number of passes")
+```
+
+Add the title "World Cup statistics" and the subtitle "2010 World Cup".
+
+```{r}
+ggplot(worldcup) + 
+  geom_point(mapping = aes(x = Time, y = Passes)) + 
+  ggtitle("World Cup statistics",
+          subtitle = "2010 World Cup")
+```
+
+
+### Exploring the data using basic plots #3
+
+Try out creating some plots using the "statistical" geoms to check out this data. Try the following:
+
+- Plot histograms of all the numeric variables (`Time`, `Shot`, `Passes`, `Tackles`, `Saves`) in the dataset. 
+- Try customizing the number of bins used for one of the histograms plotted in the previous step.
 - Try using constant values for some of the aesthetics (e.g., customize the color and the fill) of the histogram created in the previous step.
-- Go online and find out which teams were the top four teams in this World Cup (i.e., first through fourth places). Create a `top_teams` subset with just these teams. Plot boxplots of `Shots` and `Saves` by team for just these teams.
-- In the previous section of the group exercise, you should have identified that the four top teams in this tournament were Spain, the Netherlands, Germany, and Uruguay. Create a histogram using data only from these four citis for the amount of time each player played. Use the color aesthetic of the histogram to show team. 
-- Create boxplots of `Time`, `Shots`, `Passes` and `Saves` by position.
+- Create a boxplot of `Shots` by position.
+- Create a `top_teams` subset with just the four teams that made the semi-finals in the 2010 World Cup (Spain, the Netherlands, Germany, and Uruguay). Plot boxplots of `Shots` and `Saves` by team for just these teams.
+- Create a histogram using data only from the four top teams for the amount of time each player played. Use the color aesthetic of the histogram to show team. 
 
 #### Example R code
 
@@ -950,30 +1042,30 @@ The top four teams in this World Cup were Spain, the Netherlands, Germany, and U
 
 ```{r}
 top_teams <- worldcup %>%
-  filter(Team %in% c("Spain", "Netherlands", "Germany", "Uruguay")) %>% 
-  mutate(Team = factor(Team))
+  filter(Team %in% c("Spain", "Netherlands", "Germany", "Uruguay")) 
 ```
 
-This dataset will still have all the levels saved for the `Team` factor, even though it isn't using them all. You can re-set this by resetting `Team` as a factor, which is what I've done with the `mutate` line. When R creates a factor from a vector, its default is to only use as levels the values that show up in the vector. 
-
-Now, you can plot the boxplots, mapping `Team` to the `x` aesthetic and `Shots` or `Saves` to the `y` aesthetic:
+Now, you can plot the boxplots, mapping `Team` to the `x` aesthetic and `Shots` to the `y` aesthetic:
 
 ```{r, fig.width = 6, fig.height = 3, fig.align = "center"}
 ggplot(top_teams, aes(x = Team, y = Shots)) + 
   geom_boxplot() + 
-  ggtitle("Shots")
+  ggtitle("Shots per player in World Cup 2010")
 
-ggplot(top_teams, aes(x = Team, y = Saves)) + 
-  geom_boxplot() + 
-  ggtitle("Saves")
 ```
 
+Create a histogram using data only from the four top teams for the amount of time each player played. Use the color aesthetic of the histogram to show team. 
 
 ```{r}
-worldcup %>% 
-  filter(Team %in% c("Spain", "Netherlands", "Germany", "Uruguay")) %>% 
-  ggplot(aes(x = Time, fill = Team)) + 
-  geom_histogram()
+ggplot(data = top_teams) + 
+  geom_histogram(aes(x = Time, fill = Team))
+```
+
+Note that you can also explore other values for `geom_histogram` arguments. For example, you could change the binwidths to be 90 minutes (since games are 90 minutes). 
+
+```{r}
+ggplot(data = top_teams) + 
+  geom_histogram(aes(x = Time, fill = Team), binwidth = 90)
 ```
 
 #### If you have extra time:
