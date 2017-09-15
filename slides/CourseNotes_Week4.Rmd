@@ -128,8 +128,9 @@ grid.arrange(a, b, ncol = 2)
 
 One quick way to increase data density in `ggplot2` is to change the *theme* for the plot. This essentially changes the "background" elements to a plot, including elements like the plot grid, background color, and the font used for labeling. \bigskip
 
-Some themes come with `ggplto2`, including:
+Some themes come with `ggplot2`, including:
 
+- `theme_classic`
 - `theme_bw`
 - `theme_minimal`
 - `theme_void` 
@@ -226,7 +227,7 @@ grid.arrange(a, b, ncol = 2)
 
 There are a few strategies you can use to make labels clearer: 
 
-- Add `xlab` and `ylab` elements to the plot, rather than relying on the column names in the original data. This can also be done with `scale` elements (e.g., `scale_x_continuous`), which give you more power to also make other changes to the x- and y-axes.
+- Add a `labs()` element to the plot, rather than relying on the column names in the original data. This can also be done with `scale` elements (e.g., `scale_x_continuous`), which give you more power to also make other changes to these scales.
 - Include units of measurement in axis titles when relevant. If units are dollars or percent, check out the `scales` package, which allows you to add labels directly to axis elements by including arguments like `labels = percent` in `scale` elements.
 - If the x-variable requires longer labels (player positions in the example above), consider flipping the coordinates, rather than abbreviating or rotating the labels. You can use `coord_flip` to do this.
 
@@ -234,7 +235,7 @@ There are a few strategies you can use to make labels clearer:
 
 Guideline 3: **Provide useful references.** \bigskip
 
-Data is easier to interpret when you add references. For example, if you show what it typical, it helps viewers interpret how unusual outliers are. The graph below on the right has added shading showing the range of daily deaths in July in Chicage for 1990--1994 and 1996--2000, to clarify how unusual July 1995 was. \bigskip
+Data is easier to interpret when you add references. For example, if you show what it typical, it helps viewers interpret how unusual outliers are. The graph below on the right has added shading showing the range of daily deaths in July in Chicago for 1990--1994 and 1996--2000, to clarify how unusual July 1995 was. \bigskip
 
 ```{r echo = FALSE, fig.height = 3, fig.width = 8}
 chic_july <- subset(chic, month == 7 & year == 1995)
@@ -384,6 +385,10 @@ b <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
 
 grid.arrange(a, b, ncol = 2)
 ```
+
+## In-course exercise 
+
+We'll take a break now to do Sections 4.10.1 and 4.10.2 of the In-Course Exercise.
 
 ## Highlighting
 
@@ -582,7 +587,7 @@ Notice that the labels for the two graphs have now changed:
 ```{r warning = FALSE, fig.width = 8, fig.height = 3}
 ggplot(nepali, aes(ht, wt)) + 
         geom_point() + 
-        facet_grid(. ~ sex)
+        facet_wrap(~ sex, ncol = 2)
 ```
 
 ## Small multiples
@@ -603,6 +608,10 @@ ggplot(nepali, aes(ht, wt)) +
         geom_point() + 
         facet_grid(. ~ sex)
 ```
+
+## In-course exercise 
+
+We'll now take a break to do Section 4.10.3 of the In-Course Exercise.
 
 # Advanced customization
 
@@ -669,7 +678,7 @@ ggplot(chic_july, aes(x = date, y = death)) +
 
 ## Scales
 
-And here's an example of changing the formating and name of the x-axis:
+And here's an example of changing the formatting and name of the x-axis:
 
 ```{r fig.width = 5, fig.height = 2, out.width = "0.9\\textwidth", fig.align = "center"}
 ggplot(chic_july, aes(x = date, y = death)) + 

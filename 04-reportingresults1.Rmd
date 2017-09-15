@@ -617,11 +617,13 @@ For more technical details about plotting in R:
 
 ### Designing a plot
 
-For today's exercise, you'll be building a plot using the `worldcup` data from the `faraway` package. First, load in that data. 
+For today's exercise, you'll be building a plot using the `worldcup` data from the `faraway` package. First, load in that data. The name of each player is in the rownames of this data. Use the `tibble::rownames_to_column()` function to move those rownames into a new column named `Player`. Also install and load the `ggplot2` and `ggthemes` packages.
 
 Next, say you want to look at the relationship between the number of minutes that a player played in the 2010 World Cup (`Time`) and the number of shots the player took on goal (`Shots`). On a sheet of paper, and talking with your partner, decide how the two of you would design a plot to explore and present this relationship. How would you incorporate some of the principles of creating good graphs?
 
 #### Example R code
+
+For this section, the only code needed is code to load the required packages, load the data, and move the rownames to a column named `Player`.
 
 ```{r}
 library(faraway)
@@ -634,20 +636,9 @@ This dataset has the players' names as rownames, rather than in a column. Once w
 ```{r message = FALSE}
 library(dplyr)
 worldcup <- worldcup %>%
-  mutate(Player = rownames(worldcup))
+  tibble::rownames_to_column(var = "Player")
 head(worldcup, 2)
 ```
-
-
-### Basic scatterplots with R base graphics and ggplot
-
-Perform the following tasks:
-
-- Install and load the `ggplot2` and `ggthemes` packages. 
-- For the `worldcup` data, plot a scatterplot of Time (on the x-axis) versus Shots. 
-- Add some ggplot elements to make this plot a bit more attractive. (For example, change the x- and y-axis labels and add a title.) 
-
-#### Example R code
 
 Install and load the `ggplot2` package:
 
@@ -658,24 +649,7 @@ library(ggplot2)
 library(ggthemes)
 ```
 
-Use the R base graphics to create a scatterplot of Time versus Shots:
-
-```{r, fig.width = 5, fig.height = 4}
-ggplot(worldcup, aes(x = Time, y = Shots)) + 
-        geom_point()
-```
-
-Use some of the plotting options to improve the graph's appearance:
-
-```{r, fig.width = 5, fig.height = 4}
-ggplot(worldcup, aes(x = Time, y = Shots)) + 
-  geom_point() + 
-  xlab("Minutes played") + 
-  ylab("Shots on goal") + 
-  ggtitle("Time played vs. shots taken\n World Cup 2010")
-```
-
-### Fancier graphs
+### Implementing plot guidelines #1
 
 In this section, we'll work on creating a plot like this:
 
@@ -694,6 +668,8 @@ worldcup$Position <- factor(worldcup$Position,
                                        "Forward"))
 
 ggplot(worldcup, aes(x = Time, y = Shots, color = top_four)) + 
+        geom_vline(xintercept = 90 * 3, color = "lightgray",
+                   linetype = 2, alpha = 0.5) +
         geom_point(size = 1.8, alpha = 0.7) + 
         facet_grid(. ~ Position) + 
         scale_x_continuous("Time played in World Cup (minutes)",
@@ -710,194 +686,111 @@ worldcup <- worldcup %>%
   mutate(Player = rownames(worldcup))
 ```
 
-Try the following tasks:
+Do the following tasks:
 
-- First, before you start coding, talk with your group members about how this graph is different from the simple one you created with `ggplot` in the last section. Also discuss what you can figure out from this new graph that was less clear from the simpler one you created before.
-- Use the `xlab()` function to make a clearer title for the x-axis. (You may have already written this code in the last section of this exercise.)
-- Often, in graphs with a lot of points, it's hard to see some of the points, because they overlap other points. Three strategies to address this are: (a) make the points smaller; (b) make the points somewhat transparent; and (c) jitter the points. Try doing the first two with the simple ggplot scatterplot you created in the previous section of Shots by Time.
-- Create a new column in the `worldcup` data called `top_four` that specifies whether or not the `Team` for that observation was one of the top four teams in the tournament (Netherlands, Uruguay, Spain, and Germany). Make the colors of the points correspond to whether the team was a top-four team.
-- Create small multiples. The relationship between time played and shots taken is probably different by the players' positions. Use faceting to create different graphs for each position.
-- Make order count: What order are the faceted graphs currently in? Offensive players have more chances to take shots than defensive players, so that might be a useful ordering for the facets. Re-order the `Position` factor column to go from nearest your own goal to nearest the opponents goal, and then re-plot the graph from the previous step.
-- Highlighting interesting data: Who had the most shots in the 2010 World Cup? Was he on a top-four team? Use `geom_text()` to label his point on the graph with his name.
-- Increase data density: Try changing the theme, to come up with a graph with a bit less non-data ink. From the `ggthemes` package (you'll need to install it if you don't already have it), try some of the following themes: `theme_few()`, `theme_tufte()`, `theme_stata()`, `theme_fivethirtyeight()`, `theme_economist_white()`, and `theme_wsj()`.
+- Create a simple scatterplot of Time versus Shots for the World Cup data. It should look like this: 
+
+```{r echo = FALSE, fig.width = 3, fig.height = 3}
+worldcup %>% 
+  ggplot(aes(x = Time, y = Shots)) + 
+  geom_point()
+```
+
+
+- Next, before any more coding, talk with your group members about how this graph is different from the simple one you created with `ggplot` in the last section. Also discuss what you can figure out from this new graph that was less clear from a simpler scatterplot of Time versus Shots for this data.
+- Often, in graphs with a lot of points, it's hard to see some of the points, because they overlap other points. Three strategies to address this are: (a) make the points smaller; and (b) make the points somewhat transparent. Try doing these first two with the scatterplot you're creating. At this point, the plot should look something like this:
+
+```{r echo = FALSE, fig.width = 3, fig.height = 3}
+worldcup %>% 
+  ggplot(aes(x = Time, y = Shots)) + 
+  geom_point(alpha = 0.5, size = 1)
+```
+
+- Create a new column in the `worldcup` data called `top_four` that specifies whether or not the `Team` for that observation was one of the top four teams in the tournament (Netherlands, Uruguay, Spain, and Germany). Make the colors of the points correspond to whether the team was a top-four team. At this point, the plot should look something like this: 
+
+```{r echo = FALSE, fig.width = 4, fig.height = 3}
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_point(alpha = 0.5, size = 1)
+```
+
+- Increase data density: Try changing the theme, to come up with a graph with a bit less non-data ink. From the `ggthemes` package, try some of the following themes: `theme_few()`, `theme_tufte()`, `theme_stata()`, `theme_fivethirtyeight()`, `theme_economist_white()`, and `theme_wsj()`. Pick a theme that helps increase the graph's data density. At this point, the plot should look something like this: 
+
+```{r echo = FALSE, fig.width = 4, fig.height = 3}
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_point(alpha = 0.5, size = 1) + 
+  theme_few()
+```
+
+- Use meaningful labels: Use the `labs()` function to make a clearer title for the x-axis. (You may have already written this code in the last section of this exercise.) In addition to setting the x-axis title with the `labs` function, you can also set the title for the color scale (use `color = ` within the `labs` function). You may want to make a line break in the color title-- you can use the linebreak character (`\n`) inside the character string with the title to do that. At this point, the plot should look something like this: 
+
+```{r echo = FALSE, fig.width = 4, fig.height = 3}
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_point(alpha = 0.5, size = 1) + 
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few()
+```
+
+- Provide useful references: The standard time for a soccer game is 90 minutes. In the World Cup, all teams play at least three games, and then the top teams continue and play more games. Add a reference line at 270 minutes (i.e., the amount of standard time played for the three games that all teams play). At this point, the plot should look something like this: 
+
+```{r echo = FALSE, fig.width = 4, fig.height = 3}
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_vline(xintercept = 90 * 3, color = "gray", linetype = 2) +
+  geom_point(alpha = 0.5, size = 1) + 
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few()
+```
 
 #### Example R code
 
 As a reminder, here's the code to do a simple scatterplot ot Shots by Time for the `worldcup` data:
 
 ```{r fig.width = 3, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots)) +
-        geom_point()
+ggplot(data = worldcup) +
+        geom_point(mapping = aes(x = Time, y = Shots))
 ```
 
-To add a clearer x-axis label that the current one, use `xlab()`:
+Next, try to make it clearer to see the points by making them smaller and somewhat transparent. This can be done with the `size` and `alpha` aesthetics for `geom_points`. For the `size` aesthetic, a value smaller than about 2 = smaller than default, larger than about 2 = larger than default. For the `alpha` aesthetic, closer to 0 = more tranparent, closer to 1 = more opaque. As a reminder, in this case you are changing all of the points in the same way, so you will be setting those aesthetics to constant values. That means that you should specify the values **outside** of an `aes` call. This code could make these changes: 
 
 ```{r fig.width = 3, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots)) +
-        geom_point() + 
-        xlab("Time played in World Cup (minutes)")
-```
-
-To make the points smaller, use the `size` option in `geom_point()` (smaller than about 2 = smaller than default, larger than about 2 = larger than default):
-
-```{r fig.width = 3, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots)) +
-        geom_point(size = 1)  + 
-        xlab("Time played in World Cup (minutes)")
-```
-
-To make the points semi-transparent, use the `alpha` option in `geom_point()` (closer to 0 = more tranparent, closer to 1 = more opaque):
-
-```{r fig.width = 3, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots)) +
-        geom_point(alpha = 0.5)  + 
-        xlab("Time played in World Cup (minutes)")
-```
-
-To jitter the points some, use the `position = "jitter"` option in `geom_point()`:
-
-```{r fig.width = 3, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots)) +
-        geom_point(size = 1.5, position = "jitter",
-                   alpha = 0.5)  + 
-        xlab("Time played in World Cup (minutes)")
-```
-
-As an alternative, you could also jitter the points by using `geom_jitter` rather than `geom_point`:
-
-```{r fig.width = 3, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots)) +
-        geom_jitter(size = 1.5, alpha = 0.5, width = 0.25)  + 
-        xlab("Time played in World Cup (minutes)")
-```
-
-```{block type = "rmdnote"}
-"Jittering" the points means adding some extra random noise in either the x- or y-direction, or in both directions. This technique can be particularly useful when you are trying to plot points for which one dimension is categorical, rather than continuous. You can specify which direction (x and / or y) is jittered, as well as the amount of noise to add. To find out more, check out the helpfile for the `geom_jitter` function. 
+ggplot(data = worldcup) +
+        geom_point(mapping = aes(x = Time, y = Shots),
+                   size = 1, alpha = 0.5)
 ```
 
 To create a new column called `top_four`, first create vector that lists those top four teams, then create a logical vector in the dataframe for whether the team for that observation is in one of the top four teams:
 
 ```{r}
 worldcup <- worldcup %>%
-  mutate(top_four = Team %in% c("Spain", "Germany",  
+  mutate(top_4 = Team %in% c("Spain", "Germany",  
                                 "Uruguay", "Netherlands"))
-summary(worldcup$top_four)
+head(worldcup)
+summary(worldcup$top_4)
 ```
 
 To color points by this variable, use `color = ` in the `aes()` part of the `ggplot()` call:
 
-```{r fig.width = 5, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots,
-                     color = top_four)) +
-        geom_point(size = 1.5, position = "jitter",
-                   alpha = 0.5)  + 
-        xlab("Time played in World Cup (minutes)")
+```{r fig.width = 4, fig.height = 3}
+ggplot(data = worldcup) +
+        geom_point(mapping = aes(x = Time, y = Shots, color = top_4),
+                   size = 1, alpha = 0.5)
 ```
 
-To create nicer labels for the legend for color, convert the `top_four` column into the factor class, with the labels you want to use in the figure legend:
+To increase the data density, try out different themes for the plot. First, I'll save everything we've done so far as the object `shot_plot`, then I'll try adding different themes:
 
-```{r}
-worldcup <- worldcup %>%
-  mutate(top_four = factor(top_four, levels = c(TRUE, FALSE),
-                            labels = c("Top 4", "Other")))
-summary(worldcup$top_four)
-```
-
-```{r fig.width = 5, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots,
-                     color = top_four)) +
-        geom_point(size = 1.5, position = "jitter",
-                   alpha = 0.5)  + 
-        xlab("Time played in World Cup (minutes)")
-```
-
-As a note, you can use the `scale_color_discrete()` function to put in a nicer legend title:
-
-```{r fig.width = 5, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots,
-                     color = top_four)) +
-        geom_point(size = 1.5, position = "jitter",
-                   alpha = 0.5)  + 
-        xlab("Time played in World Cup (minutes)") + 
-        scale_color_discrete(name = "Team's final\n ranking")
-```
-
-To create small multiples, use the `facet_grid()` command:
-
-```{r fig.width = 10, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots,
-                     color = top_four)) +
-        geom_point(size = 1.5, position = "jitter",
-                   alpha = 0.5)  + 
-        xlab("Time played in World Cup (minutes)") + 
-        scale_color_discrete(name = "Team's final\n ranking") + 
-        facet_grid(. ~ Position)
-```
-
-To re-order the `Position` column of the dataframe, use the `levels` option of the `factor()` function. This re-sets how R saves the order of the levels of this factor.
-
-```{r}
-worldcup <- worldcup %>%
-  mutate(Position = factor(Position, 
-                           levels = c("Goalkeeper", "Defender",
-                                      "Midfielder", "Forward")))
-levels(worldcup$Position)
-```
-
-```{block type = "rmdnote"}
-Note from this code example that you can use the `levels` function to find out the levels and their order for a factor-class vector.
-```
-
-Then use the same code from before for your plot:
-
-```{r fig.width = 10, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots,
-                     color = top_four)) +
-        geom_point(size = 1.5, position = "jitter",
-                   alpha = 0.5)  + 
-        xlab("Time played in World Cup (minutes)") + 
-        scale_color_discrete(name = "Team's final\n ranking") + 
-        facet_grid(. ~ Position)
-```
-
-You can use the `filter` function with a logical statement comparing `Shots` to the maximum value of `Shots` (`max(Shots)`) to filter down to the row or rows of the player or players with the most shots:
-
-```{r}
-most_shots <- worldcup %>%
-  filter(Shots == max(Shots))
-most_shots
-```
-
-Use `geom_text()` to label his point on the graph with his name. You may need to mess around with some of the options in `geom_text()`, like `size`, `hjust`, and `vjust` (`hjust` and `vjust` say where, in relation to the point location, to put the label), to get something you're happy with. Also, I pasted on an extra space at the end of the player's name, to add some padding so the label wouldn't be right on top of the point.
-
-```{r fig.width = 10, fig.height = 3}
-ggplot(worldcup, aes(x = Time, y = Shots,
-                     color = top_four)) +
-        geom_point(size = 1.5, position = "jitter",
-                   alpha = 0.5)  + 
-        xlab("Time played in World Cup (minutes)") + 
-        scale_color_discrete(name = "Team's final\n ranking") + 
-        facet_grid(. ~ Position) + 
-        geom_text(data = most_shots,
-                  aes(label = paste(Player, " ")),
-                  colour = "black", size = 3,
-                  hjust = 1, vjust = 0.4)
-```
-
-Try out different themes for the plot. First, I'll save everything we've done so far as the object `shot_plot`, then I'll try adding different themes:
-
-```{r fig.width = 10, fig.height = 3}
-shot_plot <- ggplot(worldcup, aes(x = Time, y = Shots,
-                     color = top_four)) +
-        geom_point(size = 1.5, position = "jitter",
-                   alpha = 0.5)  + 
-        xlab("Time played in World Cup (minutes)") + 
-        scale_color_discrete(name = "Team's final\n ranking") + 
-        facet_grid(. ~ Position) + 
-        geom_text(data = most_shots,
-                  aes(label = paste(Player, " ")),
-                  colour = "black", size = 3,
-                  hjust = 1, vjust = 0.4)
+```{r fig.width = 4, fig.height = 3}
+shot_plot <- ggplot(data = worldcup) +
+        geom_point(mapping = aes(x = Time, y = Shots, color = top_4),
+                   size = 1, alpha = 0.5)
 
 shot_plot + theme_few()
 shot_plot + theme_tufte()
@@ -905,6 +798,237 @@ shot_plot + theme_wsj()
 shot_plot + theme_fivethirtyeight()
 shot_plot + theme_stata()
 shot_plot + theme_economist_white()
+```
+
+The data density is increased with the `theme_few()` theme, so I'll use that: 
+
+```{r fig.width = 4, fig.height = 3}
+ggplot(data = worldcup) +
+  geom_point(mapping = aes(x = Time, y = Shots, color = top_4),
+             size = 1, alpha = 0.5) + 
+  theme_few()
+```
+
+To change the titles for some of the scales (the x-axis and color scale), you can use the `labs()` function. Note that you can use `\n` to add a line break inside one of these titles (I've done that for the title for the color scale):
+
+```{r fig.width = 4, fig.height = 3}
+ggplot(data = worldcup) +
+  geom_point(mapping = aes(x = Time, y = Shots, color = top_4),
+             size = 1, alpha = 0.5) + 
+  theme_few() + 
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking")
+```
+
+As an extra note, if you want to create nicer labels for the legend for color, convert the `top_four` column into the factor class, with the labels you want to use in the figure legend:
+
+```{r}
+worldcup <- worldcup %>%
+  mutate(top_4 = factor(top_4, levels = c(TRUE, FALSE),
+                        labels = c("Top 4", "Other")))
+summary(worldcup$top_4)
+```
+
+```{r fig.width = 4, fig.height = 3}
+ggplot(data = worldcup) +
+  geom_point(mapping = aes(x = Time, y = Shots, color = top_4),
+             size = 1, alpha = 0.5) + 
+  theme_few() + 
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking")
+```
+
+To add a reference line at 270 minutes of time, use the `geom_vline()` function. You'll want to make it a light color (like light gray) and dashed or dotted (`linetype` of 2 or 3), so it won't be too prominent on the graph: 
+
+```{r fig.width = 4, fig.height = 3}
+ggplot(data = worldcup) +
+  geom_vline(xintercept = 270, color = "lightgray", linetype = 2) +
+  geom_point(mapping = aes(x = Time, y = Shots, color = top_4),
+             size = 1, alpha = 0.5) + 
+  theme_few() + 
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking")
+```
+
+### Implementing plot guidelines #2
+
+- Highlighting interesting data: Who had the most shots in the 2010 World Cup? Was he on a top-four team? Use `geom_text()` to label his point on the graph with his name (try out some different values of `hjust` and `vjust` in this function call to get the label in a place you like). At this point, the plot should look something like this:
+
+```{r echo = FALSE, fig.width = 4, fig.height = 3}
+top_player <- worldcup %>% 
+  top_n(n = 1, wt = Shots)
+
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_vline(xintercept = 90 * 3, color = "gray", linetype = 2) +
+  geom_point(alpha = 0.5, size = 1) + 
+  geom_text(data = top_player, aes(label = Player, color = NULL),
+            hjust = 1.2, vjust = 0.4) +
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few()
+```
+
+- For labeling the player with the top number of shots, instead of only using the player's name, use the following format: "[Player's name], [Player's team]". (Hint: You may want to use `mutate` to add a new column, where you used `paste0` to paste together the player's name, `", "`, and the team name.) At this point, the plot should look something like this: 
+
+```{r echo = FALSE, fig.width = 4, fig.height = 3}
+top_player <- worldcup %>% 
+  top_n(n = 1, wt = Shots) %>% 
+  mutate(label = paste0(Player, ", ", Team))
+
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_vline(xintercept = 90 * 3, color = "gray", linetype = 2) +
+  geom_point(alpha = 0.5, size = 1) + 
+  geom_text(data = top_player, 
+            aes(label = label, color = NULL),
+            hjust = 1.1, vjust = 0.4) +
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few()
+```
+
+- Create small multiples. The relationship between time played and shots taken is probably different by the players' positions. Use faceting to create different graphs for each position. At this point, the plot should look something like this:
+
+```{r echo = FALSE, fig.width = 8, fig.height = 2.5}
+top_player <- worldcup %>% 
+  top_n(n = 1, wt = Shots) %>% 
+  mutate(label = paste0(Player, ", ", Team))
+
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_vline(xintercept = 90 * 3, color = "gray", linetype = 2) +
+  geom_point(alpha = 0.5, size = 1) + 
+  geom_text(data = top_player, 
+            aes(label = label, color = NULL),
+            hjust = 1.1, vjust = 0.4) +
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few() + 
+  facet_wrap(~ Position, ncol = 4)
+```
+
+- Make order meaningful: What order are the faceted graphs currently in? Offensive players have more chances to take shots than defensive players, so that might be a useful ordering for the facets. Re-order the `Position` factor column to go from nearest your own goal to nearest the opponents goal, and then re-plot the graph from the previous step.
+
+```{r echo = FALSE, fig.width = 8, fig.height = 2.5}
+top_player <- worldcup %>% 
+  top_n(n = 1, wt = Shots) %>% 
+  mutate(label = paste0(Player, ", ", Team))
+
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany"),
+         Position = factor(Position, levels = c("Goalkeeper", "Defender", 
+                                                "Midfielder", "Forward"))) %>% 
+  ggplot() + 
+  geom_vline(xintercept = 90 * 3, color = "gray", linetype = 2) +
+  geom_point(aes(x = Time, y = Shots, color = top_4), alpha = 0.5, size = 1) + 
+  geom_text(data = top_player, 
+            aes(x = Time, y = Shots, label = label),
+            hjust = 1.1, vjust = 0.4) +
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few() + 
+  facet_wrap(~ Position, ncol = 4)
+```
+
+#### Example R code
+
+To add a text label with just the player with the most shots, you'll want to create a new dataframe with just the top player. You can use the `top_n` function to do that (the `wt` option is specifying that we want the top player in terms of values in the `Shots` column): 
+
+```{r}
+top_player <- worldcup %>% 
+  top_n(n = 1, wt = Shots)
+```
+
+Now you can use `geom_text()` to label this player's point on the graph with his name. You may need to mess around with some of the options in `geom_text()`, like `size`, `hjust`, and `vjust` (`hjust` and `vjust` say where, in relation to the point location, to put the label), to get something you're happy with. 
+
+```{r echo = FALSE, fig.width = 4, fig.height = 3}
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_vline(xintercept = 90 * 3, color = "gray", linetype = 2) +
+  geom_point(alpha = 0.5, size = 1) + 
+  geom_text(data = top_player, aes(label = Player, color = NULL),
+            hjust = 1.2, vjust = 0.4) +
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few()
+```
+
+If you want to put both the player's name and his team, you can add a `mutate()` function when you create the new dataframe with just the top player, and then use this for the label: 
+
+```{r echo = FALSE, fig.width = 4, fig.height = 3}
+top_player <- worldcup %>% 
+  top_n(n = 1, wt = Shots) %>% 
+  mutate(label = paste0(Player, ", ", Team))
+
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_vline(xintercept = 90 * 3, color = "gray", linetype = 2) +
+  geom_point(alpha = 0.5, size = 1) + 
+  geom_text(data = top_player, 
+            aes(label = label, color = NULL),
+            hjust = 1.1, vjust = 0.4) +
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few()
+```
+
+To create small multiples, use the `facet_wrap()` command (you'll probably want to use `ncol` to specify to use four columns):
+
+```{r echo = FALSE, fig.width = 8, fig.height = 2.5}
+top_player <- worldcup %>% 
+  top_n(n = 1, wt = Shots) %>% 
+  mutate(label = paste0(Player, ", ", Team))
+
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
+  ggplot(aes(x = Time, y = Shots, color = top_4)) + 
+  geom_vline(xintercept = 90 * 3, color = "gray", linetype = 2) +
+  geom_point(alpha = 0.5, size = 1) + 
+  geom_text(data = top_player, 
+            aes(label = label, color = NULL),
+            hjust = 1.1, vjust = 0.4) +
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few() + 
+  facet_wrap(~ Position, ncol = 4)
+```
+
+To re-order the `Position` column of the dataframe, add a `mutate` statement before you pipe into the plotting code. Use the `levels` option of the `factor()` function-- whatever order you put the factors in for this argument will be the new order in which R saves the levels of this factor.
+
+```{r echo = FALSE, fig.width = 8, fig.height = 2.5}
+worldcup %>% 
+  mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany"),
+         Position = factor(Position, levels = c("Goalkeeper", "Defender", 
+                                                "Midfielder", "Forward"))) %>% 
+  ggplot() + 
+  geom_vline(xintercept = 90 * 3, color = "gray", linetype = 2) +
+  geom_point(aes(x = Time, y = Shots, color = top_4),
+             alpha = 0.5, size = 1) + 
+  geom_text(data = top_player, 
+            aes(x = Time, y = Shots, label = label),
+            hjust = 1.1, vjust = 0.4) +
+  labs(x = "Time played in World Cup (minutes)",
+       color = "Team's final\nranking") + 
+  theme_few() + 
+  facet_wrap(~ Position, ncol = 4)
+```
+
+```{block type = "rmdnote"}
+Note from this code example that you can use the `levels` function to find out the levels and their order for a factor-class vector.
+```
+
+```{r}
+worldcup <- worldcup %>%
+  mutate(Position = factor(Position, 
+                           levels = c("Goalkeeper", "Defender",
+                                      "Midfielder", "Forward")))
+levels(worldcup$Position)
 ```
 
 ### Data visualization cheatsheet
