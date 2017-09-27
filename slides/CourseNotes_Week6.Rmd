@@ -551,6 +551,41 @@ nepali %>%
   slice(1:2)
 ```
 
+## `semi_join` and `anti_join`
+
+These functions allow you to filter one dataframe on only values that **do** have a match in a second dataframe (`semi_join`) or **do not** have a match in a second dataframe (`anti_join`).
+
+I'll show examples with the `x` and `y` dataframes defined before:
+
+\small
+
+```{r echo = 5:6}
+x <- data.frame(course = c("x", "y", "z"),
+                grade = c(90, 82, 78))
+y <- data.frame(course = c("w", "x", "y"),
+                day = c("Tues", "Mon / Fri", "Tue"))
+x
+y
+```
+
+## `semi_join` and `anti_join`
+
+The `semi_join` function filters: one dataframe on only values that **do** have a match in a second dataframe:
+
+```{r message = FALSE, warning = FALSE}
+x %>% 
+  semi_join(y)
+```
+
+## `semi_join` and `anti_join`
+
+The `anti_join` function filters one dataframe on only values that **do not** have a match in a second dataframe:
+
+```{r message = FALSE, warning = FALSE}
+y %>% 
+  anti_join(x)
+```
+
 ## In-course exercise
 
 We'll take a break now to do the In-Course Exercise (Section 6.4.4).
@@ -582,12 +617,13 @@ In the following slides, we'll walk through how to tidy this data.
 
 (1) One variable (age category) is saved as row names, rather than a column. \bigskip
 
-To fix this, we need to convert the row names into a new column. We can do this using `mutate`:
+To fix this, we need to convert the row names into a new column. We can do this using `mutate` (load `tibble` if needed):
 
-```{r}
+```{r echo = 2:4}
+library(tibble)
 VADeaths %>%
   as.data.frame() %>% ## Convert from matrix to dataframe
-  mutate(age = rownames(VADeaths))
+  rownames_to_column(var = "age")
 ```
 
 ## Tidying the `VADeaths` data
@@ -599,7 +635,7 @@ Gather the data to convert column names to a new column:
 ```{r}
 VADeaths %>%
   as.data.frame() %>% 
-  mutate(age = rownames(VADeaths)) %>%
+  rownames_to_column(var = "age") %>%
   gather(key = gender_loc, value = mort_rate, - age) %>%
   slice(1:4)
 ```
@@ -613,11 +649,11 @@ Separate the column into two separate columns for "gender" and "loc" (rural / ur
 ```{r}
 VADeaths %>%
   as.data.frame() %>% 
-  mutate(age = rownames(VADeaths)) %>%
+  rownames_to_column(var = "age") %>%
   gather(key = gender_loc, value = mort_rate, - age) %>%
   separate(col = gender_loc, into = c("gender", "loc"),
            sep = " ") %>%
-  slice(1:4)
+  slice(1)
 ```
 
 ## Tidying the `VADeaths` data
@@ -627,7 +663,7 @@ Now that the data is tidy, it's much easier to plot:
 ```{r echo = FALSE}
 VADeaths <- VADeaths %>%
   as.data.frame() %>% 
-  mutate(age = rownames(VADeaths)) %>%
+  rownames_to_column(var = "age") %>%
   gather(key = gender_loc, value = mort_rate, - age) %>%
   separate(col = gender_loc, into = c("loc", "gender"),
            sep = " ")
