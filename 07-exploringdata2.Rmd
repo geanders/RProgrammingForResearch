@@ -1004,6 +1004,18 @@ dev.off()
 
 ### Using regression models to explore data
 
+For this exercise, you will need the following packages. If do not have them already, you will need to install them. For the `ggfortify` package, you need to install it from GitHub (uncomment and use the `install_github` code given below):
+
+```{r}
+library(ggplot2)
+library(broom)
+
+library(devtools)
+# install_github('sinhrks/ggfortify')
+library(ggfortify)
+```
+
+
 For this part of the exercise, you'll use a dataset on weather, air pollution, and mortality counts in Chicago, IL. This dataset is called `chicagoNMMAPS` and is part of the `dlnm` package. Change the name of the dataframe to something shorter, like `chic`. Check out the data a bit to see what variables you have, and then perform the following tasks:
 
 - Write out (on paper, not in R) the regression equation for regressing dewpoint temperature on temperature. 
@@ -1020,7 +1032,6 @@ Save this model as the object `mod_1`.
 #### Example R code:
 
 Install and load the `dlnm` package and then load the `chicagoNMMAPS` data. Change the name of the dataframe to `chic`, so it will be shorter to call for the rest of your work. 
-
 ```{r, message = FALSE, warning = FALSE}
 # install.packages("dlnm")
 library(dlnm)
@@ -1040,6 +1051,35 @@ Use `summary()` to check out a bit more about the model you fit.
 ```{r}
 summary(mod_1)
 ```
+
+Now try using functions from the `broom` package to pull the same information about the model, but in a "tidy" format. First, use `glance` to get some summary information about the model:
+
+```{r}
+glance(mod_1)
+```
+
+Next, use the `tidy` function to get model coefficients in a tidy format:
+
+```{r}
+tidy(mod_1)
+```
+
+Use the `tidy` function to add model output (e.g., predictions, residuals) to the original dataframe of observed temperatures and dew point temperatures:
+
+```{r warning = FALSE, message = FALSE}
+augment(mod_1) %>% 
+  slice(1:3)
+```
+
+Use the output from `augment` to create a plot of the original data, with the predicted values used to plot a fitted line. 
+
+```{r warning = FALSE, message = FALSE, fig.width = 5, fig.height = 4}
+augment(mod_1) %>% 
+  ggplot(aes(x = temp, y = dptp)) + 
+  geom_point(size = 0.5, alpha = 0.5) + 
+  geom_line(aes(x = temp, y = .fitted), color = "red", size = 2)
+```
+
 
 There does seem to be an association between temperature and dewpoint temperature: a unit increase in temperature is associated with a `r round(coef(mod_1)[2], 1)` unit increase in dewpoint temperature. The p-value for the temperature coefficient is <2e-16. This is far below 0.05, which suggests we would be very unlikely to see such a strong association by chance if the null hypothesis, that the two variables are not associated, were true.
 
