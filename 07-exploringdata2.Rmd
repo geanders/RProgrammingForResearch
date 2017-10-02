@@ -826,10 +826,205 @@ For more on these patterns, see:
 
 ## In-course exercise
 
+### Using regression models to explore data #1
+
+For this exercise, you will need the following packages. If do not have them already, you will need to install them. For the `ggfortify` package, you need to install it from GitHub (uncomment and use the `install_github` code given below):
+
+```{r}
+library(ggplot2)
+library(broom)
+
+library(devtools)
+# install_github('sinhrks/ggfortify')
+library(ggfortify)
+```
+
+For this part of the exercise, you'll use a dataset on weather, air pollution, and mortality counts in Chicago, IL. This dataset is called `chicagoNMMAPS` and is part of the `dlnm` package. Change the name of the dataframe to  `chic` (this object name is shorter and will be easier to work with). Check out the data a bit to see what variables you have, and then perform the following tasks:
+
+- Write out (on paper, not in R) the regression equation for regressing dewpoint temperature on temperature. 
+- Try fitting a linear regression of dew point temperature (`dptp`) regressed on temperature (`temp`). Save this model as the object `mod_1`. 
+- Based on this regression, does there seem to be a relationship between temperature and dewpoint temperature in Chicago? (Hint: Try using `glance` and `tidy` from the `broom` package on the model object to get more information about the model you fit.) What is the coefficient for temperature? What is the p-value for the coefficient for temperature?
+- Plot temperature (x-axis) versus dewpoint temperature (y-axis) for Chicago. Add in the regression line from the model you fit by using the results from `augment`.
+- Use `autoplot` on the model object to generate some model diagnostic plots (make sure you have the `ggfortify` package loaded and installed).
+- Try fitting the regression as a GLM, using `glm()`. Are your coefficients different?
+
+#### Example R code:
+
+The regression equation for the model you want to fit, regressing dewpoint temperature on temperature, is: 
+
+$$
+Y_t \sim \beta_0 + \beta_1 X_t
+$$
+
+where $Y_t$ is the dewpoint temperature on day $t$, $X_t$ is the temperature on day $t$, and $\beta_0$ and $\beta_1$ are model coefficients. 
+
+Install and load the `dlnm` package and then load the `chicagoNMMAPS` data. Change the name of the dataframe to `chic`, so it will be shorter to call for the rest of your work. 
+```{r, message = FALSE, warning = FALSE}
+# install.packages("dlnm")
+library(dlnm)
+data("chicagoNMMAPS")
+chic <- chicagoNMMAPS
+```
+
+Fit a linear regression of `dptp` on `temp` and save as the object `mod_1`:
+
+```{r}
+mod_1 <- lm(dptp ~ temp, data = chic)
+mod_1
+```
+
+Use functions from the `broom` package to pull the same information about the model in a "tidy" format. To find out if the evidence for a linear association between temperature and dewpoint temperature, use the `tidy` function to get model coefficients in a tidy format:
+
+```{r}
+tidy(mod_1)
+```
+
+There does seem to be an association between temperature and dewpoint temperature: a unit increase in temperature is associated with a `r round(coef(mod_1)[2], 1)` unit increase in dewpoint temperature. The p-value for the temperature coefficient is <2e-16. This is far below 0.05, which suggests we would be very unlikely to see such a strong association by chance if the null hypothesis, that the two variables are not associated, were true.
+
+You can also check overall model summaries using the `glance` function: 
+
+```{r}
+glance(mod_1)
+```
+
+
+To create plots of the observations and the fit model, use the `augment` function to add model output (e.g., predictions, residuals) to the original dataframe of observed temperatures and dew point temperatures:
+
+```{r warning = FALSE, message = FALSE}
+augment(mod_1) %>% 
+  slice(1:3)
+```
+
+Plot these two variables and add in the fitted line from the model (note: I've used the `color` option to make the color of the points gray). Use the output from `augment` to create a plot of the original data, with the predicted values used to plot a fitted line. 
+
+```{r warning = FALSE, message = FALSE, fig.width = 5, fig.height = 4}
+augment(mod_1) %>% 
+  ggplot(aes(x = temp, y = dptp)) + 
+  geom_point(size = 0.8, alpha = 0.5, col = "gray") + 
+  geom_line(aes(x = temp, y = .fitted), color = "red", size = 2) + 
+  theme_classic()
+```
+
+Plot some plots to check model assumptions for the model you fit using the `autoplot` function on your model object:
+
+```{r, fig.width = 6, fig.height = 6}
+autoplot(mod_1)
+```
+
+Try fitting the model using `glm()`. Call it `mod_1a`. Compare the coefficients for the two models. You can use the `tidy` function on an `lm` or `glm` object to pull out just the model coefficients and associated model results. Here, I've used a pipeline of code to create a tidy dataframe that merges these "tidy" coefficient outputs (from the two models) into a single dataframe):
+
+```{r}
+mod_1a <- glm(dptp ~ temp, data = chic)
+
+tidy(mod_1) %>% 
+  select(term, estimate) %>% 
+  inner_join(mod_1a %>% tidy() %>% select(term, estimate), by = "term") %>% 
+  rename(estimate_lm_mod = estimate.x,
+         estimate_glm_mod = estimate.y)
+```
+
+The results from the two models are identical.
+
+As a note, you could have also just run `tidy` on each model object, without merging them together into a single dataframe: 
+
+```{r}
+tidy(mod_1)
+tidy(mod_1a)
+```
+
+### Using regression models to explore data #2
+
+- Does $PM_{10}$ vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable. Some of the overall model summaries will compare this model to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you're fitting.
+- Try using `glm()` to run a Poisson regression of respiratory deaths (`resp`) on temperature during summer days. Start by creating a subset with just summer days called `summer`. (Hint: Use the `month` function with the argument `label = TRUE` from `lubridate` to do this-- just pull out the subset where the month is 6, 7, or 8, for "Jun", "Jul", and "Aug".) Try to write out the regression equation for the model you're fitting.
+- The coefficient for the temperature variable in this model is our best estimate (based on this model) of the **log relative risk** for a one degree Celcius increase in temperature. What is the **relative risk** associated with a one degree Celsius increase?
+
+#### Example R code:
+
+Fit a model of $PM_{10}$ regressed on day of week, where day of week is a factor. 
+
+```{r}
+mod_2 <- lm(pm10 ~ dow, data = chic)
+tidy(mod_2)
+```
+
+Use `glance` to check some of the overall summaries of this model. The `statistic` column here is the F statistic from test comparing this model to an intercept-only model.
+
+```{r}
+glance(mod_2)
+```
+
+As a note, you may have heard in previous statistics classes that you can use the `anova()` command to compare this model to a model with only an intercept (i.e., one that only fits a global mean and uses that as the expected value for all of the observations). Note that, in this case, the F value from `anova` for this model comparison is the same as the `statistic` you got in the overall summary statistics you get with `glance` in the previous code. 
+
+```{r}
+anova(mod_2)
+```
+
+The overall p-value from `anova` for with day-of-week coefficients versus the model that just has an intercept is < 2.2e-16. This is well below 0.05, which suggests that day-of-week is associated with PM10 concentration, as a model that includes day-of-week does a much better job of explaining variation in PM10 than a model without it does. 
+
+Use a boxplot to visually compare PM10 by day of week. 
+
+```{r, fig.height = 3, fig.width = 6, warning = FALSE}
+ggplot(chic, aes(x = dow, y = pm10)) + 
+  geom_boxplot()
+```
+
+Now try the same plot, but try using the `ylim = ` option to change the limits on the y-axis for the graph, so you can get a better idea of the pattern by day of week (some of the extreme values are very high, which makes it hard to compare by eye when the y-axis extends to include them all).
+
+```{r, fig.height = 3, fig.width = 6, message = FALSE}
+ggplot(chic, aes(x = dow, y = pm10)) + 
+  geom_boxplot() + 
+  ylim(c(0, 100))
+```
+
+Create a subset called `summer` with just the summer days:
+
+```{r}
+library(lubridate)
+summer <- chic %>%
+  mutate(month = month(date, label = TRUE)) %>% 
+  filter(month %in% c("Jun", "Jul", "Aug"))
+summer %>% 
+  slice(1:3)
+```
+
+Use `glm()` to fit a Poisson model of respiratory deaths regressed on temperature. Since you want to fit a Poisson model, use the option `family = poisson(link = "log")`. 
+
+```{r}
+mod_3 <- glm(resp ~ temp, data = summer,
+             family = poisson(link = "log"))
+glance(mod_3)
+tidy(mod_3)
+```
+
+Use the fitted model coefficient to determine the relative risk for a one degree Celcius increase in temperature. First, remember that you can use the `tidy()` function to read out the model coefficients. The second of these is the value for the temperature coefficient. That means that you can use indexing (`[2]`) to get just that value. That's the log relative risk; take the exponent to get the relative risk.
+
+```{r}
+tidy(mod_3) %>% 
+  filter(term == "temp") %>% 
+  mutate(log_rr = exp(estimate))
+```
+
+As a note, you can use the `conf.int` parameter in `tidy` to also pull confidence intervals:
+
+```{r}
+tidy(mod_3, conf.int = TRUE)
+```
+
+You could use this to get the confidence interval for relative risk (check out the `mutate_at` function if you haven't seen it before): 
+
+```{r}
+tidy(mod_3, conf.int = TRUE) %>% 
+  select(term, estimate, conf.low, conf.high) %>% 
+  filter(term == "temp") %>% 
+  mutate_at(vars(estimate:conf.high), funs(exp(.)))
+```
+
+
+
 ### Exploring Fatality Analysis Reporting System (FARS) data
 
 - Visit http://metrocosm.com/10-years-of-traffic-accidents-mapped.html and explore the interactive visualization created by Max Galka using this public dataset on US fatal motor vehicle accidents.
-- Go to [FARS web page](http://www.nhtsa.gov/Data/Fatality-Analysis-Reporting-System-(FARS)) to find and download the data for this week's exercise. We want to get the raw data on fatal accidents. Navigate this page to figure out how you can get this raw data for the whole county for 2015. Download the 2015 data to your computer. What is the structure of how this data is saved (e.g., directory structure, file structure)?
+- Go to [FARS web page](http://www.nhtsa.gov/FARS). We want to get the raw data on fatal accidents. Navigate this page to figure out how you can get this raw data for the whole county for 2015 (hint: you'll need to access the raw data using FTP, and you may have more success with some web browsers that others). Save 2015 "National" data (csv format) to your computer. What is the structure of how this data is saved (e.g., directory structure, file structure)?
 - On the [FARS web page](http://www.nhtsa.gov/Data/Fatality-Analysis-Reporting-System-(FARS)), find the documentation describing this raw data. Look through both this documentation and the raw files you downloaded to figure out what information is included in the data. 
 - Read the `accident.csv` file for 2015 into R (this is one of the files you'll get if you download the raw data for 2015). Use the documentation to figure out what each column represents. 
 - Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format. (Hint: Functions from the `lubridate` package will be very helpful, including `yday` and `wday`).
@@ -1000,167 +1195,5 @@ for(which_state in state_list){
   print(a)
 }
 dev.off()
-```
-
-### Using regression models to explore data
-
-For this exercise, you will need the following packages. If do not have them already, you will need to install them. For the `ggfortify` package, you need to install it from GitHub (uncomment and use the `install_github` code given below):
-
-```{r}
-library(ggplot2)
-library(broom)
-
-library(devtools)
-# install_github('sinhrks/ggfortify')
-library(ggfortify)
-```
-
-
-For this part of the exercise, you'll use a dataset on weather, air pollution, and mortality counts in Chicago, IL. This dataset is called `chicagoNMMAPS` and is part of the `dlnm` package. Change the name of the dataframe to something shorter, like `chic`. Check out the data a bit to see what variables you have, and then perform the following tasks:
-
-- Write out (on paper, not in R) the regression equation for regressing dewpoint temperature on temperature. 
-- Try fitting a linear regression of dew point temperature (`dptp`) on temperature (`temp`). (Bonus points: Notice anything that seems unusual about these two variables in this dataset? You can find out with `summary`, but it helps if you know a bit about what dewpoint temperature measures.)
-Save this model as the object `mod_1`. 
-- Based on this regression, does there seem to be a relationship between temperature and dewpoint temperature in Chicago? (Hint: Try using `summary()` on the model object to get more information about the model you fit.) What is the p-value for the coefficient for temperature?
-- Plot temperature (x-axis) versus dewpoint temperature (y-axis) for Chicago. Add in the regression line from the model you fit.
-- Use `plot()` on the model object to check if some of the assumptions for the regression model seem appropriate.
-- Try fitting the regression as a GLM, using `glm()`. Are your coefficients different?
-- Does $PM_{10}$ vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable, and then run `anova()` on that model, and R will compare it to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you're fitting.
-- Try using `glm()` to run a Poisson regression of respiratory deaths (`resp`) on temperature during summer days. Start by creating a subset with just summer days called `summer`. (Hint: Use the `month` variable to do this-- just pull out the subset where the month is 6, 7, or 8, for June, July, and August.) Try to write out the regression equation for the model you're fitting.
-- The coefficient for the temperature variable in this model is our best estimate (based on this model) of the **log relative risk** for a one degree Celcius increase in temperature. What is the **relative risk** associated with a one degree Celsius increase?
-
-#### Example R code:
-
-Install and load the `dlnm` package and then load the `chicagoNMMAPS` data. Change the name of the dataframe to `chic`, so it will be shorter to call for the rest of your work. 
-```{r, message = FALSE, warning = FALSE}
-# install.packages("dlnm")
-library(dlnm)
-data("chicagoNMMAPS")
-chic <- chicagoNMMAPS
-```
-
-Fit a linear regression of `dptp` on `temp` and save as the object `mod_1`:
-
-```{r}
-mod_1 <- lm(dptp ~ temp, data = chic)
-mod_1
-```
-
-Use `summary()` to check out a bit more about the model you fit. 
-
-```{r}
-summary(mod_1)
-```
-
-Now try using functions from the `broom` package to pull the same information about the model, but in a "tidy" format. First, use `glance` to get some summary information about the model:
-
-```{r}
-glance(mod_1)
-```
-
-Next, use the `tidy` function to get model coefficients in a tidy format:
-
-```{r}
-tidy(mod_1)
-```
-
-Use the `tidy` function to add model output (e.g., predictions, residuals) to the original dataframe of observed temperatures and dew point temperatures:
-
-```{r warning = FALSE, message = FALSE}
-augment(mod_1) %>% 
-  slice(1:3)
-```
-
-Use the output from `augment` to create a plot of the original data, with the predicted values used to plot a fitted line. 
-
-```{r warning = FALSE, message = FALSE, fig.width = 5, fig.height = 4}
-augment(mod_1) %>% 
-  ggplot(aes(x = temp, y = dptp)) + 
-  geom_point(size = 0.5, alpha = 0.5) + 
-  geom_line(aes(x = temp, y = .fitted), color = "red", size = 2)
-```
-
-
-There does seem to be an association between temperature and dewpoint temperature: a unit increase in temperature is associated with a `r round(coef(mod_1)[2], 1)` unit increase in dewpoint temperature. The p-value for the temperature coefficient is <2e-16. This is far below 0.05, which suggests we would be very unlikely to see such a strong association by chance if the null hypothesis, that the two variables are not associated, were true.
-
-Plot these two variables and add in the regression line from the model (note: I've used the `color` option to make the color of the points gray). Use the values from `coef` with a `geom_abline` to add the regression line for the model you fit. 
-
-```{r}
-mod_coefs <- coef(mod_1)
-ggplot(chic, aes(x = temp, y = dptp)) + 
-  geom_point(size = 0.5, col = "gray") + 
-  geom_abline(aes(intercept = mod_coefs[1], slope = mod_coefs[2]))
-```
-
-Plot some plots to check model assumptions for the model you fit using the `plot()` function on your model object:
-
-```{r, fig.width = 6, fig.height = 6}
-par(mfrow = c(2, 2)) # Set to four plots per panel -- 2 rows, 2 columns
-plot(mod_1)
-par(mfrow = c(1, 1)) # Reset to one plot per panel
-```
-
-Try fitting the model using `glm()`. Call it `mod_1a`. Compare the coefficients for the two models. You can use the `coef()` function on an `lm` or `glm` object to pull out just the model coefficients.
-
-```{r}
-mod_1a <- glm(dptp ~ temp, data = chic)
-
-coef(mod_1)
-coef(mod_1a)
-```
-
-The results from the two models are identical.
-
-Fit a model of $PM_{10}$ regressed on day of week, where day of week is a factor. 
-
-```{r}
-mod_2 <- lm(pm10 ~ dow, data = chic)
-summary(mod_2)
-```
-
-Use the `anova()` command to compare this model to a model with only an intercept (i.e., one that only fits a global mean and uses that as the expected value for all of the observations).
-
-```{r}
-anova(mod_2)
-```
-
-The p-value for an ANOVA of the model with day-of-week coefficients versus the model that just has an intercept is < 2.2e-16. This is well below 0.05, which suggests that day-of-week is associated with PM10 concentration, as a model that includes day-of-week does a much better job of explaining variation in PM10 than a model without it does. (Note, too, that the F value and Pr(>F) for the `anova()` call are identical to the F-statistic information given in the `summary()` of the model object. This will always be true when you're using `anova()` to compare a model to a model with just an intercept.)
-
-Use a boxplot to visually compare PM10 by day of week. 
-
-```{r, fig.height = 3, fig.width = 6, warning = FALSE}
-ggplot(chic, aes(x = dow, y = pm10)) + 
-  geom_boxplot()
-```
-
-Now try the same plot, but try using the `ylim = ` option to change the limits on the y-axis for the graph, so you can get a better idea of the pattern by day of week (some of the extreme values are very high, which makes it hard to compare by eye when the y-axis extends to include them all).
-
-```{r, fig.height = 3, fig.width = 6, message = FALSE}
-ggplot(chic, aes(x = dow, y = pm10)) + 
-  geom_boxplot() + 
-  ylim(c(0, 100))
-```
-
-Create a subset called `summer` with just the summer days:
-
-```{r}
-summer <- chic %>%
-  filter(month %in% 6:8)
-```
-
-Use `glm()` to fit a Poisson model of respiratory deaths regressed on temperature. Since you want to fit a Poisson model, use the option `family = poisson(link = "log")`. 
-
-```{r}
-mod_3 <- glm(resp ~ temp, data = summer,
-             family = poisson(link = "log"))
-summary(mod_3)
-```
-
-Use the fitted model coefficient to determine the relative risk for a one degree Celcius increase in temperature. First, remember that you can use the `coef()` function to read out the model coefficients. The second of these is the value for the temperature coefficient. That means that you can use indexing (`[2]`) to get just that value. That's the log relative risk; take the exponent to get the relative risk.
-
-```{r}
-coef(mod_3)
-coef(mod_3)[2]
-exp(coef(mod_3)[2])
 ```
 

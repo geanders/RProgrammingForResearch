@@ -17,43 +17,69 @@ data(worldcup)
 data(nepali)
 ```
 
-<!-- # Final group project -->
+# Lists
 
-<!-- ## Final group project -->
+## Lists
 
-<!-- - Group size: Three or four students -->
-<!-- - If you'd like, you may form your own groups. For any students who do not form a group, I will randomly assign groups (or add on to groups that have started). -->
+Lists are the "kitchen sink" of R objects. They can be used to keep together a variety of different R objects of different classes, dimensions, and structures in a single R object. 
 
-<!-- ## Final group project -->
+Because there are often cases where an R operation results in output that doesn't have a simple structure, lists can be a very useful way to output complex output from an R function. 
 
-<!-- Important dates:  -->
+Most lists are not "tidy" data. However, we'll cover some ways that you can easily "tidy" some common list objects you might use a lot in your R code, including the output of fitting linear and generalized linear models.
 
-<!-- - October 17: Due date for creating groups. Email me your group members. -->
-<!-- - October 24: Due date (by start of class) for a two-paragraph summary of the question you'd like to answer, including some ideas on where you might find the data.  -->
-<!-- - December 5: First submission of written report will be due. -->
-<!-- - Week of December 12: Final presentation and final draft of written report due. -->
+## Lists
 
-<!-- ## Final group project -->
+```{r}
+example_list <- list(a = sample(1:10, 5), 
+                     b = data_frame(letters = letters[1:3], 
+                                    number = 1:3))
+example_list
+```
 
-<!-- - You will have in-class group work time during the "Advanced" weeks to work on this. This project will also require work with your group outside of class. -->
-<!-- - You will be able to get feedback and help from me during the in-class group work time.  -->
-<!-- - Your project should not use any datasets from your own research or from other classes. -->
-<!-- - Part of the grade will be on the writing and presentation of the final project. -->
+## Indexing lists
 
-<!-- ## Final group project -->
+To pull an element out of a list, you can either use `$` or `[[]]` indexing: 
 
-<!-- To get an idea of what your final product should look like, check out these links: -->
+```{r}
+example_list$a
+```
 
-<!-- - [Does Christmas come earlier each year?](http://www.statslife.org.uk/culture/1892-does-christmas-really-come-earlier-every-year) -->
-<!-- - [Hilary: the most poisoned baby name in US history](http://hilaryparker.com/2013/01/30/hilary-the-most-poisoned-baby-name-in-us-history/) -->
-<!-- - [Every Guest Jon Stewart Ever Had On "The Daily Show"](http://fivethirtyeight.com/datalab/every-guest-jon-stewart-ever-had-on-the-daily-show/) -->
-<!-- - [Should Travelers Avoid Flying Airlines That Have Had Crashes in the Past?](http://fivethirtyeight.com/features/should-travelers-avoid-flying-airlines-that-have-had-crashes-in-the-past/) -->
-<!-- - [Billion-Dollar Billy Beane](http://fivethirtyeight.com/features/billion-dollar-billy-beane/) -->
+```{r}
+example_list[[2]]
+```
 
-<!-- Part of your final project will be to design a Shiny app. \bigskip -->
+## Exploring lists
 
-<!-- To see some examples of Shiny apps, see the [Shiny gallery](http://shiny.rstudio.com/gallery/). -->
+If an R object is a list, running `class` on the object will return "list": 
 
+```{r}
+class(example_list)
+```
+
+Often, lists will have names for each element (similar to column names for a dataframe). You can get the names of all elements of a list using the `names` function: 
+
+```{r}
+names(example_list)
+```
+
+## Exploring lists
+
+The `str` function is also useful for exploring the structure of a list object: 
+
+```{r}
+str(example_list)
+```
+
+## Lists versus dataframes
+
+As a note, a dataframe is actually just a very special type of list. It is a list where every element (column in the dataframe) is a vector of the same length, and the object has a special attribute specifying that it is a dataframe. 
+
+```{r}
+example_df <- data_frame(letters = letters[1:3], 
+                         number = 1:3)
+class(example_df)
+is.list(example_df)
+```
 
 
 # Regression models 
@@ -102,7 +128,7 @@ $$
 Y_i \sim X_1 + X_2 + X_3
 $$
 
-You will use this type of structure in R fo a lot of different function calls, including those for linear models (`lm`) and generalized linear models (`glm`).
+You will use this type of structure in R for a lot of different function calls, including those for linear models (`lm`) and generalized linear models (`glm`).
 
 
 ## Linear models
@@ -122,9 +148,85 @@ where:
 - $Y_{i}$ : weight of child $i$
 - $X_{1,i}$ : height of child $i$
 
-## Using model objects
+## Model objects
 
-Some functions you can use on model objects:
+The output from fitting a model using `lm` is a list object: 
+
+```{r}
+class(mod_a)
+```
+
+This list object has a lot of different information from the model, including overall model summaries, estimated coefficients, fitted values, residuals, etc.
+
+```{r}
+names(mod_a)
+```
+
+## Model objects and `broom`
+
+This list object is not in a "tidy" format. However, there is a package named `broom` that you can use to pull "tidy" dataframes from this model object. 
+
+For example, you can use the `glance` function to pull out a tidy dataframe with model summaries. 
+
+```{r}
+library(broom)
+glance(mod_a)
+```
+
+## Model objects and `broom`
+
+If you want to get the estimated model coefficients (and some related summaries) instead, you can use the `tidy` function to do that: 
+
+```{r}
+tidy(mod_a)
+```
+
+This output includes, for each model term, the **estimated coefficient** (`estimate`), its **standard error** (`std.error`), the **test statistic** (for `lm` output, the statistic for a test with the null hypothesis that the model coefficient is zero), and the associated **p-value** for that test (`p.value`).
+
+## Model objects and `broom`
+
+Some of the model output have a value for each original observation (e.g., fitted values, residuals). You can use the `augment` function to add those elements to the original data used to fit the model (note: at the moment, you might get a warning message if you run this-- it looks fairly benign and I imagine will be fixed in later versions of the package): 
+
+```{r message = FALSE, warning = FALSE}
+augment(mod_a) %>% slice(1:2) %>% select(1:6)
+```
+
+## Model objects and `broom`
+
+One important use of this `augment` output is to create a plot with both the original data and a line showing the fit model (via the predictions):
+
+```{r warning = FALSE, message = FALSE, fig.width = 4, fig.height = 2.5, out.width = "0.7\\textwidth", fig.align = "center"}
+augment(mod_a) %>%
+  ggplot(aes(x = ht, y = wt)) + 
+  geom_point(size = 0.8, alpha = 0.8) + 
+  geom_line(aes(y = .fitted), color = "red", size = 1.2)
+```
+
+## Model objects and `autoplot`
+
+There is a function called `autoplot` in the `ggplot2` package that will check the class of an object and then create a certain default plot for that class. Although the generic `autoplot` function is in the `ggplot2` package, for `lm` and `glm` objects, you must have the `ggfortify` package installed and loaded to be able to access the methods of `autoplot` specifically for these object types. 
+
+If you have the package that includes an `autoplot` method for a specific object type, you can just run `autoplot` on the objects name and get a plot that is considered a useful default for that object type. For `lm` objects, `autoplot` gives small graphics with model diagnostic plots.
+
+## Model objects and `autoplot`
+
+```{r out.width = "0.8\\textwidth", fig.align = "center"}
+library(ggfortify)
+autoplot(mod_a)
+```
+
+## Model objects and `autoplot`
+
+The output from `autoplot` is a `ggplot` object, so you can add elements to it as you would with other `ggplot` objects:
+
+```{r out.width = "0.7\\textwidth", fig.align = "center"}
+autoplot(mod_a) + 
+  theme_classic()
+```
+
+## Model objects and base R "method" functions
+
+Here, I've focused on a "tidy" approach to working with the output from fitting an `lm` model. However, you are certain to come across base R functions to work with this output in a similar way. Some base R functions you can use on model objects:
 
 ```{r echo = FALSE}
 mod_objects <- data.frame(Function = c("`summary`", "`coef`", 
@@ -141,42 +243,7 @@ pander::pander(mod_objects, split.cells = c(1,1,58),
 
 ## Examples of using a model object
 
-For example, you can get the coefficients from the model we just fit:
-
-```{r}
-coef(mod_a)
-```
-
-The estimated coefficient for the intercept is always given under the name "(Intercept)". \medskip
-
-Estimated coefficients for independent variables are given based on their column names in the original data ("ht" here, for $\beta_1$, or the estimated increase in expected weight for a one unit increase in height).
-
-## Examples of using a model object
-
-You can also pull out the residuals from the model fit:
-
-```{r}
-head(residuals(mod_a))
-```
-
-This is a vector the same length as the number of observations (rows) in the dataframe you used to fit the model. The residuals are in the same order as the observations in the original dataframe. 
-
-## Examples of using a model object
-
-You can use the `coef` results to plot a regression line based on the model fit on top of points showing the original data:
-
-```{r, fig.height = 1.75, fig.width = 2.5, warning = FALSE, fig.align = "center"}
-mod_coef <- coef(mod_a)
-ggplot(nepali, aes(x = ht, y = wt)) + 
-  geom_point(size = 0.2) + 
-  xlab("Height (cm)") + ylab("Weight (kg)") + 
-  geom_abline(aes(intercept = mod_coef[1],
-                  slope = mod_coef[2]), col = "blue")
-```
-
-## Examples of using a model object
-
-The `summary()` function gives you a lot of information about the model: 
+One base R function you should definitely know is the `summary` function. The `summary` function gives you a lot of information about the model: 
 
 ```{r, eval = FALSE}
 summary(mod_a)
@@ -190,32 +257,9 @@ summary(mod_a)
 summary(mod_a)
 ```
 
-## `summary` for `lm` objects
+## In-course exercise
 
-The object created when you use the `summary()` function on an `lm` object has several different parts you can pull out using the `$` operator:
-
-```{r}
-names(summary(mod_a))
-summary(mod_a)$coefficients
-```
-
-## Using `plot()` with `lm` objects
-
-You can use `plot` with an `lm` object to get a number of useful diagnostic plots to check regression assumptions:
-
-```{r eval = FALSE}
-plot(mod_a)
-```
-
-(See next slide)
-
-***
-
-```{r echo = FALSE, out.width = '\\textwidth', fig.align = "center"}
-oldpar <- par(mfrow = c(2, 2))
-plot(mod_a)
-par(oldpar)
-```
+We'll take a break now to do part of the In-Course Exercise (Section 7.6.1).
 
 ## Fitting a model with a factor
 
@@ -223,7 +267,7 @@ You can also use binary variables or factors as independent variables in regress
 
 ```{r}
 mod_b <- lm(wt ~ sex, data = nepali)
-summary(mod_b)$coefficients
+tidy(mod_b)
 ```
 
 This call fits the model:
@@ -244,8 +288,8 @@ For example:
 
 ```{r}
 mod_c <- glm(wt ~ ht, data = nepali)
-summary(mod_c)$coef
-summary(mod_a)$coef
+tidy(mod_c)
+tidy(mod_a)
 ```
 
 ## GLMs
@@ -279,7 +323,7 @@ Now you can fit a logistic regression:
 ```{r}
 mod_d <- glm(wt_over_13 ~ ht, data = nepali,
              family = binomial(link = "logit"))
-summary(mod_d)$coef
+tidy(mod_d)
 ```
 
 Here, the model coefficient gives the **log odds** of having a weight higher than 13 kg associated with a unit increase in height.
@@ -303,497 +347,20 @@ pander::pander(for_convs, split.cells = c(1,1,58),
 
 ## To find out more
 
-A great (and free for CSU students) resource to find out more about using R for basic statistics:
+Great resources to find out more about using R for basic statistics:
 
-- [Introductory Statistics with R](http://discovery.library.colostate.edu/Record/.b44705323)
+- Statistical Analysis with R for Dummies, Joseph Schmuller (free online through our library; Chapter 14 covers regression modeling)
+- The R Book, Michael J. Crawley (free online through our library; Chapter 14 covers regression modeling, Chapters 10 and 13 cover linear and generalized linear regression modeling)
+- R for Data Science (Section 4)
 
-If you want all the details about fitting linear models and GLMs in R, Faraway's books are fantastic:
+If you want all the details about fitting linear models and GLMs in R, Faraway's books are fantastic (more at level of Master's in Applied Statistics):
 
-- [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691) (also freely available through our library)
-- [Extending the Linear Model with R](http://www.amazon.com/Extending-Linear-Model-Generalized-Nonparametric/dp/158488424X/ref=sr_1_1?ie=UTF8&qid=1442252668&sr=8-1&keywords=extending+linear+model+r)
+- Linear Models with R, Julian Faraway (also freely available online through our library)
+- Extending the Linear Model with R, Julian Faraway (available in hardcopy through our library)
 
-# Parentheses
+## In-course exercise
 
-## Parentheses
-
-If you put parentheses around an entire code statement, it will both run the code and print out the answer.
-
-```{r}
-study_months <- c("Jan", "Feb", "Mar")
-study_months
-
-(study_months <- c("Jan", "Feb", "Mar"))
-```
-
-# Loops
-
-## Loops
-
-Loops allow you to "walk through" and repeat the same code for different values of an index. \bigskip
-
-For each run of the loop, R is told that, for **some index** in **some vector**, do **some code**. \bigskip
-
-For `i` in `1:3`, `print(i)`:
-
-```{r}
-for(i in c(1, 2, 3)){
-        print(i)
-}
-```
-
-## Loops
-
-Note that this code is equivalent to: 
-
-```{r}
-i <- 1
-print(i)
-i <- 2
-print(i)
-i <- 3
-print(i)
-```
-
-
-## Loops
-
-Often, the index will be set to a number for each cycle of the loop, and then the index will be used within the code to index vectors or data frames: 
-
-```{r}
-study_months <- c("Jan", "Feb", "Mar")
-for(i in c(1, 3)){
-        print(study_months[i])
-}
-```
-
-## Loops
-
-Often, you want to set the index to sequential numbers (e.g., 1, 2, 3, 4). In this case, you can save time by using the `:` notation to create a vector of a sequence of numbers:
-
-```{r}
-for(i in 1:3){
-        print(i)
-}
-```
-
-## Loops
-
-With this notation, sometimes it may be helpful to use the `length` function to set the largest index value for the loop as the length of a vector (or `nrow` for indexing a data frame). For example:
-
-```{r}
-study_months <- c("Jan", "Feb", "Mar")
-for(i in 1:length(study_months)){
-        print(study_months[i])
-}
-```
-
-## Loops
-
-Sometimes, you want to set the index for each cycle of the loop to something that is not a number. You can set the index to any class of vector. \bigskip
-
-Remember that a loop works by saying for **some index** in **some vector**, do **some code**. \bigskip
-
-For example, you may want to run: for `study_month` in `study_months`, `print(study_month)`:
-
-```{r}
-study_months <- c("Jan", "Feb", "Mar")
-for(study_month in study_months){
-        print(study_month)
-}
-```
-
-## Loops
-
-Note that this is equivalent to: 
-
-```{r}
-study_month <- "Jan"
-print(study_month)
-study_month <- "Feb"
-print(study_month)
-study_month <- "Mar"
-print(study_month)
-```
-
-## Loops
-
-What would this loop do?
-
-```{r, eval = FALSE}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-for(i in 1:length(vars)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        print(var_mean)
-}
-```
-
-## Loops
-
-```{r}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-for(i in 1:length(vars)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        print(var_mean)
-}
-```
-
-## Loops
-
-What would this loop do?
-
-```{r, eval = FALSE}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-for(i in 1:length(vars)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        var_mean <- round(var_mean, 1)
-        out <- paste0("mean of ", vars[i], ": ", var_mean)
-        print(out)
-}
-```
-
-## Loops
-
-To figure out, you can set `i <- 1` and then walk through the loop:
-
-```{r}
-i <- 1
-(var_mean <- mean(worldcup[ , vars[i]]))
-(var_mean <- round(var_mean, 1))
-(out <- paste0("mean of ", vars[i], ": ", var_mean))
-```
-
-## Loops
-
-```{r}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-for(i in 1:length(vars)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        var_mean <- round(var_mean, 1)
-        out <- paste0("mean of ", vars[i], ": ", var_mean)
-        print(out)
-}
-```
-
-## Loops
-
-Often, it's convenient to create a data set to fill up as you loop through:
-
-```{r, eval = FALSE}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-my_df <- data.frame(variable = vars, mean = NA)
-for(i in 1:nrow(my_df)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        my_df[i , "mean"] <- round(var_mean, 1)
-}
-```
-
-## Loops
-
-```{r}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-(my_df <- data.frame(variable = vars, mean = NA))
-```
-
-## Loops
-```{r}
-i <- 1
-(var_mean <- mean(worldcup[ , vars[i]]))
-my_df[i , "mean"] <- round(var_mean, 1)
-my_df
-```
-
-## Loops
-
-```{r}
-for(i in 1:nrow(my_df)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        my_df[i , "mean"] <- round(var_mean, 1)
-}
-my_df
-```
-
-## Loops
-
-Note: This is a pretty simplistic example. There are some easier ways to have done this:
-
-```{r}
-worldcup %>% 
-  summarize(Time = mean(Time), Passes = mean(Passes),
-            Shots = mean(Shots), Tackles = mean(Tackles),
-            Saves = mean(Saves)) %>%
-  gather(key = var, value = mean) %>%
-  mutate(mean = round(mean, 1))
-```
-
-## Loops
-
-Note: This is a pretty simplistic example. There are some easier ways to have done this:
-
-```{r}
-means <- apply(worldcup[ , vars], 2, mean)
-(means <- round(means, 1))
-```
-
-However, you can use this same looping process for much more complex tasks that you can't do as easily with `apply` or `dplyr` tools.
-
-## Loops
-
-Loops can be very useful for more complex repeated tasks. For example:
-
-```{r, echo = FALSE, fig.width = 6, fig.height = 4}
-positions <- unique(worldcup$Position)
-pos_est <- data.frame(position = positions,
-                      est = NA, se = NA)
-
-for(i in 1:nrow(pos_est)){
-        pos_df <- worldcup %>% 
-          filter(Position == positions[i]) 
-        pos_mod <- glm(Passes ~ Time,
-                       data = pos_df,
-                       family = poisson(link = "log"))
-        pos_coefs <- summary(pos_mod)$coefficients[2, 1:2]
-        pos_est[i, c("est", "se")] <- pos_coefs
-}
-
-pos_est <- pos_est %>%
-  mutate(lower_ci = est - 1.96 * se,
-         upper_ci = est + 1.96 * se)
-
-rr_per90 <- function(est){
-        out <- exp(est * 90)
-        return(out)
-}
-
-pos_est[ , c("rr_est", "rr_low", "rr_high")] <- 
-        apply(pos_est[ , c("est", "lower_ci", "upper_ci")], 2, rr_per90)
-
-pos_est <- arrange(pos_est, rr_est) %>%
-        mutate(position = factor(position, levels = position))
-
-ggplot(pos_est, aes(x = rr_low, y = position)) + 
-        geom_segment(aes(xend = rr_high, yend = position)) + 
-        geom_point(aes(x = rr_est, y = position)) + 
-        theme_few() + 
-        ylab("") + 
-        scale_x_continuous("Relative rate of passes\nper 90 minute increase in minutes played",
-                           limits = c(1.0, max(pos_est$rr_high))) + 
-        geom_vline(aes(xintercept = 1), color = "lightgray")
-```
-
-## Loops
-
-Creating this graph requires: 
-
-- Create a subset limited to each of the four positions
-- Fit a Poisson regression of Passes on Time within each subset
-- Pull the regression coefficient and standard error from each model
-- Use those values to calculate 95% confidence intervals
-- Convert everything from log relative rate to relative rate
-- Plot everything
-
-## Loops
-
-Create a vector with the names of all positions. Create an empty data frame to store regression results.
-
-```{r}
-(positions <- unique(worldcup$Position))
-(pos_est <- data.frame(position = positions,
-                       est = NA, se = NA))
-```
-
-## Loops
-
-Loop through and fit a Poisson regression model for each subset of data. Save regression coefficients in the empty data frame.
-
-```{r}
-for(i in 1:nrow(pos_est)){
-        pos_df <- worldcup %>%
-          filter(Position == positions[i]) 
-        pos_mod <- glm(Passes ~ Time,
-                       data = pos_df,
-                       family = poisson(link = "log"))
-        pos_coefs <- summary(pos_mod)$coefficients[2, 1:2]
-        pos_est[i, c("est", "se")] <- pos_coefs
-}
-pos_est[1:2, ]
-```
-
-## Loops
-
-Calculate 95% confidence intervals for log relative risk values.
-
-```{r}
-pos_est <- pos_est %>%
-  mutate(lower_ci = est - 1.96 * se,
-         upper_ci = est + 1.96 * se)
-
-pos_est %>%
-  select(position, est, lower_ci, upper_ci) 
-```
-
-## Loops
-
-Calculate relative risk per 90 minute increase in minutes played. 
-
-```{r}
-pos_est <- pos_est %>%
-  mutate(rr_est = exp(90 * est),
-         rr_low = exp(90 * lower_ci),
-         rr_high = exp(90 * upper_ci))
-pos_est %>%
-  select(position, rr_est, rr_low, rr_high) 
-```
-
-## Loops
-
-Re-level the `position` factor so the plot will be ordered from highest to lowest estimates.
-
-```{r}
-pos_est <- arrange(pos_est, rr_est) %>%
-        mutate(position = factor(position,
-                                 levels = position))
-pos_est %>% select(position, est)
-```
-
-## Loops
-
-Create the plot:
-
-```{r, eval = FALSE}
-ggplot(pos_est, aes(x = rr_low, y = position)) + 
-        geom_segment(aes(xend = rr_high, yend = position)) + 
-        geom_point(aes(x = rr_est, y = position)) + 
-        theme_few() + 
-        ylab("") + 
-        scale_x_continuous(paste("Relative rate of", 
-                                 "passes\nper 90 minute", 
-                                 "increase in minutes played"),
-                           limits = c(1.0, 
-                                      max(pos_est$rr_high))) + 
-        geom_vline(aes(xintercept = 1), color = "lightgray")
-```
-
-## Loops
-
-```{r, echo = FALSE, fig.width = 6, fig.height = 4}
-ggplot(pos_est, aes(x = rr_low, y = position)) + 
-        geom_segment(aes(xend = rr_high, yend = position)) + 
-        geom_point(aes(x = rr_est, y = position)) + 
-        theme_few() + 
-        ylab("") + 
-        scale_x_continuous(paste("Relative rate of passes\nper",
-                                 "90 minute increase in minutes played"),
-                           limits = c(1.0, max(pos_est$rr_high))) + 
-        geom_vline(aes(xintercept = 1), color = "lightgray")
-```
-
-# Other control structures
-
-## `if` / `else`
-
-There are other control structures you can use in your R code. Two that you will commonly use within R functions are `if` and `ifelse` statements. \bigskip
-
-An `if` statement tells R that, **if** a certain condition is true, **do** run some code. For example, if you wanted to print out only odd numbers between 1 and 5, one way to do that is with an `if` statement: 
-
-```{r}
-for(i in 1:5){
-  if(i %% 2 == 1){
-    print(i)
-  }
-}
-```
-
-## `if` / `else`
-
-The `if` statement runs some code if a condition is true, but does nothing if it is false. If you'd like different code to run depending on whether the condition is true or false, you can us an if / else or an if / else if / else statement. 
-
-```{r}
-for(i in 1:5){
-  if(i %% 2 == 1){
-    print(i)
-  } else {
-    print(paste(i, "is even"))
-  }
-}
-```
-
-## `if` / `else`
-
-What would this code do? \bigskip 
-
-```{r eval = FALSE}
-for(i in 1:100){
-  if(i %% 3 == 0 & i %% 5 == 0){
-    print("FizzBuzz")
-  } else if(i %% 3 == 0){
-    print("Fizz")
-  } else if(i %% 5 == 0){
-    print("Buzz")
-  } else {
-    print(i)
-  }
-}
-```
-
-## `if` / `else`
-
-If / else statements are extremely useful in functions. \bigskip
-
-In R, the `if` statement evaluates everything in the parentheses and, if that evaluates to `TRUE`, runs everything in the braces. This means that you can trigger code in an `if` statement with a single-value logical vector: 
-
-```{r}
-weekend <- TRUE
-if(weekend){
-  print("It's the weekend!")
-}
-```
-
-This functionality can be useful with parameters you choose to include when writing your own functions (e.g., `print = TRUE`).
-
-## Control structures
-
-The control structures you are most likely to use in data analysis with R are "for" loops and "if / else" statements. However, there are a few other control structures you may occasionally find useful: 
-
-- `next`
-- `break`
-- `while`
-
-## `next`
-
-You can use the `next` structure to skip to the next round of a loop when a certain condition is met. For example, we could have used this code to print out odd numbers between 1 and 5:
-
-```{r}
-for(i in 1:5){
-  if(i %% 2 == 0){
-    next
-  }
-  print(i)
-}
-```
-
-## `break`
-
-You can use `break` to break out of a loop if a certain condition is met. For example, the final code will break out of the loop once `i` is over 3, so it will only print the numbers 1 through 3:
-
-```{r}
-for(i in 1:5){
-  if(i > 3){
-    break
-  }
-  print(i)
-}
-```
-
-## `while`
-
-```{r}
-my_sum <- 1
-while(my_sum < 10){
-  my_sum <- my_sum * 2
-  print(my_sum)
-}
-```
-
+We'll take a break now to do part of the In-Course Exercise (Section 7.6.2).
 
 # Functions
 
@@ -804,7 +371,7 @@ As you move to larger projects, you will find yourself using the same code a lot
 Examples include: 
 
 - Reading in data from a specific type of equipment (air pollution monitor, accelerometer)
-- Running a specific type of analysis
+- Running a specific type of analysis (e.g., fitting the same model format to many datasets)
 - Creating a specific type of plot or map
 
 \bigskip 
@@ -821,7 +388,9 @@ Advantages of writing functions include:
 
 ## Functions
 
-You can name a function anything you want (although try to avoid names of preexisting-existing functions). You then define any inputs (arguments; separate multiple arguments with commas) and put the code to run in braces:
+You can name a function anything you want, as long as you follow the naming rules for all R objects (although try to avoid names of preexisting-existing functions). You then specify any inputs (arguments; separate multiple arguments with commas) and put the code to run in braces. You **define** a function as an R object just like you do with other R objects (`<-`).
+
+Here is the basic structure of "where things go" in an R function definition. 
 
 ```{r, eval = FALSE}
 ## Note: this code will not run
@@ -832,148 +401,745 @@ You can name a function anything you want (although try to avoid names of preexi
 
 ## Functions
 
-Here is an example of a very basic function. This function takes a number as input and adds 1 to that number. 
+Here is an example of a very basic function. This function takes a number as input and adds 1 to that number. An R function will only return one R object. By default, that object will be the last line of code in the function body.
 
 ```{r}
 add_one <- function(number){
-        out <- number + 1
-        return(out)
+        number + 1 # Value returned by the function
 }
 
-add_one(number = 3)
+add_one(number = 1:3)
 add_one(number = -1)
+```
+
+## Functions
+
+```{r eval = FALSE}
+add_one <- function(number){
+        number + 1 # Value returned by the function
+}
+```
+
+- I picked the name of the function (`add_one`) (just like you pick what name you want to use with any R object)
+- The only input is a numeric vector. I pick the name I want to use for the vector that is input to the function. I picked `number`.
+- Within the code inside the function, the `number` refers to the numeric vector object that the user passed into the function.
+
+## Functions
+
+As another example, you could write a small function to fit a specific model to a dataframe you input and return the model object:
+
+```{r}
+fit_ht_wt_mod <- function(df){
+  lm(wt ~ ht + sex, data = df) # Returns result from this call
+}
+```
+
+- I picked the name of the function (`fit_ht_wt_mod`) (just like you pick what name you want to use with any R object)
+- The only input is a dataframe. I pick the name I want to use for the dataframe that is input to the function. I picked `df` (I often use this as a default parameter name for a dataframe).
+- Within the code inside the function, the `df` refers to the dataframe object that the user passed into the function.
+
+## Functions
+
+Now you can apply that function within a tidy pipeline, for example to fit the model to a specific subset of the data (all children with an age over 12 months):
+
+```{r}
+nepali %>% 
+  filter(age > 12) %>% 
+  fit_ht_wt_mod() %>% 
+  tidy()
 ```
 
 ## Functions 
 
 - Functions can input any type of R object (for example, vectors, data frames, even other functions and ggplot objects)
 - Similarly, functions can output any type of R object
-- When defining a function, you can set default values for some of the parameters
-- You can explicitly specify the value to return from the function
-- There are ways to check for errors in the arguments a user inputs to the function
+- However, functions can only output one R object. If you have complex things you want to output, a list might be a good choice for the output object type.
+- Functions can have "side effects". Examples include printing something or drawing a plot. Any action that a function takes *besides returning an R object* is a "side effect". 
 
-## Functions 
+## Functions-- parameter defaults 
 
-For example, the following function inputs a data frame (`datafr`) and a one-element vector (`child_id`) and returns only rows in the data frame where it's `id` column matches `child_id`. It includes a default value for `datafr`, but not for `child_id`. 
+When defining a function, you can set default values for some of the parameters. For example, in the `add_one` function, you can set the default value of the `number` input to `0`. 
 
 ```{r}
-subset_nepali <- function(datafr = nepali, child_id){
-  datafr <- datafr %>%
-    filter(id == child_id)
-  return(datafr)
+add_one <- function(number = 0){
+        number + 1 # Value returned by the function
 }
 ```
 
-## Functions 
+\small
 
-If an argument is not given for a parameter with a default, the function will run using the default value for that parameter. For example:
+Now, if someone runs the function without providing a value for `number`, the function will use `0`. If they do provide a value for `number`, the function will use that instead.
 
 ```{r}
-subset_nepali(child_id = "120011")
+add_one()    # Uses 0 for `number`
+add_one(number = 3:5)   # Uses 5 for `number`
 ```
 
-## Functions 
+## Functions-- parameters
 
-If an argument is not given for a parameter without a default, the function call will result in an error. For example:
+You could write a function with no parameters:
+
+```{r}
+hello_world <- function(){
+  print("Hello world!")
+}
+
+hello_world()
+```
+
+However, this will be pretty uncommon as you're first learning to write functions. 
+
+## Functions-- parameters
+
+You can include multiple parameters, some with defaults and some without. For example, you could write a function that inputs two numbers and adds them. If you don't include a second value, `0` will be added as the second number:
+
+```{r}
+add_two_numbers <- function(first_number, second_number = 0){
+  first_number + second_number
+}
+```
+
+```{r}
+add_two_numbers(first_number = 5:7, second_number = 0:2)
+add_two_numbers(first_number = 5:7)
+```
+
+## Functions-- the `return` function 
+
+You can explicitly specify the value to return from the function (use `return` function). 
+
+```{r eval = FALSE}
+add_one <- function(number = 0){
+        new_number <- number + 1 
+        return(new_number)
+}
+```
+
+If using `return` helps you think about what's happening with the code in your function, you can use it. However, outside of a few exceptions, you usually won't need to do it.
+
+## Functions-- Error checking
+
+There are ways to check for errors in the arguments a user inputs to the function. One useful check is to see if user inputs are in the required class. 
+
+The `assertive` package has some functions that you can use for common checks of the inputs to a function. If someone inputs something of the wrong class, it will give a useful error message. For example, the `assert_is_numeric` function will check if an object is in a numeric class. If so, it will do nothing. If not, it will return an error message:
 
 ```{r error = TRUE}
-subset_nepali(datafr = nepali)
+library(assertive)
+assert_is_numeric(1:3)
+assert_is_numeric(c("a", "b"))
 ```
 
-## Functions 
+## Functions-- Error checking
 
-By default, the function will return the last defined object, although the choice of using `return` can affect printing behavior when you run the function. For example, I could have written the `subset_nepali` function like this: 
+You could add this in the code for the `add_one` function, so a useful error message will be returned if a user tries to input something besides a numeric vector for `number`:
 
 ```{r}
-subset_nepali <- function(datafr = nepali, child_id){
-  datafr <- datafr %>%
-    filter(id == child_id)
+add_one <- function(number){
+  assert_is_numeric(number)
+  number + 1 
 }
 ```
 
-## Functions 
+```{r error = TRUE}
+add_one(number = 1:3)
+add_one(number = c("a", "b"))
+```
 
-In this case, the output will not automatically print out when you call the function without assigning it to an R object:
+## Functions-- Error checking
+
+I would recommend that you not worry about this too much when you're learning to write functions for your own use. 
+
+However, once you have mastered the basics of writing functions and start writing them for others to use, you'll want to start incorporating this. 
+
+## `if` / `else`
+
+In R, the `if` statement evaluates everything in the parentheses and, if that evaluates to `TRUE`, runs everything in the braces. This means that you can trigger code in an `if` statement with a single-value logical vector: 
 
 ```{r}
-subset_nepali(child_id = "120011")
-```
-
-However, the output can be assigned to an R object in the same way as when the function was defined without `return`:
-
-```{r}
-first_childs_data <- subset_nepali(child_id = "120011")
-first_childs_data
-```
-
-## Functions 
-
-The `return` function can also be used to return an object other than the last defined object (although doesn't tend to be something you need to do very often). For example, if you did not use `return` in the following code, it will output "Test output":
-
-```{r}
-subset_nepali <- function(datafr = nepali, child_id){
-  datafr <- datafr %>%
-    filter(id == child_id)
-  a <- "Test output"
-}
-(subset_nepali(child_id = "120011"))
-```
-
-## Functions 
-
-Conversely, you can use `return` to output `datafr`, even though it's not the last object defined:
-
-```{r}
-subset_nepali <- function(datafr = nepali, child_id){
-  datafr <- datafr %>%
-    filter(id == child_id)
-  a <- "Test output"
-  return(datafr)
-}
-subset_nepali(child_id = "120011")
-```
-
-## Functions 
-
-You can use `stop` to stop execution of the function and give the user an error message. For example, the `subset_nepali` function will fail if the user inputs a data frame that does not have a column named "id":
-
-```{r eval = FALSE}
-subset_nepali(datafr = data.frame(wt = rnorm(10)),
-              child_id = "12011")
-```
-```
- Error: comparison (1) is possible only for 
- atomic and list types 
-```
-
-## Functions 
-
-You can rewrite the function to stop if the input `datafr` does not have a column named "id":
-
-```{r eval = FALSE}
-subset_nepali <- function(datafr = nepali, child_id){
-  if(!("id" %in% colnames(datafr))){
-    stop("`datafr` must include a column named `id`")
+tell_date <- function(){
+  cat("Today's date is: ")
+  cat(format(Sys.time(), "%b %d, %Y"))
+  
+  todays_wday <- lubridate::wday(Sys.time(),
+                                 label = TRUE)
+  if(todays_wday %in% c("Sat", "Sun")){
+    cat("\n")
+    cat("It's the weekend!")
   }
-  datafr <- datafr %>%
-    filter(id == child_id)
-  return(datafr)
 }
-subset_nepali(datafr = data.frame(wt = rnorm(10)),
-              child_id = "12011")
 ```
 
+## `if` / `else`
+
+```{r}
+tell_date()
 ```
-Error in subset_nepali(datafr = data.frame(wt = rnorm(10)),
-child_id = "12011") : 
-  `datafr` must include a column named `id`
+
+## `if` / `else`
+
+You can add `else if` and `else` statements to tell R what to do if the condition in the `if` statement isn't met. 
+
+For example, in the `tell_date` function, we might want to add some code so it will print `"It's almost the weekend!"` on Fridays and how many days until Saturday on other weekdays.
+
+## `if` / `else`
+
+```{r}
+tell_date <- function(){
+  # Print out today's date
+  cat("Today's date is: ")
+  cat(format(Sys.time(), "%b %d, %Y"))
+  
+  # Add something based on the weekday of today's date
+  todays_wday <- lubridate::wday(Sys.time())
+  
+  if(todays_wday %in% c(1, 7)){      # What to do on Sat / Sun
+    cat("\n", "It's the weekend!")
+  } else if (todays_wday == c(6)) {  # What to do on Friday
+    cat("It's almost the weekend!")
+  } else {                           # What to do other days
+    cat("It's ", 7 - today_wday, "days untils the weekend.")
+  }
+}
 ```
 
-## Functions 
+<!-- ## Control structures -->
 
-The `stop` function is particularly important if the function would keep running with the wrong input, but would result in the wrong output. \bigskip
+<!-- The control structures you are most likely to use in data analysis with R are "for" loops and "if / else" statements. However, there are a few other control structures you may occasionally find useful:  -->
 
-You can also output warnings and messages using the functions `warning` and `message`.
+<!-- - `next` -->
+<!-- - `break` -->
+<!-- - `while` -->
+
+<!-- ## `next` -->
+
+<!-- You can use the `next` structure to skip to the next round of a loop when a certain condition is met. For example, we could have used this code to print out odd numbers between 1 and 5: -->
+
+<!-- ```{r} -->
+<!-- for(i in 1:5){ -->
+<!--   if(i %% 2 == 0){ -->
+<!--     next -->
+<!--   } -->
+<!--   print(i) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## `break` -->
+
+<!-- You can use `break` to break out of a loop if a certain condition is met. For example, the final code will break out of the loop once `i` is over 3, so it will only print the numbers 1 through 3: -->
+
+<!-- ```{r} -->
+<!-- for(i in 1:5){ -->
+<!--   if(i > 3){ -->
+<!--     break -->
+<!--   } -->
+<!--   print(i) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## `while` -->
+
+<!-- ```{r} -->
+<!-- my_sum <- 1 -->
+<!-- while(my_sum < 10){ -->
+<!--   my_sum <- my_sum * 2 -->
+<!--   print(my_sum) -->
+<!-- } -->
+<!-- ``` -->
+
+
+
+
+# Functional programming
+
+## Applying a function repeatedly 
+
+One way that functions are really useful is that you can use the `map` family of functions from the `purrr` package to apply that function to all elements in a vector of a list (remember, a list could hold lots of similar dataframes). 
+
+For example, you could use `map` to apply the `add_one` function separately to 1, 2, and 3 by using `map` on a vector with those values:
+
+```{r message = FALSE}
+library(purrr)
+my_list <- list(a = 1:2, b = 3:5)
+map(my_list, add_one)
+```
+
+## Applying a function repeatedly 
+
+This can also be very useful if you have a dataframe for which you would like to apply the same function to subsets of the data. For example, for the `nepali` data you may want to apply the model of weight regressed on height and sex separately for children 12 months and younger versus older children. 
+
+First, we can add a factor variable that specifies whether the child is younger or older than 12 months:
+
+```{r}
+nepali <- nepali %>% 
+  mutate(young = age < 12,
+         young = factor(young, levels = c(TRUE, FALSE), 
+                        labels = c("younger", "older"))) 
+```
+
+## Applying a function repeatedly 
+
+```{r}
+nepali %>% 
+  slice(1:3)
+```
+
+
+## Applying a function repeatedly 
+
+Then, you can use the `nest` function to "nest" a dataframe by a factor variable. This function will create a column that actually stores its own dataframe:
+
+```{r}
+nested_nepali <- nepali %>% 
+  group_by(young) %>% 
+  nest()
+nested_nepali
+```
+
+## Applying a function repeatedly 
+
+Each element of the `data` column in the nested dataset is actually a full dataframe:
+
+```{r}
+nested_nepali$data[[1]] %>% slice(1:3)
+```
+
+## Applying a function repeatedly 
+
+Now, you can use `map` to apply the modeling function to each of these subsets of the dataframe. Use `mutate` to add a column with the results. We can also add a column with the results of applying `augment` to each of the model results:
+
+\small
+
+```{r message = FALSE, warning = FALSE}
+modeled_nepali <- nepali %>% 
+  group_by(young) %>% 
+  nest() %>% 
+  mutate(mod_results = map(data, fit_ht_wt_mod),
+         augmented_data = map(mod_results, augment))
+modeled_nepali
+```
+
+## Applying a function repeatedly 
+
+Each element of the `mod_results` column is the output from an `lm` model:
+
+```{r}
+modeled_nepali$mod_results[[1]]
+```
+
+## Applying a function repeatedly 
+
+We can apply `tidy` and `glance` to this output, just like we did with the output from fitting a single model:
+
+```{r}
+tidy(modeled_nepali$mod_results[[1]])
+```
+
+## Applying a function repeatedly 
+
+To get back to a regular dataframe, you can "unnest". Before you do this, you should limit the data to only columns that will "unnest" to the same number of rows (if you have multiple columns with dataframes or lists in them). For example, we could unnest the `augmented_data` column, so we can plot observed data versus the model fit:
+
+```{r}
+modeled_nepali %>% 
+  select(young, augmented_data) %>% 
+  unnest() %>% 
+  slice(1:3) %>% select(1:7)
+```
+
+## Applying a function repeatedly 
+
+\small
+
+```{r out.width = "\\textwidth", fig.align = "center", fig.width = 6, fig.height = 2}
+modeled_nepali %>% 
+  select(young, augmented_data) %>% 
+  unnest() %>% 
+  ggplot(aes(x = ht, y = wt, group = sex, color = sex)) + 
+  geom_point(size = 0.8) + 
+  geom_line(aes(y = .fitted), size = 1.2) + 
+  facet_wrap(~ young, ncol = 2)
+```
+
+## Applying a function repeatedly
+
+The full pipe for creating this figure is: 
+
+```{r eval = FALSE}
+nepali %>%
+  group_by(young) %>%    # Group by young and nest 
+  nest() %>%             # to model each group of "young"
+  mutate(mod_results = map(data, fit_ht_wt_mod), 
+         augmented_data = map(mod_results, augment)) %>% 
+  select(young, augmented_data) %>%  
+  unnest %>%             # Unnest `augmented_data` (nested)
+  ggplot(aes(x = ht, y = wt, group = sex, color = sex)) + 
+  geom_point(size = 0.8) + 
+  geom_line(aes(y = .fitted), size = 1.2) + 
+  facet_wrap(~ young, ncol = 2)
+```
+
+
+<!-- # Loops -->
+
+<!-- ## Loops -->
+
+<!-- Loops allow you to "walk through" and repeat the same code for different values of an index. \bigskip -->
+
+<!-- For each run of the loop, R is told that, for **some index** in **some vector**, do **some code**. \bigskip -->
+
+<!-- For `i` in `1:3`, `print(i)`: -->
+
+<!-- ```{r} -->
+<!-- for(i in c(1, 2, 3)){ -->
+<!--         print(i) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Note that this code is equivalent to:  -->
+
+<!-- ```{r} -->
+<!-- i <- 1 -->
+<!-- print(i) -->
+<!-- i <- 2 -->
+<!-- print(i) -->
+<!-- i <- 3 -->
+<!-- print(i) -->
+<!-- ``` -->
+
+
+<!-- ## Loops -->
+
+<!-- Often, the index will be set to a number for each cycle of the loop, and then the index will be used within the code to index vectors or data frames:  -->
+
+<!-- ```{r} -->
+<!-- study_months <- c("Jan", "Feb", "Mar") -->
+<!-- for(i in c(1, 3)){ -->
+<!--         print(study_months[i]) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Often, you want to set the index to sequential numbers (e.g., 1, 2, 3, 4). In this case, you can save time by using the `:` notation to create a vector of a sequence of numbers: -->
+
+<!-- ```{r} -->
+<!-- for(i in 1:3){ -->
+<!--         print(i) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- With this notation, sometimes it may be helpful to use the `length` function to set the largest index value for the loop as the length of a vector (or `nrow` for indexing a data frame). For example: -->
+
+<!-- ```{r} -->
+<!-- study_months <- c("Jan", "Feb", "Mar") -->
+<!-- for(i in 1:length(study_months)){ -->
+<!--         print(study_months[i]) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Sometimes, you want to set the index for each cycle of the loop to something that is not a number. You can set the index to any class of vector. \bigskip -->
+
+<!-- Remember that a loop works by saying for **some index** in **some vector**, do **some code**. \bigskip -->
+
+<!-- For example, you may want to run: for `study_month` in `study_months`, `print(study_month)`: -->
+
+<!-- ```{r} -->
+<!-- study_months <- c("Jan", "Feb", "Mar") -->
+<!-- for(study_month in study_months){ -->
+<!--         print(study_month) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Note that this is equivalent to:  -->
+
+<!-- ```{r} -->
+<!-- study_month <- "Jan" -->
+<!-- print(study_month) -->
+<!-- study_month <- "Feb" -->
+<!-- print(study_month) -->
+<!-- study_month <- "Mar" -->
+<!-- print(study_month) -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- What would this loop do? -->
+
+<!-- ```{r, eval = FALSE} -->
+<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
+<!-- for(i in 1:length(vars)){ -->
+<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
+<!--         print(var_mean) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- ```{r} -->
+<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
+<!-- for(i in 1:length(vars)){ -->
+<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
+<!--         print(var_mean) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- What would this loop do? -->
+
+<!-- ```{r, eval = FALSE} -->
+<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
+<!-- for(i in 1:length(vars)){ -->
+<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
+<!--         var_mean <- round(var_mean, 1) -->
+<!--         out <- paste0("mean of ", vars[i], ": ", var_mean) -->
+<!--         print(out) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- To figure out, you can set `i <- 1` and then walk through the loop: -->
+
+<!-- ```{r} -->
+<!-- i <- 1 -->
+<!-- (var_mean <- mean(worldcup[ , vars[i]])) -->
+<!-- (var_mean <- round(var_mean, 1)) -->
+<!-- (out <- paste0("mean of ", vars[i], ": ", var_mean)) -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- ```{r} -->
+<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
+<!-- for(i in 1:length(vars)){ -->
+<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
+<!--         var_mean <- round(var_mean, 1) -->
+<!--         out <- paste0("mean of ", vars[i], ": ", var_mean) -->
+<!--         print(out) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Often, it's convenient to create a data set to fill up as you loop through: -->
+
+<!-- ```{r, eval = FALSE} -->
+<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
+<!-- my_df <- data.frame(variable = vars, mean = NA) -->
+<!-- for(i in 1:nrow(my_df)){ -->
+<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
+<!--         my_df[i , "mean"] <- round(var_mean, 1) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- ```{r} -->
+<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
+<!-- (my_df <- data.frame(variable = vars, mean = NA)) -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+<!-- ```{r} -->
+<!-- i <- 1 -->
+<!-- (var_mean <- mean(worldcup[ , vars[i]])) -->
+<!-- my_df[i , "mean"] <- round(var_mean, 1) -->
+<!-- my_df -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- ```{r} -->
+<!-- for(i in 1:nrow(my_df)){ -->
+<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
+<!--         my_df[i , "mean"] <- round(var_mean, 1) -->
+<!-- } -->
+<!-- my_df -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Note: This is a pretty simplistic example. There are some easier ways to have done this: -->
+
+<!-- ```{r} -->
+<!-- worldcup %>%  -->
+<!--   summarize(Time = mean(Time), Passes = mean(Passes), -->
+<!--             Shots = mean(Shots), Tackles = mean(Tackles), -->
+<!--             Saves = mean(Saves)) %>% -->
+<!--   gather(key = var, value = mean) %>% -->
+<!--   mutate(mean = round(mean, 1)) -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Note: This is a pretty simplistic example. There are some easier ways to have done this: -->
+
+<!-- ```{r} -->
+<!-- means <- apply(worldcup[ , vars], 2, mean) -->
+<!-- (means <- round(means, 1)) -->
+<!-- ``` -->
+
+<!-- However, you can use this same looping process for much more complex tasks that you can't do as easily with `apply` or `dplyr` tools. -->
+
+<!-- ## Loops -->
+
+<!-- Loops can be very useful for more complex repeated tasks. For example: -->
+
+<!-- ```{r, echo = FALSE, fig.width = 6, fig.height = 4} -->
+<!-- positions <- unique(worldcup$Position) -->
+<!-- pos_est <- data.frame(position = positions, -->
+<!--                       est = NA, se = NA) -->
+
+<!-- for(i in 1:nrow(pos_est)){ -->
+<!--         pos_df <- worldcup %>%  -->
+<!--           filter(Position == positions[i])  -->
+<!--         pos_mod <- glm(Passes ~ Time, -->
+<!--                        data = pos_df, -->
+<!--                        family = poisson(link = "log")) -->
+<!--         pos_coefs <- summary(pos_mod)$coefficients[2, 1:2] -->
+<!--         pos_est[i, c("est", "se")] <- pos_coefs -->
+<!-- } -->
+
+<!-- pos_est <- pos_est %>% -->
+<!--   mutate(lower_ci = est - 1.96 * se, -->
+<!--          upper_ci = est + 1.96 * se) -->
+
+<!-- rr_per90 <- function(est){ -->
+<!--         out <- exp(est * 90) -->
+<!--         return(out) -->
+<!-- } -->
+
+<!-- pos_est[ , c("rr_est", "rr_low", "rr_high")] <-  -->
+<!--         apply(pos_est[ , c("est", "lower_ci", "upper_ci")], 2, rr_per90) -->
+
+<!-- pos_est <- arrange(pos_est, rr_est) %>% -->
+<!--         mutate(position = factor(position, levels = position)) -->
+
+<!-- ggplot(pos_est, aes(x = rr_low, y = position)) +  -->
+<!--         geom_segment(aes(xend = rr_high, yend = position)) +  -->
+<!--         geom_point(aes(x = rr_est, y = position)) +  -->
+<!--         theme_few() +  -->
+<!--         ylab("") +  -->
+<!--         scale_x_continuous("Relative rate of passes\nper 90 minute increase in minutes played", -->
+<!--                            limits = c(1.0, max(pos_est$rr_high))) +  -->
+<!--         geom_vline(aes(xintercept = 1), color = "lightgray") -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Creating this graph requires:  -->
+
+<!-- - Create a subset limited to each of the four positions -->
+<!-- - Fit a Poisson regression of Passes on Time within each subset -->
+<!-- - Pull the regression coefficient and standard error from each model -->
+<!-- - Use those values to calculate 95% confidence intervals -->
+<!-- - Convert everything from log relative rate to relative rate -->
+<!-- - Plot everything -->
+
+<!-- ## Loops -->
+
+<!-- Create a vector with the names of all positions. Create an empty data frame to store regression results. -->
+
+<!-- ```{r} -->
+<!-- (positions <- unique(worldcup$Position)) -->
+<!-- (pos_est <- data.frame(position = positions, -->
+<!--                        est = NA, se = NA)) -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Loop through and fit a Poisson regression model for each subset of data. Save regression coefficients in the empty data frame. -->
+
+<!-- ```{r} -->
+<!-- for(i in 1:nrow(pos_est)){ -->
+<!--         pos_df <- worldcup %>% -->
+<!--           filter(Position == positions[i])  -->
+<!--         pos_mod <- glm(Passes ~ Time, -->
+<!--                        data = pos_df, -->
+<!--                        family = poisson(link = "log")) -->
+<!--         pos_coefs <- summary(pos_mod)$coefficients[2, 1:2] -->
+<!--         pos_est[i, c("est", "se")] <- pos_coefs -->
+<!-- } -->
+<!-- pos_est[1:2, ] -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Calculate 95% confidence intervals for log relative risk values. -->
+
+<!-- ```{r} -->
+<!-- pos_est <- pos_est %>% -->
+<!--   mutate(lower_ci = est - 1.96 * se, -->
+<!--          upper_ci = est + 1.96 * se) -->
+
+<!-- pos_est %>% -->
+<!--   select(position, est, lower_ci, upper_ci)  -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Calculate relative risk per 90 minute increase in minutes played.  -->
+
+<!-- ```{r} -->
+<!-- pos_est <- pos_est %>% -->
+<!--   mutate(rr_est = exp(90 * est), -->
+<!--          rr_low = exp(90 * lower_ci), -->
+<!--          rr_high = exp(90 * upper_ci)) -->
+<!-- pos_est %>% -->
+<!--   select(position, rr_est, rr_low, rr_high)  -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Re-level the `position` factor so the plot will be ordered from highest to lowest estimates. -->
+
+<!-- ```{r} -->
+<!-- pos_est <- arrange(pos_est, rr_est) %>% -->
+<!--         mutate(position = factor(position, -->
+<!--                                  levels = position)) -->
+<!-- pos_est %>% select(position, est) -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- Create the plot: -->
+
+<!-- ```{r, eval = FALSE} -->
+<!-- ggplot(pos_est, aes(x = rr_low, y = position)) +  -->
+<!--         geom_segment(aes(xend = rr_high, yend = position)) +  -->
+<!--         geom_point(aes(x = rr_est, y = position)) +  -->
+<!--         theme_few() +  -->
+<!--         ylab("") +  -->
+<!--         scale_x_continuous(paste("Relative rate of",  -->
+<!--                                  "passes\nper 90 minute",  -->
+<!--                                  "increase in minutes played"), -->
+<!--                            limits = c(1.0,  -->
+<!--                                       max(pos_est$rr_high))) +  -->
+<!--         geom_vline(aes(xintercept = 1), color = "lightgray") -->
+<!-- ``` -->
+
+<!-- ## Loops -->
+
+<!-- ```{r, echo = FALSE, fig.width = 6, fig.height = 4} -->
+<!-- ggplot(pos_est, aes(x = rr_low, y = position)) +  -->
+<!--         geom_segment(aes(xend = rr_high, yend = position)) +  -->
+<!--         geom_point(aes(x = rr_est, y = position)) +  -->
+<!--         theme_few() +  -->
+<!--         ylab("") +  -->
+<!--         scale_x_continuous(paste("Relative rate of passes\nper", -->
+<!--                                  "90 minute increase in minutes played"), -->
+<!--                            limits = c(1.0, max(pos_est$rr_high))) +  -->
+<!--         geom_vline(aes(xintercept = 1), color = "lightgray") -->
+<!-- ``` -->
+
 
 
 # Regular expressions
@@ -1272,3 +1438,39 @@ For more on these patterns, see:
 - [Handling and Processing Strings in R](http://gastonsanchez.com/Handling_and_Processing_Strings_in_R.pdf) by Gaston Sanchez (seven chapter ebook)
 - http://gskinner.com/RegExr and http://www.txt2re.com: Interactive tools for helping you build regular expression pattern strings
 
+<!-- # Final group project -->
+
+<!-- ## Final group project -->
+
+<!-- - Group size: Three or four students -->
+<!-- - If you'd like, you may form your own groups. For any students who do not form a group, I will randomly assign groups (or add on to groups that have started). -->
+
+<!-- ## Final group project -->
+
+<!-- Important dates:  -->
+
+<!-- - October 17: Due date for creating groups. Email me your group members. -->
+<!-- - October 24: Due date (by start of class) for a two-paragraph summary of the question you'd like to answer, including some ideas on where you might find the data.  -->
+<!-- - December 5: First submission of written report will be due. -->
+<!-- - Week of December 12: Final presentation and final draft of written report due. -->
+
+<!-- ## Final group project -->
+
+<!-- - You will have in-class group work time during the "Advanced" weeks to work on this. This project will also require work with your group outside of class. -->
+<!-- - You will be able to get feedback and help from me during the in-class group work time.  -->
+<!-- - Your project should not use any datasets from your own research or from other classes. -->
+<!-- - Part of the grade will be on the writing and presentation of the final project. -->
+
+<!-- ## Final group project -->
+
+<!-- To get an idea of what your final product should look like, check out these links: -->
+
+<!-- - [Does Christmas come earlier each year?](http://www.statslife.org.uk/culture/1892-does-christmas-really-come-earlier-every-year) -->
+<!-- - [Hilary: the most poisoned baby name in US history](http://hilaryparker.com/2013/01/30/hilary-the-most-poisoned-baby-name-in-us-history/) -->
+<!-- - [Every Guest Jon Stewart Ever Had On "The Daily Show"](http://fivethirtyeight.com/datalab/every-guest-jon-stewart-ever-had-on-the-daily-show/) -->
+<!-- - [Should Travelers Avoid Flying Airlines That Have Had Crashes in the Past?](http://fivethirtyeight.com/features/should-travelers-avoid-flying-airlines-that-have-had-crashes-in-the-past/) -->
+<!-- - [Billion-Dollar Billy Beane](http://fivethirtyeight.com/features/billion-dollar-billy-beane/) -->
+
+<!-- Part of your final project will be to design a Shiny app. \bigskip -->
+
+<!-- To see some examples of Shiny apps, see the [Shiny gallery](http://shiny.rstudio.com/gallery/). -->
