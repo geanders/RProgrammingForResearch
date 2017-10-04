@@ -1062,7 +1062,7 @@ accident %>%
 
 Here is example code for the section above: 
 
-```{r warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check12, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 library(tidyverse)
 library(lubridate)
 library(ggthemes)
@@ -1095,7 +1095,7 @@ Next, you will write a function to create state-specific plots from this data, t
 
 - The FARS data includes a column called `STATE`, but it gives state as a one- or two-digit code, rather than by name. These codes are the state Federal Information Processing Standard (FIPS) codes. A dataset with state names and FIPS codes is available at http://www2.census.gov/geo/docs/reference/state.txt. Read that data into an R object called `state_fips` and clean it so the first few lines look like this (hint: to change the `state` column to an integer class, you can use the function `as.integer`): 
 
-```{r echo = FALSE, warning = FALSE, message = FALSE}
+```{r check11, echo = FALSE, warning = FALSE, message = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   rename(state = STATE,
@@ -1107,7 +1107,7 @@ state_fips %>% slice(1:5)
 
 - Read the 2015 FARS data into an R object named `accident`. Use all the date and time information to create a column named `date` with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new `date` variable). Filter out any values where the date-time does not render (i.e., `date` is a missing value). The first few rows of the cleaned dataframe should look like this:
 
-```{r warning = FALSE, message = FALSE, echo = FALSE}
+```{r check10, warning = FALSE, message = FALSE, echo = FALSE}
 accident <- read_csv("data/accident.csv") %>%
   select(STATE, DAY:MINUTE, DRUNK_DR) %>%
   rename(state = STATE, 
@@ -1180,7 +1180,7 @@ accident %>%
 
 - Write code to create boxplots for Colorado of the distribution of total accidents within each month. Create separate boxplots for daytime and nighttime accidents, and facet by whether the accident was related to drunk driving. The plot should look like the plot below. 
 
-```{r echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check9, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 accident %>%
   filter(state_name == "Colorado") %>%
   mutate(drunk_dr = factor(drunk_dr, labels = c("Unrelated to\ndrunk driving",
@@ -1197,7 +1197,7 @@ accident %>%
 
 - Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any dataframe with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you will need to explicitly print the output from your function. See the examples of using the function below.) 
 
-```{r echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check8, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 plot_fars <- function(df){
   fars_plot <- df %>%
     mutate(drunk_dr = factor(drunk_dr, labels = c("Unrelated to\ndrunk driving",
@@ -1252,7 +1252,7 @@ plot_grid(plotlist = state_plots[["plots"]],
 
 Here is the code to read the dataset with state names and FIPS codes at http://www2.census.gov/geo/docs/reference/state.txt into an R object called `state_fips` and clean it so the first few lines: 
 
-```{r echo = FALSE, warning = FALSE, message = FALSE}
+```{r check7, echo = FALSE, warning = FALSE, message = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   rename(state = STATE,
@@ -1266,7 +1266,7 @@ Note that you can read this file directly from the website using `read_delim`.
 
 Read the 2015 FARS data into an R object named `accident`. Use all the date and time information to create a column named `date` with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new `date` variable). Filter out any values where the date-time does not render (i.e., `date` is a missing value). You can use the following code to do all this:
 
-```{r warning = FALSE, message = FALSE, echo = FALSE}
+```{r check6, warning = FALSE, message = FALSE, echo = FALSE}
 accident <- read_csv("data/accident.csv") %>%
   select(STATE, DAY:MINUTE, DRUNK_DR) %>%
   rename(state = STATE, 
@@ -1311,7 +1311,7 @@ accident %>%
 
 As a note, you may want to create a table (for example, for a report) from the data at this stage. You could use `unite` then `spread` to do this pretty easily:
 
-```{r }
+```{r check5}
 accident %>%
   filter(state_name == "Colorado") %>%
   mutate(daytime = factor(daytime, labels = c("Nighttime", "Daytime")),
@@ -1337,7 +1337,7 @@ summarize_fars <- function(df){
 
 Once you've written the function, see if you can figure out what the following code does. This code limits the data to data from four states and then applies the `summarize_fars` function that you just wrote to the subset of data from each state. Finally, since we `nest` to do that, the pipeline includes some lines to `unnest` the data to get back to an unnested data frame:
 
-```{r}
+```{r check4}
 library(purrr)
 
 accident %>% 
@@ -1351,7 +1351,7 @@ accident %>%
 
 Write code to create boxplots for Colorado of the distribution of total accidents within each month. Create separate boxplots for daytime and nighttime accidents, and facet by whether the accident was related to drunk driving. You can do that with this code:
 
-```{r fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check3, fig.width = 6, fig.height = 3, fig.align = "center"}
 accident %>%
   filter(state_name == "Colorado") %>%
   mutate(drunk_dr = factor(drunk_dr, labels = c("Unrelated to\ndrunk driving",
@@ -1369,7 +1369,7 @@ accident %>%
 
 Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any dataframe with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you must explicitly print the plot object. For example, you could assign the plot to `fars_plot`, and then you would run `print(fars_plot)` within your loop as the last step.) 
 
-```{r echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check2, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 plot_fars <- function(df){
   fars_plot <- df %>%
     mutate(drunk_dr = factor(drunk_dr, labels = c("Unrelated to\ndrunk driving",
@@ -1389,7 +1389,7 @@ Notice how similar this function is to the code you wrote in the previous step.
 
 Once you have written this function, what happens when you run the following code? The following code applies this function to the subset of data from each of four states. The output (`state_plots`) is a nested dataframe, where the new `plots` column is a list of `ggplot` objects. If you run `print` on this list, it will print each of these plots out separately (use the arrow buttons in the "Plots" Pane in RStudio to browse through these plots).
 
-```{r fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check1, fig.width = 6, fig.height = 3, fig.align = "center", eval = FALSE}
 library(purrr)
 
 state_plots <- accident %>% 
