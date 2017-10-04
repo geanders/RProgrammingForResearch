@@ -587,19 +587,25 @@ For example, in the `tell_date` function, we might want to add some code so it w
 tell_date <- function(){
   # Print out today's date
   cat("Today's date is: ")
-  cat(format(Sys.time(), "%b %d, %Y"))
+  cat(format(Sys.time(), "%b %d, %Y."), "\n")
   
   # Add something based on the weekday of today's date
   todays_wday <- lubridate::wday(Sys.time())
   
   if(todays_wday %in% c(1, 7)){      # What to do on Sat / Sun
-    cat("\n", "It's the weekend!")
+    cat("It's the weekend!")
   } else if (todays_wday == c(6)) {  # What to do on Friday
     cat("It's almost the weekend!")
   } else {                           # What to do other days
-    cat("It's ", 7 - today_wday, "days untils the weekend.")
+    cat("It's ", 7 - todays_wday, "days until the weekend.")
   }
 }
+```
+
+## `if` / `else`
+
+```{r}
+tell_date()
 ```
 
 <!-- ## Control structures -->
