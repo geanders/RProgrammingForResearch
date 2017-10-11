@@ -331,7 +331,7 @@ There's a fantastic new(-ish) package in R to plot choropleth maps. You could al
 
 You will need to install and load the `choroplethr` package in R to use the functions below.
 
-```{r cbj, message = FALSE, warning = FALSE, eval = FALSE}
+```{r cbj, message = FALSE, warning = FALSE}
 # install.packages("choroplethr")
 library(choroplethr)
 
@@ -341,18 +341,18 @@ library(choroplethrMaps)
 
 At the most basic level, you can use this package to plot some data that comes automatically with the package (you'll just need to load the data using the `data` function). For example, if you wanted to plot state-by-state populations as of 2012, you could use:
 
-```{r cbk, warning = FALSE, message=FALSE, eval = FALSE}
+```{r cbk, warning = FALSE, message=FALSE}
 data(df_pop_state)
 map_3 <- state_choropleth(df_pop_state)
 ```
 
-```{r cbl, fig.width=8, fig.height=3.5, eval = FALSE}
+```{r cbl, fig.width=8, fig.height=3.5}
 map_3 
 ```
 
 You can find out more about the `df_pop_state` data if you type `?df_pop_state`. Notice that, for the data frame, the location is given in a column called `region` and the population size to plot is in a column called `value`. 
 
-```{r cbm, eval = FALSE}
+```{r cbm}
 head(df_pop_state, 3)
 ```
 
@@ -360,31 +360,31 @@ You could use this function to create any state-level choropleth you wanted, as 
 
 You can run similar functions at different spatial resolutions (for example, county or zip code):
 
-```{r cbn, eval = FALSE}
+```{r cbn}
 data(df_pop_county)
 head(df_pop_county, 3)
 ```
 
 You can plot choropleths at this level, as well:
 
-```{r cbo, warning = FALSE, message = FALSE, eval = FALSE}
+```{r cbo, warning = FALSE, message = FALSE}
 map_4 <- county_choropleth(df_pop_county)
 ```
 
-```{r cbp, fig.width=8, fig.height=4, eval = FALSE}
+```{r cbp, fig.width=8, fig.height=4}
 map_4
 ```
 
 You can even do this for countries of the world:
 
-```{r cbq, fig.width = 8, fig.height = 3.5, warning=FALSE, message=FALSE, eval = FALSE}
+```{r cbq, fig.width = 8, fig.height = 3.5, warning=FALSE, message=FALSE}
 data(df_pop_country)
 country_choropleth(df_pop_country)
 ```
 
 You can zoom into states or counties. For example, to plot population by county in Colorado, you could run:
 
-```{r cbr, fig.width = 6, fig.height = 3, message = FALSE, warning = FALSE, eval = FALSE}
+```{r cbr, fig.width = 6, fig.height = 3, message = FALSE, warning = FALSE}
 county_choropleth(df_pop_county, state_zoom = "colorado")
 ```
 
@@ -396,12 +396,12 @@ These functions pull recent Census data directly from the US Census using its AP
 
 Once you put in your request, they'll email you your key. Once they give you your API key, you'll need to install it on R:
 
-```{r cbs, echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE, eval = FALSE}
+```{r cbs, echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE}
 library(acs)
 api.key.install(Sys.getenv("acskey"))
 ```
 
-```{r cbt, eval = FALSE, eval = FALSE}
+```{r cbt, eval = FALSE}
 library(acs)
 api.key.install('[your census api key]');
 ```
@@ -953,7 +953,7 @@ state_summaries %>% slice(1:5)
 
 - Create the following state-level choropleths of number of fatal accidents in 2015 in each state and of the percent of fatal accidents linked to drunk driving in each state. The quickest way to do this is with the `choroplethr` package. 
 
-```{r ccu, echo = FALSE}
+```{r ccu, echo = FALSE, message = FALSE, warning = FALSE}
 # With `choroplethr` package
 library(choroplethr)
 state_summaries %>%
@@ -1028,12 +1028,12 @@ accident %>%
   map_fatal_accidents(which_state = "Texas") 
 ```
 
-```{r cda, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 2.75, fig.align = "center", echo = FALSE}
+```{r cda, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 2.75, fig.align = "center"}
 accident %>% 
   map_fatal_accidents(which_state = "Colorado", drunk_dr = TRUE)
 ```
 
-```{r cdb, message = FALSE, warning = FALSE, fig.width = 8.6, fig.height = 4.5, fig.align = "center", echo = FALSE}
+```{r cdb, message = FALSE, warning = FALSE, fig.width = 8.6, fig.height = 4.5, fig.align = "center"}
 map_fatal_accidents(accident, which_state = "Texas",
                     drunk_dr = TRUE)
 ```
