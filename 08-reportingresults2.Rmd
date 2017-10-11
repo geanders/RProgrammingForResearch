@@ -559,6 +559,11 @@ str_to_title(str_to_lower(titanic_train$Name[1]))
 This exercise will continue using the Fatality Analysis Reporting System (FARS) data we started using last week. 
 
 ```{r ccm, echo = FALSE, message = FALSE, warning = FALSE}
+library(dplyr)
+library(tidyr)
+library(readr)
+library(lubridate)
+
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   dplyr::rename(state = STATE,
@@ -672,6 +677,7 @@ accident %>%
 - Write code to create boxplots for Colorado of the distribution of total accidents within each month. Create separate boxplots for daytime and nighttime accidents, and facet by whether the accident was related to drunk driving. The plot should look like the plot below. 
 
 ```{r check9a, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+library(ggplot2)
 accident %>%
   filter(state_name == "Colorado") %>%
   mutate(drunk_dr = factor(drunk_dr, labels = c("Unrelated to\ndrunk driving",
@@ -735,6 +741,7 @@ print(state_plots[["plots"]][[1]])$plot
 - Install the `cowplot` package (this is a `ggplot2` extension) and then try running the following code. What happens when you run this code?
 
 ```{r eval = FALSE}
+library(cowplot)
 plot_grid(plotlist = state_plots[["plots"]], 
           ncol = 2, labels = "AUTO")
 ```
@@ -872,7 +879,7 @@ plot_fars <- function(df){
     geom_boxplot() +
     facet_wrap(~ drunk_dr, ncol = 2) +
     xlab("Time of day") + ylab("# of monthly accidents") 
-  print(fars_plot)
+  fars_plot
 }
 ```
 
@@ -887,9 +894,9 @@ state_plots <- accident %>%
   filter(state_name %in% c("Colorado", "Texas", "California", "New York")) %>% 
   group_by(state_name) %>%
   nest() %>% 
-  mutate(plots = map(data, plot_fars)) 
+  mutate(plots = map(data, plot_fars)) %>% 
+  select(state_name, plots)
 
-state_plots
 class(state_plots)
 class(state_plots[["plots"]])
 class(state_plots[["plots"]][[1]])
@@ -900,8 +907,10 @@ Install the `cowplot` package (this is a `ggplot2` extension) and then try runni
 
 ```{r fig.width = 12, fig.height = 8, fig.align = "center", eval = FALSE}
 library(cowplot)
+library(gtable)
 plot_grid(plotlist = state_plots[["plots"]], 
           ncol = 2, labels = "AUTO")
+
 ```
 
 ### First steps in mapping 
@@ -1010,17 +1019,18 @@ map_fatal_accidents <- function(datafr = accident, which_state,
 }
 ```
 
-```{r ccy, message = FALSE, warning = FALSE, fig.width = 4, fig.height = 2.75, fig.align = "center", echo = FALSE}
+```{r ccy, message = FALSE, warning = FALSE, fig.width = 4, fig.height = 2.75, fig.align = "center"}
 map_fatal_accidents(accident, which_state = "Colorado")
 ```
 
-```{r ccz, message = FALSE, warning = FALSE, fig.width = 4.3, fig.height = 4.5, fig.align = "center", echo = FALSE}
-map_fatal_accidents(accident, which_state = "Texas") 
+```{r ccz, message = FALSE, warning = FALSE, fig.width = 4.3, fig.height = 4.5, fig.align = "center"}
+accident %>% 
+  map_fatal_accidents(which_state = "Texas") 
 ```
 
 ```{r cda, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 2.75, fig.align = "center", echo = FALSE}
-map_fatal_accidents(accident, which_state = "Colorado", 
-                    drunk_dr = TRUE)
+accident %>% 
+  map_fatal_accidents(which_state = "Colorado", drunk_dr = TRUE)
 ```
 
 ```{r cdb, message = FALSE, warning = FALSE, fig.width = 8.6, fig.height = 4.5, fig.align = "center", echo = FALSE}
