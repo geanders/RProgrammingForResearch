@@ -250,7 +250,8 @@ ggplot(carolinas, aes(x = long, y = lat,
                       group = group,
                       fill = region)) + 
   geom_polygon(color = "black") + 
-  theme_void()
+  theme_void() + 
+  coord_map()
 ```
 
 Here is an example of plotting all of the US by state:
@@ -260,7 +261,8 @@ map_1 <- ggplot(us_map, aes(x = long, y = lat,
                             group = group)) + 
         geom_polygon(fill = "dodgerblue",
                      color = "white") +
-        theme_void()
+        theme_void() + 
+  coord_map()
 ```
 
 ```{r cbb, fig.width = 6.5, fig.height = 4, fig.align = "center"}
@@ -319,7 +321,8 @@ balt_plot <- ggplot(baltimore,
 ```
 
 ```{r cbi, fig.width = 7, fig.height = 4}
-balt_plot
+balt_plot + 
+  coord_map()
 ```
 
 ## Choropleth maps
@@ -344,7 +347,7 @@ map_3 <- state_choropleth(df_pop_state)
 ```
 
 ```{r cbl, fig.width=8, fig.height=3.5, eval = FALSE}
-map_3
+map_3 
 ```
 
 You can find out more about the `df_pop_state` data if you type `?df_pop_state`. Notice that, for the data frame, the location is given in a column called `region` and the population size to plot is in a column called `value`. 
@@ -583,7 +586,7 @@ The first part of this week's in-course exercise continues last week's exercise.
 
 - The FARS data includes a column called `STATE`, but it gives state as a one- or two-digit code, rather than by name. These codes are the state Federal Information Processing Standard (FIPS) codes. A dataset with state names and FIPS codes is available at http://www2.census.gov/geo/docs/reference/state.txt. Read that data into an R object called `state_fips` and clean it so the first few lines look like this (hint: to change the `state` column to an integer class, you can use the function `as.integer`): 
 
-```{r check11, echo = FALSE, warning = FALSE, message = FALSE}
+```{r check11a, echo = FALSE, warning = FALSE, message = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   rename(state = STATE,
@@ -982,11 +985,12 @@ ggmap(texas, extent = "device") +
 - Create a function that will take three inputs: `datafr`, a data frame like `accident` with fatal accident data; `which_state`, a state name; and `drunk_dr`, a logical value (TRUE / FALSE) specifying whether to create separate maps for accidents that were and were not linked to drunk driving. This function should output a map (or two maps if `drunk_dr` is set to TRUE) with points for all fatal accidents in the state. Use `map_data` and create the map yourself, rather than using `choroplethr` for this question. Examples of calling this function are shown below the function definition.
 
 ```{r ccx, echo = FALSE}
+library(maps)
 map_fatal_accidents <- function(datafr = accident, which_state,
                                 drunk_dr = FALSE){
   state_accidents <- datafr %>%
     dplyr::filter(state_name == which_state)
-  state_map_data <- ggplot2::map_data("county", region = which_state)
+  state_map_data <- map_data("county", region = which_state)
   
   accident_map <- ggplot2::ggplot(state_map_data,
                                   ggplot2::aes(x = long, y = lat, 
