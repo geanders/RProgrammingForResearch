@@ -460,7 +460,7 @@ With this package, you can get maps from the following different sources:
 
 Here are different examples of Beijing using different map sources. (Also, note that I'm using the option `extent = "device"` to fill up the whole plot are with the map, instead of including axis labels and titles.)
 
-```{r cca, message = FALSE, warning = FALSE}
+```{r cca, message = FALSE, warning = FALSE, eval = FALSE}
 beijing_a <- get_map("Beijing", zoom = 12,
                      source = "stamen", maptype = "toner")
 a <- ggmap(beijing_a, extent = "device")
@@ -474,13 +474,13 @@ beijing_c <- get_map("Beijing", zoom = 12,
 c <- ggmap(beijing_c, extent = "device")
 ```
 
-```{r ccb, fig.width = 7}
+```{r ccb, fig.width = 7, eval = FALSE}
 grid.arrange(a, b, c, nrow = 1) 
 ```
 
 As with the maps from `ggplot2`, you can add points to these maps:
 
-```{r cce, warning = FALSE, message = FALSE}
+```{r cce, warning = FALSE, message = FALSE, eval = FALSE}
 serial_phone <- read.csv("data/serial_phone_data.csv") %>% 
         mutate(Cell_Site = substring(Cell_Site, 1, 4),
                Call_Time = as.POSIXct(Call_Time, format = "%d/%m/%y %H:%M",
@@ -491,7 +491,7 @@ serial_phone <- read.csv("data/serial_phone_data.csv") %>%
         arrange(Call_Time)
 ```
 
-```{r ccf, message = FALSE, warning = FALSE, fig.width = 5}
+```{r ccf, message = FALSE, warning = FALSE, fig.width = 5, eval = FALSE}
 serial_map <- get_map(c(-76.7, 39.3), zoom = 12,
                       source = "stamen",
                       maptype = "toner")
@@ -507,7 +507,7 @@ serial_map <- ggmap(serial_map, extent = "device") +
                    size = 2)
 ```
 
-```{r ccg, warning = FALSE, message = FALSE, fig.width = 4, fig.height = 4, fig.align = "center", echo = FALSE}
+```{r ccg, warning = FALSE, message = FALSE, fig.width = 4, fig.height = 4, fig.align = "center", echo = FALSE, eval = FALSE}
 serial_map
 ```
 
@@ -515,19 +515,19 @@ You can also use the Google Maps API, through the `geocode` function, to get the
 
 For example, you can get the location of CSU:
 
-```{r cch, message = FALSE, warning = FALSE}
+```{r cch, message = FALSE, warning = FALSE, eval = FALSE}
 geocode("Colorado State University")
 ```
 
 You can also get a location by address:
 
-```{r cci, message = FALSE, warning = FALSE}
+```{r cci, message = FALSE, warning = FALSE, eval = FALSE}
 geocode("1 First St NE, Washington, DC")
 ```
 
 You can get distances, too, using the `mapdist` function with two locations. This will give you distance and also time. 
 
-```{r ccj, message = FALSE, warning = FALSE}
+```{r ccj, message = FALSE, warning = FALSE, eval = FALSE}
 mapdist("Fort Collins CO",
         "1 First St NE, Washington, DC") %>%
   select(from, miles, hours)
@@ -982,7 +982,7 @@ accident <- accident %>%
 
 - Map the locations of fatal accidents in Texas in 2015 on top of a Google Map base map that shows major roads. An example map is shown below. (*Hint:* Use the `get_map` and `ggmap` functions for this part.)
 
-```{r ccw, echo = FALSE, message = FALSE, warning = FALSE}
+```{r ccw, echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE}
 texas <- get_map(location = "texas", zoom = 6, maptype = "roadmap")
 ggmap(texas, extent = "device") + 
   geom_point(data = dplyr::filter(accident, state_name == "Texas"), 
