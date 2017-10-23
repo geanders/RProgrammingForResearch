@@ -4,7 +4,7 @@
 
 [Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week10.pdf) a pdf of the lecture slides covering this topic.
 
-```{r echo = FALSE, message = FALSE}
+```{r ch10chunk1, echo = FALSE, message = FALSE}
 library(tidyverse)
 library(knitr)
 ```
@@ -15,7 +15,7 @@ library(knitr)
 
 One version of Atlantic basin hurricane tracks is available here: http://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2015-070616.txt. The data is not in a classic delimited format: 
 
-```{r echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
+```{r ch10chunk2, echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
 knitr::include_graphics("figures/hurrtrackformat.png")
 ```
 
@@ -42,7 +42,7 @@ The `readLines` function will read in lines from a text file directly, without t
 
 For example, to read in three lines from the hurricane tracking data, you can run: 
 
-```{r}
+```{r ch10chunk3}
 tracks_url <- paste0("http://www.nhc.noaa.gov/data/hurdat/",
                      "hurdat2-1851-2016-041117.txt")
 hurr_tracks <- readLines(tracks_url, n = 3)
@@ -51,7 +51,7 @@ hurr_tracks
 
 The data has been read in as a vector, rather than a dataframe: 
 
-```{r}
+```{r ch10chunk4}
 class(hurr_tracks)
 length(hurr_tracks)
 hurr_tracks[1]
@@ -61,14 +61,14 @@ hurr_tracks[1]
 
 You can use regular expressions to break each line up. For example, you can use `str_split` from the `stringr` package to break the first line of the hurricane track data into its three separate components: 
 
-```{r}
+```{r ch10chunk5}
 library(stringr)
 str_split(hurr_tracks[1], pattern = ",")
 ```
 
 You can use this to create a list where each element of the list has the split-up version of a line of the original data. First, read in all of the data:
 
-```{r}
+```{r ch10chunk6}
 tracks_url <- paste0("http://www.nhc.noaa.gov/data/hurdat/",
                      "hurdat2-1851-2016-041117.txt")
 hurr_tracks <- readLines(tracks_url)
@@ -79,7 +79,7 @@ length(hurr_tracks)
 
 Next, use `lapply` with `str_split` to split each line of the data at the commas:
 
-```{r}
+```{r ch10chunk7}
 hurr_tracks <- lapply(hurr_tracks, str_split,
                       pattern = ",",
                       simplify = TRUE)
@@ -89,7 +89,7 @@ hurr_tracks[[2]][1:2]
 
 Next, you want to split this list into two lists, one with the shorter "meta-data" lines and one with the longer "observation" lines. You can use `sapply` to create a vector with the length of each line. You will later use this to identify which lines are short or long. 
 
-```{r}
+```{r ch10chunk8}
 hurr_lengths <- sapply(hurr_tracks, length)
 hurr_lengths[1:17]
 unique(hurr_lengths)
@@ -97,16 +97,16 @@ unique(hurr_lengths)
 
 You can use bracket indexing to split the `hurr_tracks` into two lists: one with the shorter lines that start each observation (`hurr_meta`) and one with the storm observations (`hurr_obs`). Use bracket indexing with the `hurr_lengths` vector you just created to make that split.
 
-```{r}
+```{r ch10chunk9}
 hurr_meta <- hurr_tracks[hurr_lengths == 4]
 hurr_obs <- hurr_tracks[hurr_lengths == 21]
 ```
 
-```{r}
+```{r ch10chunk10}
 hurr_meta[1:3]
 ```
 
-```{r}
+```{r ch10chunk11}
 hurr_obs[1:2]
 ```
 
@@ -114,7 +114,7 @@ hurr_obs[1:2]
 
 Now, you can use `bind_rows` from `dplyr` to change the list of metadata into a dataframe. (You first need to use `as_tibble` with `lapply` to convert all elements of the list from matrices to dataframes.)
 
-```{r message = FALSE}
+```{r ch10chunk12, message = FALSE}
 library(dplyr)
 hurr_meta <- lapply(hurr_meta, tibble::as_tibble)
 hurr_meta <- bind_rows(hurr_meta)
@@ -126,19 +126,19 @@ You can clean up the data a bit more.
 
 - First, the fourth column doesn't have any non-missing values, so you can get rid of it:
 
-```{r}
+```{r ch10chunk13}
 unique(hurr_meta$V4)
 ```
 
 - Second, the second and third columns include a lot of leading whitespace:
 
-```{r}
+```{r ch10chunk14}
 hurr_meta$V2[1:2]
 ```
 
 - Last, we want to name the columns. 
 
-```{r}
+```{r ch10chunk15}
 hurr_meta <- hurr_meta %>%
   dplyr::select(-V4) %>%
   dplyr::rename(storm_id = V1, storm_name = V2, n_obs = V3) %>%
@@ -149,14 +149,14 @@ hurr_meta %>% slice(1:3)
 
 Now you can apply the same idea to the hurricane observations. First, we'll want to add storm identifiers to that data. The "meta" data includes storm ids and the number of observations per storm. We can take advantage of that to make a `storm_id` vector that will line up with the storm observations. 
 
-```{r}
+```{r ch10chunk16}
 storm_id <- rep(hurr_meta$storm_id, times = hurr_meta$n_obs)
 head(storm_id, 3)
 length(storm_id)
 length(hurr_obs)
 ```
 
-```{r}
+```{r ch10chunk17}
 hurr_obs <- lapply(hurr_obs, tibble::as_tibble)
 hurr_obs <- dplyr::bind_rows(hurr_obs) %>%
   dplyr::mutate(storm_id = storm_id)
@@ -173,7 +173,7 @@ First, say you only want some of the columns for a study you are doing. You can 
 
 If you only need date, time, storm status, location (latitude and longitude), maximum sustained winds, and minimum pressure, then you can run: 
 
-```{r}
+```{r ch10chunk18}
 hurr_obs <- hurr_obs %>%
   dplyr::select(V1, V2, V4:V8, storm_id) %>%
   dplyr::rename(date = V1, time = V2, status = V4, latitude = V5, 
@@ -184,7 +184,7 @@ hurr_obs %>% slice(1:3) %>%
 
 Next, the first two columns give the date and time. You can `unite` these and then convert them to a Date-time class. 
 
-```{r message = FALSE}
+```{r ch10chunk19, message = FALSE}
 library(tidyr)
 library(lubridate)
 hurr_obs <- hurr_obs %>%
@@ -196,7 +196,7 @@ hurr_obs %>% slice(1:3) %>%
 
 Next, you can change `status` to a factor and give the levels more meaningful names: 
 
-```{r}
+```{r ch10chunk20}
 unique(hurr_obs$status)
 storm_levels <- c("TD", "TS", "HU", "EX", 
                   "SD", "SS", "LO", "WV", "DB")
@@ -213,14 +213,14 @@ hurr_obs <- hurr_obs %>%
 
 Now, you can clean up the latitude and longitude. Ultimately, we'll want numeric values for those so we can use them for mapping. You can use regular expressions to separate the numeric and non-numeric parts of these columns. For example:
 
-```{r}
+```{r ch10chunk21}
 head(str_extract(hurr_obs$latitude, "[A-Z]"))
 head(str_extract(hurr_obs$latitude, "[^A-Z]+"))
 ```
 
 Use this idea to split the numeric latitude from the direction of that latitude:
 
-```{r}
+```{r ch10chunk22}
 hurr_obs <- hurr_obs %>%
   dplyr::mutate(lat_dir = str_extract(latitude, "[A-Z]"),
                 latitude = as.numeric(str_extract(latitude, "[^A-Z]+")),
@@ -230,7 +230,7 @@ hurr_obs <- hurr_obs %>%
 
 Now these elements are in separate columns:
 
-```{r}
+```{r ch10chunk23}
 hurr_obs %>%
   dplyr::select(latitude, lat_dir, longitude, lon_dir) %>%
   dplyr::slice(1:2)
@@ -240,14 +240,14 @@ unique(hurr_obs$lon_dir)
 
 If we're looking at US impacts, we probably only need observations from the western hemisphere, so let's filter out other values:
 
-```{r}
+```{r ch10chunk24}
 hurr_obs <- hurr_obs %>%
   dplyr::filter(lon_dir == "W")
 ```
 
 Next, clean up the wind column:
 
-```{r}
+```{r ch10chunk25}
 unique(hurr_obs$wind)[1:5]
 hurr_obs <- hurr_obs %>% 
   dplyr::mutate(wind = ifelse(wind == " -99", NA, as.numeric(wind)))
@@ -255,7 +255,7 @@ hurr_obs <- hurr_obs %>%
 
 Check the cleaned measurements:
 
-```{r warning = FALSE, out.width = "0.8\\textwidth", fig.width = 5, fig.height = 3, message = FALSE, fig.align = "center"}
+```{r ch10chunk26, warning = FALSE, out.width = "0.8\\textwidth", fig.width = 5, fig.height = 3, message = FALSE, fig.align = "center"}
 library(ggplot2)
 ggplot(hurr_obs, aes(x = wind)) + 
   geom_histogram(binwidth = 10)
@@ -263,21 +263,21 @@ ggplot(hurr_obs, aes(x = wind)) +
 
 Clean and check air pressure measurements in the same way: 
 
-```{r}
+```{r ch10chunk27}
 head(unique(hurr_obs$pressure))
 hurr_obs <- hurr_obs %>% 
   dplyr::mutate(pressure = ifelse(pressure == " -999", NA,
                                   as.numeric(pressure)))
 ```
 
-```{r  out.width = "0.8\\textwidth", fig.width = 5, fig.height = 3, message = FALSE, fig.align = "center", warning = FALSE}
+```{r  ch10chunk28, out.width = "0.8\\textwidth", fig.width = 5, fig.height = 3, message = FALSE, fig.align = "center", warning = FALSE}
 ggplot(hurr_obs, aes(x = pressure)) + 
   geom_histogram(binwidth = 5)
 ```
 
 Check some of the very low pressure measurements:
 
-```{r}
+```{r ch10chunk29}
 hurr_obs %>% dplyr::arrange(pressure) %>% 
   dplyr::select(date_time, wind, pressure) %>% slice(1:5)
 ```
@@ -286,7 +286,7 @@ hurr_obs %>% dplyr::arrange(pressure) %>%
 
 Explore pressure versus wind speed, by storm status:
 
-```{r warning = FALSE,  out.width = "0.9\\textwidth", fig.width = 6.5, fig.height = 3, message = FALSE, fig.align = "center"}
+```{r ch10chunk30, warning = FALSE,  out.width = "0.9\\textwidth", fig.width = 6.5, fig.height = 3, message = FALSE, fig.align = "center"}
 ggplot(hurr_obs, aes(x = pressure, y = wind,
                      color = status)) + 
   geom_point(size = 0.2, alpha = 0.4) 
@@ -294,7 +294,7 @@ ggplot(hurr_obs, aes(x = pressure, y = wind,
 
 Next, we want to map storms by decade. Add hurricane decade:
 
-```{r}
+```{r ch10chunk31}
 hurr_obs <- hurr_obs %>%
   dplyr::mutate(decade = substring(year(date_time), 1, 3),
                 decade = paste0(decade, "0s"))
@@ -303,7 +303,7 @@ unique(hurr_obs$decade)
 
 Add logical for whether the storm was ever category 5:
 
-```{r}
+```{r ch10chunk32}
 hurr_obs <- hurr_obs %>%
   dplyr::group_by(storm_id) %>%
   dplyr::mutate(cat_5 = max(wind) >= 137) %>%
@@ -312,7 +312,7 @@ hurr_obs <- hurr_obs %>%
 
 To map the hurricane tracks, you need a base map to add the tracks to. Pull data to map hurricane-prone states:
 
-```{r message = FALSE}
+```{r ch10chunk33, message = FALSE}
 east_states <- c("florida", "georgia", "south carolina", 
                  "north carolina", "virginia", "maryland",
                  "delaware", "new jersey", "new york", 
@@ -327,7 +327,7 @@ east_us <- map_data("state", region = east_states)
 
 Plot tracks over a map of hurricane-prone states. Add thicker lines for storms that were category 5 at least once in their history. 
 
-```{r eval = FALSE}
+```{r ch10chunk34, eval = FALSE}
 ggplot(east_us, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "cornsilk", color = "cornsilk") + 
   theme_void() + 
@@ -346,7 +346,7 @@ ggplot(east_us, aes(x = long, y = lat, group = group)) +
 
 Check trends in maximum wind recorded in any observation each year: 
 
-```{r echo = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, out.width = "\\textwidth", fig.align = "center"}
+```{r ch10chunk35, echo = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, out.width = "\\textwidth", fig.align = "center"}
 ggplot(east_us, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "cornsilk", color = "cornsilk") + 
   theme_void() + 
@@ -363,7 +363,7 @@ ggplot(east_us, aes(x = long, y = lat, group = group)) +
 
 Maximum wind observed each year:
 
-```{r warning = FALSE,  out.width = "0.8\\textwidth", fig.width = 6.5, fig.height = 3, message = FALSE, fig.align = "center"}
+```{r ch10chunk36, warning = FALSE,  out.width = "0.8\\textwidth", fig.width = 6.5, fig.height = 3, message = FALSE, fig.align = "center"}
 hurr_obs %>%
   dplyr::mutate(storm_year = year(date_time)) %>%
   dplyr::group_by(storm_year) %>%
@@ -383,7 +383,7 @@ We can apply a function from this package across all the named storms to see how
 
 First, install the package (as well as `genderdata`, which is required to use the package). Once you do, you can use `gender` to determine the most common gender associated with a name in a given year or range of years:
 
-```{r eval = FALSE}
+```{r ch10chunk37, eval = FALSE}
 # install.packages("gender")
 # install.packages("genderdata", type = "source",
 #                 repos = "http://packages.ropensci.org")
@@ -394,7 +394,7 @@ gender("KATRINA", years = 2005)[ , c("name", "gender")]
 
 To apply this function across all our storms, it helps if we write a small function that "wraps" the `gender` function and outputs exactly (and only) what we want, in the format we want:
 
-```{r eval = FALSE}
+```{r ch10chunk38, eval = FALSE}
 get_gender <- function(storm_name, storm_year){
   storm_gender <- gender(names = storm_name,
                          years = storm_year,
@@ -407,7 +407,7 @@ get_gender <- function(storm_name, storm_year){
 
 Now we can use `mapply` with this wrapper function to apply it across all our named storms:
 
-```{r eval = FALSE}
+```{r ch10chunk39, eval = FALSE}
 hurr_genders <- hurr_meta %>%
   dplyr::filter(storm_name != "UNNAMED") %>%
   dplyr::mutate(storm_year = substring(storm_id, 5, 8),
@@ -422,7 +422,7 @@ hurr_genders <- hurr_meta %>%
 
 Now, plot a bar chart with the number of male, female, and unclear storms each year:
 
-```{r eval = FALSE}
+```{r ch10chunk40, eval = FALSE}
 hurr_genders %>%
   dplyr::group_by(storm_year, storm_gender) %>%
   dplyr::summarize(n = n()) %>%
@@ -435,7 +435,7 @@ hurr_genders %>%
 ```
 
 
-```{r echo = FALSE}
+```{r ch10chunk41, echo = FALSE, eval = FALSE}
 hurr_genders %>%
   dplyr::group_by(storm_year, storm_gender) %>%
   dplyr::summarize(n = n()) %>%
@@ -450,7 +450,7 @@ hurr_genders %>%
 
 Next, you can write a function to plot the track for a specific storm. You'll want to be able to call the function by storm name and year, so join in the storm names from the `hurr_meta` dataset. We'll exclude any "UNNAMED" storms.
 
-```{r}
+```{r ch10chunk42}
 hurr_obs <- hurr_obs %>%
   dplyr::left_join(hurr_meta, by = "storm_id") %>%
   dplyr::filter(storm_name != "UNNAMED") %>%
@@ -460,7 +460,7 @@ hurr_obs <- hurr_obs %>%
 Next, write a function to plot the track for a single storm. Use color to show storm status and size to show wind speed. 
 
 
-```{r}
+```{r ch10chunk43}
 map_track <- function(storm, year, map_data = east_us,
                       hurr_data = hurr_obs){
   to_plot <- hurr_obs %>%
@@ -482,24 +482,24 @@ map_track <- function(storm, year, map_data = east_us,
 ```
 
 
-```{r fig.align = "center", fig.width = 7, fig.height = 4, out.width = "\\textwidth", warning = FALSE}
+```{r ch10chunk44, fig.align = "center", fig.width = 7, fig.height = 4, out.width = "\\textwidth", warning = FALSE}
 map_track(storm = "Katrina", year = "2005")
 ```
 
 
-```{r fig.align = "center", fig.width = 7, fig.height = 4, out.width = "\\textwidth", warning = FALSE}
+```{r ch10chunk45, fig.align = "center", fig.width = 7, fig.height = 4, out.width = "\\textwidth", warning = FALSE}
 map_track(storm = "Camille", year = "1969")
 ```
 
 
-```{r fig.align = "center", fig.width = 7, fig.height = 4, out.width = "\\textwidth", warning = FALSE}
+```{r ch10chunk46, fig.align = "center", fig.width = 7, fig.height = 4, out.width = "\\textwidth", warning = FALSE}
 map_track(storm = "Hazel", year = "1954")
 ```
 
 
 You can also write code with `readLines` that will read, check, and clean each line, one line at a time. 
 
-```{r eval = FALSE}
+```{r ch10chunk47, eval = FALSE}
 con  <- file("~/my_file.txt", open = "r")
 while (length(single_line <- 
               readLines(con, n = 1,
@@ -535,7 +535,7 @@ Strategy for using APIs from R:
 
 Start by reading any documentation available for the API. This will often give information on what data is available and how to put together requests. 
 
-```{r echo = FALSE, out.width = "1.1\\textwidth", fig.align = "center"}
+```{r ch10chunk48, echo = FALSE, out.width = "1.1\\textwidth", fig.align = "center"}
 knitr::include_graphics("figures/NASA_API_documentation.png")
 ```
 
@@ -555,7 +555,7 @@ To get a certain set of weather data from the Iowa Environmental Mesonet, you ca
 
 Once you know the rules for the names and possible values of these parameters (more on that below), you can submit an HTTP GET request using the `GET` function from the `httr` package. 
 
-```{r echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
+```{r ch10chunk49, echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
 knitr::include_graphics("figures/mesonet_example.png")
 ```
 
@@ -563,7 +563,7 @@ https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=DEN&data=sknt&
 
 When you are making an HTTP request using the `GET` or `POST` functions from the `httr` package, you can include the key-value pairs for any query parameters as a list object in the `query` argurment of the function.
 
-```{r}
+```{r ch10chunk50}
 library(httr)
 meso_url <- paste0("https://mesonet.agron.iastate.edu/",
                    "cgi-bin/request/asos.py/")
@@ -578,7 +578,7 @@ denver <- GET(url = meso_url,
 
 You can then use `content` from `httr` to retrieve the contents of the HTTP request. For this particular web data, the requested data is a comma-separated file, so you can convert it to a dataframe with `read_csv`:
 
-```{r}
+```{r ch10chunk51}
 denver %>% content() %>% 
   readr::read_csv(skip = 5, na = "M") %>%
   slice(1:3)
@@ -618,13 +618,13 @@ For example, here is the description for the `rnoaa` package:
 
 The `countyweather` package wraps the `rnoaa` package to let you pull and aggregate weather at the county level in the U.S. For example, you can pull all data from Miami during Hurricane Andrew: 
 
-```{r echo = FALSE, out.width = "\\textwidth"}
+```{r ch10chunk52, echo = FALSE, out.width = "\\textwidth"}
 knitr::include_graphics("figures/countyweather2.png")
 ```
 
 When you pull the data for a county, the package also maps the contributing weather stations:
 
-```{r echo = FALSE, out.width = "\\textwidth"}
+```{r ch10chunk53, echo = FALSE, out.width = "\\textwidth"}
 knitr::include_graphics("figures/countyweather1.png")
 ```
 
@@ -675,7 +675,7 @@ Example from: Kyle Walker. 2016. "tigris: An R Package to Access and Work
 with Geographic Data from the US
 Census Bureau". The R Journal.
 
-```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
+```{r ch10chunk54, echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
 knitr::include_graphics("figures/tigris_example.png")
 ```
 
@@ -712,18 +712,18 @@ The `rvest` package should be the first thing you try if you need to pull and pa
 
 This package allows you to read an HTML or XML file and pull out a certain element. Here is a very simple example of this parsing (this and later examples are from `rvest` documentation):
 
-```{r message = FALSE}
+```{r ch10chunk55, message = FALSE}
 library(rvest)
 read_html("<html><title>Hi<title></html>")
 ```
 
 If you have an HTML or XML page you want to pull data from, you'll first need to read the page:
 
-```{r echo = FALSE, out.width = "\\textwidth"}
+```{r ch10chunk56, echo = FALSE, out.width = "\\textwidth"}
 knitr::include_graphics("figures/moviereviewpage.png")
 ```
 
-```{r}
+```{r ch10chunk57}
 library(rvest)
 lego_movie <- read_html("http://www.imdb.com/title/tt1490017/")
 lego_movie
@@ -731,12 +731,12 @@ lego_movie
 
 Then you can use `html_nodes` and `html_text` to pull and parse just the elements you want: 
 
-```{r}
+```{r ch10chunk58}
 rating_node <- lego_movie %>% html_nodes("strong span") 
 rating_node
 ```
 
-```{r}
+```{r ch10chunk59}
 rating <- rating_node %>% 
     html_text() %>% as.numeric()
 rating
@@ -744,7 +744,7 @@ rating
 
 You can pull and parse tables:
 
-```{r}
+```{r ch10chunk60}
 lego_movie %>%
   html_nodes("table") %>% `[[`(1) %>%
   html_table() %>% select(X2) %>% slice(2:8) 
@@ -759,7 +759,7 @@ ftp://cran.r-project.org/pub/R/web/packages/rvest/vignettes/selectorgadget.html
 
 [Need to update this-- Kitchen has changed their website]
 
-```{r message = FALSE, eval = FALSE}
+```{r ch10chunk61, message = FALSE, eval = FALSE}
 cities <- c("denver", "boulder", "fort-collins")
 
 kitchen_addresses <- c()
@@ -774,13 +774,13 @@ for(i in 1:length(cities)){
 kitchen_addresses
 ```
 
-```{r message = FALSE, eval = FALSE}
+```{r ch10chunk62, message = FALSE, eval = FALSE}
 library(ggmap)
 library(stringr)
 kitchen_latlons <- geocode(kitchen_addresses)
 ```
 
-```{r message = FALSE, eval = FALSE}
+```{r ch10chunk63, message = FALSE, eval = FALSE}
 for(i in 1:length(cities)){
   city_map <- get_map(paste(gsub("-", " ", cities[i]),
                             "colorado"),
