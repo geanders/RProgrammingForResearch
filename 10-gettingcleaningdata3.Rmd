@@ -383,7 +383,7 @@ We can apply a function from this package across all the named storms to see how
 
 First, install the package (as well as `genderdata`, which is required to use the package). Once you do, you can use `gender` to determine the most common gender associated with a name in a given year or range of years:
 
-```{r}
+```{r eval = FALSE}
 # install.packages("gender")
 # install.packages("genderdata", type = "source",
 #                 repos = "http://packages.ropensci.org")
@@ -394,7 +394,7 @@ gender("KATRINA", years = 2005)[ , c("name", "gender")]
 
 To apply this function across all our storms, it helps if we write a small function that "wraps" the `gender` function and outputs exactly (and only) what we want, in the format we want:
 
-```{r}
+```{r eval = FALSE}
 get_gender <- function(storm_name, storm_year){
   storm_gender <- gender(names = storm_name,
                          years = storm_year,
@@ -407,7 +407,7 @@ get_gender <- function(storm_name, storm_year){
 
 Now we can use `mapply` with this wrapper function to apply it across all our named storms:
 
-```{r}
+```{r eval = FALSE}
 hurr_genders <- hurr_meta %>%
   dplyr::filter(storm_name != "UNNAMED") %>%
   dplyr::mutate(storm_year = substring(storm_id, 5, 8),
