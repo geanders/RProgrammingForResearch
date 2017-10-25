@@ -941,67 +941,69 @@ lego_movie %>%
 
 The only tricky part of this is figuring out which CSS selector you can use to pull a specific element of a webpage. \bigskip
 
-You can use "Selectorgadget" to help with this. Read the vignette for that tool here: 
-ftp://cran.r-project.org/pub/R/web/packages/rvest/vignettes/selectorgadget.html
+You can use "SelectorGadget" to help with this. Read the vignette for that tool here: 
+https://cran.r-project.org/web/packages/rvest/vignettes/selectorgadget.html
 
 ## `rvest`
 
-```{r message = FALSE, eval = FALSE}
-cities <- c("denver", "boulder", "fort-collins")
+I'll go through an example here using RStudio. The full code is on this slide, and you can get it by going to https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week10.Rmd 
 
-kitchen_addresses <- c()
-for(i in 1:length(cities)){
-  restaurant_url <- paste0("http://thekitchen.com/the-kitchen-",
-                           cities[i])
-  restaurant_page <- read_html(restaurant_url)
-  address <- restaurant_page %>%
-    html_nodes("p:nth-child(2)") %>% html_text()
-  kitchen_addresses[i] <- address[1]
-}
-kitchen_addresses
-```
+\small
 
-## `rvest`
-
-```{r message = FALSE, eval = FALSE}
-library(ggmap)
+```{r eval = FALSE}
+library(rvest)
 library(stringr)
-kitchen_latlons <- geocode(kitchen_addresses)
-```
+library(dplyr)
+library(tibble)
+library(purrr)
+library(tidyr)
 
-## `rvest`
+co_trees <- read_html("http://coloradotrees.org/find/") %>%  # Read in main web page
+  html_nodes("a")                                            # Pull the "a" elements
+co_trees <- data_frame(name = html_text(co_trees),           # Create a dataframe
+                       full = as.character(co_trees)) %>%                 
+  filter(str_detect(name, pattern = "^-")) %>%               # Filter to just tree names
+  mutate(name = str_replace(name, "^-", ""),                 # Clean up tree names
+         link = str_extract(full, pattern = "http.+/\""),    # Pull out links
+         link = str_replace(link, "\"", "")) %>%             # Clean up links
+  select(-full)                                              # Get rid of "full"
 
-```{r message = FALSE, eval = FALSE, eval = FALSE}
-for(i in 1:length(cities)){
-  city_map <- get_map(paste(gsub("-", " ", cities[i]),
-                            "colorado"),
-                      zoom = 14, 
-                      maptype = "roadmap")
-  city_map <- ggmap(city_map) + 
-    geom_point(data = kitchen_latlons[i, ],
-               aes(x = lon, y = lat),
-               color = "red", size = 4, alpha = 0.4) + 
-    theme_void() + 
-    ggtitle(paste("The Kitchen in",
-                  str_to_title(gsub("-", " ", cities[i]))))
-  print(city_map)
+co_trees
+
+# Create a function to pull information about a tree given its link
+tree_link <- co_trees$link[1]
+get_scientific_name <- function(tree_link){
+  read_html(tree_link) %>% 
+    html_nodes("p") %>% 
+    str_subset("SCIENTIFIC NAME") %>% 
+    str_match_all("<span class=\"latin\">(.+?)</span>.+?<span class=\"scientific\">(.+?)</span>") %>% 
+    `[[`(1) %>% 
+    as.tibble() %>% 
+    select(-V1) %>% 
+    rename(scientific = V2, 
+           family = V3)
 }
+get_scientific_name(co_trees$link[1])
+
+co_trees %>% 
+  slice(1:5) %>% 
+  mutate(sci_name = map(link, get_scientific_name)) %>% 
+  select(-link) %>% 
+  unnest()
 ```
 
-## `rvest`
+## Group projects
 
-```{r message = FALSE, echo = FALSE, out.width="0.33\\textwidth", fig.width = 3, fig.height = 3, eval = FALSE}
-for(i in 1:length(cities)){
-  city_map <- get_map(paste(gsub("-", " ", cities[i]), "colorado"),
-                      zoom = 14, 
-                      maptype = "roadmap")
-  city_map <- ggmap(city_map) + 
-    geom_point(data = kitchen_latlons[i, ],
-               aes(x = lon, y = lat),
-               color = "red", size = 4, alpha = 0.4) + 
-    theme_void() + 
-    ggtitle(paste("The Kitchen in",
-                  str_to_title(gsub("-", " ", cities[i]))))
-  print(city_map)
-}
-```
+1. **Input / output + Overall design**: Elle, Lizette, Katie, Brian
+2. **Indepedent variables**: Colleen, Mackenzie, Rebecca, Alexia
+3. **Dependent ~ Independent**: Ethan, Drew, Kate, Maggie
+
+## Group projects
+
+Today: 
+
+\small
+
+- Set up a GitHub repository on one of your accounts. Make all team members collaborators.
+- Create a `README.Rmd` in the main directory of the repository. Write a few sentences describing the repository. Change the YAML to render to Markdown (I can help with this). Push to your GitHub repository.
+- Explore R packages and other resources that your group might want to use for the project. Create an "Issue" for each idea / tool that you want to follow up on. You can include things like links to package vignettes. Things to check include ggplot extensions (`http://www.ggplot2-exts.org`), the Shiny Gallery (https://shiny.rstudio.com/gallery/), and Shiny Dashboards (https://rstudio.github.io/shinydashboard/). For groups 2 and 3, you might also want to browse through "An Introduction to Statistical Learning" (online through our library; Ch 10. for group 2, Ch 3 and 8 for group 3) and "Beginning Data Scien in R" (Ch. 7 for group 2, Ch. 6 for group 3). 
