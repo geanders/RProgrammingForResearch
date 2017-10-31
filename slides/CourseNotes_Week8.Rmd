@@ -571,7 +571,7 @@ Mapping uses the `long` and `lat` columns from this data for location:
 north_carolina <- us_map %>% 
   filter(region == "north carolina")
 ggplot(north_carolina, aes(x = long, y = lat)) +
-  geom_point()
+  geom_point() 
 ```
 
 ## Point maps 
@@ -976,6 +976,30 @@ mapdist("Fort Collins CO",
 
 ## String operations
 
+For these examples, we'll use some data on passengers of the Titanic. You can load this data using:
+
+```{r}
+# install.packages("titanic")
+library(titanic)
+data("titanic_train")
+```
+
+We will be using the `stringr` package:
+
+```{r}
+library(stringr)
+```
+
+## String operations
+
+This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). Here are the first few values of "Name": 
+
+```{r}
+titanic_train %>% select(Name) %>% slice(1:3)
+```
+
+## String operations
+
 The `str_trim` function from the `stringr` package allows you to trim leading and trailing whitespace: 
 
 ```{r}
@@ -1003,30 +1027,6 @@ str_to_title(str_to_lower(titanic_train$Name[1]))
 ```
 
 # Regular expressions
-
-## Regular expressions
-
-For these examples, we'll use some data on passengers of the Titanic. You can load this data using:
-
-```{r}
-# install.packages("titanic")
-library(titanic)
-data("titanic_train")
-```
-
-We will be using the `stringr` package:
-
-```{r}
-library(stringr)
-```
-
-## Regular expressions
-
-This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). Here are the first few values of "Name": 
-
-```{r}
-titanic_train %>% select(Name) %>% slice(1:3)
-```
 
 ## Regular expressions
 
@@ -1058,7 +1058,7 @@ str_detect(string = [vector you want to check],
 For example, to create a logical vector specifying which of the Titanic passenger names include "Mrs.", you can call:
 
 ```{r}
-mrs <- str_detect(titanic_train$Name, "Mrs.")
+mrs <- str_detect(titanic_train$Name, "Mrs\\.")
 head(mrs)
 ```
 
@@ -1069,10 +1069,19 @@ The result is a logical vector, so `str_detect` can be used in `filter` to subse
 
 ```{r}
 titanic_train %>%
-  filter(str_detect(Name, "Mrs.")) %>%
+  filter(str_detect(Name, "Mrs\\.")) %>%
   select(Name) %>%
   slice(1:3)
 ```
+
+## Regular expressions
+
+As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally: 
+
+```
+. * + ^ ? $ \ | ( ) [ ] { }
+```
+
 
 ## Regular expressions
 
@@ -1080,7 +1089,7 @@ There is an older, base R function called `grepl` that does something very simil
 
 ```{r}
 titanic_train %>%
-  filter(grepl("Mrs.", Name)) %>%
+  filter(grepl("Mrs\\.", Name)) %>%
   select(Name) %>%
   slice(1:3)
 ```
@@ -1101,7 +1110,7 @@ For example, you might want to extract "Mrs." if it exists in a passenger's name
 
 ```{r}
 titanic_train %>%
-  mutate(mrs = str_extract(Name, "Mrs.")) %>%
+  mutate(mrs = str_extract(Name, "Mrs\\.")) %>%
   select(Name, mrs) %>%
   slice(1:3)
 ```
@@ -1112,6 +1121,8 @@ Notice that now we're creating a new column (`mrs`) that either has "Mrs." (if t
 
 For this first example, we were looking for an exact string ("Mrs"). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find "Mr." or "Mrs.": 
 
+\small
+
 ```{r}
 titanic_train %>%
   mutate(title = str_extract(Name, "Mr\\.|Mrs\\.")) %>%
@@ -1120,14 +1131,6 @@ titanic_train %>%
 ```
 
 Note that this pattern uses a special operator (`|`) to find one pattern **or** another. Double backslashs (`\\`) **escape** the special character ".". 
-
-## Regular expressions
-
-As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally: 
-
-```
-. * + ^ ? $ \ | ( ) [ ] { }
-```
 
 ## Regular expressions
 
@@ -1294,9 +1297,8 @@ knitr::kable(reg_exp)
 For more on these patterns, see: 
 
 - Help file for the `stringi-search-regex` function in the `stringi` package (which should install when you install `stringr`)
-- [Introduction to stringr](https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html) by Hadley Wickham
-- [Handling and Processing Strings in R](http://gastonsanchez.com/Handling_and_Processing_Strings_in_R.pdf) by Gaston Sanchez (seven chapter ebook)
-- http://gskinner.com/RegExr and http://www.txt2re.com: Interactive tools for helping you build regular expression pattern strings
+- Chapter 14 of R For Data Science
+- http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
 
 <!-- # Final group project -->
 

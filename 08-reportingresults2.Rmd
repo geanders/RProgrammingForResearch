@@ -250,7 +250,8 @@ ggplot(carolinas, aes(x = long, y = lat,
                       group = group,
                       fill = region)) + 
   geom_polygon(color = "black") + 
-  theme_void()
+  theme_void() + 
+  coord_map()
 ```
 
 Here is an example of plotting all of the US by state:
@@ -260,7 +261,8 @@ map_1 <- ggplot(us_map, aes(x = long, y = lat,
                             group = group)) + 
         geom_polygon(fill = "dodgerblue",
                      color = "white") +
-        theme_void()
+        theme_void() + 
+  coord_map()
 ```
 
 ```{r cbb, fig.width = 6.5, fig.height = 4, fig.align = "center"}
@@ -319,7 +321,8 @@ balt_plot <- ggplot(baltimore,
 ```
 
 ```{r cbi, fig.width = 7, fig.height = 4}
-balt_plot
+balt_plot + 
+  coord_map()
 ```
 
 ## Choropleth maps
@@ -328,7 +331,7 @@ There's a fantastic new(-ish) package in R to plot choropleth maps. You could al
 
 You will need to install and load the `choroplethr` package in R to use the functions below.
 
-```{r cbj, message = FALSE, warning = FALSE, eval = FALSE}
+```{r cbj, message = FALSE, warning = FALSE}
 # install.packages("choroplethr")
 library(choroplethr)
 
@@ -338,18 +341,18 @@ library(choroplethrMaps)
 
 At the most basic level, you can use this package to plot some data that comes automatically with the package (you'll just need to load the data using the `data` function). For example, if you wanted to plot state-by-state populations as of 2012, you could use:
 
-```{r cbk, warning = FALSE, message=FALSE, eval = FALSE}
+```{r cbk, warning = FALSE, message=FALSE}
 data(df_pop_state)
 map_3 <- state_choropleth(df_pop_state)
 ```
 
-```{r cbl, fig.width=8, fig.height=3.5, eval = FALSE}
-map_3
+```{r cbl, fig.width=8, fig.height=3.5}
+map_3 
 ```
 
 You can find out more about the `df_pop_state` data if you type `?df_pop_state`. Notice that, for the data frame, the location is given in a column called `region` and the population size to plot is in a column called `value`. 
 
-```{r cbm, eval = FALSE}
+```{r cbm}
 head(df_pop_state, 3)
 ```
 
@@ -357,31 +360,31 @@ You could use this function to create any state-level choropleth you wanted, as 
 
 You can run similar functions at different spatial resolutions (for example, county or zip code):
 
-```{r cbn, eval = FALSE}
+```{r cbn}
 data(df_pop_county)
 head(df_pop_county, 3)
 ```
 
 You can plot choropleths at this level, as well:
 
-```{r cbo, warning = FALSE, message = FALSE, eval = FALSE}
+```{r cbo, warning = FALSE, message = FALSE}
 map_4 <- county_choropleth(df_pop_county)
 ```
 
-```{r cbp, fig.width=8, fig.height=4, eval = FALSE}
+```{r cbp, fig.width=8, fig.height=4}
 map_4
 ```
 
 You can even do this for countries of the world:
 
-```{r cbq, fig.width = 8, fig.height = 3.5, warning=FALSE, message=FALSE, eval = FALSE}
+```{r cbq, fig.width = 8, fig.height = 3.5, warning=FALSE, message=FALSE}
 data(df_pop_country)
 country_choropleth(df_pop_country)
 ```
 
 You can zoom into states or counties. For example, to plot population by county in Colorado, you could run:
 
-```{r cbr, fig.width = 6, fig.height = 3, message = FALSE, warning = FALSE, eval = FALSE}
+```{r cbr, fig.width = 6, fig.height = 3, message = FALSE, warning = FALSE}
 county_choropleth(df_pop_county, state_zoom = "colorado")
 ```
 
@@ -393,12 +396,12 @@ These functions pull recent Census data directly from the US Census using its AP
 
 Once you put in your request, they'll email you your key. Once they give you your API key, you'll need to install it on R:
 
-```{r cbs, echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE, eval = FALSE}
+```{r cbs, echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE}
 library(acs)
 api.key.install(Sys.getenv("acskey"))
 ```
 
-```{r cbt, eval = FALSE, eval = FALSE}
+```{r cbt, eval = FALSE}
 library(acs)
 api.key.install('[your census api key]');
 ```
@@ -457,7 +460,7 @@ With this package, you can get maps from the following different sources:
 
 Here are different examples of Beijing using different map sources. (Also, note that I'm using the option `extent = "device"` to fill up the whole plot are with the map, instead of including axis labels and titles.)
 
-```{r cca, message = FALSE, warning = FALSE}
+```{r cca, message = FALSE, warning = FALSE, eval = FALSE}
 beijing_a <- get_map("Beijing", zoom = 12,
                      source = "stamen", maptype = "toner")
 a <- ggmap(beijing_a, extent = "device")
@@ -471,13 +474,13 @@ beijing_c <- get_map("Beijing", zoom = 12,
 c <- ggmap(beijing_c, extent = "device")
 ```
 
-```{r ccb, fig.width = 7}
+```{r ccb, fig.width = 7, eval = FALSE}
 grid.arrange(a, b, c, nrow = 1) 
 ```
 
 As with the maps from `ggplot2`, you can add points to these maps:
 
-```{r cce, warning = FALSE, message = FALSE}
+```{r cce, warning = FALSE, message = FALSE, eval = FALSE}
 serial_phone <- read.csv("data/serial_phone_data.csv") %>% 
         mutate(Cell_Site = substring(Cell_Site, 1, 4),
                Call_Time = as.POSIXct(Call_Time, format = "%d/%m/%y %H:%M",
@@ -488,7 +491,7 @@ serial_phone <- read.csv("data/serial_phone_data.csv") %>%
         arrange(Call_Time)
 ```
 
-```{r ccf, message = FALSE, warning = FALSE, fig.width = 5}
+```{r ccf, message = FALSE, warning = FALSE, fig.width = 5, eval = FALSE}
 serial_map <- get_map(c(-76.7, 39.3), zoom = 12,
                       source = "stamen",
                       maptype = "toner")
@@ -504,7 +507,7 @@ serial_map <- ggmap(serial_map, extent = "device") +
                    size = 2)
 ```
 
-```{r ccg, warning = FALSE, message = FALSE, fig.width = 4, fig.height = 4, fig.align = "center", echo = FALSE}
+```{r ccg, warning = FALSE, message = FALSE, fig.width = 4, fig.height = 4, fig.align = "center", echo = FALSE, eval = FALSE}
 serial_map
 ```
 
@@ -512,19 +515,19 @@ You can also use the Google Maps API, through the `geocode` function, to get the
 
 For example, you can get the location of CSU:
 
-```{r cch, message = FALSE, warning = FALSE}
+```{r cch, message = FALSE, warning = FALSE, eval = FALSE}
 geocode("Colorado State University")
 ```
 
 You can also get a location by address:
 
-```{r cci, message = FALSE, warning = FALSE}
+```{r cci, message = FALSE, warning = FALSE, eval = FALSE}
 geocode("1 First St NE, Washington, DC")
 ```
 
 You can get distances, too, using the `mapdist` function with two locations. This will give you distance and also time. 
 
-```{r ccj, message = FALSE, warning = FALSE}
+```{r ccj, message = FALSE, warning = FALSE, eval = FALSE}
 mapdist("Fort Collins CO",
         "1 First St NE, Washington, DC") %>%
   select(from, miles, hours)
@@ -556,6 +559,11 @@ str_to_title(str_to_lower(titanic_train$Name[1]))
 This exercise will continue using the Fatality Analysis Reporting System (FARS) data we started using last week. 
 
 ```{r ccm, echo = FALSE, message = FALSE, warning = FALSE}
+library(dplyr)
+library(tidyr)
+library(readr)
+library(lubridate)
+
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   dplyr::rename(state = STATE,
@@ -583,7 +591,7 @@ The first part of this week's in-course exercise continues last week's exercise.
 
 - The FARS data includes a column called `STATE`, but it gives state as a one- or two-digit code, rather than by name. These codes are the state Federal Information Processing Standard (FIPS) codes. A dataset with state names and FIPS codes is available at http://www2.census.gov/geo/docs/reference/state.txt. Read that data into an R object called `state_fips` and clean it so the first few lines look like this (hint: to change the `state` column to an integer class, you can use the function `as.integer`): 
 
-```{r check11, echo = FALSE, warning = FALSE, message = FALSE}
+```{r check11a, echo = FALSE, warning = FALSE, message = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   rename(state = STATE,
@@ -595,7 +603,7 @@ state_fips %>% slice(1:5)
 
 - Read the 2015 FARS data into an R object named `accident`. Use all the date and time information to create a column named `date` with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new `date` variable). Filter out any values where the date-time does not render (i.e., `date` is a missing value). The first few rows of the cleaned dataframe should look like this:
 
-```{r check10, warning = FALSE, message = FALSE, echo = FALSE}
+```{r check10a, warning = FALSE, message = FALSE, echo = FALSE}
 accident <- read_csv("data/accident.csv") %>%
   select(STATE, DAY:MINUTE, DRUNK_DR) %>%
   rename(state = STATE, 
@@ -668,7 +676,8 @@ accident %>%
 
 - Write code to create boxplots for Colorado of the distribution of total accidents within each month. Create separate boxplots for daytime and nighttime accidents, and facet by whether the accident was related to drunk driving. The plot should look like the plot below. 
 
-```{r check9, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check9a, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+library(ggplot2)
 accident %>%
   filter(state_name == "Colorado") %>%
   mutate(drunk_dr = factor(drunk_dr, labels = c("Unrelated to\ndrunk driving",
@@ -685,7 +694,7 @@ accident %>%
 
 - Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any dataframe with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you will need to explicitly print the output from your function. See the examples of using the function below.) 
 
-```{r check8, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check8a, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 plot_fars <- function(df){
   fars_plot <- df %>%
     mutate(drunk_dr = factor(drunk_dr, labels = c("Unrelated to\ndrunk driving",
@@ -732,6 +741,7 @@ print(state_plots[["plots"]][[1]])$plot
 - Install the `cowplot` package (this is a `ggplot2` extension) and then try running the following code. What happens when you run this code?
 
 ```{r eval = FALSE}
+library(cowplot)
 plot_grid(plotlist = state_plots[["plots"]], 
           ncol = 2, labels = "AUTO")
 ```
@@ -740,7 +750,7 @@ plot_grid(plotlist = state_plots[["plots"]],
 
 Here is the code to read the dataset with state names and FIPS codes at http://www2.census.gov/geo/docs/reference/state.txt into an R object called `state_fips` and clean it so the first few lines: 
 
-```{r check7, echo = FALSE, warning = FALSE, message = FALSE}
+```{r check7a, echo = FALSE, warning = FALSE, message = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
                          delim = "|") %>%
   rename(state = STATE,
@@ -754,7 +764,7 @@ Note that you can read this file directly from the website using `read_delim`.
 
 Read the 2015 FARS data into an R object named `accident`. Use all the date and time information to create a column named `date` with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new `date` variable). Filter out any values where the date-time does not render (i.e., `date` is a missing value). You can use the following code to do all this:
 
-```{r check6, warning = FALSE, message = FALSE, echo = FALSE}
+```{r check6a, warning = FALSE, message = FALSE, echo = FALSE}
 accident <- read_csv("data/accident.csv") %>%
   select(STATE, DAY:MINUTE, DRUNK_DR) %>%
   rename(state = STATE, 
@@ -799,7 +809,7 @@ accident %>%
 
 As a note, you may want to create a table (for example, for a report) from the data at this stage. You could use `unite` then `spread` to do this pretty easily:
 
-```{r check5}
+```{r check5a}
 accident %>%
   filter(state_name == "Colorado") %>%
   mutate(daytime = factor(daytime, labels = c("Nighttime", "Daytime")),
@@ -825,7 +835,7 @@ summarize_fars <- function(df){
 
 Once you've written the function, see if you can figure out what the following code does. This code limits the data to data from four states and then applies the `summarize_fars` function that you just wrote to the subset of data from each state. Finally, since we `nest` to do that, the pipeline includes some lines to `unnest` the data to get back to an unnested data frame:
 
-```{r check4, eval = FALSE}
+```{r check4a, eval = FALSE}
 library(purrr)
 
 accident %>% 
@@ -839,7 +849,7 @@ accident %>%
 
 Write code to create boxplots for Colorado of the distribution of total accidents within each month. Create separate boxplots for daytime and nighttime accidents, and facet by whether the accident was related to drunk driving. You can do that with this code:
 
-```{r check3, fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check3a, fig.width = 6, fig.height = 3, fig.align = "center"}
 accident %>%
   filter(state_name == "Colorado") %>%
   mutate(drunk_dr = factor(drunk_dr, labels = c("Unrelated to\ndrunk driving",
@@ -857,7 +867,7 @@ accident %>%
 
 Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any dataframe with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you must explicitly print the plot object. For example, you could assign the plot to `fars_plot`, and then you would run `print(fars_plot)` within your loop as the last step.) 
 
-```{r check2, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
+```{r check2a, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 plot_fars <- function(df){
   fars_plot <- df %>%
     mutate(drunk_dr = factor(drunk_dr, labels = c("Unrelated to\ndrunk driving",
@@ -869,7 +879,7 @@ plot_fars <- function(df){
     geom_boxplot() +
     facet_wrap(~ drunk_dr, ncol = 2) +
     xlab("Time of day") + ylab("# of monthly accidents") 
-  print(fars_plot)
+  fars_plot
 }
 ```
 
@@ -877,16 +887,16 @@ Notice how similar this function is to the code you wrote in the previous step.
 
 Once you have written this function, what happens when you run the following code? The following code applies this function to the subset of data from each of four states. The output (`state_plots`) is a nested dataframe, where the new `plots` column is a list of `ggplot` objects. If you run `print` on this list, it will print each of these plots out separately (use the arrow buttons in the "Plots" Pane in RStudio to browse through these plots).
 
-```{r check1, fig.width = 6, fig.height = 3, fig.align = "center", eval = FALSE}
+```{r check1a, fig.width = 6, fig.height = 3, fig.align = "center", eval = FALSE}
 library(purrr)
 
 state_plots <- accident %>% 
   filter(state_name %in% c("Colorado", "Texas", "California", "New York")) %>% 
   group_by(state_name) %>%
   nest() %>% 
-  mutate(plots = map(data, plot_fars)) 
+  mutate(plots = map(data, plot_fars)) %>% 
+  select(state_name, plots)
 
-state_plots
 class(state_plots)
 class(state_plots[["plots"]])
 class(state_plots[["plots"]][[1]])
@@ -897,8 +907,10 @@ Install the `cowplot` package (this is a `ggplot2` extension) and then try runni
 
 ```{r fig.width = 12, fig.height = 8, fig.align = "center", eval = FALSE}
 library(cowplot)
+library(gtable)
 plot_grid(plotlist = state_plots[["plots"]], 
           ncol = 2, labels = "AUTO")
+
 ```
 
 ### First steps in mapping 
@@ -941,7 +953,7 @@ state_summaries %>% slice(1:5)
 
 - Create the following state-level choropleths of number of fatal accidents in 2015 in each state and of the percent of fatal accidents linked to drunk driving in each state. The quickest way to do this is with the `choroplethr` package. 
 
-```{r ccu, echo = FALSE, eval = FALSE}
+```{r ccu, echo = FALSE, message = FALSE, warning = FALSE}
 # With `choroplethr` package
 library(choroplethr)
 state_summaries %>%
@@ -970,7 +982,7 @@ accident <- accident %>%
 
 - Map the locations of fatal accidents in Texas in 2015 on top of a Google Map base map that shows major roads. An example map is shown below. (*Hint:* Use the `get_map` and `ggmap` functions for this part.)
 
-```{r ccw, echo = FALSE, message = FALSE, warning = FALSE}
+```{r ccw, echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE}
 texas <- get_map(location = "texas", zoom = 6, maptype = "roadmap")
 ggmap(texas, extent = "device") + 
   geom_point(data = dplyr::filter(accident, state_name == "Texas"), 
@@ -979,14 +991,15 @@ ggmap(texas, extent = "device") +
 ```
 
 
-- Create a function that will take three inputs: `datafr`, a data frame like `accident` with fatal accident data; `which_state`, a state name; and `drunk_dr`, a logical value (TRUE / FALSE) specifying whether to create separate maps for accidents that were and were not linked to drunk driving. This function should output a map (or two maps if `drunk_dr` is set to TRUE) with points for all fatal accidents in the state. Use `map_data` and create the map yourself, rather than using `choroplethr` for this question. Examples of calling this function are shown below the function definition.
+- Create a function that will take three inputs: `datafr`, a data frame like `accident` with fatal accident data; `which_state`, a state name; and `drunk_dr`, a logical value (TRUE / FALSE) specifying whether to create separate maps for accidents that were and were not linked to drunk driving. This function should output a map (or two maps if `drunk_dr` is set to TRUE) with points for all fatal accidents in the state. Use `map_data` and create the map yourself, rather than using `choroplethr` for this question. Examples of calling this function are shown below.
 
 ```{r ccx, echo = FALSE}
+library(maps)
 map_fatal_accidents <- function(datafr = accident, which_state,
                                 drunk_dr = FALSE){
   state_accidents <- datafr %>%
     dplyr::filter(state_name == which_state)
-  state_map_data <- ggplot2::map_data("county", region = which_state)
+  state_map_data <- map_data("county", region = which_state)
   
   accident_map <- ggplot2::ggplot(state_map_data,
                                   ggplot2::aes(x = long, y = lat, 
@@ -1002,24 +1015,25 @@ map_fatal_accidents <- function(datafr = accident, which_state,
       ggplot2::facet_wrap(~ drunk_dr, ncol = 2)
   }
   
-  return(accident_map)
+  accident_map + coord_map()
 }
 ```
 
-```{r ccy, message = FALSE, warning = FALSE, fig.width = 4, fig.height = 2.75, fig.align = "center", echo = FALSE}
+```{r ccy, message = FALSE, warning = FALSE, fig.width = 4, fig.height = 2.75, fig.align = "center"}
 map_fatal_accidents(accident, which_state = "Colorado")
 ```
 
-```{r ccz, message = FALSE, warning = FALSE, fig.width = 4.3, fig.height = 4.5, fig.align = "center", echo = FALSE}
-map_fatal_accidents(accident, which_state = "Texas")
+```{r ccz, message = FALSE, warning = FALSE, fig.width = 4.3, fig.height = 4.5, fig.align = "center"}
+accident %>% 
+  map_fatal_accidents(which_state = "Texas") 
 ```
 
-```{r cda, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 2.75, fig.align = "center", echo = FALSE}
-map_fatal_accidents(accident, which_state = "Colorado", 
-                    drunk_dr = TRUE)
+```{r cda, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 2.75, fig.align = "center"}
+accident %>% 
+  map_fatal_accidents(which_state = "Colorado", drunk_dr = TRUE)
 ```
 
-```{r cdb, message = FALSE, warning = FALSE, fig.width = 8.6, fig.height = 4.5, fig.align = "center", echo = FALSE}
+```{r cdb, message = FALSE, warning = FALSE, fig.width = 8.6, fig.height = 4.5, fig.align = "center"}
 map_fatal_accidents(accident, which_state = "Texas",
                     drunk_dr = TRUE)
 ```
