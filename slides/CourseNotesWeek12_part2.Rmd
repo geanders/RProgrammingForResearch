@@ -1,7 +1,7 @@
 ---
 title: "Reporting data results #3"
 author: "Brooke Anderson"
-date: "November 9, 2016"
+date: "November 1, 2017"
 output: ioslides_presentation
 ---
 
@@ -14,72 +14,67 @@ library(ggplot2)
 ```
 
 
-## `viridisLite` package
+## `viridis` package
 
 From the package's GitHub repository: 
 
 > "These four color maps are designed in such a way that they will analytically be perfectly perceptually-uniform, both in regular form and also when converted to black-and-white. They are also designed to be perceived by readers with the most common form of color blindness."
 
 - Viridis is now the default color map for `Matplotlib`, a key Python plotting library. 
-- The `viridisLite` package is a simpler version of the `viridis` package (and requires fewer dependencies).
 - Several of the packages we'll look at today use Viridis as the default color map. 
+- Upcoming versions of `ggplot2` will include this color palette
 
-## `viridisLite` package
+## `viridis` package
 
-Here is an example of a hexbin graph of random values that uses the Viridis color map:
+Here is an example (from the helpfile) of a hexbin graph of random values that uses the Viridis color map:
 
-```{r fig.width = 3.5, fig.height = 3.5, fig.align = "center"}
-library(viridisLite); library(hexbin)
+```{r fig.width = 3, fig.height = 3, fig.align = "center"}
+library(viridis); library(hexbin)
 dat <- data.frame(x = rnorm(10000), y = rnorm(10000))
 ggplot(dat, aes(x = x, y = y)) + geom_hex() + coord_fixed() +
-  scale_fill_gradientn(colours = viridis(256, option = "D"))
+  scale_fill_viridis()
 ```
 
-## `viridisLite` package
+## `viridis` package
 
 The `option` argument allows you to pick between four color maps: Magma, Inferno, Plasma, and Viridis. Here is the code to visualize each of those (plot on next page):
 
 ```{r eval = FALSE}
 library(gridExtra)
 ex_plot <- ggplot(dat, aes(x = x, y = y)) + geom_hex() + coord_fixed()
-magma_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "A"))
-inferno_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "B"))
-plasma_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "C"))
-viridis_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "D"))
+magma_plot <- ex_plot + scale_fill_viridis(option = "A")
+inferno_plot <- ex_plot + scale_fill_viridis(option = "B")
+plasma_plot <- ex_plot + scale_fill_viridis(option = "C")
+viridis_plot <- ex_plot + scale_fill_viridis()
 grid.arrange(magma_plot, inferno_plot, plasma_plot, viridis_plot, ncol = 2)
 ```
 
-## `viridisLite` package
+## `viridis` package
 
 ```{r echo = FALSE}
 library(gridExtra)
 ex_plot <- ggplot(dat, aes(x = x, y = y)) + geom_hex() + coord_fixed()
-magma_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "A")) + 
-  ggtitle("magma")
-inferno_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "B")) + 
-  ggtitle("inferno")
-plasma_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "C")) + 
-  ggtitle("plasma")
-viridis_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "D")) + 
-  ggtitle("viridis")
+magma_plot <- ex_plot + scale_fill_viridis(option = "A") + ggtitle("magma")
+inferno_plot <- ex_plot + scale_fill_viridis(option = "B") + ggtitle("inferno")
+plasma_plot <- ex_plot + scale_fill_viridis(option = "C") + ggtitle("plasma")
+viridis_plot <- ex_plot + scale_fill_viridis() + ggtitle("viridis")
 grid.arrange(magma_plot, inferno_plot, plasma_plot, viridis_plot, ncol = 2)
 ```
 
 ## `htmlWidgets`
 
-Very smart people have been working on creating interactive graphics in R for a long time. So far, nothing coded in R has taken off in a big way. \bigskip
+Very smart people have been working on creating interactive graphics in R for a long time. So far, nothing "native" to" R has taken off in a big way (although keep an eye out for `ggvis`). \bigskip
 
-JavaScript has developed a number of interactive graphics libraries that can be for documents viewed in a web browser. There is now a series of R packages that allow you to create plots from these JavaScript libraries from within R. \bigskip
+There is now a series of R packages that allow you to create plots from these JavaScript libraries from within R. \bigskip
 
 There is a website with much more on these `htmlWidgets` at http://www.htmlwidgets.org. 
+
+## `htmlWidgets`
+
+JavaScript has developed a number of interactive graphics libraries that can be for documents viewed in a web browser. These work by binding data to support vector graphics (SVGs). \bigskip
+
+They allow you to do things like zoom and pan. The graphics can also "react" to certain events. For example, they can show a pop-up when you hover over or click on a point. 
+
 
 ## `htmlWidgets`
 
@@ -110,7 +105,7 @@ From the package documentation:
 > "Easily translate `ggplot2` graphs to an interactive web-based version and / or create custom web-based visualizations directly from R."
 
 - Like many of the packages today, draws on functionality external to R, but within a package that allows you to work exclusively within R.
-- Allows you to create interactive graphs from R. Some of the functions extend the `ggplot2` code you've learned.
+- Allows you to create interactive graphs from R. The functions extend much of the `ggplot2` code you've learned.
 - Interactivity will only work within RStudio or on documents rendered to HTML.
 
 ## `plotly` package
@@ -130,47 +125,47 @@ There are two main ways of create plots within `plotly`:
 
 ## `plotly` package
 
-```{r fig.width = 6, fig.height = 4, fig.align = "center"}
-library(faraway); data(worldcup)
+```{r fig.width = 4, fig.height = 3.5, fig.align = "center"}
+library(faraway); data(worldcup); library(dplyr)
 library(plotly)
-plot_ly(worldcup, type = "scatter", x = ~ Time, y = ~ Shots)
+a <- worldcup %>% ggplot(aes(x = Time, y = Shots)) + geom_point()
+ggplotly(a)
 ```
 
 ## `plotly` package
 
-Just like with `ggplot2`, the mappings you need depend on the type of plot you are creating. \bigskip
-
-For example, scatterplots (`type = "scatter"`) need `x` and `y` defined, while a surface plot (`type = "surface"`) can be created with a single vector of elevation (we'll see an example in a few slides). \bigskip
-
-The help file for `plot_ly` includes a link with more documentation on the types of plots that can be made and the required mappings for each.
-
-## `plotly` package
-
-```{r}
-plot_ly(worldcup, type = "scatter", x = ~ Time, y = ~ Shots,
-        color = ~ Position)
+```{r fig.width = 5, fig.height = 3.5, fig.align = "center"}
+a <- worldcup %>% ggplot(aes(x = Time, y = Shots, color = Position)) + 
+  geom_point()
+ggplotly(a)
 ```
 
 ## `plotly` package
 
-The `plotly` package is designed so you can pipe data into `plot_ly` and add elements by piping into `add_*` functions (this idea is similar to adding elements to a `ggplot` object with `+`).
+You can also use this with other `ggplot2` functionality, like faceting: 
 
 ```{r eval = FALSE}
-worldcup %>%
-  plot_ly(x = ~ Time, y = ~ Shots, color = ~ Position) %>%
-  add_markers()
+shots_vs_time <- worldcup %>%
+  mutate(Name = rownames(worldcup)) %>%
+  filter(Team %in% c("Netherlands", "Germany", "Spain", "Uruguay")) %>%
+  ggplot(aes(x = Time, y = Shots, color = Position, group = Name)) + 
+  geom_point() + 
+  facet_wrap(~ Team)
+ggplotly(shots_vs_time)
 ```
 
 ## `plotly` package
 
-Some of the `add_*` functions include:
+```{r echo = FALSE}
+shots_vs_time <- worldcup %>%
+  mutate(Name = rownames(worldcup)) %>%
+  filter(Team %in% c("Netherlands", "Germany", "Spain", "Uruguay")) %>%
+  ggplot(aes(x = Time, y = Shots, color = Position, group = Name)) + 
+  geom_point() + 
+  facet_wrap(~ Team)
+ggplotly(shots_vs_time)
+```
 
-- `add_markers`
-- `add_lines`
-- `add_paths`
-- `add_polygons`
-- `add_segments`
-- `add_histogram`
 
 ## `plotly` package
 
@@ -240,9 +235,8 @@ head(maps::us.cities, 3)
 Here is code you can use to map all of these cities on a US map:
 
 ```{r eval = FALSE}
-ggplot2::map_data("world", "usa") %>%
-   group_by(group) %>% filter(-125 < long & long < -60 &
-                                25 < lat & lat < 52) %>%
+ggplot2::map_data("state") %>%
+   group_by(group) %>% 
    plot_ly(x = ~long, y = ~lat) %>%
    add_polygons(hoverinfo = "none") %>%
    add_markers(text = ~paste(name, "<br />", pop), hoverinfo = "text",
@@ -267,88 +261,6 @@ ggplot2::map_data("world", "usa") %>%
    layout(showlegend = FALSE)
 ```
 
-
-## `plotly` package
-
-```{r}
-library(choroplethr)
-data(df_pop_state)
-state_choropleth(df_pop_state)
-```
-
-## `plotly` package
-
-```{r eval = FALSE}
-us_map <- list(scope = 'usa',
-  projection = list(type = 'albers usa'),
-  lakecolor = toRGB('white'))
-plot_geo() %>%
-   add_trace(z = df_pop_state$value[df_pop_state$region != 
-                                        "district of columbia"],
-             text = state.name, locations = state.abb,
-             locationmode = 'USA-states') %>%
-  add_markers(x = state.center[["x"]], y = state.center[["y"]], 
-    size = I(2), symbol = I(8), color = I("white"), hoverinfo = "none") %>%
-  layout(geo = us_map)
-```
-
-## `plotly` package
-
-```{r echo = FALSE}
-us_map <- list(scope = 'usa',
-  projection = list(type = 'albers usa'),
-  lakecolor = toRGB('white'))
-plot_geo() %>%
-   add_trace(z = df_pop_state$value[df_pop_state$region != 
-                                        "district of columbia"],
-             text = state.name, locations = state.abb,
-             locationmode = 'USA-states') %>%
-  add_markers(x = state.center[["x"]], y = state.center[["y"]], 
-    size = I(2), symbol = I(8), color = I("white"), hoverinfo = "none") %>%
-  layout(geo = us_map)
-```
-
-## `plotly` package
-
-The other way to create a `plotly` graph is to first create a `ggplot` object and then transform it into an interactive graphic using the `ggplotly` function.
-
-The following code can be used to plot Time versus Shots for the World Cup date: 
-
-```{r eval = FALSE}
-shots_vs_time <- worldcup %>%
-  mutate(Name = rownames(worldcup)) %>%
-  filter(Team %in% c("Netherlands", "Germany", "Spain", "Uruguay")) %>%
-  ggplot(aes(x = Time, y = Shots, color = Position, group = Name)) + 
-  geom_point() + 
-  facet_wrap(~ Team)
-shots_vs_time
-```
-
-## `plotly` package
-
-```{r echo = FALSE}
-shots_vs_time <- worldcup %>%
-  mutate(Name = rownames(worldcup)) %>%
-  filter(Team %in% c("Netherlands", "Germany", "Spain", "Uruguay")) %>%
-  ggplot(aes(x = Time, y = Shots, color = Position, group = Name)) + 
-  geom_point() + 
-  facet_wrap(~ Team)
-shots_vs_time
-```
-
-## `plotly` package
-
-```{r}
-ggplotly(shots_vs_time)
-```
-
-## `plotly` package
-
-With R, not only can you pull things from another website using an API, you can also upload or submit things. \bigskip
-
-There is a function in the `plotly` library, `plotly_POST`, that lets you post a plot you create in R to https://plot.ly.
-
-You need a plot.ly account to do that, but there are free accounts available.
 
 ## `plotly` package
 
@@ -480,7 +392,7 @@ dygraph(lungDeaths) %>%
 
 For example, here is the code to plot monthly deaths from lung diseases in the UK in the 1970s. 
 
-```{r echo = FALSE}
+```{r echo = FALSE, fig.height = 3.5}
 library(dygraphs)
 lungDeaths <- cbind(mdeaths, fdeaths)
 dygraph(lungDeaths) %>%
@@ -498,10 +410,135 @@ There is a website with more information on this package at http://rstudio.githu
 
 ## `DT` package
 
-```{r}
+```{r fig.height = 3.5, fig.width = 4}
 library(DT)
 datatable(worldcup)
 ```
+
+## `d3heatmap` package
+
+The `d3heatmap` package allows you to create interactive heatmaps. For example:
+
+```{r eval = FALSE}
+library(d3heatmap)
+d3heatmap(mtcars, scale = "column")
+```
+
+## `d3heatmap` package
+
+```{r echo = FALSE, fig.height = 4}
+library(d3heatmap)
+d3heatmap(mtcars, scale = "column")
+```
+
+## `networkD3` package
+
+The `networkd3` package allows you to create different networks. For example, a simple network: 
+
+```{r eval = FALSE}
+library(networkD3)
+src <- c("A", "A", "A", "A",
+        "B", "B", "C", "C", "D")
+target <- c("B", "C", "D", "J",
+            "E", "F", "G", "H", "I")
+networkData <- data.frame(src, target)
+simpleNetwork(networkData)
+```
+
+## `networkD3` package
+
+```{r echo = FALSE, fig.height = 4}
+library(networkD3)
+src <- c("A", "A", "A", "A",
+        "B", "B", "C", "C", "D")
+target <- c("B", "C", "D", "J",
+            "E", "F", "G", "H", "I")
+networkData <- data.frame(src, target)
+simpleNetwork(networkData)
+```
+
+## `networkD3` package
+
+A more complex network: 
+
+```{r eval = FALSE}
+data(MisLinks)
+data(MisNodes)
+forceNetwork(Links = MisLinks, Nodes = MisNodes,
+            Source = "source", Target = "target",
+            Value = "value", NodeID = "name",
+            Group = "group", opacity = 0.8)
+```
+
+## `networkD3` package
+
+```{r echo = FALSE, fig.height = 4}
+# Load data
+data(MisLinks)
+data(MisNodes)
+
+# Plot
+forceNetwork(Links = MisLinks, Nodes = MisNodes,
+            Source = "source", Target = "target",
+            Value = "value", NodeID = "name",
+            Group = "group", opacity = 0.8)
+```
+
+## `networkD3` package
+
+A Sankey diagram: 
+
+```{r eval = FALSE}
+URL <- paste0(
+        "https://cdn.rawgit.com/christophergandrud/networkD3/",
+        "master/JSONdata/energy.json")
+Energy <- jsonlite::fromJSON(URL)
+sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, 
+              Source = "source", Target = "target", 
+              Value = "value", NodeID = "name",
+              units = "TWh", fontSize = 12, 
+              nodeWidth = 30)
+```
+
+## `networkD3` package
+
+```{r echo = FALSE, fig.height = 4.5}
+URL <- paste0(
+        "https://cdn.rawgit.com/christophergandrud/networkD3/",
+        "master/JSONdata/energy.json")
+Energy <- jsonlite::fromJSON(URL)
+sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, Source = "source",
+             Target = "target", Value = "value", NodeID = "name",
+             units = "TWh", fontSize = 12, nodeWidth = 30)
+```
+
+## `networkD3` package
+
+A diagonal network: 
+
+```{r eval = FALSE}
+URL <- paste0(
+        "https://cdn.rawgit.com/christophergandrud/networkD3/",
+        "master/JSONdata//flare.json")
+Flare <- jsonlite::fromJSON(URL, simplifyDataFrame = FALSE)
+Flare$children = Flare$children[1:3]
+diagonalNetwork(List = Flare, fontSize = 10, opacity = 0.9)
+```
+
+## `networkD3` package
+
+```{r echo = FALSE}
+URL <- paste0(
+        "https://cdn.rawgit.com/christophergandrud/networkD3/",
+        "master/JSONdata//flare.json")
+Flare <- jsonlite::fromJSON(URL, simplifyDataFrame = FALSE)
+Flare$children = Flare$children[1:3]
+diagonalNetwork(List = Flare, fontSize = 10, opacity = 0.9)
+```
+
+## `networkD3` package
+
+There's more information about the `networkD3` package at http://christophergandrud.github.io/networkD3/.
 
 ## Creating your own widget
 
