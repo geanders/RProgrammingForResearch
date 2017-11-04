@@ -126,6 +126,26 @@ GitHub is becoming more and more common as a place to share R packages, both dev
     + Requires `devtools` package, which has some set-up requirements (`XCode` for Mac, `Rtools` for Windows)
 - Packages on CRAN cannot depend on packages available only on GitHub
 
+## Package names
+
+The format requirements for a package name are, based on [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html):
+
+> "This should contain only (ASCII) letters, numbers and dot, have at least two characters and start with a letter and not end in a dot."
+
+Hadley Wickham's [additional guidelines](http://r-pkgs.had.co.nz/package.html): 
+
+- Make it easy to Google.
+- Make it all uppercase or all lower case
+- Base it on a word that's easy to remember, but then tweak the spelling to make it unique (and easier to Google).
+- Abbreviate.
+- Add an "r".
+
+## Package maintainer
+
+A package can have many authors, but only one maintainer. The maintainer is in charge of fixing any problems that come up with CRAN checks over time to keep the package on CRAN. The maintainer is also the person who will be emailed about bugs, etc., by other users.
+
+The package can have other authors, as well as people in other roles (e.g., contributor). See the helpfile for the `person` function for more on the codes used for different roles.
+
 ## Find out more
 
 To find out more about writing R packages, useful sources are: 
@@ -133,6 +153,73 @@ To find out more about writing R packages, useful sources are:
 - [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html): Guidelines for R packages from the R Core Team.
 - [R Packages](http://r-pkgs.had.co.nz) by Hadley Wickham
 - [R package development cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/06/devtools-cheatsheet.pdf)
+
+# Debugging 
+
+## Debugging 
+
+```{r echo = FALSE, out.width = "200pt", fig.align='center'}
+knitr::include_graphics("../figures/xkcd_fixing_problems.png")
+```
+
+
+## A general debugging strategy 
+
+```
+Error in as_mapper(.f, ...) : object 'quo_name' not found
+In addition: There were 13 warnings (use warnings() to see them)
+Called from: as_mapper(.f, ...)
+Browse[1]> 
+```
+
+When you find an error: 
+
+1. Breathe, relax 
+2. Re-read the error message and focus on key wording 
+3. Isolate the error 
+4. Recreate the error 
+5. Investigate 
+
+## Be able to reproduce your error 
+
+Reproduciblity is a key component of debugging, whether you are working alone or sharing the error with others. A reproducible example requires: 
+
+- A minimal dataset, 
+- The minimal, runnable code that results in the error, and 
+- Your R version, versions of loaded packages, and the system you're working on (you can find these out by running `sessionInfo()`). 
+
+## Be able to reproduce your error 
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/xkcd_debugging.png")
+```
+
+## RStudio in debugging mode
+
+```
+Error in as_mapper(.f, ...) : object 'quo_name' not found
+In addition: There were 13 warnings (use warnings() to see them)
+Called from: as_mapper(.f, ...)
+Browse[1]> 
+```
+## RStudio in debugging mode 
+
+```{r echo = FALSE, out.width = "330pt", out.height = "215pt", fig.align='center'}
+knitr::include_graphics("../figures/example_error.png")
+```
+
+## Further reading about debugging strategies 
+
+## Preventing errors with conditions
+
+- `error()`
+- `warning()`
+- `message()` 
+
+# Testing 
+
+## Using the `testthat` package 
+
 
 # Basic example package
 
@@ -247,7 +334,7 @@ There are a few common elements, though. They can be split into two groups: thin
 Things you edit directly: 
 
 - DESCRIPTION file: The package's "Title page". Metadata on the package, including names and contacts of authors, package name, and description. This file also lists all the package *dependencies* (other packages with functions this package uses).
-- `R` folder: R code defining functions in the package. All code is included in one or more R scripts. If you use Roxygen for help documentation, all of that is also included in these files. 
+- `R` folder: R code defining functions in the package. All code is included in one or more R scripts. If you use Roxygen for help with documentation, all of that is also included in these files. 
 
 Things that are automatically written: 
 
@@ -273,26 +360,6 @@ Other elements that are common but not required:
 - Imports: A list of the packages on which this package depends: other packages with functions used by the code in this package. 
 - URL: If there is a webpage associated with the package, the address for it. Often, this is the web address of the package's GitHub repository.
 - BugReports: Where users can submit problems they've had. Often, the web address of the "Issues" page of the GitHub repository for the package. 
-
-## Package name
-
-The format requirements for a package name are, based on [Writing R Extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html):
-
-> "This should contain only (ASCII) letters, numbers and dot, have at least two characters and start with a letter and not end in a dot."
-
-Hadley Wickham's [additional guidelines](http://r-pkgs.had.co.nz/package.html): 
-
-- Make it easy to Google.
-- Make it all uppercase or all lower case
-- Base it on a word that's easy to remember, but then tweak the spelling to make it unique (and easier to Google).
-- Abbreviate.
-- Add an "r".
-
-## Package maintainer
-
-A package can have many authors, but only one maintainer. The maintainer is in charge of fixing any problems that come up with CRAN checks over time to keep the package on CRAN. The maintainer is also the person who will be emailed about bugs, etc., by other users.
-
-The package can have other authors, as well as people in other roles (e.g., contributor). See the helpfile for the `person` function for more on the codes used for different roles.
 
 ## DESCRIPTION file
 
@@ -577,3 +644,4 @@ Once you have included all the functions and documentation for a package, there 
 - Build the package on other systems. You can use Travis (Unix / Linux) and `build_win` (Windows) to do this for those systems. 
 - Create a pdf of all help files to proofread. To do this, open a bash shell in the parent directory of the package and run `R CMD Rd2pdf <packagename>` (for example, if the package were `csupackage`, you'd run `R CMD Rd2pdf csupackage`). This will create a pdf in that directory with all helpfiles for all functions. 
 - If you want the package to be on CRAN, submit to CRAN. There is a function called `submit_cran` that will build the package and submit it to CRAN.
+
