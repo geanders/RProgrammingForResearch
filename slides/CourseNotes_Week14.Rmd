@@ -162,7 +162,6 @@ To find out more about writing R packages, useful sources are:
 knitr::include_graphics("../figures/xkcd_fixing_problems.png")
 ```
 
-
 ## A general debugging strategy 
 
 ```
@@ -182,13 +181,21 @@ When you find an error:
 
 ## Be able to reproduce your error 
 
-Reproduciblity is a key component of debugging, whether you are working alone or sharing the error with others. A reproducible example requires: 
+Reproduciblity is a key component of debugging, whether you are working alone or sharing the error with others. Being able to reproduce your error ensures that (1) you'll know when it's fixed, and (2) others will more easily be able to investigate your error. 
+
+A reproducible example requires: 
 
 - A minimal dataset, 
 - The minimal, runnable code that results in the error, and 
 - Your R version, versions of loaded packages, and the system you're working on (you can find these out by running `sessionInfo()`). 
 
-## Be able to reproduce your error 
+## Be able to reproduce your error: `sessionInfo()`
+
+```{r echo = FALSE, out.width = "330pt", out.height = "200pt", fig.align='center'}
+knitr::include_graphics("../figures/sessionInfo_example.png")
+```
+
+## Investigate your error 
 
 ```{r echo = FALSE, out.width = "300pt", fig.align='center'}
 knitr::include_graphics("../figures/xkcd_debugging.png")
@@ -202,24 +209,184 @@ In addition: There were 13 warnings (use warnings() to see them)
 Called from: as_mapper(.f, ...)
 Browse[1]> 
 ```
+
 ## RStudio in debugging mode 
 
 ```{r echo = FALSE, out.width = "330pt", out.height = "215pt", fig.align='center'}
 knitr::include_graphics("../figures/example_error.png")
 ```
 
+## RStudio in debugging mode: console
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/error_console.png")
+```
+
+## RStudio in debugging mode: source viewer 
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/error_sourceviewer.png")
+```
+
+## RStudio in debugging mode: environment  
+
+```{r echo = FALSE, out.width = "330pt", out.height = "215pt", fig.align='center'}
+knitr::include_graphics("../figures/error_environment_pane.png")
+```
+
 ## Further reading about debugging strategies 
+
+- Hadley Whickham's Debugging chapter from *Advanced R*: http://adv-r.had.co.nz/Exceptions-Debugging.html
+- Debugging with RStudio: https://support.rstudio.com/hc/en-us/articles/205612627-Debugging-with-RStudio#using-the-debugger
 
 ## Preventing errors with conditions
 
-- `error()`
-- `warning()`
-- `message()` 
+In the context of writing functions, 
+
+- `stop()` (raise an error), 
+- `warning()` (display potential problems), and 
+- `message()` (give informative output)
+
+are useful for catching expected potential problems. 
+
+## Preventing errors with conditions 
+
+For example: 
+
+\footnotesize
+```{r}
+add_numbers <- function(a, b, message = TRUE) {
+  
+  if (!is.numeric(a) | !is.numeric(b)) {
+    stop("Both a and b should be numeric.")
+  }
+  
+  if (message) {
+    message(paste0("Adding ", a, " and ", b, " together."))
+  }
+  
+  out <- a + b
+  
+  if (out > 10) {
+    warning("This output is getting kind of high!")
+  }
+  
+  return(out)
+  
+}
+```
+
+## Preventing errors with conditions 
+
+\footnotesize
+```{r}
+add_numbers(2, 3)
+add_numbers(2, 3, message = FALSE)
+```
+
+\footnotesize
+```{r eval = FALSE}
+add_numbers(2, "3")
+# Error in add_numbers(2, "3") : Both a and b should be numeric.
+
+add_numbers(10, 20)
+# Adding 10 and 20 together.
+# [1] 30
+# Warning message:
+# In add_numbers(10, 20) : This output is getting kind of high!
+```
 
 # Testing 
 
-## Using the `testthat` package 
+## Testing your code: Using the `testthat` package 
 
+From the `testthat` Github repository: 
+
+> "Testing your code can be painful and tedious, but it greatly increases the quality of your code. testthat tries to make testing as fun as possible, so that you get a visceral satisfaction from writing tests. Testing should be addictive, so you do it all the time."
+
+File structure: 
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/testing_file_structure.png")
+```
+
+## Test your code using "expectations" that are grouped into "tests"
+
+test_add_numbers.R: 
+
+\footnotesize
+```{r eval = FALSE}
+test_that("add_numbers is working", {
+  expect_message(add_numbers(4, 4), "Adding 4 and 4 together.")
+  expect_error(add_numbers(1, "1"))
+  expect_warning(add_numbers(5, 6))
+  expect_equal(add_numbers(2, 3), 5)
+})
+```
+
+## Example results if all tests are passing 
+
+run_tests.R: 
+
+\footnotesize
+```{r eval = FALSE}
+library(testthat)
+source("~/Documents/addr/add_numbers.R")
+
+test_results <- test_dir("~/Documents/addr", reporter = "summary")
+# ....
+# DONE ===================================================================
+```
+
+## Example results if a test fails 
+
+\footnotesize
+```{r eval = FALSE}
+add_numbers <- function(a, b, message = TRUE) {
+  
+  if (!is.numeric(a) | !is.numeric(b)) {
+    stop("Both a and b should be numeric.")
+  }
+  
+  if (message) {
+    message(paste0("Adding ", a, " and ", b, " together."))
+  }
+  
+  out <- a + b
+  
+  if (out > 10) {
+    warning("This output is getting kind of high!")
+  }
+  
+  return(out + 2)
+  
+}
+```
+
+## Example results if a test fails 
+
+\footnotesize
+```{r eval = FALSE}
+test_results <- test_dir("~/Documents/addr", reporter = "summary")
+
+# ...1
+# Failed ----------------------------------------------------------------
+# 1. Failure: add_numbers is working (@test_add_numbers.R#5) ------------
+# add_numbers(2, 3) not equal to 5.
+# 1/1 mismatches
+# [1] 7 - 5 == 2
+# 
+# 
+# DONE ==================================================================
+```
+
+## Further reading about testing 
+
+In the context of packages: 
+- "Testing" from Hadley Wickham's *R Packages*: http://r-pkgs.had.co.nz/tests.html
+
+Outside of the package structure:
+- "Unit testing with R": https://www.r-bloggers.com/unit-testing-with-r/
 
 # Basic example package
 
