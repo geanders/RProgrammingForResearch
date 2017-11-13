@@ -13,6 +13,12 @@ library(ggplot2)
 library(stringr)
 ```
 
+# Follow-ups
+
+["Giving Open-Source Projects Life After a Developer's Death"](https://www.wired.com/story/giving-open-source-projects-life-after-a-developers-death/), Wired Magazine
+
+["Where's \_why?"](http://www.slate.com/articles/technology/technology/2012/03/ruby_ruby_on_rails_and__why_the_disappearance_of_one_of_the_world_s_most_beloved_computer_programmers_.html), slate.com
+
 # `forcats`
 
 ## `forcats`
@@ -97,6 +103,15 @@ Source: Flikr commons, https://www.flickr.com/photos/internetarchivebookimages/2
 
 ## The lady tasting tea
 
+If you'd like to learn more about R.A. Fisher, there's an excellent article by Ben Christopher called ["Why the Father of Modern Statistics Didn’t Believe Smoking Caused Cancer"](https://priceonomics.com/why-the-father-of-modern-statistics-didnt-believe/).
+
+\begin{quotation}
+``If he were alive today, Ronald Fisher would have one hell of a Twitter account." \\
+-- Ben Christopher
+\end{quotation}
+
+## The lady tasting tea
+
 > "Dr. Muriel Bristol, a colleague of Fisher's, claimed that when drinking tea she could distinguish whether milk or tea was added to the cup first (she preferred milk first). To test her claim, Fisher asked her to taste eight cups of tea, four of which had milk added first and four of which had tea added first." --- Agresti, *Categorical Data Analysis*, p.91
 
 ## The lady tasting tea
@@ -147,7 +162,7 @@ n_right
 
 ## The lady tasting tea
 
-Right a function that will run one simulation. It takes the argument `n_cups`--- in real life, they used eight cups (`n_cups = 8`). Note that this function just wraps the code we just walked through. 
+Write a function that will run one simulation. It takes the argument `n_cups`--- in real life, they used eight cups (`n_cups = 8`). Note that this function just wraps the code we just walked through. 
 
 ```{r}
 sim_null_tea <- function(n_cups){
@@ -167,11 +182,12 @@ Now, we need to run a lot of simulations, to see what happens on average if she 
 ```{r eval = FALSE}
 ## Generic code
 replicate(n = [number of replications to run],
-          eval = [code to replicate each time])
+          expr = [code to replicate each time])
 ```
 
 ```{r}
-tea_sims <- replicate(5, sim_null_tea(n_cups = 8))
+tea_sims <- replicate(n = 5, 
+                      expr = sim_null_tea(n_cups = 8))
 tea_sims
 ```
 
@@ -194,7 +210,7 @@ For this, we can apply the replication code across different values of `n_cups`:
 
 ```{r}
 n_cups <- seq(from = 2, to = 14, by = 2)
-perc_all_right <- sapply(n_cups, FUN = function(n_cups){
+perc_all_right <- purrr::map_dbl(n_cups, .f = function(n_cups){
   cups_right <- replicate(1000, sim_null_tea(n_cups))
   out <- mean(cups_right == n_cups)
   return(out)
@@ -284,8 +300,9 @@ analytical_results <- data_frame(n_cups = seq(2, 14, 2)) %>%
 ```{r out.width = "0.6\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center"}
 ggplot(analytical_results, aes(x = n_cups, y = perc_all_right)) + 
   geom_line(color = "darkgray") +
-  geom_point(data = tea_sims) + xlab("# of cups tested") + 
-  ylab("Probability of getting\nall cups right if guessing")
+  geom_point(data = tea_sims, color = "red") + 
+  labs(x = "# of cups tested",
+       y = "Probability of getting\nall cups right if guessing")
 ```
 
 ## The lady tasting tea
@@ -294,7 +311,7 @@ ggplot(analytical_results, aes(x = n_cups, y = perc_all_right)) +
 
 *The Design of Experiments.* Ronald Fisher. \bigskip
 
-https://priceonomics.com/why-the-father-of-modern-statistics-didnt-believe/
+["How A Tea Party Turned into a Scientific Legend"](https://io9.gizmodo.com/how-a-tea-party-turned-into-a-scientific-legend-1706697488)
 
 ## Playing darts
 
