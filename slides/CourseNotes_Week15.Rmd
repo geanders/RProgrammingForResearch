@@ -1,247 +1,479 @@
 ---
-title: "More on Shiny"
+title: "Next steps in R"
 output: 
   beamer_presentation:
-    theme: "Frankfurt"
-    colortheme: "seagull"
-    fonttheme: "structuresmallcapsserif"
+    theme: "metropolis"
 fontsize: 10pt
 ---
 
-# Tips for Shiny
+```{r setup, include=FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(knitr)
+library(tidyr)
+library(ggplot2)
+library(gridExtra)
+library(pander)
+```
 
-## Shiny cheatsheet
+## Final presentations 
 
-RStudio's Shiny cheatsheet: 
+- Thursday, Dec. 14, 2:00-4:00 pm
+- Mayor of Old Town after? (My treat for first 1/2 pint or non-alcoholic drink of your choice)
+- Course surveys online this year-- details to come
 
-http://shiny.rstudio.com/images/shiny-cheatsheet.pdf
+## Final presentations / reports
 
-## Styling Shiny with CSS
+- *Rationale:* Explain what you were hoping to achieve in writing the functions / app framework that your group created. 
+- *Idea development:* Describe the different ideas your group explored. What were the biggest challenges in this stage? For any ideas that didn't pan out, what were the key constraints? Also describe how you would tackle this problem if you were starting over.
 
-RStudio article on using CSS with Shiny: 
+## Final presentations / reports
 
-https://shiny.rstudio.com/articles/css.html
+- *Key functions:* Describe the final functions / app framework you decided on. Explain why you picked these. For functions, include documentation for the functions:
+    + Write a brief title for the function (< 8 words) and a brief description (3--4 sentences).
+    + Define all parameters. For example, if you have a `df` parameter, explain that this is the dataframe that will be modeled / visualized. If it must have certain column with certain names, specify that. 
+    + Define what the functions will output (e.g., "A ggplot object showing ..." or "The model output object from running a ..."). 
+    + If you have a reference (e.g., for a model you're fitting in the function), you can include that
+    + If you want an extra challenge, try to use the Roxygen2 syntax in writing these descriptions. Otherwise, you can write them in code comments.
 
-Bootswatch: Website and GitHub repository
+## Final presentations/ reports
 
-http://bootswatch.com
-https://github.com/thomaspark/bootswatch
+- *Room for errors:* So far, we have focused on getting working prototypes, without making sure they're error-proof and robust to a user doing something non-standard. Identify three things a user could do that could make your functions "break" (i.e., either return an error message or return something other than what you hope they will).
 
-## Shiny layout
+## Final presentations / reports
 
-RStudio article on Shiny layout
+- *Next steps:* Include a section where you describe what you think are interesting next steps, i.e., what you would pursue next if you were continuing work on this project. Lay out explicitly a few ideas (2--3) that you think would be helpful. Be sure, when relevant, to describe how feedback from the project researchers helped in forming these ideas for next steps.
 
-https://shiny.rstudio.com/articles/layout-guide.html
+## Final presentations / reports
 
-Example app with tabs: 
-http://shiny.rstudio.com/gallery/tabsets.html
+- The presentation should be 15--18 minutes per group.
+- For functions, you should show both some of the code and an example of output during the presentation.
+- For the final report, the functions and their documentation should be in ".R" files.
+- For the final report, everything else will be in a Word report. You may reference the functions you created by name in this report. The report should be no longer than 5 pages (using default font size, line spacing, etc. for RMarkdown documents; if you include figures or tables that show output from your functions, these do not need to count towards that page limit).
+- Be sure to show examples of using your functions in your Word report. 
 
-Example app with navbarPage: 
+## Unsupervised learning
 
-http://shiny.rstudio.com/gallery/navbar-example.html
+Example applications:
 
-## Reactivity in Shiny apps
+- Look for subgroups among samples of breast cancer patients
+- ID shoppers with similar browsing and purchase histories (recommendation system)
 
-RStudio's overview of reactivity
+Challenges: 
 
-https://shiny.rstudio.com/articles/reactivity-overview.html
+- No well-defined goal
+- Hard to assess if a technique did well
+- Hard to determine if clusters just result from noise
+- Choices like number of clusters, dissimilarity measure, and type of linkage can have a big influence on results
 
-RStudio article on execution scheduling 
-https://shiny.rstudio.com/articles/execution-scheduling.html
+## NCI-60 panel of cancer cells
 
-## Using Leaflet with Shiny
+This example is from James et al., Ch. 10 (*An Introduction to Statistical Learning*).
 
-Leaflet help for Shiny:
+There is an R package called `ISLR` that includes datasets to go along with the James textbook. 
 
-https://rstudio.github.io/leaflet/shiny.html
+```{r echo = TRUE, warning = FALSE, eval = 1}
+library(ISLR)
+?NCI60
+```
 
-# Continuing with R
+The `NCI60` dataset is microarray data from the National Cancer Institute, with expression levels on 6,830 genes from 64 cancer cells. 
 
-## Courses at CSU
+## NCI-60 panel of cancer cells
 
-If you need to take the STAT 511 course, you can take it in R (pick the "A" listings).
+```{r}
+names(NCI60)
+str(NCI60)
+```
 
-CSU's Statistics Department now has a Master's of Applied Statistics program. This program offers courses under the STAA call that are more geared to practice than theory (compared to many graduate-level STAT courses). 
+The dataset has two parts: 
 
-These courses tend to use R for any programming.
+- `labs`: Labels with the cancer type for each cell line. Vector, length 64. 
+- `data`: Dataframe, 64 rows, 6,830 columns.
 
-As a note, these courses are all half-semester courses. 
+## NCI-60 panel of cancer cells
 
-## Courses at CSU
+```{r echo = TRUE}
+nci_labs <- NCI60$labs
+nci_data <- NCI60$data
 
-Interesting listings include: 
 
-- **STAA 551**: Regression Models and Applications
-- **STAA 552**: Generalized Regression Models
-- **STAA 554**: Mixed Models
-- **STAA 565**: Quantitative Reasoning
-- **STAA 567**: Computational and Simulation Methods
-- **STAA 575**: Applied Bayesian Statistics
-- **STAA 577**: Statistical Learning and Data Mining
+nci_labs[1:4]
+```
 
-## Books
+## NCI-60 panel of cancer cells
 
-Springer has a series called "Use R!", with short(er) books about using R for specific areas of research: http://www.springer.com/series/6991 
+```{r echo = TRUE}
+data_frame(cancer = nci_labs) %>% group_by(cancer) %>% 
+  summarize(n = n()) %>% arrange(desc(n)) %>% kable()
+```
+
+## NCI-60 panel of cancer cells
+
+```{r echo = TRUE, eval = FALSE, fig.width = 5, fig.height = 4}
+library(forcats)
+data_frame(cancer = nci_labs) %>% 
+  mutate(cancer = fct_lump(cancer, n = 8, 
+                           other_level = "OTHER")) %>% 
+  group_by(cancer) %>% 
+  summarize(n = n()) %>% 
+  ggplot(aes(x = fct_reorder(cancer, n), y = n)) + 
+  geom_col() + 
+  coord_flip() + 
+  labs(x = "", y = "# of observations")
+```
+
+## NCI-60 panel of cancer cells
+
+```{r echo = FALSE, fig.align = "center", fig.width = 5, fig.height = 4}
+library(forcats)
+data_frame(cancer = nci_labs) %>% 
+  mutate(cancer = fct_lump(cancer, n = 8, other_level = "OTHER")) %>% 
+  group_by(cancer) %>% 
+  summarize(n = n()) %>% 
+  ggplot(aes(x = fct_reorder(cancer, n), y = n)) + 
+  geom_col() + 
+  coord_flip() + 
+  labs(x = "", y = "# of observations")
+```
+
+## NCI-60 panel of cancer cells
+
+For the `nci_data` part of the dataset, each row is one of the cell lines and each column gives a measure of gene expression. 
+
+```{r echo = TRUE}
+nci_data[1:5, 1:5]
+```
+
+## Distributions of gene expressions
+
+```{r echo = TRUE, eval = FALSE}
+nci_data %>% 
+  as_tibble() %>% 
+  select(1:20) %>% 
+  gather(key = "gene", value = "expression") %>% 
+  ggplot(aes(x = expression)) + 
+  geom_histogram() + 
+  facet_wrap(~ gene)
+```
+
+## Distributions of gene expressions
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 5, warning = FALSE, fig.align = "center"}
+nci_data %>% 
+  as_tibble() %>% 
+  select(1:15) %>% 
+  gather(key = "gene", value = "expression") %>% 
+  ggplot(aes(x = expression)) + 
+  geom_histogram() + 
+  facet_wrap(~ gene, ncol = 5)
+```
+
+## Correlation between gene expressions
+
+```{r}
+nci_data %>% 
+  as_tibble() %>% 
+  select(1:5) %>% 
+  cor()
+```
+
+## Correlations between gene expressions
+
+```{r echo = TRUE, warning = FALSE, message = FALSE, fig.height = 6, fig.width = 8, fig.align = "center", eval = FALSE}
+library(ggcorrplot)
+library(viridis)
+nci_data %>% 
+  as_tibble() %>% 
+  select(1:50) %>% 
+  cor() %>% 
+  ggcorrplot() + 
+  scale_fill_viridis()
+```
+
+## Correlations between gene expressions
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.height = 6, fig.width = 8, fig.align = "center"}
+library(ggcorrplot)
+library(viridis)
+nci_data %>% 
+  as_tibble() %>% 
+  select(1:50) %>% 
+  cor() %>% 
+  ggcorrplot() + 
+  scale_fill_viridis()
+```
+
+## Heatmap
 
-We have free online access through our library, and I think we have a program where you can get a black-and-white hard copy of any book for around $25.
+```{r echo = TRUE, eval = FALSE}
+nci_data %>% 
+  as_tibble() %>% 
+  select(1:15) %>% 
+  sample_n(20) %>% 
+  mutate(n = 1:n()) %>% 
+  gather(key = "gene", value = "expression", -n) %>% 
+  ggplot(aes(x = gene, y = n, fill = expression)) + 
+  geom_tile() + 
+  scale_fill_viridis()
+```
 
-As a note, some of the older ones use an older style of code (no tidyverse). 
+## Heatmap
 
-These are often written by academics who are top researchers in that field. 
+```{r echo = FALSE, eval = TRUE, fig.width = 7, fig.height = 5, fig.align = "center"}
+nci_data %>% 
+  as_tibble() %>% 
+  select(1:15) %>% 
+  sample_n(20) %>% 
+  mutate(n = 1:n()) %>% 
+  gather(key = "gene", value = "expression", -n) %>% 
+  ggplot(aes(x = gene, y = n, fill = expression)) + 
+  geom_tile() + 
+  scale_fill_viridis()
+```
+
+
+## Heatmap
+
+```{r echo = TRUE, fig.align = "center", fig.width = 7, fig.height = 5}
+heatmap(nci_data[, 1:30])
+```
 
-Some of the more general titles include: 
+## Heatmap
+
+```{r echo = TRUE, fig.width = 10, fig.height = 5, fig.align = "center"}
+library(pheatmap)
+pheatmap(nci_data[, 1:30], cutree_rows = 5)
+```
+
+## Heatmap
+
+R has some other packages for making heatmaps, including:
+
+- `d3heatmap`: Create interactive heatmaps
+- `ComplexHeatmap`: Create very complex heatmaps (on Bioconductor)
+
+## PCA
+
+Principal components analysis (PCA) can help with exploratory data analysis. If you did pairwise scatterplots of all `r ncol(nci_data)` gene expressions, you would need loads of plots: 
+
+```{r}
+p <- ncol(nci_data)
+num_graphs <- p * (p - 1) / 2
+```
 
-- ggplot2 (by Hadley). The second edition was released this year. 
-- Data Wrangling with R (also now on its second version)
-- XML and Web Technologies for Data Sciences with R
-- Seamless R and C++ Integration with Rcpp
 
-## Books
+$$
+\frac{p(p-1)}{2} = \frac{`r p`(`r p`-1)}{2} = `r num_graphs`
+$$
+
+## PCA
+
+Instead, you can plot pairwise scatterplots of the first few principal components loadings. Based on James et al., 
+
+> PCA helps create a "low-dimensional representation of the data that captures as much of the information as possible".
+
+## PCA
 
-More topical titles include: 
+You can use the `prcomp` function to perform a principal components analysis on a data matrix:
 
-- Applied Survival Analysis Using R
-- A User’s Guide to Network Analysis in R
-- Political Analysis Using R
-- Quality Control with R
-- Meta-Analysis with R
-- Primer to Analysis of Genomic Data Using R
-- R for Marketing Research and Analytics
-- Functional and Phylogenetic Ecology in R
-- Applied Spatial Data Analysis with R
-- Modeling Dose-Response Microarray Data in Early Drug Development Experiments Using R
-- Chemometrics with R
-- Numerical Ecology with R
+```{r echo = TRUE}
+pr_out <- prcomp(nci_data, scale = TRUE)
+class(pr_out)
+```
 
-## Books
+The output from this function has the class `prcomp`. 
 
-O'Reilly's R books tend to be excellent and focus more on general skills than on specific topics. They also tend to have lower prices than some of the academic publishers. 
+## PCA 
 
-Some noteworthy R books from O'Reilly that would be useful following this class are: 
+As a reminder, since the output is a special class, it will have special methods of things like `print` and `summary`: 
 
-- R for Data Science (Hadley Wickham is one of the authors)-- A complete tour of the philosophy and implementation of the tidyverse
-- Hands-On Programming with R (written by one of RStudio's main teachers)-- useful for learning more about writing functions
-- R Packages (another Hadley Wickham book)
-- Efficient R Programming-- Speed up your R
-- R Graphics Cookbook-- Quick way to look up how to plot things with R, ggplot2-friendly
-- The Art of R Programming-- More in-depth R, from a computer science perspective
+```{r}
+names(summary(pr_out))
+```
 
-## Books
+## PCA 
 
-Some other useful R books for next steps: 
+The `ggfortify` package has an `autoplot` method for `prcomp` class objects. This plots each observation on its values for the first two principal components.
 
-- Advanced R (another Hadley Wickham book)-- Goes very deeply into writing R code
-- R Graphics (currently on second edition)-- By the creator of grid graphics, which powers ggplot2. How to create any imaginable custom plot in R. 
-- An Introduction to R for Spatial Analysis and Mapping 
-- Introduction to Scientific Programming and Simulation Using R (currently on second edition)-- Very useful if you plan to use R for simulations
-- Automated Data Collection with R-- More on using R for web scraping, etc.
-- Reproducible Research with R and R Studio (now in second edition)-- A very thoughtful look on how to do reproducible research with R, including many tools and tips
+```{r echo = TRUE, fig.width = 4, fig.height = 2.5, out.height = "0.6\\textheight", fig.align = "center"}
+library(ggfortify)
+autoplot(pr_out)
+```
 
-## Books
+## PCA 
 
-More books with a focus on using R for applied statistics: 
+You can add labels that show the loadings for each variable. However, this is usually only legible if you have a lower number of variables you're considering.
 
-- Data Science in R-- Extended case studies of using R for extended data science projects
-- R in Action-- Survey of variety of statistical techniques
-- An Introduction to Statistical Learning-- learn to use R for maching learning
-- Applied Predictive Modeling-- learn to use R for maching learning
-- Statistical Rethinking-- R for Bayesian analysis
-- Doing Bayesian Data Analysis-- Bayesian analysis, with many R examples
-- Extending the Linear Model with R-- GLMs in R (includes theory)
+```{r echo = TRUE, fig.width = 4, fig.height = 2.5, out.height = "0.6\\textheight", fig.align = "center"}
+autoplot(prcomp(nci_data[ , 1:5]), loadings = TRUE, 
+         loadings.label = TRUE)
+```
 
-## Books
+## PCA 
 
-More and more authors are adding free books built with bookdown: 
-https://bookdown.org
+The `$x` element of the output of `prcomp` are the value of the rotated data (i.e., the centered and scaled data multiplied by the rotation matrix):
 
-These now include: 
+```{r echo = TRUE}
+dim(pr_out$x)
+pr_out$x[1:4, 1:4]
+```
 
-- R for Data Science
-- R Programming for Data Science
-- Tidy Text Mining with R
-- Exploratory Data Analysis with R
-- Efficient R Programming
+## PCA
 
-## Online courses
+You can pull out the PC values for each observation and plot those, adding the cell type labels with color:
 
-There are a number of Massive Open Online Courses (MOOCs) for R that are free or very close to free. 
+```{r eval = FALSE, echo = TRUE, fig.width = 4, fig.height = 3, fig.align = "center"}
+library(tibble)
+pr_out$x %>% 
+  as.data.frame() %>% 
+  select(PC1:PC2) %>% 
+  rownames_to_column() %>% 
+  mutate(label = nci_labs) %>% 
+  ggplot(aes(x = PC1, y = PC2, 
+             color = fct_lump(label, n = 5))) + 
+  geom_point() 
+```
 
-Johns Hopkins runs a number of Specializations through the Coursera platform, for example, that I think are very good. Courses include: 
+## PCA
 
-- Statistical Reasoning for Public Health 1 & 2-- A very nice graduate intro-level course on biostatistics (around the level of STAT 511 / 512 here) taught by an excellent instructor
-- Getting and Cleaning Data
-- R Programming
-- Exploratory Data Analysis
-- Regression Models
-- Statistical Inference
-- Reproducible Research 
-- Developing Data Products
+```{r eval = TRUE, echo = FALSE, fig.width = 7, fig.height = 4, fig.align = "center"}
+library(tibble)
+pr_out$x %>% 
+  as.data.frame() %>% 
+  select(PC1:PC2) %>% 
+  rownames_to_column() %>% 
+  mutate(label = nci_labs) %>% 
+  ggplot(aes(x = PC1, y = PC2, 
+             color = fct_lump(label, n = 5))) + 
+  geom_point() 
+```
 
-## Online courses
+## PCA
 
-I have just started co-teaching a specialization on building software with R (Mastering Software Development in R-- https://www.coursera.org/specializations/r). This includes the courses: 
+To see the standard deviation explained by the first five components, you can pull out the `sdev` component:
 
-- The R Programming Environment
-- Advanced R Programming
-- Building R Packages
-- Building Data Visualization Tools
-- Mastering Software Development in R
+```{r echo = TRUE}
+pr_out$sdev[1:5]
+```
 
-You can choose to audit any of them for free. 
+## PCA
 
-## Online community
+To create a scree plot: 
 
-There are a number of websites where you can browse R code or questions / tutorials about R: 
+```{r echo = TRUE, fig.width = 4, fig.height = 2}
+to_plot <- data.frame(PC = 1:nrow(pr_out$x),
+                      PVE = 100 * pr_out$sdev ^ 2 / 
+                        sum(pr_out$sdev ^ 2))
+ggplot(to_plot, aes(x = PC, y = PVE)) + geom_line() + 
+  theme_bw()
+```
 
-- Stack Overflow (http://stackoverflow.com): Post and answer questions about coding, including R. Chances are strong that if you have a question about R, it has already been asked and answered here. Be sure to follow their guidelines for posting code questions if you decide to post. 
-- R Bloggers (https://www.r-bloggers.com): Aggregates blog posts on R. Often short tutorials showing interesting things people have done with R. 
-- RPubs (http://rpubs.com): Check out RMarkdown documents others have created with R. (Occasionally gets swamped by MOOC assignments)
-- GitHub: Take advantage of their options to filter search results by language. Use to search for examples of code and of how to structure project directories, including for R packages. 
+## PCA
 
-## Online community
+From James et al.:
 
-Twitter might be the top place right now for finding out new developments in R. Some people and organizations to follow for R-related news: 
+> "Unfortunately, there is no well-accepted objective way to decide how many principal components are enough. In Fact, the question of how many principal components are enough is inherently ill-defined, and will depend on the specific area of application and the specific data set."
 
-- @drob
-- @juliasilge
-- @JennyBryan
-- @rOpenSci
-- @hadleywickham 
-- @hspter 
-- @rdpeng
+## Clustering methods
 
-## Conferences and meetings
+Goal: Create clusters so that the within-cluster variation among observations is as low as possible.
 
-**UseR** is the annual international R Users' conference. Every other year it's in the US (the other years, it's in Europe). It's typically in late June or early July.
+- **Hierarchical clustering**: Create a dendrogram that could be used to pick out clusters of any size.
+- **K-means clustering**: Split the observations into a certain number of clusters.
 
-Normally, this conference is very good at keeping registration costs low and including low-cost housing alternatives for students. It is often held on a college campus to help with this. The day before the conference is always half-day tutorials that are included in the price of registration. 
+You can cluster observations by features or features by observations.
 
-This coming summer, it will be in Belgium, July 4-7. http://www.user2017.brussels
+## Hierarchical clustering
 
-## Conferences and meetings
+Start by standardizing the data: 
 
-For two years now, there has also been a New York R Conference in the spring with many excellent speakers. 
+```{r echo = TRUE}
+sd_data <- scale(nci_data)
+```
 
-Here is the website for last year's: http://www.rstats.nyc/index.html
+Then use the `dist` function to measure Euclidean distance: 
 
-## Conferences and meetings
+```{r echo = TRUE}
+data_dist <- dist(sd_data, method = "euclidean")
+class(data_dist)
+```
 
-Many cities now have local R User Groups that meet regularly for presentations on R. I don't think Fort Collins has one, but there is one in Denver:
+Other `method` options: "maximum", "manhattan", "canberra", "binary", "minkowski".
 
-https://www.meetup.com/DenverRUG/
+## Hierarchical clustering
 
-Also, if you move to a new city, check if there's one. Some larger cities have very exciting R user groups and bring in fantastic speakers. 
+`hclust` can be applied to a `dist` object to identify clusters: 
 
-## Conferences and meetings
+```{r echo = TRUE}
+nci_clusters <- hclust(data_dist)
+names(nci_clusters)
+class(nci_clusters)
+```
 
-Last year, RStudio held it's first conference on Shiny web development. This year, it's doing a more general conference, which will include many people from RStudio (Hadley Wickham, Yihui Xie, Jenny Bryan, J.J. Allaire, Max Kuhn, Joe Cheng, Winston Chang): 
+The default is to cluster using complete linkage. 
 
-- rstudio::conf https://www.rstudio.com/conference/
+## Hierarchical clustering
 
-It seems likely that this might become a regular conference. This year, they have some cheaper Academic registrations, but these went really quickly. 
+```{r echo = TRUE, fig.width = 8.5, fig.height = 4.5}
+plot(nci_clusters)
+```
 
-## Conferences and meetings
+## Hierarchical clustering
 
-ROpenSci has now held spring "Unconferences" for two years in a row. These are invitation-only (although you can nominate yourself). They bring in some phenomenal members of the R community, and rather than being a conference, it's a two-day hackathon. Often groups finish the two days with a package or something close. 
+Use the cancer type for labels: 
 
-Here is the website for last year's: http://unconf16.ropensci.org 
+```{r echo = TRUE, fig.width = 10, fig.height = 4.5}
+plot(nci_clusters, labels = nci_labs, xlab = "",
+     ylab = "", sub = "")
+```
+
+## Hierarchical clustering
+
+**Linkage**: The dissimilarity between two groups of observations (see Table 10.2 in James et al.). 
+
+- Complete: Largest of all pairwise distances between observations in cluster A and cluster B
+- Average: Average of all pairwise distances between observations in cluster A and cluster B
+- Single: Smallest of all pairwise distances between observations in cluster A and cluster B
+- Centroid: The distance between the centroids of each cluster  
+
+## Hierarchical clustering
+
+By change the `hclust` arguments, you can use average linkage instead:
+
+```{r echo = TRUE, fig.width = 10, fig.height = 4.5}
+plot(hclust(data_dist, method = "average"),
+     labels = nci_labs, xlab = "",
+     ylab = "", sub = "")
+```
+
+## Hierarchical clustering
+
+Or single linkage:
+
+```{r echo = TRUE, fig.width = 10, fig.height = 4.5}
+plot(hclust(data_dist, method = "single"),
+     labels = nci_labs, xlab = "",
+     ylab = "", sub = "")
+```
+
+## Cutting down to fewer clusters
+
+You can use the `cutree` function to cut the cluster dendrogram at a certain height to only get a certain number of clusters. For example, to get four clusters:
+
+```{r echo = TRUE}
+hc_clusters <- cutree(nci_clusters, 4)
+hc_clusters
+```
+
+## Cutting down to fewer clusters
+
+```{r echo = TRUE}
+data.frame(cancer = nci_labs, cluster = hc_clusters) %>%
+  group_by(cluster) %>% 
+  summarize(cancers = paste(unique(cancer), collapse = ", ")) %>%
+  pander(split.cell = 50)
+```
+
+
+
