@@ -697,3 +697,79 @@ In R, the comment character is the hash symbol, `#`. R will skip any line that s
 We'll take a break now to finish this week's in-course exercise. You can find all the instructions on the online coursebook (https://geanders.github.io/RProgrammingForResearch/r-preliminaries.html). 
 
 Get together with your group members and do Sections 1.7.4 through 1.7.8 of the In-Course Exercise for Week #1 ("R Preliminaries").
+
+# Some odds and ends
+
+## Missing values
+
+In R, `NA` is used to represent some types of missing values in a vector. This value can show up in numerical or character vectors (or in vectors of some other classes):
+
+```{r}
+c(1, 4, NA)
+c("Jane Doe", NA)
+```
+
+## The `$` operator
+
+We've talked about how you can combine vectors of the same length to create a dataframe.
+
+To go the other direction (pull a column from a dataframe), you can use the `$` operator.
+
+For example, say you have the following dataset and want to pull the `color` column as a vector:
+
+```{r}
+example_df <- data.frame(color = c("red", "blue"), 
+                         value = c(1, 2))
+example_df
+```
+
+
+## The `$` operator
+
+You can pull the `color` column as a vector using the name of the dataframe, the dollar sign, and then the name of the column:
+
+```{r}
+example_df$color
+```
+
+```{r}
+class(example_df$color)
+```
+
+(Note: You can use tab completion in RStudio after you put in `example_df$`.)
+
+## Order of evaluation
+
+In R, you can "nest" functions within a single call. Just like with math, the order that the functions are evaluated moves from the inner set of parentheses to the outer one. 
+
+For example, to print the structure of the dataframe from the previous example after creating it, you can run: 
+
+```{r}
+str(data_frame(color = c("red", "blue"), value = c(1, 2)))
+```
+
+## `paste` and `paste0`
+
+If you want to paste together several character strings to make a length-one character vector, you can use the `paste` function to do that:
+
+```{r}
+paste("abra", "ca", "dabra")
+```
+
+By default, spaces are used to separate each original character string in the final string.
+
+## `paste` and `paste0`
+
+If you want to remove these spaces, you can use the `sep` argument in the `paste` function: 
+
+```{r}
+paste("abra", "ca", "dabra", sep = "")
+```
+
+A short-cut function is `paste0`, which is identical to running `paste` with the argument `sep = ""`:
+
+```{r}
+paste0("abra", "ca", "dabra")
+```
+
+
