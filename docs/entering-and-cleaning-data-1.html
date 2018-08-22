@@ -1117,32 +1117,90 @@ You must use the <code>format</code> argument to specify what your date column l
 </ul>
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the `readr` package</span>
-<span class="kw">library</span>(readr)
-
-<span class="co"># Use `read_tsv` to read this file. </span>
-ld_genetics &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(<span class="st">&quot;ld_genetics.txt&quot;</span>)
-<span class="kw">summary</span>(ld_genetics)
-
-<span class="co"># Use `read_tsv` to read this file. Because the first line</span>
+<span class="kw">library</span>(readr)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use `read_tsv` to read this file. </span>
+ld_genetics &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(<span class="st">&quot;ld_genetics.txt&quot;</span>)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   pos = col_integer(),
+##   nA = col_integer(),
+##   nC = col_integer(),
+##   nG = col_integer(),
+##   nT = col_integer(),
+##   GCsk = col_integer(),
+##   TAsk = col_integer(),
+##   cGCsk = col_integer(),
+##   cTAsk = col_integer()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(ld_genetics)</code></pre></div>
+<pre><code>##       pos                nA            nC              nG       
+##  Min.   :    500   Min.   :185   Min.   :120.0   Min.   : 85.0  
+##  1st Qu.: 876000   1st Qu.:288   1st Qu.:173.0   1st Qu.:172.0  
+##  Median :1751500   Median :308   Median :190.0   Median :189.0  
+##  Mean   :1751500   Mean   :309   Mean   :191.9   Mean   :191.8  
+##  3rd Qu.:2627000   3rd Qu.:329   3rd Qu.:209.0   3rd Qu.:208.0  
+##  Max.   :3502500   Max.   :463   Max.   :321.0   Max.   :326.0  
+##        nT             GCsk                TAsk              cGCsk      
+##  Min.   :188.0   Min.   :-189.0000   Min.   :-254.000   Min.   : -453  
+##  1st Qu.:286.0   1st Qu.: -30.0000   1st Qu.: -36.000   1st Qu.:10796  
+##  Median :306.0   Median :   0.0000   Median :  -2.000   Median :23543  
+##  Mean   :307.2   Mean   :  -0.1293   Mean   :  -1.736   Mean   :22889  
+##  3rd Qu.:328.0   3rd Qu.:  29.0000   3rd Qu.:  32.500   3rd Qu.:34940  
+##  Max.   :444.0   Max.   : 134.0000   Max.   : 205.000   Max.   :46085  
+##      cTAsk      
+##  Min.   :-6247  
+##  1st Qu.: 1817  
+##  Median : 7656  
+##  Mean   : 7855  
+##  3rd Qu.:15036  
+##  Max.   :19049</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use `read_tsv` to read this file. Because the first line</span>
 <span class="co"># of the file is *not* the column names, you need to specify what the column</span>
 <span class="co"># names should be with the `col_names` parameter. </span>
 ca_measles &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(<span class="st">&quot;measles_data/02-09-2015.txt&quot;</span>,
-                       <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;count&quot;</span>))
-<span class="kw">head</span>(ca_measles)
-
-<span class="co"># You&#39;ll need the `readxl` package to read in this file. Load that. </span>
-<span class="kw">library</span>(readxl)
-
-<span class="co"># Use the `read_excel` function to read in the file. </span>
-icd10 &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&quot;icd-10.xls&quot;</span>)
-<span class="kw">head</span>(icd10)
-
-<span class="co"># You&#39;ll need the `haven` function to read in this file. Load that.</span>
-<span class="kw">library</span>(haven)
-
-<span class="co"># Use the `read_sas` function to read in this file.</span>
-icu &lt;-<span class="st"> </span><span class="kw">read_sas</span>(<span class="st">&quot;icu.sas7bdat&quot;</span>)
-icu[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
+                       <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;count&quot;</span>))</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   city = col_character(),
+##   count = col_integer()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(ca_measles)</code></pre></div>
+<pre><code>## # A tibble: 6 x 2
+##   city               count
+##   &lt;chr&gt;              &lt;int&gt;
+## 1 ALAMEDA                6
+## 2 LOS ANGELES           20
+## 3 City of Long Beach     2
+## 4 City of Pasadena       4
+## 5 MARIN                  2
+## 6 ORANGE                34</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># You&#39;ll need the `readxl` package to read in the Excel file. Load that. </span>
+<span class="kw">library</span>(readxl)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use the `read_excel` function to read in the file. </span>
+icd10 &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&quot;icd-10.xls&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(icd10)</code></pre></div>
+<pre><code>## # A tibble: 6 x 2
+##   Code    `ICD Title`                                       
+##   &lt;chr&gt;   &lt;chr&gt;                                             
+## 1 A00-B99 I. Certain infectious and parasitic diseases      
+## 2 A00-A09 Intestinal infectious diseases                    
+## 3 A00     Cholera                                           
+## 4 A00.0   Cholera due to Vibrio cholerae 01, biovar cholerae
+## 5 A00.1   Cholera due to Vibrio cholerae 01, biovar eltor   
+## 6 A00.9   Cholera, unspecified</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># You&#39;ll need the `haven` function to read in the SAS file. Load that.</span>
+<span class="kw">library</span>(haven)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use the `read_sas` function to read in this file.</span>
+icu &lt;-<span class="st"> </span><span class="kw">read_sas</span>(<span class="st">&quot;icu.sas7bdat&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">icu[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
+<pre><code>## # A tibble: 5 x 5
+##      ID   STA   AGE GENDER  RACE
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1    4.    1.   87.     1.    1.
+## 2    8.    0.   27.     1.    1.
+## 3   12.    0.   59.     0.    1.
+## 4   14.    0.   77.     0.    1.
+## 5   27.    1.   76.     1.    1.</code></pre>
 </div>
 <div id="directory-structure-1" class="section level3">
 <h3><span class="header-section-number">2.7.3</span> Directory structure</h3>
@@ -1413,7 +1471,7 @@ first_five <span class="co"># Two days tied for the highest deaths counts (Jan. 
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plot the data
 <span class="kw">plot</span>(ebola_liberia<span class="op">$</span>date, ebola_liberia<span class="op">$</span>cases)</code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-69-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-83-1.png" width="672" /></p>
 </div>
 <div id="piping-1" class="section level3">
 <h3><span class="header-section-number">2.7.6</span> Piping</h3>
@@ -1555,7 +1613,7 @@ df &lt;-<span class="st"> </span><span class="kw">mutate</span>(df, <span class=
        <span class="kw">aes</span>(<span class="dt">x =</span> date, <span class="dt">y =</span> count)) <span class="op">+</span><span class="st"> </span>
 <span class="st">        </span><span class="kw">geom_line</span>()  <span class="op">+</span><span class="st"> </span>
 <span class="st">        </span><span class="kw">facet_grid</span>(. <span class="op">~</span><span class="st"> </span>city)</code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-72-1.png" width="960" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-86-1.png" width="960" /></p>
 
 </div>
 </div>
