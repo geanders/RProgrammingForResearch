@@ -25,7 +25,7 @@
 <meta name="author" content="Brooke Anderson and Rachel Severson">
 
 
-<meta name="date" content="2018-08-21">
+<meta name="date" content="2018-08-22">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -472,7 +472,7 @@ a</code></pre></div>
 ##     numString &lt;- lapply(valueSplit, mapphone)
 ##     return(paste0(numString, collapse = &quot;&quot;))
 ## }
-## &lt;bytecode: 0x7fd435e03200&gt;
+## &lt;bytecode: 0x7ff5b62d4bc8&gt;
 ## &lt;environment: namespace:phonenumber&gt;</code></pre>
 </div>
 <div id="assignment-operator-wars---vs." class="section level3">
@@ -621,18 +621,10 @@ If you forget to put the comma in the indexing for a dataframe (e.g., <code>fibo
 </p>
 </div>
 <p>So far, we’ve only shown how to create dataframes from scratch within an R session. Usually, however, you’ll create R dataframes instead by reading in data from an outside file using the <code>read_csv</code> from the <code>readr</code> package and related functions. For example, you might want to analyze data on all the guests that came on the <em>Daily Show</em>, <em>circa</em> Jon Stewart. If you have this data in a comma-separated (csv) file on your computer called “daily_show_guests.csv”, you can read it into your R session with the following code:</p>
-<pre><code>## Parsed with column specification:
-## cols(
-##   YEAR = col_integer(),
-##   GoogleKnowlege_Occupation = col_character(),
-##   Show = col_character(),
-##   Group = col_character(),
-##   Raw_Guest_List = col_character()
-## )</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(readr)
-daily_show &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;daily_show_guests.csv&quot;</span>,
+daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;daily_show_guests.csv&quot;</span>,
                        <span class="dt">skip =</span> <span class="dv">4</span>)</code></pre></div>
-<p>In this code, the <code>read_csv</code> function is reading in the data from “daily_show_guests”, while the gets arrow (<code>&lt;-</code>) assigns that data to the object <code>daily_show</code>, which you can then reference in later code to explore and plot the data.</p>
+<p>In this code, the <code>read_csv</code> function is reading in the data from the file “daily_show_guests.csv”, while the gets arrow (<code>&lt;-</code>) assigns that data to the object <code>daily_show</code>, which you can then reference in later code to explore and plot the data.</p>
 <p>Once you’ve read in the data and saved the resulting dataframe as an object, you can use square-bracket indexing to look at the first two rows in the data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">daily_show[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, ]</code></pre></div>
 <pre><code>## # A tibble: 2 x 5
@@ -663,6 +655,9 @@ new_object &lt;-<span class="st"> </span><span class="kw">function.name</span>(p
                             parameter <span class="dv">2</span> =<span class="st"> </span>argument <span class="dv">2</span>,
                             parameter <span class="dv">3</span> =<span class="st"> </span>argument <span class="dv">3</span>)  </code></pre></div>
 <p>Here are some example function calls, to give you examples of this structure:</p>
+<ul>
+<li>The <code>head</code> function prints out the first few rows of a dataframe. By default, it prints out six rows. With the <code>n</code> option, you can change the number of rows it prints out:</li>
+</ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(daily_show)</code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group  Raw_Guest_List  
@@ -680,35 +675,27 @@ new_object &lt;-<span class="st"> </span><span class="kw">function.name</span>(p
 ## 1  1999 actor                     1/11/99 Acting Michael J. Fox 
 ## 2  1999 Comedian                  1/12/99 Comedy Sandra Bernhard
 ## 3  1999 television actress        1/13/99 Acting Tracey Ullman</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   `## Obtained from GitHub page of FiveThirtyEight under the` = col_character()
-## )</code></pre>
-<pre><code>## Warning in rbind(names(probs), probs_f): number of columns of result is not
-## a multiple of vector length (arg 1)</code></pre>
-<pre><code>## Warning: 2694 parsing failures.
-## row # A tibble: 5 x 5 col     row col   expected  actual    file                         expected   &lt;int&gt; &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                        actual 1     4 &lt;NA&gt;  1 columns 5 columns &#39;data/daily_show_guests.csv&#39; file 2     5 &lt;NA&gt;  1 columns 5 columns &#39;data/daily_show_guests.csv&#39; row 3     6 &lt;NA&gt;  1 columns 5 columns &#39;data/daily_show_guests.csv&#39; col 4     7 &lt;NA&gt;  1 columns 5 columns &#39;data/daily_show_guests.csv&#39; expected 5     8 &lt;NA&gt;  1 columns 5 columns &#39;data/daily_show_guests.csv&#39;
-## ... ................. ... .............................................................. ........ .............................................................. ...... .............................................................. .... .............................................................. ... .............................................................. ... .............................................................. ........ ..............................................................
-## See problems(...) for more details.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;daily_show_guests.csv&quot;</span>)</code></pre></div>
-<p>Within the function call, <em>parameters</em> allow you to customize the function to run in a certain way (e.g., use a certain dataframe as an input, give output in a certain format). Some function parameters will have <em>default arguments</em>, which means that you don’t have to put a value for that parameter for the function to run, but you can if you want the function to do something other than the default.</p>
+<p>The <code>read_csv</code> function (from the <code>readr</code> package) reads data from a comma-separated flat file into R. The <code>skip</code> option allows you to skip some of the first few lines of the file, in case the data starts a few lines into the file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;daily_show_guests.csv&quot;</span>, <span class="dt">skip =</span> <span class="dv">4</span>)</code></pre></div>
+<p>Within the function call, <em>parameters</em> allow you to customize the function to run in a certain way (e.g., use a certain dataframe as an input, change the number of lines printed out from the default value, skip some lines when reading in data). Some function parameters will have <em>default arguments</em>, which means that you don’t have to put a value for that parameter for the function to run, but you can if you want the function to do something other than the default.</p>
 </div>
 <div id="function-help-files" class="section level3">
 <h3><span class="header-section-number">1.6.2</span> Function help files</h3>
-<p>You can find out more about a function, include what parameters it has and what the default values, if any, are by using <code>?</code> before the function name in the R console. For example, to find out more about the <code>read.csv</code> command, run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">?read.csv</code></pre></div>
+<p>You can find out more about a function, include what parameters it has and what the default values, if any, are by using <code>?</code> before the function name in the R console. For example, to find out more about the <code>read_csv</code> command, run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">?read_csv</code></pre></div>
 <p>From the “Usage” section of the help file, you can figure out that the only required parameter is <code>file</code>, the pathname of the file that you want to read in, since this is the only argument in the “Usage” example without an argument value:</p>
-<pre><code>read.csv(file, header = TRUE, sep = &quot;,&quot;, quote = &quot;\&quot;&quot;,
-         dec = &quot;.&quot;, fill = TRUE, comment.char = &quot;&quot;, ...)</code></pre>
-<p>You can also see from this “Usage” section that the default value of <code>header</code> is <code>TRUE</code>, the default value of <code>sep</code> is a comma, etc.</p>
-<p>The “Arguments” section explains each of the parameters, and possible arguments that each can take. For example, here is the explanation of the <code>nrows</code> parameter in the <code>read.csv</code> function:</p>
-<pre><code>integer: the maximum number of rows to read in. Negative and other 
-    invalid values are ignored.</code></pre>
-<p>From this, you can determine that you should put in a whole number, 1 or higher, and the function will only read in that many lines of the dataframe when you run <code>read.csv</code>.</p>
+<pre><code>read_csv(file, col_names = TRUE, col_types = NULL,
+  locale = default_locale(), na = c(&quot;&quot;, &quot;NA&quot;), quoted_na = TRUE,
+  quote = &quot;\&quot;&quot;, comment = &quot;&quot;, trim_ws = TRUE, skip = 0, n_max = Inf,
+  guess_max = min(1000, n_max), progress = show_progress())</code></pre>
+<p>You can also see from this “Usage” section that the default value of <code>col_names</code> is <code>TRUE</code> (use the first row of the data as the column names), the default value of <code>skip</code> is 0 (don’t skip any lines), etc.</p>
+<p>The “Arguments” section explains each of the parameters, and possible arguments that each can take. For example, here is the explanation of the <code>n_max</code> parameter in the <code>read_csv</code> function:</p>
+<pre><code>n_max:  Maximum number of records to read.</code></pre>
+<p>From this, you can determine that you should put in a whole number, 0 or higher, and the function will skip that many line of the file before it starts reading in a dataframe when you run <code>read_csv</code>.</p>
 </div>
 <div id="function-parameters" class="section level3">
 <h3><span class="header-section-number">1.6.3</span> Function parameters</h3>
-<p>Each function parameter has a name (e.g., <code>nrows</code>, <code>header</code>, <code>file</code>). The safest way to call a function in R is to use the structure <code>parameter name = argument value</code> for every parameter, like this:</p>
+<p>Each function parameter has a name (e.g., <code>n_max</code>, <code>col_names</code>, <code>file</code>). The safest way to call a function in R is to use the structure <code>parameter name = argument value</code> for every parameter, like this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="dt">x =</span> daily_show, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
 <p>However, you can also give argument values by position. For example, in the <code>head</code> function, the first parameter is <code>x</code>, the object you want to look at, and the second is <code>n</code>, the number of elements you want to include when you look at the object. If you know this, you can call <code>head</code> using the shorter call:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(daily_show, <span class="dv">3</span>)</code></pre></div>
@@ -720,14 +707,14 @@ new_object &lt;-<span class="st"> </span><span class="kw">function.name</span>(p
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(daily_show, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
 <div class="rmdtip">
 <p>
-Using the full parameter names for arguments can take a bit more time, since it requires more typing. However, RStudio helps you out with that by offering <em>code completion</em>. Once you start typing the first few letters of a parameter name within a function call, try pressing the tab key. All possible arguments that start with those letters should show up, and you can scroll through to pick the right one, or keep typing until the argument you want is atnthe top of the list of choices, and then press the tab key again.
+Using the full parameter names for arguments can take a bit more time, since it requires more typing. However, RStudio helps you out with that by offering <em>code completion</em> or <em>tab completion</em>. Once you start typing the first few letters of a parameter name within a function call, try pressing the tab key. All possible arguments that start with those letters should show up, and you can scroll through to pick the right one, or keep typing until the argument you want is atnthe top of the list of choices, and then press the tab key again.
 </p>
 </div>
 </div>
 </div>
 <div id="r-scripts" class="section level2">
 <h2><span class="header-section-number">1.7</span> R scripts</h2>
-<p>This is a good point in learning R for you to start putting your work in R scripts, rather than entering commands at the console.</p>
+<p>This is a good point in learning R for you to start putting your code in R scripts, rather than entering commands at the console.</p>
 <p>An R script is a plain text file where you can save a series of R commands. You can save the script and open it up later to see (or re-do) what you did earlier, just like you could with something like a Word document when you’re writing a paper.</p>
 <p>To open a new R script in RStudio, go to the menu bar and select “File” -&gt; “New File” -&gt; “R Script”. Alternatively, you can use the keyboard shortcut Command-Shift-N. Figure <a href="r-preliminaries.html#fig:rscript">1.6</a> gives an example of an R script file opened in RStudio and points out some interesting elements.</p>
 <div class="figure" style="text-align: center"><span id="fig:rscript"></span>
@@ -805,35 +792,71 @@ five_guests &lt;-<span class="st"> </span><span class="kw">c</span>(<span class=
                  <span class="st">&quot;Hank Azaria&quot;</span>, <span class="st">&quot;Al Gore&quot;</span>)
 
 <span class="co"># Use square-bracket indexing to print out some subsets of the data</span>
-five_guests[<span class="dv">1</span>]
-five_guests[<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>)]
-five_guests[<span class="dv">2</span><span class="op">:</span><span class="dv">4</span>]
-
-<span class="co"># Save just the first guest in a separate object</span>
+five_guests[<span class="dv">1</span>]</code></pre></div>
+<pre><code>## [1] &quot;Miss Piggy&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">five_guests[<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>)]</code></pre></div>
+<pre><code>## [1] &quot;Kermit the Frog&quot; &quot;Al Gore&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">five_guests[<span class="dv">2</span><span class="op">:</span><span class="dv">4</span>]</code></pre></div>
+<pre><code>## [1] &quot;Stanley Tucci&quot;   &quot;Kermit the Frog&quot; &quot;Hank Azaria&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Save just the first guest in a separate object</span>
 first_guest &lt;-<span class="st"> </span>five_guests[<span class="dv">1</span>]
-first_guest
-
-<span class="co"># Create a vector with the year of the appearance of each guest</span>
+first_guest</code></pre></div>
+<pre><code>## [1] &quot;Miss Piggy&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a vector with the year of the appearance of each guest</span>
 appearance_year &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">2001</span>, <span class="dv">2001</span>, <span class="dv">2002</span>)
 
 <span class="co"># Figure out the classes of the two vectors you just created</span>
-<span class="kw">class</span>(five_guests)
-<span class="kw">class</span>(appearance_year)
-
-<span class="co"># Create the data frame, then print it out to make sure it looks like you thought</span>
+<span class="kw">class</span>(five_guests)</code></pre></div>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(appearance_year)</code></pre></div>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create the data frame, then print it out to make sure it looks like you thought</span>
 <span class="co"># it would</span>
-guest_list &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Raw_Guest_List =</span> five_guests,
+<span class="kw">library</span>(tibble)
+guest_list &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">Raw_Guest_List =</span> five_guests,
                          <span class="dt">YEAR =</span> appearance_year)
-guest_list
-
-<span class="co"># Use square bracket indexing to print subsets of the data frame</span>
-guest_list[<span class="dv">1</span>, <span class="dv">2</span>]
-guest_list[<span class="dv">3</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span>]
-guest_list[ , <span class="dv">1</span>]
-guest_list[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), ]
-
-<span class="co"># Use `str` to check out the structure of the data frame you created</span>
+guest_list</code></pre></div>
+<pre><code>## # A tibble: 5 x 2
+##   Raw_Guest_List   YEAR
+##   &lt;chr&gt;           &lt;dbl&gt;
+## 1 Miss Piggy      1999.
+## 2 Stanley Tucci   2000.
+## 3 Kermit the Frog 2001.
+## 4 Hank Azaria     2001.
+## 5 Al Gore         2002.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use square bracket indexing to print subsets of the data frame</span>
+guest_list[<span class="dv">1</span>, <span class="dv">2</span>]</code></pre></div>
+<pre><code>## # A tibble: 1 x 1
+##    YEAR
+##   &lt;dbl&gt;
+## 1 1999.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">guest_list[<span class="dv">3</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span>]</code></pre></div>
+<pre><code>## # A tibble: 3 x 1
+##   Raw_Guest_List 
+##   &lt;chr&gt;          
+## 1 Kermit the Frog
+## 2 Hank Azaria    
+## 3 Al Gore</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">guest_list[ , <span class="dv">1</span>]</code></pre></div>
+<pre><code>## # A tibble: 5 x 1
+##   Raw_Guest_List 
+##   &lt;chr&gt;          
+## 1 Miss Piggy     
+## 2 Stanley Tucci  
+## 3 Kermit the Frog
+## 4 Hank Azaria    
+## 5 Al Gore</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">guest_list[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), ]</code></pre></div>
+<pre><code>## # A tibble: 2 x 2
+##   Raw_Guest_List   YEAR
+##   &lt;chr&gt;           &lt;dbl&gt;
+## 1 Miss Piggy      1999.
+## 2 Kermit the Frog 2001.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use `str` to check out the structure of the data frame you created</span>
 <span class="kw">str</span>(guest_list)</code></pre></div>
+<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    5 obs. of  2 variables:
+##  $ Raw_Guest_List: chr  &quot;Miss Piggy&quot; &quot;Stanley Tucci&quot; &quot;Kermit the Frog&quot; &quot;Hank Azaria&quot; ...
+##  $ YEAR          : num  1999 2000 2001 2001 2002</code></pre>
 </div>
 <div id="installing-and-using-a-package" class="section level3">
 <h3><span class="header-section-number">1.8.3</span> Installing and using a package</h3>
@@ -847,41 +870,42 @@ guest_list[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv"
 </ul>
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># If you need to, install the package from CRAN</span>
-<span class="kw">install.packages</span>(<span class="st">&quot;stringr&quot;</span>)
-
-<span class="co"># Load the package into your current R session</span>
-<span class="kw">library</span>(stringr)
-
-<span class="co"># Open the package&#39;s vignette</span>
-<span class="kw">vignette</span>(<span class="st">&quot;stringr&quot;</span>)
-
-<span class="co"># Convert the `five_guests` strings to lowercase</span>
-<span class="kw">str_to_lower</span>(five_guests)
-
-<span class="co"># Convert the `five_guests` strings to uppercase</span>
+<span class="kw">install.packages</span>(<span class="st">&quot;stringr&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the package into your current R session</span>
+<span class="kw">library</span>(stringr)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Open the package&#39;s vignette</span>
+<span class="kw">vignette</span>(<span class="st">&quot;stringr&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert the `five_guests` strings to lowercase</span>
+<span class="kw">str_to_lower</span>(five_guests)</code></pre></div>
+<pre><code>## [1] &quot;miss piggy&quot;      &quot;stanley tucci&quot;   &quot;kermit the frog&quot; &quot;hank azaria&quot;    
+## [5] &quot;al gore&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert the `five_guests` strings to uppercase</span>
 <span class="kw">str_to_upper</span>(five_guests)</code></pre></div>
+<pre><code>## [1] &quot;MISS PIGGY&quot;      &quot;STANLEY TUCCI&quot;   &quot;KERMIT THE FROG&quot; &quot;HANK AZARIA&quot;    
+## [5] &quot;AL GORE&quot;</code></pre>
 </div>
 <div id="getting-the-data-onto-your-computer" class="section level3">
 <h3><span class="header-section-number">1.8.4</span> Getting the data onto your computer</h3>
-<p>Next, we will work with the whole dataset. Download the data from GitHub onto your computer. Make a directory (folder) on your computer specifically for this course (I strongly recommend that you put it somewhere where the file path will not have any spaces in it–_for example, putting it in your home directory, under the name “r_course” would be great. Putting it in a directory called “R Course” would not.). Put the <em>Daily Show</em> data in your directory for this course.</p>
+<p>Next, we will work with the whole dataset. Download the data <a href="https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv">from GitHub</a> onto your computer. In class, we created an R Project for you to use for this class. Put the <em>Daily Show</em> data in that directory.</p>
 <p><strong>Take the following steps to get the data onto your computer</strong></p>
 <ul>
-<li>If you do not yet have a directory (folder) just for this course, make one someplace straightforward like in your home directory. Do not use any spaces in the directory name.</li>
 <li>Download the file <a href="https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv">from GitHub</a>. Right click on <code>Raw</code> and then choose “Download linked file”. Put the file into the directory you created for this course.</li>
-<li>Make this directory an R Project. Within RStudio, go to “File -&gt; New Project…”. Select to create a new project from an existing directory. Navigate to the directory you created for the course and select that. If the top right hand corner does not have the name you used for this directory in the top right, next choose to open this new project.</li>
-<li>Use the <code>list.files</code> command to make sure that the “daily_show_guests.csv” file is in your current working directory, now that you’re working within this RStudio Project (we’ll talk more about these Projects later in the semester).</li>
+<li>Use the <code>list.files</code> command to make sure that the “daily_show_guests.csv” file is in your current working directory (we’ll talk more about workign directories, listing files in your working directory, and R Projects later in the semester).</li>
 </ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># List the files in your current working directory </span>
+<span class="kw">list.files</span>()</code></pre></div>
+<pre><code>[1] &quot;daily_show_guests.csv&quot;</code></pre>
 </div>
 <div id="getting-the-data-into-r" class="section level3">
 <h3><span class="header-section-number">1.8.5</span> Getting the data into R</h3>
-<p>Now that you have the dataset in your working directory, you can read it into R. This dataset is in a <em>csv</em> (comma separated values) format. (We will talk more about different file formats next week.) You can read csv files into R using the <code>read.csv</code> function.</p>
+<p>Now that you have the dataset in your working directory, you can read it into R. This dataset is in a <em>csv</em> (comma separated values) format. (We will talk more about different file formats in Week 2.) You can read csv files into R using the function <code>read_csv</code> from the <code>readr</code> package.</p>
 <p><strong>Read the data into your R session</strong></p>
 <ul>
 <li>If you do not already have it, install the <code>readr</code> package. Then load this package within your current R session using <code>library</code>.</li>
 <li>Use the <code>read_csv</code> function from the <code>readr</code> package to read the data into R and save it as the object <code>daily_show</code>.</li>
-<li>Use the help file for the <code>read_csv</code> function to figure out how this function works. To pull that up, type <code>?read_csv</code> at the R console. Can you figure out why we’re using the <code>skip</code> option, and why it’s set to 4?</li>
+<li>Use the help file for the <code>read_csv</code> function to figure out how this function works. To pull that up, type <code>?read_csv</code> at the R console. Can you figure out why it’s critical to use the <code>skip</code> option and set it to 4? (We will be talking a lot more about the <code>read_csv</code> function in Week 2, so don’t worry if you don’t completely understand it right now.)</li>
 <li>Note that you need to put the file name in quotation marks.</li>
-<li>What would have happened if you’d used <code>read_csv</code> but hadn’t saved the result as the object <code>daily_show</code>? (For example, you’d run the code <code>read_csv(&quot;daily_show_guests.csv&quot;)</code> rather than <code>daily_show &lt;- read_csv(&quot;daily_show_guests.csv&quot;)</code>.)</li>
+<li>What would have happened if you’d used <code>read_csv</code> but hadn’t saved the result as the object <code>daily_show</code>? (For example, you’d run the code <code>read_csv(&quot;daily_show_guests.csv&quot;, skip = 4)</code> rather than <code>daily_show &lt;- read_csv(&quot;daily_show_guests.csv&quot;)</code>.)</li>
 </ul>
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Install (if needed) and load the `readr` package</span>
@@ -892,37 +916,107 @@ guest_list[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv"
 
 <span class="co"># Read in dataframe from the csv file with Daily Show guests</span>
 daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;daily_show_guests.csv&quot;</span>, <span class="dt">skip =</span> <span class="dv">4</span>)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   YEAR = col_integer(),
+##   GoogleKnowlege_Occupation = col_character(),
+##   Show = col_character(),
+##   Group = col_character(),
+##   Raw_Guest_List = col_character()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Print out the first few rows</span>
+daily_show</code></pre></div>
+<pre><code>## # A tibble: 2,693 x 5
+##     YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List  
+##    &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
+##  1  1999 actor                     1/11/99 Acting   Michael J. Fox  
+##  2  1999 Comedian                  1/12/99 Comedy   Sandra Bernhard 
+##  3  1999 television actress        1/13/99 Acting   Tracey Ullman   
+##  4  1999 film actress              1/14/99 Acting   Gillian Anderson
+##  5  1999 actor                     1/18/99 Acting   David Alan Grier
+##  6  1999 actor                     1/19/99 Acting   William Baldwin 
+##  7  1999 Singer-lyricist           1/20/99 Musician Michael Stipe   
+##  8  1999 model                     1/21/99 Media    Carmen Electra  
+##  9  1999 actor                     1/25/99 Acting   Matthew Lillard 
+## 10  1999 stand-up comedian         1/26/99 Comedy   David Cross     
+## # ... with 2,683 more rows</code></pre>
 <p>If you have extra time:</p>
 <ul>
-<li>Say this was a really big dataset. You want to check out just the first 10 rows to make sure that you’ve got your code right before you take the time to pull in the whole dataset. Use the help file for <code>read.csv</code> to figure out how to only read in a few rows.</li>
-<li>Look through the help file for other options available for <code>read.csv</code>. Can you think of examples when some of these options would be useful?</li>
-<li>Look again at the version of this raw data on FiveThirtyEight’s GitHub page (rather than the course’s GitHub repository, where you downloaded the data for the course exercise). How are these two versions of the raw data different? How would you need to change your <code>read.csv</code> call if you changed to use the FiveThirtyEight version of the raw data?</li>
+<li>Say this was a really big dataset. You want to check out just the first 10 rows to make sure that you’ve got your code right before you take the time to pull in the whole dataset. Use the help file for <code>read_csv</code> to figure out how to only read in a few rows.</li>
+<li>Look through the help file for other options available for <code>read_csv</code>. Can you think of examples when some of these options would be useful?</li>
+<li>Look again at the version of this raw data on FiveThirtyEight’s GitHub page (rather than the course’s GitHub repository, where you downloaded the data for the course exercise). How are these two versions of the raw data different? How would you need to change your <code>read_csv</code> call if you changed to use the FiveThirtyEight version of the raw data?</li>
 </ul>
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Read in only the first 10 rows of the dataset</span>
 daily_show_first10 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;daily_show_guests.csv&quot;</span>, 
-                       <span class="dt">skip =</span> <span class="dv">4</span>, <span class="dt">n =</span> <span class="dv">10</span>)
+                       <span class="dt">skip =</span> <span class="dv">4</span>, <span class="dt">n_max =</span> <span class="dv">10</span>)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   YEAR = col_integer(),
+##   GoogleKnowlege_Occupation = col_character(),
+##   Show = col_character(),
+##   Group = col_character(),
+##   Raw_Guest_List = col_character()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check the dataframe</span>
 daily_show_first10</code></pre></div>
+<pre><code>## # A tibble: 10 x 5
+##     YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List  
+##    &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
+##  1  1999 actor                     1/11/99 Acting   Michael J. Fox  
+##  2  1999 Comedian                  1/12/99 Comedy   Sandra Bernhard 
+##  3  1999 television actress        1/13/99 Acting   Tracey Ullman   
+##  4  1999 film actress              1/14/99 Acting   Gillian Anderson
+##  5  1999 actor                     1/18/99 Acting   David Alan Grier
+##  6  1999 actor                     1/19/99 Acting   William Baldwin 
+##  7  1999 Singer-lyricist           1/20/99 Musician Michael Stipe   
+##  8  1999 model                     1/21/99 Media    Carmen Electra  
+##  9  1999 actor                     1/25/99 Acting   Matthew Lillard 
+## 10  1999 stand-up comedian         1/26/99 Comedy   David Cross</code></pre>
 </div>
 <div id="checking-out-the-data" class="section level3">
 <h3><span class="header-section-number">1.8.6</span> Checking out the data</h3>
 <p>You now have the data available in your current R session as the <code>daily_show</code> object. You’ll want to check it out to make sure it read in correctly, and also to get a feel for the data. Throughout, you can use the help pages to figure out more about any of the functions being used (for example, <code>?dim</code>).</p>
 <p><strong>Take the following steps to check out the dataset</strong></p>
 <ul>
-<li>Use the <code>dim</code> function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?</li>
-<li>Use indexing to look at the first two rows of the dataset. Based on this, what does each row “measure”? What information do you get for each “measurement”? As a reminder, indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you’d use <code>daily_show[1:2, 1:3]</code>. If you wanted to get the first five rows and all the columns, you’d use <code>daily_show[1:5, ]</code>.</li>
-<li>Use the <code>head</code> function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart’s first show? Does it look like this dataset covers that first show?</li>
+<li>Use the <code>dim</code> function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (that it includes all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?<br />
+</li>
+<li>Use indexing to look at the first two rows of the dataset. Based on this, what does each row “measure” (<strong>unit of observation</strong>)? What information (<strong>variables</strong>) do you get for each “measurement”? As a reminder, indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you’d use <code>daily_show[1:2, 1:3]</code>. If you wanted to get the first five rows and all the columns, you’d use <code>daily_show[1:5, ]</code>.</li>
+<li>The <code>head</code> function can be used to explore the first few rows of dataframes (see the helpfile at <code>?head</code>). Use the <code>head</code> function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart’s first show? Does it look like this dataset covers that first show?</li>
 <li>Use the <code>tail</code> function to look at the last few rows of the dataframe. What is the last show date covered by the dataframe? Who was the last guest?</li>
 <li>Use the <code>str</code> function to get more details about the <code>daily_show</code> dataframe you read in.</li>
 </ul>
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use indexing to see a subset of the data</span>
-daily_show[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, ]
-
-<span class="co"># Check the dimensions of the data</span>
-<span class="kw">dim</span>(daily_show)
-<span class="kw">head</span>(daily_show)
-<span class="kw">tail</span>(daily_show)</code></pre></div>
+daily_show[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, ]</code></pre></div>
+<pre><code>## # A tibble: 2 x 5
+##    YEAR GoogleKnowlege_Occupation Show    Group  Raw_Guest_List 
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;          
+## 1  1999 actor                     1/11/99 Acting Michael J. Fox 
+## 2  1999 Comedian                  1/12/99 Comedy Sandra Bernhard</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check the dimensions of the data</span>
+<span class="kw">dim</span>(daily_show)</code></pre></div>
+<pre><code>## [1] 2693    5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(daily_show)</code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##    YEAR GoogleKnowlege_Occupation Show    Group  Raw_Guest_List  
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;           
+## 1  1999 actor                     1/11/99 Acting Michael J. Fox  
+## 2  1999 Comedian                  1/12/99 Comedy Sandra Bernhard 
+## 3  1999 television actress        1/13/99 Acting Tracey Ullman   
+## 4  1999 film actress              1/14/99 Acting Gillian Anderson
+## 5  1999 actor                     1/18/99 Acting David Alan Grier
+## 6  1999 actor                     1/19/99 Acting William Baldwin</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tail</span>(daily_show)</code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##    YEAR GoogleKnowlege_Occupation Show    Group  Raw_Guest_List      
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;               
+## 1  2015 actor                     7/28/15 Acting Tom Cruise          
+## 2  2015 biographer                7/29/15 Media  Doris Kearns Goodwin
+## 3  2015 director                  7/30/15 Media  J. J. Abrams        
+## 4  2015 stand-up comedian         8/3/15  Comedy Amy Schumer         
+## 5  2015 actor                     8/4/15  Acting Denis Leary         
+## 6  2015 comedian                  8/5/15  Comedy Louis C.K.</code></pre>
 <p>If you have extra time:</p>
 <ul>
 <li>Say you wanted to look at the first ten rows of the dataframe, rather than the first six. How could you use an option with <code>head</code> to do this?</li>
@@ -930,13 +1024,26 @@ daily_show[<span class="dv">1</span><span class="op">:</span><span class="dv">2<
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Look at the first few rows of the data</span>
 <span class="kw">head</span>(daily_show, <span class="dt">n =</span> <span class="dv">10</span>)</code></pre></div>
+<pre><code>## # A tibble: 10 x 5
+##     YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List  
+##    &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
+##  1  1999 actor                     1/11/99 Acting   Michael J. Fox  
+##  2  1999 Comedian                  1/12/99 Comedy   Sandra Bernhard 
+##  3  1999 television actress        1/13/99 Acting   Tracey Ullman   
+##  4  1999 film actress              1/14/99 Acting   Gillian Anderson
+##  5  1999 actor                     1/18/99 Acting   David Alan Grier
+##  6  1999 actor                     1/19/99 Acting   William Baldwin 
+##  7  1999 Singer-lyricist           1/20/99 Musician Michael Stipe   
+##  8  1999 model                     1/21/99 Media    Carmen Electra  
+##  9  1999 actor                     1/25/99 Acting   Matthew Lillard 
+## 10  1999 stand-up comedian         1/26/99 Comedy   David Cross</code></pre>
 </div>
 <div id="using-the-data-to-answer-questions" class="section level3">
 <h3><span class="header-section-number">1.8.7</span> Using the data to answer questions</h3>
 <p>Nate Silver was a guest on <em>The Daily Show</em>. Let’s use this data to figure out how many times he was a guest and when he was on the show.</p>
 <p><strong>Find out more about Nate Silver on The Daily Show</strong></p>
 <ul>
-<li>The <code>subset</code> function can be combined with logical statements to help you create a specific subset of data. For example, if you only wanted data from guest visits in 1999, you could run <code>subset(daily_show, YEAR == 1999)</code>. Check out the helpfile for <code>subset</code> and use the function to create a new dataframe that only has the rows of <code>daily_show</code> when Nate Silve was a guest. Put it in the object <code>nate_silver</code>.</li>
+<li>The <code>subset</code> function can be combined with logical statements to help you create a specific subset of data. For example, if you only wanted data from guest visits in 1999, you could run <code>subset(daily_show, YEAR == 1999)</code>. Check out the helpfile for <code>subset</code> and use the function to create a new dataframe that only has the rows of <code>daily_show</code> when Nate Silver was a guest (<code>Raw_Guest_List == &quot;Nate Silver&quot;</code>). Save this as an object named <code>nate_silver</code>.</li>
 <li>Print out the full <code>nate_silver</code> dataframe by typing <code>nate_silver</code>. (You could just use this to answer both questions, but still try the next steps. They would be important with a bigger dataset.)</li>
 <li>To count the number of times Nate Silver was a guest, you’ll need to count the number of rows in the new dataset. You can either use the <code>dim</code> function or the <code>nrow</code> function to do this. What additional information does the <code>dim</code> function give you?</li>
 <li>To get the dates when Nate Silver was a guest, you can print out just the <code>Show</code> column of the dataframe. There are a few ways you can do this using indexing: <code>nate_silver[ , 3]</code> (since <code>Show</code> is the third column), <code>nate_silver[ , &quot;Show&quot;]</code>, or <code>nate_silver$Show</code>. Try these.</li>
@@ -947,35 +1054,79 @@ nate_silver &lt;-<span class="st"> </span><span class="kw">subset</span>(daily_s
                       Raw_Guest_List <span class="op">==</span><span class="st"> &quot;Nate Silver&quot;</span>)
 
 <span class="co"># Investigate this subset of the data</span>
-nate_silver
-<span class="kw">dim</span>(nate_silver)
-<span class="kw">nrow</span>(nate_silver)
-nate_silver[ , <span class="dv">3</span>]
-nate_silver[ , <span class="st">&quot;Show&quot;</span>]</code></pre></div>
+nate_silver</code></pre></div>
+<pre><code>## # A tibble: 3 x 5
+##    YEAR GoogleKnowlege_Occupation Show     Group Raw_Guest_List
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;         
+## 1  2012 Statistician              10/17/12 Media Nate Silver   
+## 2  2012 Statistician              11/7/12  Media Nate Silver   
+## 3  2014 Statistician              3/27/14  Media Nate Silver</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(nate_silver)</code></pre></div>
+<pre><code>## [1] 3 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(nate_silver)</code></pre></div>
+<pre><code>## [1] 3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nate_silver[ , <span class="dv">3</span>]</code></pre></div>
+<pre><code>## # A tibble: 3 x 1
+##   Show    
+##   &lt;chr&gt;   
+## 1 10/17/12
+## 2 11/7/12 
+## 3 3/27/14</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nate_silver[ , <span class="st">&quot;Show&quot;</span>]</code></pre></div>
+<pre><code>## # A tibble: 3 x 1
+##   Show    
+##   &lt;chr&gt;   
+## 1 10/17/12
+## 2 11/7/12 
+## 3 3/27/14</code></pre>
 <p>If you have extra time:</p>
 <ul>
-<li>When you print out the <code>Show</code> column, why does it also print out something underneath about Levels? Hint: This has to do with the class that R has saved this column as. What class is it currently? What other classes might we want to consider converting it to as we continue working with the dataset? Check out the example code below to get some ideas.</li>
 <li>Was Nate Silver the only statistician to be a guest on the show?</li>
 <li>What were the occupations that were only represented by one guest visit? Since <code>GoogleKnowlege_Occupation</code> is a factor, you can use the <code>table</code> function to create a new vector with the number of times each value of <code>GoogleKnowlege_Occupation</code> shows up. You can put this information into a new vector and then pull out only the values that equal 1 (so, only had one guest). (Note that “Statistician” doesn’t show up– there was only one person who was a guest, but he had three visits.) Pick your favorite “one-off” example and find out who the guest was for that occupation.</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(nate_silver<span class="op">$</span>Show)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">range</span>(nate_silver<span class="op">$</span>Show)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nate_silver<span class="op">$</span>Show &lt;-<span class="st"> </span><span class="kw">as.Date</span>(nate_silver<span class="op">$</span>Show,
-                            <span class="dt">format =</span> <span class="st">&quot;%m/%d/%y&quot;</span>)
-<span class="kw">range</span>(nate_silver<span class="op">$</span>Show)
-<span class="kw">diff</span>(<span class="kw">range</span>(nate_silver<span class="op">$</span>Show)) <span class="co"># Time between Nate&#39;s first and last shows</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">statisticians &lt;-<span class="st"> </span><span class="kw">subset</span>(daily_show,
                         GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Statistician&quot;</span>)
 statisticians</code></pre></div>
+<pre><code>## # A tibble: 3 x 5
+##    YEAR GoogleKnowlege_Occupation Show     Group Raw_Guest_List
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;         
+## 1  2012 Statistician              10/17/12 Media Nate Silver   
+## 2  2012 Statistician              11/7/12  Media Nate Silver   
+## 3  2014 Statistician              3/27/14  Media Nate Silver</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">num_visits &lt;-<span class="st"> </span><span class="kw">table</span>(daily_show[ , <span class="dv">2</span>])
-<span class="kw">head</span>(num_visits) <span class="co"># Note: This is a vector rather than a dataframe</span>
-<span class="kw">names</span>(num_visits[num_visits <span class="op">==</span><span class="st"> </span><span class="dv">1</span>])
-<span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;chess player&quot;</span>)
-<span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;mathematician&quot;</span>)
-<span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;orca trainer&quot;</span>)
-<span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Puzzle Creator&quot;</span>)
-<span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Scholar&quot;</span>)</code></pre></div>
+<span class="kw">head</span>(num_visits) <span class="co"># Note: This is a vector rather than a dataframe</span></code></pre></div>
+<pre><code>## 
+##          -          0   academic   Academic accountant   activist 
+##          1          4          3          3          1         14</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">names</span>(num_visits[num_visits <span class="op">==</span><span class="st"> </span><span class="dv">1</span>]))</code></pre></div>
+<pre><code>## [1] &quot;-&quot;                 &quot;accountant&quot;        &quot;administrator&quot;    
+## [4] &quot;advocate&quot;          &quot;aei president&quot;     &quot;afghan politician&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;chess player&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 5
+##    YEAR GoogleKnowlege_Occupation Show    Group Raw_Guest_List            
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;                     
+## 1  2012 chess player              11/8/12 Misc  Katie Dellamaggiore and P…</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;mathematician&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 5
+##    YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List        
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;                 
+## 1  2005 mathematician             9/14/05 Academic Dr. William A. Dembski</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;orca trainer&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 5
+##    YEAR GoogleKnowlege_Occupation Show    Group     Raw_Guest_List
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;         
+## 1  2015 orca trainer              3/26/15 Athletics John Hargrove</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Puzzle Creator&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 5
+##    YEAR GoogleKnowlege_Occupation Show    Group Raw_Guest_List
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         
+## 1  2003 Puzzle Creator            8/20/03 Media Will Shortz</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset</span>(daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Scholar&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 5
+##    YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List
+##   &lt;int&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;         
+## 1  2005 Scholar                   6/13/05 Academic Larry Diamond</code></pre>
 </div>
 <div id="writing-your-code-as-an-r-script" class="section level3">
 <h3><span class="header-section-number">1.8.8</span> Writing your code as an R script</h3>
@@ -987,7 +1138,7 @@ statisticians</code></pre></div>
 <li>Highlight a few lines of the code and use “Run” to run them.</li>
 <li>Try using the keyboard shortcut (Command-Return) to run the line of code your cursor is currently on. Try doing this with a function call that runs across several lines of the R script file– what do you see at the console?</li>
 <li>Try running the whole script using “Source”. Again, look at the console after you “source” the script.</li>
-<li>Close your R session (and save any changes to your R script). Do <strong>not</strong> save your R session history. Re-open R and see if you can re-open your R script and re-run it. Try using <code>ls()</code> to list the objects in your R session before and after you re-run your script. Does anything about the results surprise you?</li>
+<li>Close your R session (and save any changes to your R script). Do <strong>not</strong> save your R session history. Re-open R and see if you can re-open your R script and re-run it. Try using <code>ls()</code> to list the objects in your R session before and after you re-run your script. Does anything about the result surprise you?</li>
 </ul>
 
 </div>

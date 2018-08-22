@@ -452,18 +452,18 @@ If you forget to put the comma in the indexing for a dataframe (e.g., `fibonacci
 
 So far, we've only shown how to create dataframes from scratch within an R session. Usually, however, you'll create R dataframes instead by reading in data from an outside file using the `read_csv` from the `readr` package and related functions. For example, you might want to analyze data on all the guests that came on the *Daily Show*, *circa* Jon Stewart. If you have this data in a comma-separated (csv) file on your computer called "daily_show_guests.csv", you can read it into your R session with the following code:
 
-```{r echo = FALSE}
+```{r echo = FALSE, message = FALSE}
 library(readr)
 daily_show <- read_csv("data/daily_show_guests.csv",
                        skip = 4)
 ```
 ```{r eval = FALSE}
 library(readr)
-daily_show <- read.csv("daily_show_guests.csv",
+daily_show <- read_csv("daily_show_guests.csv",
                        skip = 4)
 ```
 
-In this code, the `read_csv` function is reading in the data from "daily_show_guests", while the gets arrow (`<-`) assigns that data to the object `daily_show`, which you can then reference in later code to explore and plot the data.
+In this code, the `read_csv` function is reading in the data from the file "daily_show_guests.csv", while the gets arrow (`<-`) assigns that data to the object `daily_show`, which you can then reference in later code to explore and plot the data.
 
 Once you've read in the data and saved the resulting dataframe as an object, you can use square-bracket indexing to look at the first two rows in the data:
 
@@ -502,49 +502,57 @@ new_object <- function.name(parameter 1 = argument 1,
 
 Here are some example function calls, to give you examples of this structure:
 
+- The `head` function prints out the first few rows of a dataframe. By default, it prints out six rows. With the `n` option, you can change the number of rows it prints out:
+
 ```{r}
 head(daily_show)
 head(daily_show, n = 3)
 ```
-```{r echo = FALSE}
-daily_show <- read_csv("data/daily_show_guests.csv")
 
-```
+The `read_csv` function (from the `readr` package) reads data from a comma-separated flat file into R. The `skip` option allows you to skip some of the first few lines of the file, in case the data starts a few lines into the file.
+
 ```{r eval = FALSE}
-daily_show <- read_csv("daily_show_guests.csv")
+daily_show <- read_csv("daily_show_guests.csv", skip = 4)
 ```
 
-Within the function call, *parameters* allow you to customize the function to run in a certain way (e.g., use a certain dataframe as an input, give output in a certain format). Some function parameters will have *default arguments*, which means that you don't have to put a value for that parameter for the function to run, but you can if you want the function to do something other than the default. 
+```{r echo = FALSE, message = FALSE}
+daily_show <- read_csv("data/daily_show_guests.csv", skip = 4)
+
+```
+
+
+Within the function call, *parameters* allow you to customize the function to run in a certain way (e.g., use a certain dataframe as an input, change the number of lines printed out from the default value, skip some lines when reading in data). Some function parameters will have *default arguments*, which means that you don't have to put a value for that parameter for the function to run, but you can if you want the function to do something other than the default. 
 
 ### Function help files
 
-You can find out more about a function, include what parameters it has and what the default values, if any, are by using `?` before the function name in the R console. For example, to find out more about the `read.csv` command, run: 
+You can find out more about a function, include what parameters it has and what the default values, if any, are by using `?` before the function name in the R console. For example, to find out more about the `read_csv` command, run: 
 
 ```{r eval = FALSE}
-?read.csv
+?read_csv
 ```
 
 From the "Usage" section of the help file, you can figure out that the only required parameter is `file`, the pathname of the file that you want to read in, since this is the only argument in the "Usage" example without an argument value:
 
 ```
-read.csv(file, header = TRUE, sep = ",", quote = "\"",
-         dec = ".", fill = TRUE, comment.char = "", ...)
+read_csv(file, col_names = TRUE, col_types = NULL,
+  locale = default_locale(), na = c("", "NA"), quoted_na = TRUE,
+  quote = "\"", comment = "", trim_ws = TRUE, skip = 0, n_max = Inf,
+  guess_max = min(1000, n_max), progress = show_progress())
 ```
 
-You can also see from this "Usage" section that the default value of `header` is `TRUE`, the default value of `sep` is a comma, etc.
+You can also see from this "Usage" section that the default value of `col_names` is `TRUE` (use the first row of the data as the column names), the default value of `skip` is 0 (don't skip any lines), etc.
 
-The "Arguments" section explains each of the parameters, and possible arguments that each can take. For example, here is the explanation of the `nrows` parameter in the `read.csv` function: 
+The "Arguments" section explains each of the parameters, and possible arguments that each can take. For example, here is the explanation of the `n_max` parameter in the `read_csv` function: 
 
 ```
-integer: the maximum number of rows to read in. Negative and other 
-    invalid values are ignored.
+n_max:	Maximum number of records to read.
 ```
 
-From this, you can determine that you should put in a whole number, 1 or higher, and the function will only read in that many lines of the dataframe when you run `read.csv`.
+From this, you can determine that you should put in a whole number, 0 or higher, and the function will skip that many line of the file before it starts reading in a dataframe when you run `read_csv`.
 
 ### Function parameters
 
-Each function parameter has a name (e.g., `nrows`, `header`, `file`). The safest way to call a function in R is to use the structure `parameter name = argument value` for every parameter, like this: 
+Each function parameter has a name (e.g., `n_max`, `col_names`, `file`). The safest way to call a function in R is to use the structure `parameter name = argument value` for every parameter, like this: 
 
 ```{r eval = FALSE}
 head(x = daily_show, n = 3)
@@ -571,12 +579,12 @@ head(daily_show, n = 3)
 ```
 
 ```{block, type='rmdtip'}
-Using the full parameter names for arguments can take a bit more time, since it requires more typing. However, RStudio helps you out with that by offering *code completion*. Once you start typing the first few letters of a parameter name within a function call, try pressing the tab key. All possible arguments that start with those letters should show up, and you can scroll through to pick the right one, or keep typing until the argument you want is atnthe top of the list of choices, and then press the tab key again.
+Using the full parameter names for arguments can take a bit more time, since it requires more typing. However, RStudio helps you out with that by offering *code completion* or *tab completion*. Once you start typing the first few letters of a parameter name within a function call, try pressing the tab key. All possible arguments that start with those letters should show up, and you can scroll through to pick the right one, or keep typing until the argument you want is atnthe top of the list of choices, and then press the tab key again.
 ```
 
 ## R scripts
 
-This is a good point in learning R for you to start putting your work in R scripts, rather than entering commands at the console. 
+This is a good point in learning R for you to start putting your code in R scripts, rather than entering commands at the console. 
 
 An R script is a plain text file where you can save a series of R commands. You can save the script and open it up later to see (or re-do) what you did earlier, just like you could with something like a Word document when you're writing a paper. 
 
@@ -661,7 +669,7 @@ Start by manually creating some vectors and data frames with a small subset of t
 
 Example R code:
 
-```{r eval = FALSE}
+```{r}
 # I picked five random guests from throughout the dataset. The guests you pick will 
 # likely be different.
 
@@ -687,7 +695,8 @@ class(appearance_year)
 
 # Create the data frame, then print it out to make sure it looks like you thought
 # it would
-guest_list <- data.frame(Raw_Guest_List = five_guests,
+library(tibble)
+guest_list <- data_frame(Raw_Guest_List = five_guests,
                          YEAR = appearance_year)
 guest_list
 
@@ -716,13 +725,16 @@ Example R code:
 ```{r eval = FALSE}
 # If you need to, install the package from CRAN
 install.packages("stringr")
-
+```
+```{r}
 # Load the package into your current R session
 library(stringr)
-
+```
+```{r eval = FALSE}
 # Open the package's vignette
 vignette("stringr")
-
+```
+```{r}
 # Convert the `five_guests` strings to lowercase
 str_to_lower(five_guests)
 
@@ -732,26 +744,33 @@ str_to_upper(five_guests)
 
 ### Getting the data onto your computer
 
-Next, we will work with the whole dataset. Download the data from GitHub onto your computer. Make a directory (folder) on your computer specifically for this course (I strongly recommend that you put it somewhere where the file path will not have any spaces in it--_for example, putting it in your home directory, under the name "r_course" would be great. Putting it in a directory called "R Course" would not.). Put the *Daily Show* data in your directory for this course. 
+Next, we will work with the whole dataset. Download the data [from GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv) onto your computer. In class, we created an R Project for you to use for this class. Put the *Daily Show* data in that directory. 
 
 **Take the following steps to get the data onto your computer**
 
-* If you do not yet have a directory (folder) just for this course, make one someplace straightforward like in your home directory. Do not use any spaces in the directory name.
 * Download the file [from GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv). Right click on `Raw` and then choose "Download linked file". Put the file into the directory you created for this course. 
-* Make this directory an R Project. Within RStudio, go to "File -> New Project...". Select to create a new project from an existing directory. Navigate to the directory you created for the course and select that. If the top right hand corner does not have the name you used for this directory in the top right, next choose to open this new project. 
-* Use the `list.files` command to make sure that the "daily_show_guests.csv" file is in your current working directory, now that you're working within this RStudio Project (we'll talk more about these Projects later in the semester).
+* Use the `list.files` command to make sure that the "daily_show_guests.csv" file is in your current working directory (we'll talk more about workign directories, listing files in your working directory, and R Projects later in the semester).
+
+```{r eval = FALSE}
+# List the files in your current working directory 
+list.files()
+```
+
+```
+[1] "daily_show_guests.csv"
+```
 
 ### Getting the data into R
 
-Now that you have the dataset in your working directory, you can read it into R. This dataset is in a *csv* (comma separated values) format. (We will talk more about different file formats next week.) You can read csv files into R using the `read.csv` function. 
+Now that you have the dataset in your working directory, you can read it into R. This dataset is in a *csv* (comma separated values) format. (We will talk more about different file formats in Week 2.) You can read csv files into R using the function `read_csv` from the `readr` package. 
 
 **Read the data into your R session**
 
 * If you do not already have it, install the `readr` package. Then load this package within your current R session using `library`.
 * Use the `read_csv` function from the `readr` package to read the data into R and save it as the object `daily_show`.
-* Use the help file for the `read_csv` function to figure out how this function works. To pull that up, type `?read_csv` at the R console. Can you figure out why we're using the `skip` option, and why it's set to 4?
+* Use the help file for the `read_csv` function to figure out how this function works. To pull that up, type `?read_csv` at the R console. Can you figure out why it's critical to use the `skip` option and set it to 4? (We will be talking a lot more about the `read_csv` function in Week 2, so don't worry if you don't completely understand it right now.)
 * Note that you need to put the file name in quotation marks.
-* What would have happened if you'd used `read_csv` but hadn't saved the result as the object `daily_show`? (For example, you'd run the code `read_csv("daily_show_guests.csv")` rather than `daily_show <- read_csv("daily_show_guests.csv")`.)
+* What would have happened if you'd used `read_csv` but hadn't saved the result as the object `daily_show`? (For example, you'd run the code `read_csv("daily_show_guests.csv", skip = 4)` rather than `daily_show <- read_csv("daily_show_guests.csv")`.)
 
 Example R code:
 
@@ -766,19 +785,42 @@ library(readr)
 daily_show <- read_csv("daily_show_guests.csv", skip = 4)
 ```
 
+```{r echo = FALSE}
+daily_show <- read_csv("data/daily_show_guests.csv", skip = 4)
+```
+
+```{r}
+# Print out the first few rows
+daily_show
+```
+
+
+
 If you have extra time:
 
-* Say this was a really big dataset. You want to check out just the first 10 rows to make sure that you've got your code right before you take the time to pull in the whole dataset. Use the help file for `read.csv` to figure out how to only read in a few rows. 
-* Look through the help file for other options available for `read.csv`. Can you think of examples when some of these options would be useful?
-* Look again at the version of this raw data on FiveThirtyEight's GitHub page (rather than the course's GitHub repository, where you downloaded the data for the course exercise). How are these two versions of the raw data different? How would you need to change your `read.csv` call if you changed to use the FiveThirtyEight version of the raw data?
+* Say this was a really big dataset. You want to check out just the first 10 rows to make sure that you've got your code right before you take the time to pull in the whole dataset. Use the help file for `read_csv` to figure out how to only read in a few rows. 
+* Look through the help file for other options available for `read_csv`. Can you think of examples when some of these options would be useful?
+* Look again at the version of this raw data on FiveThirtyEight's GitHub page (rather than the course's GitHub repository, where you downloaded the data for the course exercise). How are these two versions of the raw data different? How would you need to change your `read_csv` call if you changed to use the FiveThirtyEight version of the raw data?
 
 Example R code:
+
 ```{r, eval=FALSE}
 # Read in only the first 10 rows of the dataset
 daily_show_first10 <- read_csv("daily_show_guests.csv", 
-                       skip = 4, n = 10)
+                       skip = 4, n_max = 10)
+```
+
+```{r echo = FALSE}
+daily_show_first10 <- read_csv("data/daily_show_guests.csv", 
+                       skip = 4, n_max = 10)
+```
+
+```{r}
+# Check the dataframe
 daily_show_first10
 ```
+
+
 
 ### Checking out the data
 
@@ -786,15 +828,15 @@ You now have the data available in your current R session as the `daily_show` ob
 
 **Take the following steps to check out the dataset**
 
-* Use the `dim` function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?
-* Use indexing to look at the first two rows of the dataset. Based on this, what does each row "measure"? What information do you get for each "measurement"? As a reminder, indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you'd use `daily_show[1:2, 1:3]`. If you wanted to get the first five rows and all the columns, you'd use `daily_show[1:5, ]`. 
-* Use the `head` function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart's first show? Does it look like this dataset covers that first show?
+* Use the `dim` function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (that it includes all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?  
+* Use indexing to look at the first two rows of the dataset. Based on this, what does each row "measure" (**unit of observation**)? What information (**variables**) do you get for each "measurement"? As a reminder, indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you'd use `daily_show[1:2, 1:3]`. If you wanted to get the first five rows and all the columns, you'd use `daily_show[1:5, ]`. 
+* The `head` function can be used to explore the first few rows of dataframes (see the helpfile at `?head`). Use the `head` function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart's first show? Does it look like this dataset covers that first show?
 * Use the `tail` function to look at the last few rows of the dataframe. What is the last show date covered by the dataframe? Who was the last guest?
 * Use the `str` function to get more details about the `daily_show` dataframe you read in. 
 
 Example R code:
 
-```{r, eval=FALSE}
+```{r}
 # Use indexing to see a subset of the data
 daily_show[1:2, ]
 
@@ -810,7 +852,7 @@ If you have extra time:
 
 Example R code:
 
-```{r, eval=FALSE}
+```{r}
 # Look at the first few rows of the data
 head(daily_show, n = 10)
 ```
@@ -821,14 +863,14 @@ Nate Silver was a guest on *The Daily Show*. Let's use this data to figure out h
 
 **Find out more about Nate Silver on The Daily Show**
 
-* The `subset` function can be combined with logical statements to help you create a specific subset of data. For example, if you only wanted data from guest visits in 1999, you could run `subset(daily_show, YEAR == 1999)`. Check out the helpfile for `subset` and use the function to create a new dataframe that only has the rows of `daily_show` when Nate Silve was a guest. Put it in the object `nate_silver`.
+* The `subset` function can be combined with logical statements to help you create a specific subset of data. For example, if you only wanted data from guest visits in 1999, you could run `subset(daily_show, YEAR == 1999)`. Check out the helpfile for `subset` and use the function to create a new dataframe that only has the rows of `daily_show` when Nate Silver was a guest (`Raw_Guest_List == "Nate Silver"`). Save this as an object named `nate_silver`.
 * Print out the full `nate_silver` dataframe by typing `nate_silver`. (You could just use this to answer both questions, but still try the next steps. They would be important with a bigger dataset.)
 * To count the number of times Nate Silver was a guest, you'll need to count the number of rows in the new dataset. You can either use the `dim` function or the `nrow` function to do this. What additional information does the `dim` function give you?
 * To get the dates when Nate Silver was a guest, you can print out just the `Show` column of the dataframe. There are a few ways you can do this using indexing: `nate_silver[ , 3]` (since `Show` is the third column), `nate_silver[ , "Show"]`, or `nate_silver$Show`. Try these.
 
 Example R code:
 
-```{r, eval=FALSE}
+```{r}
 # Create a subset of the data with just Nate Silver appearances
 nate_silver <- subset(daily_show, 
                       Raw_Guest_List == "Nate Silver")
@@ -843,33 +885,20 @@ nate_silver[ , "Show"]
 
 If you have extra time:
 
-* When you print out the `Show` column, why does it also print out something underneath about Levels? Hint: This has to do with the class that R has saved this column as. What class is it currently? What other classes might we want to consider converting it to as we continue working with the dataset? Check out the example code below to get some ideas.
 * Was Nate Silver the only statistician to be a guest on the show?
 * What were the occupations that were only represented by one guest visit? Since `GoogleKnowlege_Occupation` is a factor, you can use the `table` function to create a new vector with the number of times each value of `GoogleKnowlege_Occupation` shows up. You can put this information into a new vector and then pull out only the values that equal 1 (so, only had one guest). (Note that "Statistician" doesn't show up-- there was only one person who was a guest, but he had three visits.) Pick your favorite "one-off" example and find out who the guest was for that occupation.
 
 Example R code:
 
-```{r, eval=FALSE}
-class(nate_silver$Show)
-```
-```{r, eval = FALSE}
-range(nate_silver$Show)
-```
-```{r, eval=FALSE}
-nate_silver$Show <- as.Date(nate_silver$Show,
-                            format = "%m/%d/%y")
-range(nate_silver$Show)
-diff(range(nate_silver$Show)) # Time between Nate's first and last shows
-```
-```{r, eval=FALSE}
+```{r}
 statisticians <- subset(daily_show,
                         GoogleKnowlege_Occupation == "Statistician")
 statisticians
 ```
-```{r, eval=FALSE}
+```{r}
 num_visits <- table(daily_show[ , 2])
 head(num_visits) # Note: This is a vector rather than a dataframe
-names(num_visits[num_visits == 1])
+head(names(num_visits[num_visits == 1]))
 subset(daily_show, GoogleKnowlege_Occupation == "chess player")
 subset(daily_show, GoogleKnowlege_Occupation == "mathematician")
 subset(daily_show, GoogleKnowlege_Occupation == "orca trainer")
@@ -887,4 +916,4 @@ While the R console is fine for initially exploring data, you should get in the 
 * Highlight a few lines of the code and use "Run" to run them.
 * Try using the keyboard shortcut (Command-Return) to run the line of code your cursor is currently on. Try doing this with a function call that runs across several lines of the R script file-- what do you see at the console?
 * Try running the whole script using "Source". Again, look at the console after you "source" the script. 
-* Close your R session (and save any changes to your R script). Do **not** save your R session history. Re-open R and see if you can re-open your R script and re-run it. Try using `ls()` to list the objects in your R session before and after you re-run your script. Does anything about the results surprise you?
+* Close your R session (and save any changes to your R script). Do **not** save your R session history. Re-open R and see if you can re-open your R script and re-run it. Try using `ls()` to list the objects in your R session before and after you re-run your script. Does anything about the result surprise you?
