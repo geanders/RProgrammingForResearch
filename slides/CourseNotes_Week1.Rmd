@@ -39,7 +39,7 @@ Other programming languages popular for statistical computing include:
 - Julia
 - Python
 
-## Open-source software
+## Free and open-source software
 
 - Gratis: Free as in beer
 - Libre: Free as in speech
@@ -153,9 +153,19 @@ You can get packages to add-on to your version of R from:
 
 The most popular place from which to get packages is currently CRAN. You can install packages from CRAN using R code. 
 
-## Installing from CRAN
+## CRAN 
 
-For example, to get the package `phonenumber`, you could use:
+The Comprehensive R Archive Network (CRAN) is the primary source of R packages. Each of the packages available on CRAN has a unique name and has passed some broad checks. 
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/CRAN_package_10000.png")
+```
+
+## Installing from CRAN  
+
+The main way you will install new packages will be with the `install.packages` function, which by defaults installs packages available on CRAN.
+
+For example, to get the package "phonenumber", you could use:
 
 ```{r, eval = FALSE}
 install.packages("phonenumber")
@@ -164,6 +174,18 @@ install.packages("phonenumber")
 ```{r fig.align = "center", out.width = "75pt", echo = FALSE}
 knitr::include_graphics("../figures/telephone_keypad.png")
 ```
+
+## Installing from CRAN  
+
+**Installing** a package downloads it (usually from CRAN) to your computer. 
+
+\medskip
+
+You will need to be online to install a package. 
+
+\medskip
+
+Once you install a package, you do not need to install it again. It's on your computer. (At least, until the package maintainer creates a new version.)
 
 ## Loading an installed package
 
@@ -230,8 +252,33 @@ Many packages only have one vignette, with the same name as the package. In that
 vignette("phonenumber")
 ```
 
+## Function helpfiles
+
+Packages include helpfiles for all the functions they intend for people to use. 
+
+\medskip
+
+You can access the helpfile for a function using `?` followed by the function name. For example, to get the helpfile for `letterToNumber`, you can run: 
+
+```{r eval = FALSE}
+?letterToNumber
+```
 
 # Some basics of R code
+
+## R objects
+
+R lets you save a variety of types of data in things called **objects**, each of which has an **object name** to use to reference the object. 
+
+\medskip
+
+## R objects
+
+You can think of an object name as kind of like an acronym. 
+
+> "Here, we investigate particulate matter with a diameter less than 2.5 micrometers ($PM_{2.5}$). Many large urban centers in developing countries experience multi-day episodes of extremely high $PM_{2.5}$."
+
+By assigning an object a name, you can quickly reference it later, rather than having to re-define (or re-create) the object every time you need to use it. 
 
 ## R's MVP: The *gets arrow*
 
@@ -288,11 +335,6 @@ knitr::include_graphics("../figures/teletype.jpg")
 
 \small Photo by Marcin Wichary, User:AlanM1 - Derived (cropped) from, CC BY 2.0, https://commons.wikimedia.org/w/index.php?curid=20744606
 
-## Naming objects
-
-> “There are only two hard things in Computer Science: cache invalidation and naming things.”
-
-> — Phil Karlton
 
 ## Naming objects
 
@@ -317,12 +359,12 @@ You can also check out the "Environment" pane in RStudio to see some of the R ob
 
 ## R's most basic object types
 
-The two most basic types of objects for data in R are **vectors** (1D) and **dataframes** (2D). 
+The two most common types of objects for data in R that we will use in this class are **vectors** (1D) and **dataframes** (2D). 
 
 ## Vectors
 
 - A vector is a string of values. 
-- All values must be of the same class (i.e., all numbers, all characters, all dates)
+- All values must be of the same *class* (i.e., all numbers, all characters, all dates)
 - You can use `c` to join values together to create a vector
 - The *length* of the vector is how many values it has in it
 
@@ -335,39 +377,13 @@ length(fibonacci)
 
 ## Vectors
 
-An example using characters instead of numbers:
-
-```{r}
-one_to_five <- c("one", "two", "three", "four", "five")
-one_to_five
-```
-
-If you mix classes, it will default to most generic:
-
-```{r}
-mixed_classes <- c(1, 3, "five")
-mixed_classes
-```
-
-## Vectors
-
-You can pull out certain values by using indexing (`[...]`) to identify the locations you want to get:
-
-```{r}
-fibonacci[2] # Get the second value
-fibonacci[c(1, 5)] # Get first and fifth values
-fibonacci[1:3] # Get the first three values
-```
-
-## Vectors
-
 Vectors can have several different classes, including numeric, character, factor, and date. 
 
 Typically, when you use `c`, you'll be creating a numeric or character vector. More complex classes (like factors and dates) require a bit more work to create "from scratch". 
 
 - For character vectors, use quotation marks on each element. 
 
-```{r eval = FALSE}
+```{r}
 one_to_five <- c("one", "two", "three", "four", "five")
 ```
 
@@ -388,31 +404,41 @@ class(one_to_five)
 class(c("1", "2", 5))
 ```
 
+## Vectors
+
+If you mix classes, it will default to most generic:
+
+```{r}
+mixed_classes <- c(1, 3, "five")
+mixed_classes
+```
+
+## Vectors
+
+You can pull out certain values by using indexing (`[...]`) to identify the locations you want to get:
+
+```{r}
+fibonacci[2] # Get the second value
+fibonacci[c(1, 5)] # Get first and fifth values
+fibonacci[1:3] # Get the first three values
+```
+
+
 ## Dataframes
 
 A dataframe is one or more vectors of the same length stuck together side-by-side. It is the closest R has to what you'd get with an Excel spreadsheet. 
 
 \medskip
 
-You can create dataframes using the `data.frame` function. However, most often you will create a dataframe by reading in data from a file using something like `read.csv`. 
+You can create dataframes using the `data_frame` function from the `tibble` package. However, most often you will create a dataframe by reading in data from a file using something like `read_csv` from the `readr` package---most datasets will not be short enough that you want to enter them by hand in R.
 
 ## Dataframes
 
-For example, to create a dataframe from vectors you already have saved as R objects:
-
-```{r}
-fibonacci_seq <- data.frame(num_in_seq = one_to_five,
-                            fibonacci_num = fibonacci)
-fibonacci_seq
-```
-
-## Dataframes
-
-The format for using `data.frame` is:
+The format for using `data_frame` is:
 
 ```{r eval = FALSE}
 ## Generic code
-[name of object] <- data.frame([1st column name] = 
+[name of object] <- data_frame([1st column name] = 
                                      [1st column content],
                                [2nd column name] = 
                                      [2nd column content])
@@ -420,30 +446,68 @@ The format for using `data.frame` is:
 
 ## Dataframes
 
-You can use indexing (`[..., ...]`) for dataframes, too, but now they'll have two dimensions (rows, then columns). Put the rows you want before the comma, the columns after. If you want all of something, leave the designated spot blank. For example:
+```{r}
+library("tibble")
+beatles <- data_frame(first_name = c("John", "Paul", "Ringo", 
+                                     "George"),
+                      last_name = c("Lennon", "McCartney", 
+                                    "Starr", "Harrison"),
+                      birth_year = c(1940, 1942, 1940, 1943),
+                      alive = c(FALSE, TRUE, TRUE, FALSE))
+beatles
+```
+
+## Dataframes
+
+You can also create dataframes by joining together vector objects you previously created, as long as they have the same length and line up: 
+
+```{r}
+fibonacci_seq <- data_frame(num_in_seq = one_to_five,
+                            fibonacci_num = fibonacci)
+fibonacci_seq
+```
+
+## Dataframes
+
+You can use indexing (`[..., ...]`) for dataframes, too, but now they'll have two dimensions (rows, then columns). For example:
 
 ```{r}
 fibonacci_seq[1:2, 2] # First two rows, second column
+```
+
+## Dataframes
+
+If you want all of something, leave the designated spot blank. For example:
+
+```{r}
 fibonacci_seq[5, ] # Last row, all columns
 ```
 
 ## Dataframes
 
-Usually, instead of creating a dataframe from vectors, you'll read one in from data on an outside file. For example, to read in a dataset from a csv file called "daily_show_guests.csv":
+Usually, instead of creating a dataframe from vectors, you'll read one in from data on an outside file, for example using `read_csv` from the `readr` package.
 
-```{r echo = FALSE}
-daily_show <- read.csv("../data/daily_show_guests.csv",
-                       header = TRUE,
+\medskip
+
+For example, to read in a dataset from a csv file called "daily_show_guests.csv":
+
+```{r echo = FALSE, message = FALSE}
+library("readr")
+daily_show <- read_csv("../data/daily_show_guests.csv",
                        skip = 4)
 ```
 ```{r eval = FALSE}
-daily_show <- read.csv("daily_show_guests.csv",
-                       header = TRUE,
+library("readr")
+daily_show <- read_csv("daily_show_guests.csv",
                        skip = 4)
 ```
 
+## Dataframes
+
+This has read data in from the external file into a dataframe object in my R session:
+
 ```{r}
-daily_show[1:2, 1:4]
+daily_show[1:4, 1:4]
 ```
 
 ## Dataframes
@@ -491,7 +555,7 @@ This includes the names of files and the names of directories. Keep this in mind
 
 We'll take a break now to get started on this week's in-course exercise. You can find all the instructions on the online coursebook (https://geanders.github.io/RProgrammingForResearch/r-preliminaries.html). 
 
-Get together with your group members and do Sections 1.7.1 through 1.7.4 of the In-Course Exercise for Week #1 ("R Preliminaries").
+Get together with your group members and do Sections 1.8.1 through 1.8.4 of the In-Course Exercise for Week #1 ("R Preliminaries").
 
 ## Nate Silver / FiveThirtyEight
 
@@ -530,8 +594,7 @@ Examples of this structure:
 ```{r, eval = FALSE}
 head(daily_show)
 head(daily_show, n = 3)
-daily_show <- read.csv("daily_show_guests.csv",
-                    skip = 4,
+daily_show <- read_csv("daily_show_guests.csv",
                     header = TRUE)
 ```
 
@@ -573,7 +636,7 @@ c(Alpha, Bravo)
 
 ## R sessions
 
-An R session is an instance of you using R. Once you open R, you will be in a "fresh" R session, unless you restore a saved session (which I recommend strongly against). 
+An **R session** is an instance of you using R. Once you open R, you will be in a "fresh" R session, unless you restore a saved session (which I strongly recommend against). 
 
 This means that, once you open RStudio, you will need to run the code to load any packages, define any objects, and read in any data that you will need for analysis in that session.
 
@@ -587,12 +650,30 @@ The console can be great for quick functions to explore the data. However, for m
 
 ## R scripts
 
+An **R script** is a file where you can write down and save R code. 
+
+When you write, run, and save your R code in a script rather than running it one line at a time in the console, you can easily go back and re-do exactly what you did again later. You can also share the script for someone else to use, or run it on a different computer. 
+
+## R scripts
+
 RStudio has one pane that shows any R scripts you have open. If you'd like to create new R scripts, you can do that in RStudio with the following steps:
 
 - Open a new script file in RStudio: `File` -> `New File` -> `R Script`.
-- To run code from an R script file in RStudio, you can use the `Run` button (or `Command-R`). It will run whatever's on your cursor line or whatever's highlighted.
-- To run the whole script, use `source`. 
+- I recommend that you make an "R" folder in all of the R projects that you create and save all your script files in that folder.
 - Save scripts using the extension `.R`
+
+## R scripts
+
+Running code in R scripts line-by-line:
+
+- To run code from an R script file in RStudio, you can use the `Run` button (or `Command-R`). 
+- This will run whatever's on your cursor line or whatever's highlighted.
+
+**Sourcing** an R script (i.e., running all the code saved in the script):
+
+- To run the whole script, you can also use the `source` function with the filename.
+- You can also use the "Source" button on the script pane. 
+
 
 ## R scripts
 
@@ -602,7 +683,7 @@ knitr::include_graphics("../figures/ExampleOfRScript.jpg")
 
 ## Comment characters
 
-Sometimes, you'll want to include notes in your code. You can do this in all programming languages by using a *comment character* to start the line with your comment. 
+Sometimes, you'll want to include notes in your code. You can do this in all programming languages by using a **comment character** to start the line with your comment. 
 
 In R, the comment character is the hash symbol, `#`. R will skip any line that starts with `#` in a script.
 
@@ -615,4 +696,80 @@ In R, the comment character is the hash symbol, `#`. R will skip any line that s
 
 We'll take a break now to finish this week's in-course exercise. You can find all the instructions on the online coursebook (https://geanders.github.io/RProgrammingForResearch/r-preliminaries.html). 
 
-Get together with your group members and do Sections 1.7.4 through 1.7.8 of the In-Course Exercise for Week #1 ("R Preliminaries").
+Get together with your group members and do Sections 1.8.4 through 1.8.8 of the In-Course Exercise for Week #1 ("R Preliminaries").
+
+# Some odds and ends
+
+## Missing values
+
+In R, `NA` is used to represent some types of missing values in a vector. This value can show up in numerical or character vectors (or in vectors of some other classes):
+
+```{r}
+c(1, 4, NA)
+c("Jane Doe", NA)
+```
+
+## The `$` operator
+
+We've talked about how you can combine vectors of the same length to create a dataframe.
+
+To go the other direction (pull a column from a dataframe), you can use the `$` operator.
+
+For example, say you have the following dataset and want to pull the `color` column as a vector:
+
+```{r}
+example_df <- data.frame(color = c("red", "blue"), 
+                         value = c(1, 2))
+example_df
+```
+
+
+## The `$` operator
+
+You can pull the `color` column as a vector using the name of the dataframe, the dollar sign, and then the name of the column:
+
+```{r}
+example_df$color
+```
+
+```{r}
+class(example_df$color)
+```
+
+(Note: You can use tab completion in RStudio after you put in `example_df$`.)
+
+## Order of evaluation
+
+In R, you can "nest" functions within a single call. Just like with math, the order that the functions are evaluated moves from the inner set of parentheses to the outer one. 
+
+For example, to print the structure of the dataframe from the previous example after creating it, you can run: 
+
+```{r}
+str(data_frame(color = c("red", "blue"), value = c(1, 2)))
+```
+
+## `paste` and `paste0`
+
+If you want to paste together several character strings to make a length-one character vector, you can use the `paste` function to do that:
+
+```{r}
+paste("abra", "ca", "dabra")
+```
+
+By default, spaces are used to separate each original character string in the final string.
+
+## `paste` and `paste0`
+
+If you want to remove these spaces, you can use the `sep` argument in the `paste` function: 
+
+```{r}
+paste("abra", "ca", "dabra", sep = "")
+```
+
+A short-cut function is `paste0`, which is identical to running `paste` with the argument `sep = ""`:
+
+```{r}
+paste0("abra", "ca", "dabra")
+```
+
+

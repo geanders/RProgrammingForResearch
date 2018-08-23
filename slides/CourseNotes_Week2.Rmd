@@ -10,80 +10,15 @@ fontsize: 10pt
 options(width = 50)
 ```
 
-# Some odds and ends
+## Odds and ends
 
-## Missing values
+- Next week, we will not meet for either class session (Aug. 27 and 29). Instead, videos of the lectures will be available through the online coursebook. You will be responsible for watching these sometime during next week on your own time.
+- Office hours will be in EH 120, 10:00--11:00 AM Fridays. For the office hours on Aug. 31, we will go through the group exercises for Week 1 ("Entering and Cleaning Data #1"). Attendance is voluntary, but you are responsible for trying the exercises whether you attend this in-person session or not. 
 
-In R, `NA` is used to represent a missing value in a vector. This value can show up in numerical or character vectors (or in vectors of some other classes):
+## Odds and ends
 
-```{r}
-c(1, 4, NA)
-c("Jane Doe", NA)
-```
-
-## The `$` operator
-
-We've talked about how you can combine vectors of the same length to create a dataframe.
-
-To go the other direction (pull a column from a dataframe), you can use the `$` operator.
-
-For example, say you have the following dataset and want to pull the `color` column as a vector:
-
-```{r}
-example_df <- data.frame(color = c("red", "blue"), 
-                         value = c(1, 2))
-example_df
-```
-
-
-## The `$` operator
-
-You can pull the `color` column as a vector using the name of the dataframe, the dollar sign, and then the name of the column:
-
-```{r}
-example_df$color
-```
-
-```{r}
-class(example_df$color)
-```
-
-(Note: You can use tab completion in RStudio after you put in `example_df$`.)
-
-## Order of evaluation
-
-In R, you can "nest" functions within a single call. Just like with math, the order that the functions are evaluated moves from the inner set of parentheses to the outer one. 
-
-For example, to print the structure of the dataframe from the previous example after creating it, you can run: 
-
-```{r}
-str(data.frame(color = c("red", "blue"), value = c(1, 2)))
-```
-
-## `paste` and `paste0`
-
-If you want to paste together several character strings to make a length-one character vector, you can use the `paste` function to do that:
-
-```{r}
-paste("abra", "ca", "dabra")
-```
-
-By default, spaces are used to separate each original character string in the final string.
-
-## `paste` and `paste0`
-
-If you want to remove these spaces, you can use the `sep` argument in the `paste` function: 
-
-```{r}
-paste("abra", "ca", "dabra", sep = "")
-```
-
-A short-cut function is `paste0`, which is identical to running `paste` with the argument `sep = ""`:
-
-```{r}
-paste0("abra", "ca", "dabra")
-```
-
+- The first quiz will be on Wednesday, Sept. 5 (next in-person class meeting). It will cover the content in Chapter 1 of the online book ("R Preliminaries"). The vocabulary list is up in the "Vocabulary" appendix of the online book.
+- The first homework is due Sept. 12. The updated assignment for 2018 is available now in the online coursebook.
 
 # Getting data into R
 
@@ -92,210 +27,9 @@ paste0("abra", "ca", "dabra")
 Basic approach: 
 
 - Download data to your computer
-- Make sure R is working in the directory with your data (`getwd`, `setwd`)
-- Read data into R (functions in `readr`: `read_csv`, `read_table`, `read_delim`, `read_fwf`, etc.)
+- Save the data in your R Project directory for the project you're using it for or in a subdirectory within that directory ("data" is a good name for this subdirectory)
+- Read data into R (functions in `readr`: `read_csv`, `read_table`, `read_delim`, `read_fwf`, etc.) 
 - Check to make sure the data came in correctly (`dim`, `ncol`, `nrow`, `head`, `tail`, `str`, `colnames`)
-
-#Directories
-
-## Computer directory structure
-
-```{r echo = FALSE, fig.align='center', out.width = "275pt"}
-knitr::include_graphics("../figures/FileDirectoryStructure.png")
-```
-
-## Directories
-
-You can check your working directory anytime using `getwd()`:
-
-\small
-
-```{r}
-getwd()
-```
-
-## Directories
-
-You can use `setwd()` to change your directory.
-
-\medskip
-
-To get to your home directory (for example, mine is "/Users/brookeanderson"), you can use the abbreviation `~`. 
-
-\medskip
-
-For example, if you want to change into your home directory and print its name, you could run:
-
-```{r eval = FALSE}
-setwd("~")
-getwd()
-```
-
-```
-## [1] "/Users/brookeanderson"
-```
-
-## Directories
-
-Remember that, since `~` is a shortcut for my home directory, the following two calls would give me the same result: 
-
-```{r eval = FALSE}
-setwd("~")
-getwd()
-```
-
-```
-## [1] "/Users/brookeanderson"
-```
-
-```{r eval = FALSE}
-setwd("/Users/brookeanderson")
-getwd()
-```
-
-```
-## [1] "/Users/brookeanderson"
-```
-
-## Directories
-
-The most straightforward way to read in data is often to put it in your working directory and then read it in using the file name. If you're working in the directory with the file you want, you should see the file if you list files in the working directory:
-
-```{r}
-list.files()
-```
-
-## Directories
-
-The "Files" pane in RStudio (often on the lower right) will also show you the files available in your current working directory. 
-
-This should line up with what you get if you run `list.files()`.
-
-## Getting around directories
-
-There are a few abbreviations you can use to represent certain relative or absolute locations when you're using `setwd()`:
-
-\small
-
-```{r echo = FALSE}
-dirpath_shortcuts <- data.frame(abbr = c("`~`", "`.`", "`..`", "`../..`", "`../data`"),
-                                meaning = c("Home directory",
-                                            "Current working directory",
-                                            "One directory up from current working directory (parent directory)",
-                                            "Two directories up from current working directory",
-                                            "The 'data' subdirectory of the parent directory"))
-knitr::kable(dirpath_shortcuts, col.names = c("Shorthand", "Meaning"))
-```
-
-## Taking advantage of `paste0`
-
-You can create an object with your directory name using `paste0`, and then use that to set your directory. We'll take a lot of advantage of this for reading in files.
-
-\medskip
-
-The convention for `paste0` is:
-
-```{r, eval = FALSE}
-## Generic code
-[object name] <- paste0("[first thing you want to paste]",
-                        "[what you want to add to that]",
-                        "[more you want to add]")
-```
-
-## Taking advantage of `paste0`
-
-Here's an example:
-
-```{r}
-my_dir <- paste0("~/RProgrammingForResearch",
-                 "data/measles_data")
-my_dir
-```
-
-```{r, eval = FALSE}
-setwd(my_dir)
-```
-
-## Relative versus absolute pathnames
-
-When you want to reference a directory or file, you can use one of two types of pathnames:
-
-- *Relative pathname*: How to get to the file or directory from your current working directory
-- *Absolute pathname*: How to get to the file or directory from anywhere on the computer
-
-## Relative versus absolute pathnames
-
-If directions worked like pathnames, here is how you would tell someone to get to this building: 
-
-- *Relative pathname*: Turn right on Center, then turn right when you get to the intersection, then go to the second building on your left (only works if you started on Prospect going west right before the intersection with Center).
-- *Absolute pathname*: Go to 350 W. Lake Street, Fort Collins, CO, USA.
-
-## Computer directory structure
-
-```{r echo = FALSE, fig.align='center', out.width = "275pt"}
-knitr::include_graphics("../figures/FileDirectoryStructure.png")
-```
-
-## Relative versus absolute pathnames
-
-Say your current working directory was `/Users/brookeanderson/RProgrammingForResearch` and you wanted to get into the subdirectory `data`. Here are examples using the two types of pathnames:
-
-Absolute: 
-```{r eval = FALSE}
-setwd("/Users/brookeanderson/RProgrammingForResearch/data")
-```
-
-Relative:
-```{r eval = FALSE}
-setwd("data")
-```
-
-## Relative versus absolute pathnames
-
-Here are some other examples of relative pathnames: \medskip
-
-If `data` is a subdirectory of your current parent directory:
-
-```{r eval = FALSE}
-setwd("../data")
-```
-
-If `data` is a subdirectory of your home directory:
-
-```{r eval = FALSE}
-setwd("~/data")
-```
-
-If `data` is a subdirectory of the subdirectory `Ex` of your current working directory:
-
-```{r eval = FALSE}
-setwd("Ex/data")
-```
-
-## Relative versus absolute pathnames
-
-Both methods of writing filenames have their own advantages and disadvantages: 
-
-- *Relative pathname*: Which file you are indicating depends on which working directory you are in, which means that your code will break if you try to re-run it from a different working directory. However, relative pathways in your code make it easier for you to share a working version of a project with someone else. For most of this course, we will focus on using relative pathnames, especially when you start collaborating.
-- *Absolute pathname*: No matter what working directory you're in, it is completely clear to your computer which file you mean when you use an absolute pathname. However, your code will not work on someone else's computer without modifications (because the structure of their computer's full directory will be different).
-
-## Computer directory structure
-
-```{r echo = FALSE, fig.align='center', out.width = "275pt"}
-knitr::include_graphics("../figures/FileDirectoryStructure.png")
-```
-
-## Relative versus absolute pathnames
-
-If you want to read in data from a file that is not in your working directory, there are three options: 
-
-- Move the data into your working directory (this can be done outside of R).
-- Change your working directory so that you are working in the directory that has the data (e.g., with `setwd()`).
-- Use a pathname, rather than a simple filename, to refer to the data file (this will be the recommended method for most of this course, although we'll practice other methods today).
-
-## In-course exercise
-
-We'll take a break now to do the first part of the in-course exercise (Sections 2.6.1 and 2.6.2).
 
 # Reading data into R
 
@@ -303,7 +37,7 @@ We'll take a break now to do the first part of the in-course exercise (Sections 
 
 The sky is the limit...
 
-- Flat files
+- **Flat files**
 - Files from other statistical packages (SAS, Excel, Stata, SPSS)
 - [Tables on webpages](http://yihui.name/en/2010/10/grabbing-tables-in-webpages-using-the-xml-package/) (e.g., the table near the end of [this page](http://en.wikipedia.org/wiki/Ebola_virus_epidemic_in_West_Africa))
 - Data in a database (e.g., SQL)
@@ -312,16 +46,20 @@ The sky is the limit...
 - Data through APIs (e.g., [GoogleMaps](http://www.r-bloggers.com/heatmap-of-toronto-traffic-signals-using-rgooglemaps/), [Twitter](http://davetang.org/muse/2013/04/06/using-the-r_twitter-package/), many government agencies)
 - Incredibly messy data using `scan` and `readLines`
 
-## Types of flat files
+## Flat files
 
 R can read in data from *a lot* of different formats. 
 The only catch: you need to tell R how to do it.
 
-To start, we'll look at flat files:
+To start, we'll look at **flat files**, which are plain text files (i.e., you can read them when you open them in a text editor, unlike a file in a binary format, like an Excel or Word file) with a two-dimenional structure (a row for each observation and a column for each variable). 
 
-1. Fixed width files
+## Types of flat files
 
-2. Delimited files 
+There are two main types of flat files:
+
+1. **Fixed width files**: Each column is a certain number of characters wide. (If you printed it out, you could draw vertical lines that separate the columns.)
+
+2. **Delimited files**: In each row, a certain symbol (**delimiter**) separates the data into columns values for that observation.
     + ".csv": Comma-separated values
     + ".tab", ".tsv": Tab-separated values
     + Other possible delimiters: colon, semicolon, pipe ("|")
@@ -368,32 +106,83 @@ knitr::include_graphics("../figures/fwfEx2.png")
 
 ## Types of flat files
 
-To figure out the structure of a flat file, start by opening it in a text editor. 
+Flat files will often end in file extensions like ".txt", ".csv", ".fwf", and ".tsv".
 
-As an alternative, you can open it in RStudio (right click on the file name and then choose "Open With" and "RStudio").
+To figure out the structure of a flat file, start by opening it in a text editor. 
+RStudio can also be used as a text editor to open and explore flat files (right click on the file name and then choose "Open With" and "RStudio").
 
 ## Reading in flat files
 
-R can read any of the types of files we just looked at by using one of the functions from the `readr` package (e.g., `read_table`, `read_fwf`). Find out more about those functions with:
+R can read any of the types of files we just looked at by using one of the functions from the `readr` package: 
+
+File type     | General function
+------------- | ----------------
+Delimited     | `read_delim`
+Fixed width   | `read_fwf`
+
+You will just need to be able to clearly tell R *how* to read the file in, including what type of flat file it is and what delimiter it uses.
+
+## Reading in flat files
+
+For example, the file "AWOIS_Wrecks_KnownYear.tab" is a flat delimited file with tabs as delimiters containing the subset of the [Office of the Coast Survey's Automated Wreck and Obstruction Information System (AWOIS)](https://www.nauticalcharts.noaa.gov/data/wrecks-and-obstructions.html) for which the year the vessel sank is known. 
+
+You can download this file by going to [this link](https://github.com/geanders/RProgrammingForResearch/blob/master/data/AWOIS_Wrecks_KnownYear.tab) and using the "Raw" button in the top right hand corner (right click and select "Download Linked File").
+
+## Reading in flat files
+
+If save this file in your working directory, to read it in and assign it the name `shipwrecks`, you can run: 
 
 ```{r eval = FALSE}
 library(readr)
-?read_table
-?read_fwf
+shipwrecks <- read_delim("AWOIS_Wrecks_KnownYear.tab", 
+                        delim = "\t")
+```
+```{r echo = FALSE, message = FALSE}
+library(readr)
+shipwrecks <- read_delim("../data/AWOIS_Wrecks_KnownYear.tab", 
+                        delim = "\t")
+```
+```{r}
+# Check out a subset of the data
+shipwrecks[c(1:4), c(2, 4, 5, 9)]
 ```
 
-## `read.table` family of functions
+## `readr` family of functions
 
 Some of the interesting options with the `readr` family of functions are:
 
 Option  | Description
 ------- | -----------
-`delim`   | What is the delimiter in the data?
 `skip`    | How many lines of the start of the file should you skip?
 `col_names`  | What would you like to use as the column names?
 `col_types`   | What would you like to use as the column types?
 `n_max`   | How many rows do you want to read in?
 `na` | How are missing values coded?
+
+
+## Reading in flat files
+
+The "daily_show_guests.csv" file you worked with in the previous In-Course Exercise is a delimited flat file with commas as the delimiters. **It also has four lines of information about the data, before the actual data begins.** 
+
+```{r echo = FALSE, fig.align='center', out.width = "300pt"}
+knitr::include_graphics("../figures/lines_at_start_of_file.png")
+```
+
+## Reading in flat files
+
+You can handle this by using the `skip` option to tell R to skip the first four lines:
+
+\footnotesize
+
+```{r eval = FALSE, echo = TRUE}
+read_delim("daily_show_guests.csv", delim = ",", skip = 4)
+```
+
+\footnotesize
+
+```{r echo = FALSE, message = FALSE}
+read_delim("../data/daily_show_guests.csv", delim = ",", skip = 4)
+```
 
 ## `readr` family of functions
 
@@ -412,6 +201,13 @@ Function     | Separator
 
 For any type of delimited flat files, you can also use the more general `read_delim` function to read in the file. However, you will have to specify yourself what the delimiter is (e.g., `delim = ","` for a comma-separated file).
 
+For example, the following two calls do the same thing: 
+
+```{r eval = FALSE}
+read_delim("daily_show_guests.csv", delim = ",", skip = 4)
+read_csv("daily_show_guests.csv", skip = 4)
+```
+
 ## `readr` family of functions
 
 The `readr` package also includes some functions for reading in fixed width files: 
@@ -421,19 +217,223 @@ The `readr` package also includes some functions for reading in fixed width file
 
 These allow you to specify field widths for each fixed width field, but they will also try to determine the field-widths automatically.
 
-## `readr` family of functions
+## Reading data from other files types
 
-You will also see code that uses functions like `read.csv` and `read.table` to read in flat files. These are from the `read.table` family of functions, which are part of base R. The `readr` functions are very similar, but have some more sensible defaults, including in determining column classes. \medskip
+You can also read data in from a variety of other file formats, including:
+
+```{r echo = FALSE}
+read_funcs <- data.frame(file_type = c("Excel",
+                                       "SAS",
+                                       "SPSS",
+                                       "Stata"),
+                         func = c("`read_excel`",
+                                  "`read_sas`",
+                                  "`read_spss`",
+                                  "`read_stata`"),
+                         pkg = c("`readxl`",
+                                 "`haven`",
+                                 "`haven`",
+                                 "`haven`"))
+knitr::kable(read_funcs, col.names = c("File type", "Function", "Package"))
+```
+
+## In-course exercise
+
+We'll take another break here to work on the next part of the In-Course Exercise (Section 2.7.1 and 2.7.2).
+
+# Directory structure
+
+## Computer directory structure
+
+```{r echo = FALSE, fig.align='center', out.width = "275pt"}
+knitr::include_graphics("../figures/FileDirectoryStructure.png")
+```
+
+## Working directory
+
+The **working directory** is the directory within your directory structure from which your R session is currently working. 
+
+When you use **R Projects** to organize your work and files in R, anytime you open one of your R Projects, your working directory will automatically be that project's directory. 
+
+## Working directory
+
+To confirm this, open one of your R Projects and print out your working directory using the function `getwd()`: 
 
 \small
 
-```{r}
-library(readr)
-daily_show <- read_csv("../data/daily_show_guests.csv", 
-                       skip = 4)
+```{r eval = FALSE}
+getwd()
 ```
 
-## `read_*` family of functions
+```
+[1] "/Users/brookeanderson/Desktop/RCourseFall2015"
+```
+
+```{r echo = FALSE, fig.align='center', out.width = "200pt"}
+knitr::include_graphics("../figures/FileDirectoryStructure.png")
+```
+
+## Working directory
+
+You can use the `list.files()` function to list all the files in your current working directory:
+
+\small
+
+```{r eval = FALSE}
+list.files()
+```
+
+```
+[1] "CourseText"    "Week1_Aug24"     "Week2_Aug31"
+```
+
+```{r echo = FALSE, fig.align='center', out.width = "200pt"}
+knitr::include_graphics("../figures/FileDirectoryStructure.png")
+```
+
+
+## Working directory
+
+The "Files" pane in RStudio (often on the lower right) will also show you the files available in your current working directory. 
+
+This should line up with what you get if you run `list.files()`.
+
+```{r echo = FALSE, fig.align='center', out.width = "250pt"}
+knitr::include_graphics("../figures/RStudioFilePane.png")
+```
+
+## Working directory
+
+When you run `list.files()`, if there is a name without a file extension, it's probably the name of a **subdirectory** of your current working directory. 
+To list the files in one of these subdirectories, you can use `list.files` with that subdirectory's name. 
+
+```{r, eval = FALSE}
+list.files("CourseText")
+```
+```
+[1]  "temperature.csv"      "heat_mort.csv"
+```
+
+```{r echo = FALSE, fig.align='center', out.width = "150pt"}
+knitr::include_graphics("../figures/FileDirectoryStructure.png")
+```
+
+## Taking advantage of `paste0`
+
+You can create an object with your directory name using `paste0`, and then use that to set your directory. We'll take a lot of advantage of this for reading in files.
+
+\medskip
+
+The convention for `paste0` is:
+
+```{r, eval = FALSE}
+## Generic code
+[object name] <- paste0("[first thing you want to paste]",
+                        "[what you want to add to that]",
+                        "[more you want to add]")
+```
+
+## Taking advantage of `paste0`
+
+Here's an example:
+
+```{r}
+my_dir <- paste0("~/RProgrammingForResearch",
+                 "data/measles_data")
+my_dir
+```
+
+```{r, eval = FALSE}
+setwd(my_dir)
+```
+
+## Relative versus absolute pathnames
+
+When you want to reference a directory or file that is not in your working directory, you need to give R the directions for how to find the file. You can use one of two types of pathnames:
+
+- *Relative pathname*: How to get to the file or directory from your current working directory
+- *Absolute pathname*: How to get to the file or directory from anywhere on the computer
+
+## Relative versus absolute pathnames
+
+If directions worked like pathnames, here is how you would tell someone to get to this building: 
+
+- *Relative pathname*: Turn right on Center, then turn right when you get to the intersection, then go to the second building on your left (only works if you started on Prospect going west right before the intersection with Center).
+- *Absolute pathname*: Go to 350 W. Lake Street, Fort Collins, CO, USA.
+
+## Relative versus absolute pathnames
+
+Say your current working directory was `/Users/brookeanderson/RProgrammingForResearch` and you wanted to get into the subdirectory `data`. Here are examples of referencing that subdirectory using the two types of pathnames:
+
+**Absolute**: 
+```
+"/Users/brookeanderson/RProgrammingForResearch/data"
+```
+
+**Relative**:
+```
+"data"
+```
+
+## Computer directory structure
+
+```{r echo = FALSE, fig.align='center', out.width = "275pt"}
+knitr::include_graphics("../figures/FileDirectoryStructure.png")
+```
+
+## Getting around directories
+
+There are a few abbreviations you can use to represent certain relative locations when you're using `setwd()`:
+
+\small
+
+```{r echo = FALSE}
+dirpath_shortcuts <- data.frame(abbr = c("`.`", "`..`", "`../..`", "`../data`"),
+                                meaning = c("Current working directory",
+                                            "One directory up from current working directory (parent directory)",
+                                            "Two directories up from current working directory",
+                                            "The 'data' subdirectory of the parent directory"))
+knitr::kable(dirpath_shortcuts, col.names = c("Shorthand", "Meaning"))
+```
+
+## Relative versus absolute pathnames
+
+Here are some examples of relative pathnames that use these abbreviations: \medskip
+
+If `data` is a subdirectory of your current parent directory (i.e., from your working directory, you need to go "up and over"):
+
+```
+"../data"
+```
+
+If `data` is a subdirectory of the subdirectory `Ex` of your current working directory:
+
+```
+"Ex/data"
+```
+
+## Relative versus absolute pathnames
+
+Both methods of writing filenames have their own advantages and disadvantages: 
+
+- *Relative pathname*: Which file you are indicating depends on which working directory you are in, which means that your code will break if you try to re-run it from a different working directory. However, relative pathways in your code make it easier for you to share a working version of a project with someone else. For most of this course, we will focus on using relative pathnames, especially when you start collaborating.
+- *Absolute pathname*: No matter what working directory you're in, it is completely clear to your computer which file you mean when you use an absolute pathname. However, your code will not work on someone else's computer without modifications (because the structure of their computer's full directory will be different).
+
+## Relative versus absolute pathnames
+
+I **strongly** recommend saving your data files somewhere in the directory structure of the R Project in which you're working and then using **relative pathnames** to reference that file when you need to read it in. 
+
+This practice establishes good habits for making your research computationally reproducible.
+
+## In-course exercise 
+
+We'll take a break now to do the first part of the in-course exercise (Sections 2.7.3).
+
+# Tidyverse
+
+## The "tidyverse"
+
+You will also see code that uses functions like `read.csv` and `read.table` to read in flat files. These are from the `read.table` family of functions, which are part of base R. The `readr` functions are very similar, but have some more sensible defaults, including in determining column classes. \medskip
 
 Compared to the `read.table` family of functions, the `read_*` functions: 
 
@@ -462,90 +462,19 @@ knitr::include_graphics("../figures/HadleyObama.png")
 \footnotesize{
 \url{https://priceonomics.com/hadley-wickham-the-man-who-revolutionized-r/}}
 
+## Cheatsheets
 
-## Reading in online flat files
-
-If you're reading in data from a non-secure webpage (i.e., one that starts with `http`), if the data is in a "flat-file" format, you can just read it in using the [web address](http://www2.unil.ch/comparativegenometrics/docs/NC_006368.txt) as the file name:
-
-```{r message = FALSE}
-url <- paste0("http://www2.unil.ch/comparativegenometrics",
-              "/docs/NC_006368.txt")
-ld_genetics <- read_tsv(url)
-ld_genetics[1:5, 1:4]
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = 'center'}
+knitr::include_graphics("../figures/rstudio_cheatsheet.png")
 ```
 
-## Reading in online flat files
+## Cheatsheets
 
-With the `readr` family of functions, you can also read in data from a secure webpage (e.g., one that starts with `https`). This allows you to read in data from places like [GitHub](https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv) and Dropbox public folders:
+RStudio has several very helpful **cheatsheets**. These are one-page sheets (front and back) that cover many of the main functions for a certain topic or task in R. These cheatsheets cover a lot of the main "tidyverse" functions.
 
-```{r message = FALSE}
-url <- paste0("https://raw.githubusercontent.com/cmrivers/",
-              "ebola/master/country_timeseries.csv")
-ebola <- read_csv(url)
-ebola[1, 1:3]
-```
+You can access these directly from RStudio. Go to "Help" -> "Cheatsheets" and select the cheatsheet on the topic of interest. 
 
-## Reading data from other files types
-
-You can also read data in from a variety of other file formats, including:
-
-```{r echo = FALSE}
-read_funcs <- data.frame(file_type = c("Excel",
-                                       "SAS",
-                                       "SPSS",
-                                       "Stata"),
-                         func = c("`read_excel`",
-                                  "`read_sas`",
-                                  "`read_spss`",
-                                  "`read_stata`"),
-                         pkg = c("`readxl`",
-                                 "`haven`",
-                                 "`haven`",
-                                 "`haven`"))
-knitr::kable(read_funcs, col.names = c("File type", "Function", "Package"))
-```
-
-## Saving / loading R objects
-
-You can save an R object you've created as an `.RData` file using `save()`:
-
-```{r}
-save(ebola, file = "Ebola.RData")
-list.files(pattern = "E")
-```
-
-This saves to your current working directory (unless you specify a different location).
-
-## Saving / loading R objects
-
-Then you can re-load the object later using `load()`:
-
-```{r}
-rm(ebola)
-ls()
-load("Ebola.RData")
-ls()
-```
-
-```{r echo = FALSE, results = 'hide'}
-# Clean up that file
-file.remove("Ebola.RData")
-```
-
-## Saving R objects
-
-One caveat for saving R objects: some people suggest you avoid this if possible, to make your research more reproducible. \medskip
-
-Imagine someone wants to look at your data and code in 30 years. R might not work the same, so you might not be able to read an `.RData` file. However, you can open flat files (e.g., `.csv`, `.txt`) and R scripts (`.R`) in text editors-- you should still be able to do this regardless of what happens to R. \medskip
-
-Potential exceptions: 
-
-- You have an object that you need to save that has a structure that won't work well in a flat file
-- Your starting dataset is really, really large, and it would take a long time for you to read in your data fresh every time
-
-## In-course exercise
-
-We'll take another break here to work on the next part of the In-Course Exercise (Section 2.6.3).
+You can find even more of these cheatsheets at https://www.rstudio.com/resources/cheatsheets/.
 
 # Data cleaning
 
@@ -571,19 +500,15 @@ knitr::kable(dc_func, col.names = c("Task", "`dplyr` function"))
 
 ## The "tidyverse"
 
-Today, we'll talk about using functions from the `dplyr` and `lubridate` packages, which are both part of the "tidyverse", like the `readr` package. \medskip
+Today, we'll talk about using functions from the `dplyr` and `lubridate` packages, which are both part of the "tidyverse", like the `readr` package.
 
-```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
-knitr::include_graphics("../figures/tidyverse_hexbin.jpeg")
-```
-
-## The "tidyverse"
+\medskip
 
 To use these functions, you'll need to load those packages: 
 
 ```{r message = FALSE}
-library(dplyr)
-library(lubridate)
+library("dplyr")
+library("lubridate")
 ```
 
 ## Cleaning data
@@ -741,7 +666,7 @@ head(unique(daily_show$job), 10)
 We could use the `tolower` function to make all listings lowercase: 
 
 ```{r}
-library(stringr)
+library("stringr")
 daily_show <- mutate(daily_show, job = str_to_lower(job))
 head(daily_show, 3)
 ```
@@ -785,7 +710,7 @@ In many cases you can use functions from the `lubridate` package to parse dates 
 For example, if you have a character string with the date in the order of *year-month-day*, you can use the `ymd` function from `lubridate` to convert the character string to the `Date` class. For example:
 
 ```{r message = FALSE}
-library(lubridate)
+library("lubridate")
 my_date <- ymd("2008-10-13")
 class(my_date)
 ```
