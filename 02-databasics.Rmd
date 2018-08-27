@@ -508,42 +508,6 @@ daily_show <- select(daily_show, -year)
 head(daily_show, 3)
 ```
 
-### Filtering to certain rows
-
-Next, you might want to filter the dataset down so that it only includes certain rows. For example, you might want to get a dataset with only the guests from 2015, or only guests who are scientists. 
-
-You can use the `filter` function from `dplyr` to filter a dataframe down to a subset of rows. The syntax is: 
-
-```{r eval = FALSE}
-## Generic code
-filter(dataframe, logical statement)
-```
-
-The `logical statement` in this call gives the condition that a row must meet to be included in the output data frame. For example, if you want to create a data frame that only includes guests who were scientists, you can run:
-
-```{r}
-scientists <- filter(daily_show, category == "Science")
-head(scientists)
-```
-
-To build a logical statement to use in `filter`, you'll need to know some of R's logical operators. Some of the most commonly used ones are: 
-
-Operator  | Meaning | Example
---------- | ------- | ---------------------------------
-`==`      | equals  | `category == "Acting"`
-`!=`      | does not equal | `category != "Comedy`
-`%in%`    | is in | `category %in% c("Academic", "Science")`
-`is.na()` | is NA | `is.na(job)`
-`!is.na()`| is not NA | `!is.na(job)`
-`&`       | and | `year == 2015 & category == "Academic"`
-`|`       | or | `year == 2015 | category == "Academic"`
-
-We'll use these logical operators a lot more as the course continues, so they're worth learning by heart. 
-
-```{block, type = 'rmdwarning'}
-Two common errors with logical operators are: (1) Using `=` instead of `==` to check if two values are equal; and (2) Using `== NA` instead of `is.na` to check for missing observations.
-```
-
 ### Add or change columns
 
 You can change a column or add a new column using the `mutate` function from the `dplyr` package. That function has the syntax: 
@@ -567,55 +531,6 @@ To make all the observations in the `job` column lowercase, use the `tolower` fu
 mutate(daily_show, job = tolower(job))
 ```
 
-### Piping
-
-So far, I've shown how to use these `dplyr` functions one at a time to clean up the data, reassigning the dataframe object at each step. However, there's a trick called "piping" that will let you clean up your code a bit when you're writing a script to clean data.
-
-If you look at the format of these `dplyr` functions, you'll notice that they all take a dataframe as their first argument: 
-
-```{r eval = FALSE}
-# Generic code
-rename(dataframe, 
-       new_column_name_1 = old_column_name_1,
-       new_column_name_2 = old_column_name_2)
-select(dataframe, column_name_1, column_name_2)
-filter(dataframe, logical statement)
-mutate(dataframe,
-       changed_column = function(changed_column),
-       new_column = function(other arguments))
-```
-
-Without piping, you have to reassign the dataframe object at each step of this cleaning if you want the changes saved in the object: 
-
-```{r eval = FALSE, message = FALSE}
-daily_show <-read_csv("data/daily_show_guests.csv",
-                      skip = 4)
-daily_show <- rename(daily_show, 
-                     job = GoogleKnowlege_Occupation,
-                     date = Show,
-                     category = Group,
-                     guest_name = Raw_Guest_List)
-daily_show <- select(daily_show, -YEAR) 
-daily_show <- mutate(daily_show, job = tolower(job))
-daily_show <- filter(daily_show, category == "Science")
-```
-
-Piping lets you clean this code up a bit. It can be used with any function that inputs a dataframe as its first argument. It *pipes* the dataframe created right before the pipe (`%>%`) into the function right after the pipe. With piping, therefore, the same data cleaning looks like: 
-
-```{r message = FALSE}
-daily_show <-read_csv("data/daily_show_guests.csv",
-                      skip = 4) %>%
-  rename(job = GoogleKnowlege_Occupation,
-         date = Show,
-         category = Group,
-         guest_name = Raw_Guest_List) %>%
-  select(-YEAR) %>%
-  mutate(job = tolower(job)) %>%
-  filter(category == "Science")
-```
-
-Notice that, when piping, the first argument (the name of the dataframe) is excluded from all function calls that follow a pipe. This is because piping sends the dataframe from the last step into each of these functions as the dataframe argument.
-
 ### Base R equivalents to `dplyr` functions
 
 Just so you know, all of these `dplyr` functions have alternatives, either functions or processes, in base R:
@@ -635,7 +550,11 @@ knitr::kable(dplyr_vs_base, col.names = c("`dplyr`",
 
 You will see these alternatives used in older code examples.
 
-## Dates in R
+## Dates and filtering
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/v-nRrFnYl50" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+### Dates in R
 
 As part of the data cleaning process, you may want to change the class of some of the columns in the dataframe. For example, you may want to change a column from a character to a date. 
 
@@ -748,6 +667,94 @@ mutate(daily_show,
   select(date, show_day, guest_name) %>%
   slice(1:5)
 ```
+
+### Filtering to certain rows
+
+Next, you might want to filter the dataset down so that it only includes certain rows. For example, you might want to get a dataset with only the guests from 2015, or only guests who are scientists. 
+
+You can use the `filter` function from `dplyr` to filter a dataframe down to a subset of rows. The syntax is: 
+
+```{r eval = FALSE}
+## Generic code
+filter(dataframe, logical statement)
+```
+
+The `logical statement` in this call gives the condition that a row must meet to be included in the output data frame. For example, if you want to create a data frame that only includes guests who were scientists, you can run:
+
+```{r}
+scientists <- filter(daily_show, category == "Science")
+head(scientists)
+```
+
+To build a logical statement to use in `filter`, you'll need to know some of R's logical operators. Some of the most commonly used ones are: 
+
+Operator  | Meaning | Example
+--------- | ------- | ---------------------------------
+`==`      | equals  | `category == "Acting"`
+`!=`      | does not equal | `category != "Comedy`
+`%in%`    | is in | `category %in% c("Academic", "Science")`
+`is.na()` | is NA | `is.na(job)`
+`!is.na()`| is not NA | `!is.na(job)`
+`&`       | and | `year == 2015 & category == "Academic"`
+`|`       | or | `year == 2015 | category == "Academic"`
+
+We'll use these logical operators a lot more as the course continues, so they're worth learning by heart. 
+
+```{block, type = 'rmdwarning'}
+Two common errors with logical operators are: (1) Using `=` instead of `==` to check if two values are equal; and (2) Using `== NA` instead of `is.na` to check for missing observations.
+```
+
+
+## Piping
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6beqELKjuG4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+So far, I've shown how to use these `dplyr` functions one at a time to clean up the data, reassigning the dataframe object at each step. However, there's a trick called "piping" that will let you clean up your code a bit when you're writing a script to clean data.
+
+If you look at the format of these `dplyr` functions, you'll notice that they all take a dataframe as their first argument: 
+
+```{r eval = FALSE}
+# Generic code
+rename(dataframe, 
+       new_column_name_1 = old_column_name_1,
+       new_column_name_2 = old_column_name_2)
+select(dataframe, column_name_1, column_name_2)
+filter(dataframe, logical statement)
+mutate(dataframe,
+       changed_column = function(changed_column),
+       new_column = function(other arguments))
+```
+
+Without piping, you have to reassign the dataframe object at each step of this cleaning if you want the changes saved in the object: 
+
+```{r eval = FALSE, message = FALSE}
+daily_show <-read_csv("data/daily_show_guests.csv",
+                      skip = 4)
+daily_show <- rename(daily_show, 
+                     job = GoogleKnowlege_Occupation,
+                     date = Show,
+                     category = Group,
+                     guest_name = Raw_Guest_List)
+daily_show <- select(daily_show, -YEAR) 
+daily_show <- mutate(daily_show, job = tolower(job))
+daily_show <- filter(daily_show, category == "Science")
+```
+
+Piping lets you clean this code up a bit. It can be used with any function that inputs a dataframe as its first argument. It *pipes* the dataframe created right before the pipe (`%>%`) into the function right after the pipe. With piping, therefore, the same data cleaning looks like: 
+
+```{r message = FALSE}
+daily_show <-read_csv("data/daily_show_guests.csv",
+                      skip = 4) %>%
+  rename(job = GoogleKnowlege_Occupation,
+         date = Show,
+         category = Group,
+         guest_name = Raw_Guest_List) %>%
+  select(-YEAR) %>%
+  mutate(job = tolower(job)) %>%
+  filter(category == "Science")
+```
+
+Notice that, when piping, the first argument (the name of the dataframe) is excluded from all function calls that follow a pipe. This is because piping sends the dataframe from the last step into each of these functions as the dataframe argument.
 
 ## In-course Exercise
 
