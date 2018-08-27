@@ -196,7 +196,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="2.7.4" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#cleaning-up-data-1"><i class="fa fa-check"></i><b>2.7.4</b> Cleaning up data #1</a></li>
 <li class="chapter" data-level="2.7.5" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#cleaning-up-data-2"><i class="fa fa-check"></i><b>2.7.5</b> Cleaning up data #2</a></li>
 <li class="chapter" data-level="2.7.6" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#piping-1"><i class="fa fa-check"></i><b>2.7.6</b> Piping</a></li>
-<li class="chapter" data-level="2.7.7" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#a-taste-of-whats-to-come"><i class="fa fa-check"></i><b>2.7.7</b> A taste of what’s to come…</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
@@ -1216,136 +1215,49 @@ icu &lt;-<span class="st"> </span><span class="kw">read_sas</span>(<span class="
 </div>
 <div id="directory-structure-1" class="section level3">
 <h3><span class="header-section-number">2.7.3</span> Directory structure</h3>
-<p>Once you have the data, I’d like you to try using <code>setwd()</code> to move around the directories on your computer. For this section of the exercise, you’ll also try to open the same file from different working directories, to get practice using absolute and relative file pathnames.</p>
-<p>Start by changing your working directory to the “data” subdirectory you just downloaded. For me, the absolute path to that is <code>/Users/brookeanderson/RProgrammingForResearch/data</code>, so to change my working directory to this one using an absolute file pathname, I would run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setwd</span>(<span class="st">&quot;/Users/brookeanderson/RProgrammingForResearch/data&quot;</span>)
-<span class="kw">getwd</span>()</code></pre></div>
-<p>The absolute pathname will be different for each person, based on the directories on his or her computer and where he or she saved this particular directory.</p>
-<div class="rmdnote">
-<p>
-Since “~” is shorthand for my home directory (“/Users/brookeanderson”), I could also use the absolute pathname “~/RProgrammingForResearch/data” when setting this directory as my working directory.
-</p>
-</div>
-<p>Now, use the <code>list.files</code> function to make sure you have all the files that you just pulled in your current working directory:</p>
+<p>Once you have the data, I’d like you to try using <code>getwd()</code> to figure out your current working directory and <code>list.files()</code> to figure out which files you have in the directories near that current working directory.</p>
+<p>Start by creating a new subdirectory called “data” in your R Project directory for this class (if you don’t already have that subdirectory). Move the data you downloaded in the start of this In-Course Exercise into that “data” subdirectory. (For this, use whatever tools you would normally use on your computer to move files from one directory to another—you don’t have to do this part in R.) Keep the “measles” data in its own subdirectory (so, the “data” subdirectory of your project will have its own “measles” subdirectory, which will have those files).</p>
+<p>Check that you are, in fact, in the working directory you think you’re in. Run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getwd</span>()</code></pre></div>
+<p>Does it agree with the R project name in the top right hand corner of your R Studio window?</p>
+<p>Now, use the <code>list.files</code> function to print out which files or subdirectories you have in your current working directory:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list.files</span>()</code></pre></div>
-<pre><code>##  [1] &quot;accident.csv&quot;                                               
-##  [2] &quot;App-1&quot;                                                      
-##  [3] &quot;App-2&quot;                                                      
-##  [4] &quot;AWOIS_Wrecks_KnownYear.tab&quot;                                 
-##  [5] &quot;AWOIS_Wrecks.csv&quot;                                           
-##  [6] &quot;country_timeseries.csv&quot;                                     
-##  [7] &quot;daily_show_guests.csv&quot;                                      
-##  [8] &quot;deaths-weather.csv&quot;                                         
-##  [9] &quot;DRUG_CLASS_I_Mean_Cmax_Trough_Efficacy_R_DATA_ANALYSIS.xlsx&quot;
-## [10] &quot;example_choropleth.Rdata&quot;                                   
-## [11] &quot;fars_colorado.RData&quot;                                        
-## [12] &quot;icd-10.xls&quot;                                                 
-## [13] &quot;ICU_Data_Code_Sheet.pdf&quot;                                    
-## [14] &quot;icu.sas7bdat&quot;                                               
-## [15] &quot;ld_genetics.txt&quot;                                            
-## [16] &quot;measles_data&quot;                                               
-## [17] &quot;mexico_deaths.csv&quot;                                          
-## [18] &quot;mexico_exposure.csv&quot;                                        
-## [19] &quot;R_data_analysis_class_project__second_data_set&quot;             
-## [20] &quot;serial_map_data.csv&quot;                                        
-## [21] &quot;serial_phone_data.csv&quot;                                      
-## [22] &quot;The_templates&quot;                                              
-## [23] &quot;titanic.csv&quot;</code></pre>
 <p>Try the following tasks:</p>
 <ul>
-<li>Read in the ebola data in <code>country_timeseries.csv</code>. Assign it to an R object named <code>ebola</code>. How many rows and columns does it have? What are the names of the columns?</li>
-<li>Now try moving up one directory from your current working directory (which should be the “data” directory), into the directory you created for this course. What happens if you use the same code as before to read in the file? What do you need to change to be able to read the file in from here? Try to read in the data from here using:
+<li>Read in the ebola data in <code>country_timeseries.csv</code> from your current working directory. This will require you to use a relative filename to direct R to how to find that file in the “data” subdirectory of your current working directory.</li>
+<li>Assign the data you read in to an R object named <code>ebola</code>. How many rows and columns does it have? What are the names of the columns?</li>
+<li>While staying in the same working directory, used <code>list.files()</code> to print the names of the available files in the “data” subdirectory. How about in the “R” subdirectory (if you have one)?</li>
+<li>Try to list the files in your “data” subdirectory using:
 <ul>
 <li>A relative pathname</li>
 <li>An absolute pathname</li>
 </ul></li>
-<li>Now move your working directory to be the subdirectory of “data” called “measles_data”. Try to read in the Ebola data from this working directory using:
-<ul>
-<li>A relative pathname</li>
-<li>An absolute pathname</li>
-</ul></li>
+<li>Now use a relative pathname along with <code>list.files()</code> to list all the files in the “measles_data” subdirectory.</li>
+<li>Then try to read in the Ebola data using the appropriate <code>readr</code> function and a relative pathname.</li>
 <li>Which method (absolute or relative pathnames) always used the same code, regardless of your current working directory? Which method used different code, depending on the starting working directory?</li>
 </ul>
-<p>Example R code:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getwd</span>()  ## Make sure you&#39;re in the &quot;data&quot; directory to start</code></pre></div>
-<pre><code>## [1] &quot;/Users/brookeanderson/RProgrammingForResearch/data&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;country_timeseries.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
-<pre><code>##         Date Day Cases_Guinea Cases_Liberia Cases_SierraLeone
-## 1   1/5/2015 289         2776            NA             10030
-## 2   1/4/2015 288         2775            NA              9780
-## 3   1/3/2015 287         2769          8166              9722
-## 4   1/2/2015 286           NA          8157                NA
-## 5 12/31/2014 284         2730          8115              9633</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(ebola) <span class="co"># To figure out number of rows and columns</span></code></pre></div>
-<pre><code>## [1] 122  18</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(ebola) <span class="co"># To figure out column names</span></code></pre></div>
-<pre><code>##  [1] &quot;Date&quot;                &quot;Day&quot;                 &quot;Cases_Guinea&quot;       
-##  [4] &quot;Cases_Liberia&quot;       &quot;Cases_SierraLeone&quot;   &quot;Cases_Nigeria&quot;      
-##  [7] &quot;Cases_Senegal&quot;       &quot;Cases_UnitedStates&quot;  &quot;Cases_Spain&quot;        
-## [10] &quot;Cases_Mali&quot;          &quot;Deaths_Guinea&quot;       &quot;Deaths_Liberia&quot;     
-## [13] &quot;Deaths_SierraLeone&quot;  &quot;Deaths_Nigeria&quot;      &quot;Deaths_Senegal&quot;     
-## [16] &quot;Deaths_UnitedStates&quot; &quot;Deaths_Spain&quot;        &quot;Deaths_Mali&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Move up one directory
-<span class="kw">setwd</span>(<span class="st">&quot;..&quot;</span>)
-<span class="kw">getwd</span>() 
-
-## Get the file using the relative pathname
-ebola &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>) </code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
-<pre><code>##         Date Day Cases_Guinea Cases_Liberia Cases_SierraLeone
-## 1   1/5/2015 289         2776            NA             10030
-## 2   1/4/2015 288         2775            NA              9780
-## 3   1/3/2015 287         2769          8166              9722
-## 4   1/2/2015 286           NA          8157                NA
-## 5 12/31/2014 284         2730          8115              9633</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Get the file using the absolute pathname
-abs_path &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;/Users/brookeanderson/RProgrammingForResearch/&quot;</span>,
-                   <span class="st">&quot;data/country_timeseries.csv&quot;</span>)
-abs_path</code></pre></div>
-<pre><code>## [1] &quot;/Users/brookeanderson/RProgrammingForResearch/data/country_timeseries.csv&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola &lt;-<span class="st"> </span><span class="kw">read.csv</span>(abs_path, <span class="dt">header =</span> <span class="ot">TRUE</span>) </code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
-<pre><code>##         Date Day Cases_Guinea Cases_Liberia Cases_SierraLeone
-## 1   1/5/2015 289         2776            NA             10030
-## 2   1/4/2015 288         2775            NA              9780
-## 3   1/3/2015 287         2769          8166              9722
-## 4   1/2/2015 286           NA          8157                NA
-## 5 12/31/2014 284         2730          8115              9633</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Reset your working directory as your directory for this course
-## and then check that you&#39;re in the right place
-<span class="kw">getwd</span>()</code></pre></div>
-<pre><code>## [1] &quot;/Users/brookeanderson/RProgrammingForResearch&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Move into the measles_data subdirectory
-<span class="kw">setwd</span>(<span class="st">&quot;data/measles_data&quot;</span>)
-<span class="kw">getwd</span>()</code></pre></div>
-<pre><code>## [1] &quot;/Users/brookeanderson/RProgrammingForResearch/data/measles_data&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Get the file using the relative pathname
-ebola &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;../country_timeseries.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>) </code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
-<pre><code>##         Date Day Cases_Guinea Cases_Liberia Cases_SierraLeone
-## 1   1/5/2015 289         2776            NA             10030
-## 2   1/4/2015 288         2775            NA              9780
-## 3   1/3/2015 287         2769          8166              9722
-## 4   1/2/2015 286           NA          8157                NA
-## 5 12/31/2014 284         2730          8115              9633</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get the file using the absolute pathname (note: we&#39;ve already assigned</span>
-<span class="co"># the absolute pathname in the `abs_path` object, so we can just use that </span>
-<span class="co"># object in the `read.csv` call here, rather than typing out the full </span>
-<span class="co"># absolute pathname again.)</span>
-ebola &lt;-<span class="st"> </span><span class="kw">read.csv</span>(abs_path, <span class="dt">header =</span> <span class="ot">TRUE</span>) </code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
-<pre><code>##         Date Day Cases_Guinea Cases_Liberia Cases_SierraLeone
-## 1   1/5/2015 289         2776            NA             10030
-## 2   1/4/2015 288         2775            NA              9780
-## 3   1/3/2015 287         2769          8166              9722
-## 4   1/2/2015 286           NA          8157                NA
-## 5 12/31/2014 284         2730          8115              9633</code></pre>
+<p>Read in the ebola data in <code>country_timeseries.csv</code> from your current working directory. This will require you to use a relative filename to direct R to how to find that file in the “data” subdirectory of your current working directory.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>)</code></pre></div>
+<p>How many rows and columns does it have? What are the names of the columns?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(ebola)    <span class="co"># Get the dimensions of the data (`nrow` and `ncol` would also work)</span>
+<span class="kw">colnames</span>(ebola) <span class="co"># Get the column names (you can also just print the object: `ebola`)</span></code></pre></div>
+<p>While staying in the same working directory, used <code>list.files()</code> to print the names of the available files in the “data” subdirectory. How about in the “R” subdirectory (if you have one)?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list.files</span>(<span class="st">&quot;data&quot;</span>)
+<span class="kw">list.files</span>(<span class="st">&quot;R&quot;</span>)</code></pre></div>
+<p>Try to list the files in your “data” subdirectory using: + A relative pathname + An absolute pathname</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list.files</span>(<span class="st">&quot;data&quot;</span>) <span class="co"># This is using a relative pathname</span>
+<span class="kw">list.files</span>(<span class="st">&quot;/Users/brookeanderson/Desktop/r_course_2018/data&quot;</span>) <span class="co"># Absolute pathname</span>
+     <span class="co"># (Yours will be different and will depend on how your computer file</span>
+     <span class="co"># structure is set up.)</span></code></pre></div>
+<p>Now use a relative pathname along with <code>list.files()</code> to list all the files in the “measles_data” subdirectory.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list.files</span>(<span class="st">&quot;data/measles_data&quot;</span>)</code></pre></div>
+<p>Then try to read in the Ebola data using the appropriate <code>readr</code> function and a relative pathname</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>)</code></pre></div>
 <p>If you have extra time:</p>
 <ul>
 <li>Find out some more about this Ebola dataset by checking out <a href="https://github.com/cmrivers/ebola">Caitlin Rivers’ Ebola data GitHub repository</a>. Who is Caitlin Rivers? How did she put this dataset together?</li>
 <li>Search for R code related to Ebola research on GitHub. Go to the <a href="https://github.com">GitHub home page</a> and use the search bar to search for “ebola”. On the results page, scroll down and use the “Language” sidebar on the left to choose repositories with R code. Did you find any interesting projects?</li>
-<li>When you <code>list.files()</code> when your working directory is the “data” directory, almost everything listed has a file extension, like <code>.csv</code>, <code>.xls</code>, <code>.sas7bdat</code>. One thing does not. Which one? Why does this listing not have a file extension?</li>
+<li>When you <code>list.files()</code> for the “data” subdirectory, almost everything listed has a file extension, like <code>.csv</code>, <code>.xls</code>, <code>.sas7bdat</code>. One thing does not. Which one? Why does this listing not have a file extension?</li>
 </ul>
 </div>
 <div id="cleaning-up-data-1" class="section level3">
@@ -1382,11 +1294,13 @@ icu</code></pre></div>
 ## Create a subset with just the Liberia columns and Date
 ebola_liberia &lt;-<span class="st"> </span><span class="kw">select</span>(ebola, Date, Cases_Liberia, Deaths_Liberia)
 <span class="kw">head</span>(ebola_liberia)</code></pre></div>
-<pre><code>##         Date Cases_Liberia Deaths_Liberia
-## 1   1/5/2015            NA             NA
-## 2   1/4/2015            NA             NA
-## 3   1/3/2015          8166           3496
-## 4   1/2/2015          8157           3496
+<pre><code>## # A tibble: 6 x 3
+##   Date       Cases_Liberia Deaths_Liberia
+##   &lt;chr&gt;              &lt;int&gt;          &lt;int&gt;
+## 1 1/5/2015              NA             NA
+## 2 1/4/2015              NA             NA
+## 3 1/3/2015            8166           3496
+## 4 1/2/2015            8157           3496
 ## 5 12/31/2014          8115           3471
 ## 6 12/28/2014          8018           3423</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## How many colums and rows does the whole dataset have (could also use `dim`)?
@@ -1400,23 +1314,27 @@ ebola_liberia &lt;-<span class="st"> </span><span class="kw">rename</span>(ebola
                         <span class="dt">cases =</span> Cases_Liberia,
                         <span class="dt">deaths =</span> Deaths_Liberia)
 <span class="kw">head</span>(ebola_liberia)</code></pre></div>
-<pre><code>##         date cases deaths
-## 1   1/5/2015    NA     NA
-## 2   1/4/2015    NA     NA
-## 3   1/3/2015  8166   3496
-## 4   1/2/2015  8157   3496
+<pre><code>## # A tibble: 6 x 3
+##   date       cases deaths
+##   &lt;chr&gt;      &lt;int&gt;  &lt;int&gt;
+## 1 1/5/2015      NA     NA
+## 2 1/4/2015      NA     NA
+## 3 1/3/2015    8166   3496
+## 4 1/2/2015    8157   3496
 ## 5 12/31/2014  8115   3471
 ## 6 12/28/2014  8018   3423</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Add a `ratio` column
 ebola_liberia &lt;-<span class="st"> </span><span class="kw">mutate</span>(ebola_liberia, <span class="dt">ratio =</span> deaths <span class="op">/</span><span class="st"> </span>cases)
 <span class="kw">head</span>(ebola_liberia)</code></pre></div>
-<pre><code>##         date cases deaths     ratio
-## 1   1/5/2015    NA     NA        NA
-## 2   1/4/2015    NA     NA        NA
-## 3   1/3/2015  8166   3496 0.4281166
-## 4   1/2/2015  8157   3496 0.4285889
-## 5 12/31/2014  8115   3471 0.4277264
-## 6 12/28/2014  8018   3423 0.4269144</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   date       cases deaths  ratio
+##   &lt;chr&gt;      &lt;int&gt;  &lt;int&gt;  &lt;dbl&gt;
+## 1 1/5/2015      NA     NA NA    
+## 2 1/4/2015      NA     NA NA    
+## 3 1/3/2015    8166   3496  0.428
+## 4 1/2/2015    8157   3496  0.429
+## 5 12/31/2014  8115   3471  0.428
+## 6 12/28/2014  8018   3423  0.427</code></pre>
 </div>
 <div id="cleaning-up-data-2" class="section level3">
 <h3><span class="header-section-number">2.7.5</span> Cleaning up data #2</h3>
@@ -1429,7 +1347,7 @@ ebola_liberia &lt;-<span class="st"> </span><span class="kw">mutate</span>(ebola
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## What class is the `date` column?
 <span class="kw">class</span>(ebola_liberia<span class="op">$</span>date)</code></pre></div>
-<pre><code>## [1] &quot;factor&quot;</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Use the `mdy` from `lubridate` to convert to Date class
 <span class="kw">library</span>(lubridate)
 ebola_liberia &lt;-<span class="st"> </span><span class="kw">mutate</span>(ebola_liberia, 
@@ -1445,23 +1363,27 @@ ebola_liberia &lt;-<span class="st"> </span><span class="kw">mutate</span>(ebola
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Re-order the dataset from first date to last date
 ebola_liberia &lt;-<span class="st"> </span><span class="kw">arrange</span>(ebola_liberia, date)
 <span class="kw">head</span>(ebola_liberia)</code></pre></div>
-<pre><code>##         date cases deaths ratio
-## 1 2014-03-22    NA     NA    NA
-## 2 2014-03-24    NA     NA    NA
-## 3 2014-03-25    NA     NA    NA
-## 4 2014-03-26    NA     NA    NA
-## 5 2014-03-27     8      6  0.75
+<pre><code>## # A tibble: 6 x 4
+##   date       cases deaths  ratio
+##   &lt;date&gt;     &lt;int&gt;  &lt;int&gt;  &lt;dbl&gt;
+## 1 2014-03-22    NA     NA NA    
+## 2 2014-03-24    NA     NA NA    
+## 3 2014-03-25    NA     NA NA    
+## 4 2014-03-26    NA     NA NA    
+## 5 2014-03-27     8      6  0.750
 ## 6 2014-03-28     3      3  1.00</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Filter out the rows that are missing death counts for Liberia
 ebola_liberia &lt;-<span class="st"> </span><span class="kw">filter</span>(ebola_liberia, <span class="op">!</span><span class="kw">is.na</span>(deaths))
 <span class="kw">head</span>(ebola_liberia)</code></pre></div>
-<pre><code>##         date cases deaths     ratio
-## 1 2014-03-27     8      6 0.7500000
-## 2 2014-03-28     3      3 1.0000000
-## 3 2014-03-29     7      2 0.2857143
-## 4 2014-03-31     8      4 0.5000000
-## 5 2014-04-01     8      5 0.6250000
-## 6 2014-04-04    18      7 0.3888889</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   date       cases deaths ratio
+##   &lt;date&gt;     &lt;int&gt;  &lt;int&gt; &lt;dbl&gt;
+## 1 2014-03-27     8      6 0.750
+## 2 2014-03-28     3      3 1.00 
+## 3 2014-03-29     7      2 0.286
+## 4 2014-03-31     8      4 0.500
+## 5 2014-04-01     8      5 0.625
+## 6 2014-04-04    18      7 0.389</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(ebola_liberia)</code></pre></div>
 <pre><code>## [1] 81</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Create an object with just the top five observations in terms of death counts
@@ -1483,7 +1405,7 @@ first_five <span class="co"># Two days tied for the highest deaths counts (Jan. 
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plot the data
 <span class="kw">plot</span>(ebola_liberia<span class="op">$</span>date, ebola_liberia<span class="op">$</span>cases)</code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-159-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-149-1.png" width="672" /></p>
 </div>
 <div id="piping-1" class="section level3">
 <h3><span class="header-section-number">2.7.6</span> Piping</h3>
@@ -1528,104 +1450,6 @@ icu</code></pre></div>
 ## 4 2014-03-31     8      4 0.500
 ## 5 2014-04-01     8      5 0.625
 ## 6 2014-04-04    18      7 0.389</code></pre>
-</div>
-<div id="a-taste-of-whats-to-come" class="section level3">
-<h3><span class="header-section-number">2.7.7</span> A taste of what’s to come…</h3>
-<p>Here’s an example to give you a feel for why it’s worth learning all these different things about directories, <code>list.files</code>, and pathnames.</p>
-<p>The <code>measles_data</code> subdirectory includes counts of measles made at different times in different cities in California. Say that we wanted to read them all in and make put them into one long dataframe with the variables <code>city</code>, <code>count</code>, and <code>date</code>. You can put together the things you’ve learned so far, along with a few new ideas (including doing a loop), to do this very easily.</p>
-<p>We’ll talk more later about using loops and functions to make your programming more efficient, but for right now just look through this code and see if you can get a feel for how it’s working (make sure your directory for this course is your working directory):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Create a vector of all the file names in the `measles_data` subdirectory
-measles_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;data/measles_data&quot;</span>)
-measles_files</code></pre></div>
-<pre><code>##  [1] &quot;02-09-2015.txt&quot; &quot;02-11-2015.txt&quot; &quot;02-13-2015.txt&quot; &quot;02-18-2015.txt&quot;
-##  [5] &quot;02-20-2015.txt&quot; &quot;02-23-2015.txt&quot; &quot;02-25-2015.txt&quot; &quot;02-27-2015.txt&quot;
-##  [9] &quot;03-02-2015.txt&quot; &quot;03-06-2015.txt&quot; &quot;03-13-2015.txt&quot; &quot;03-20-2015.txt&quot;
-## [13] &quot;03-27-2015.txt&quot; &quot;04-03-2015.txt&quot; &quot;04-10-2015.txt&quot; &quot;04-17-2015.txt&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Create a vector of all the dates for files by taking the 
-## `.txt` off each of these file names and change it into
-## a date
-measles_dates &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;.txt&quot;</span>, <span class="st">&quot;&quot;</span>, measles_files)
-measles_dates</code></pre></div>
-<pre><code>##  [1] &quot;02-09-2015&quot; &quot;02-11-2015&quot; &quot;02-13-2015&quot; &quot;02-18-2015&quot; &quot;02-20-2015&quot;
-##  [6] &quot;02-23-2015&quot; &quot;02-25-2015&quot; &quot;02-27-2015&quot; &quot;03-02-2015&quot; &quot;03-06-2015&quot;
-## [11] &quot;03-13-2015&quot; &quot;03-20-2015&quot; &quot;03-27-2015&quot; &quot;04-03-2015&quot; &quot;04-10-2015&quot;
-## [16] &quot;04-17-2015&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(measles_dates)</code></pre></div>
-<pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">measles_dates &lt;-<span class="st"> </span><span class="kw">mdy</span>(measles_dates)
-measles_dates</code></pre></div>
-<pre><code>##  [1] &quot;2015-02-09&quot; &quot;2015-02-11&quot; &quot;2015-02-13&quot; &quot;2015-02-18&quot; &quot;2015-02-20&quot;
-##  [6] &quot;2015-02-23&quot; &quot;2015-02-25&quot; &quot;2015-02-27&quot; &quot;2015-03-02&quot; &quot;2015-03-06&quot;
-## [11] &quot;2015-03-13&quot; &quot;2015-03-20&quot; &quot;2015-03-27&quot; &quot;2015-04-03&quot; &quot;2015-04-10&quot;
-## [16] &quot;2015-04-17&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Before I show the loop, let me talk you through some 
-## of the parts of it:
-i &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># I&#39;m setting the index to 1</span>
-
-## Now I&#39;ll use `paste0` to create the first file name
-## I want to read.
-file_name &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;data/measles_data/&quot;</span>, measles_files[i])
-file_name</code></pre></div>
-<pre><code>## [1] &quot;data/measles_data/02-09-2015.txt&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Now I&#39;ll read in that tab-delimited file
-df &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(file_name, <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;count&quot;</span>))
-<span class="kw">head</span>(df)</code></pre></div>
-<pre><code>## # A tibble: 6 x 2
-##   city               count
-##   &lt;chr&gt;              &lt;int&gt;
-## 1 ALAMEDA                6
-## 2 LOS ANGELES           20
-## 3 City of Long Beach     2
-## 4 City of Pasadena       4
-## 5 MARIN                  2
-## 6 ORANGE                34</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Now I&#39;ll add on a column with the date for all the 
-## values from that file. Notice that I&#39;m using `i` to 
-## index this, as well
-
-df &lt;-<span class="st"> </span><span class="kw">mutate</span>(df, <span class="dt">date =</span> measles_dates[i])
-<span class="kw">head</span>(df)</code></pre></div>
-<pre><code>## # A tibble: 6 x 3
-##   city               count date      
-##   &lt;chr&gt;              &lt;int&gt; &lt;date&gt;    
-## 1 ALAMEDA                6 2015-02-09
-## 2 LOS ANGELES           20 2015-02-09
-## 3 City of Long Beach     2 2015-02-09
-## 4 City of Pasadena       4 2015-02-09
-## 5 MARIN                  2 2015-02-09
-## 6 ORANGE                34 2015-02-09</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loop through and read in files. After the first file,
-## add on the new information to the data that&#39;s already 
-## been read in. Note that you can use `rbind` to add on 
-## new rows to a dataframe as long as the new and old rows
-## have the same number of columns and the same column names.
-<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(measles_files)){
-        file_name &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;data/measles_data/&quot;</span>, measles_files[i])
-        df &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(file_name, <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;count&quot;</span>))
-        df &lt;-<span class="st"> </span><span class="kw">mutate</span>(df, <span class="dt">date =</span> measles_dates[i])
-        <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">1</span>){
-                ca_measles &lt;-<span class="st"> </span>df
-        } <span class="cf">else</span> { 
-                 ca_measles &lt;-<span class="st"> </span><span class="kw">rbind</span>(ca_measles, df)
-                }
-}
-
-<span class="kw">dim</span>(ca_measles)</code></pre></div>
-<pre><code>## [1] 232   3</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(ca_measles)</code></pre></div>
-<pre><code>##      city               count             date           
-##  Length:232         Min.   : 1.000   Min.   :2015-02-09  
-##  Class :character   1st Qu.: 2.000   1st Qu.:2015-02-20  
-##  Mode  :character   Median : 4.000   Median :2015-03-02  
-##                     Mean   : 8.698   Mean   :2015-03-07  
-##                     3rd Qu.:12.000   3rd Qu.:2015-03-27  
-##                     Max.   :35.000   Max.   :2015-04-17</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
-<span class="kw">ggplot</span>(<span class="kw">subset</span>(ca_measles, city <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;LOS ANGELES&quot;</span>, <span class="st">&quot;SAN DIEGO&quot;</span>, <span class="st">&quot;ORANGE&quot;</span>)),
-       <span class="kw">aes</span>(<span class="dt">x =</span> date, <span class="dt">y =</span> count)) <span class="op">+</span><span class="st"> </span>
-<span class="st">        </span><span class="kw">geom_line</span>()  <span class="op">+</span><span class="st"> </span>
-<span class="st">        </span><span class="kw">facet_grid</span>(. <span class="op">~</span><span class="st"> </span>city)</code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-162-1.png" width="960" /></p>
 
 </div>
 </div>

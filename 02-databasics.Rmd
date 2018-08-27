@@ -850,121 +850,86 @@ icu[1:5, 1:5]
 
 ### Directory structure 
 
-Once you have the data, I'd like you to try using `setwd()` to move around the directories on your computer. For this section of the exercise, you'll also try to open the same file from different working directories, to get practice using absolute and relative file pathnames. 
+Once you have the data, I'd like you to try using `getwd()` to figure out your current working directory and `list.files()` to figure out which files you have in the directories near that current working directory. 
 
-Start by changing your working directory to the "data" subdirectory you just downloaded. For me, the absolute path to that is `/Users/brookeanderson/RProgrammingForResearch/data`, so to change my working directory to this one using an absolute file pathname, I would run:
+Start by creating a new subdirectory called "data" in your R Project directory for this
+class (if you don't already have that subdirectory). Move the data you downloaded in 
+the start of this In-Course Exercise into that "data" subdirectory. (For this, use whatever tools you would normally use on your computer to move files from one directory to another---you don't have to do this part in R.) Keep the "measles" data in its own subdirectory (so, the "data" subdirectory of your project will have its own "measles" subdirectory, which will have those files).
+
+Check that you are, in fact, in the working directory you think you're in. Run:
 
 ```{r eval = FALSE}
-setwd("/Users/brookeanderson/RProgrammingForResearch/data")
 getwd()
 ```
 
-The absolute pathname will be different for each person, based on the directories on his or her computer and where he or she saved this particular directory.
+Does it agree with the R project name in the top right hand corner of your R Studio window?
 
-```{block, type = 'rmdnote'}
-Since "~" is shorthand for my home directory ("/Users/brookeanderson"), I could also use the absolute pathname "~/RProgrammingForResearch/data" when setting this directory as my working directory.
-```
-
-Now, use the `list.files` function to make sure you have all the files that you just pulled in your current working directory:
+Now, use the `list.files` function to print out which files or subdirectories you have in your current working directory:
 
 ```{r eval = FALSE}
 list.files()
 ```
-```{r echo = FALSE}
-list.files("data")
-```
 
 Try the following tasks: 
 
-* Read in the ebola data in `country_timeseries.csv`. Assign it to an R object named `ebola`. How many rows and columns does it have? What are the names of the columns?
-* Now try moving up one directory from your current working directory (which should be the "data" directory), into the directory you created for this course. What happens if you use the same code as before to read in the file? What do you need to change to be able to read the file in from here? Try to read in the data from here using:
+* Read in the ebola data in `country_timeseries.csv` from your current working directory. This will require you to use a relative filename to direct R to how to find that file in the "data" subdirectory of your current working directory. 
+* Assign the data you read in to an R object named `ebola`. How many rows and columns does it have? What are the names of the columns?
+* While staying in the same working directory, used `list.files()` to print the names of the available files in the "data" subdirectory. How about in the "R" subdirectory (if you have one)?
+* Try to list the files in your "data" subdirectory using:
     + A relative pathname
     + An absolute pathname
-* Now move your working directory to be the subdirectory of "data" called "measles_data". Try to read in the Ebola data from this working directory using: 
-    + A relative pathname
-    + An absolute pathname
+* Now use a relative pathname along with `list.files()` to list all the files in the "measles_data" subdirectory. 
+* Then try to read in the Ebola data using the appropriate `readr` function and a relative pathname.
 * Which method (absolute or relative pathnames) always used the same code, regardless of your current working directory? Which method used different code, depending on the starting working directory?
 
-Example R code:
+Read in the ebola data in `country_timeseries.csv` from your current working directory. This will require you to use a relative filename to direct R to how to find that file in the "data" subdirectory of your current working directory. 
 
 ```{r eval = FALSE}
-getwd()  ## Make sure you're in the "data" directory to start
+ebola <- read_csv("data/country_timeseries.csv")
 ```
-```
-## [1] "/Users/brookeanderson/RProgrammingForResearch/data"
-```
-```{r eval = FALSE}
-ebola <- read.csv("country_timeseries.csv", header = TRUE)
-```
-```{r echo = FALSE}
-ebola <- read.csv("data/country_timeseries.csv", header = TRUE)
-```
-```{r}
-ebola[1:5, 1:5]
-dim(ebola) # To figure out number of rows and columns
-colnames(ebola) # To figure out column names
-```
-```{r eval = FALSE}
-## Move up one directory
-setwd("..")
-getwd() 
 
-## Get the file using the relative pathname
-ebola <- read.csv("data/country_timeseries.csv", header = TRUE) 
-```
-```{r}
-ebola[1:5, 1:5]
+How many rows and columns does it have? What are the names of the columns?
 
-## Get the file using the absolute pathname
-abs_path <- paste0("/Users/brookeanderson/RProgrammingForResearch/",
-                   "data/country_timeseries.csv")
-abs_path
+```{r, eval = FALSE}
+dim(ebola)    # Get the dimensions of the data (`nrow` and `ncol` would also work)
+colnames(ebola) # Get the column names (you can also just print the object: `ebola`)
 ```
+
+While staying in the same working directory, used `list.files()` to print the names of the available files in the "data" subdirectory. How about in the "R" subdirectory (if you have one)?
+
 ```{r eval = FALSE}
-ebola <- read.csv(abs_path, header = TRUE) 
+list.files("data")
+list.files("R")
 ```
-```{r}
-ebola[1:5, 1:5]
-```
+
+Try to list the files in your "data" subdirectory using:
+    + A relative pathname
+    + An absolute pathname
+    
 ```{r eval = FALSE}
-## Reset your working directory as your directory for this course
-## and then check that you're in the right place
-getwd()
+list.files("data") # This is using a relative pathname
+list.files("/Users/brookeanderson/Desktop/r_course_2018/data") # Absolute pathname
+     # (Yours will be different and will depend on how your computer file
+     # structure is set up.)
 ```
+
+Now use a relative pathname along with `list.files()` to list all the files in the "measles_data" subdirectory. 
+
+```{r eval = FALSE} 
+list.files("data/measles_data")
 ```
-## [1] "/Users/brookeanderson/RProgrammingForResearch"
-```
+
+Then try to read in the Ebola data using the appropriate `readr` function and a relative pathname
+
 ```{r eval = FALSE}
-## Move into the measles_data subdirectory
-setwd("data/measles_data")
-getwd()
-```
-```
-## [1] "/Users/brookeanderson/RProgrammingForResearch/data/measles_data"
-```
-```{r eval = FALSE}
-## Get the file using the relative pathname
-ebola <- read.csv("../country_timeseries.csv", header = TRUE) 
-```
-```{r}
-ebola[1:5, 1:5]
-```
-```{r eval = FALSE}
-# Get the file using the absolute pathname (note: we've already assigned
-# the absolute pathname in the `abs_path` object, so we can just use that 
-# object in the `read.csv` call here, rather than typing out the full 
-# absolute pathname again.)
-ebola <- read.csv(abs_path, header = TRUE) 
-```
-```{r}
-ebola[1:5, 1:5]
+ebola <- read_csv("data/country_timeseries.csv")
 ```
 
 If you have extra time: 
 
 - Find out some more about this Ebola dataset by checking out [Caitlin Rivers' Ebola data GitHub repository](https://github.com/cmrivers/ebola). Who is Caitlin Rivers? How did she put this dataset together?
 - Search for R code related to Ebola research on GitHub. Go to the [GitHub home page](https://github.com) and use the search bar to search for "ebola". On the results page, scroll down and use the "Language" sidebar on the left to choose repositories with R code. Did you find any interesting projects?
-- When you `list.files()` when your working directory is the "data" directory, almost everything listed has a file extension, like `.csv`, `.xls`, `.sas7bdat`. One thing does not. Which one? Why does this listing not have a file extension?
+- When you `list.files()` for the "data" subdirectory, almost everything listed has a file extension, like `.csv`, `.xls`, `.sas7bdat`. One thing does not. Which one? Why does this listing not have a file extension?
 
 ### Cleaning up data #1
 
@@ -1106,72 +1071,3 @@ ebola_liberia <- read_csv("data/country_timeseries.csv") %>%
 
 head(ebola_liberia)
 ```
-
-### A taste of what's to come...
-
-Here's an example to give you a feel for why it's worth learning all these different things about directories, `list.files`, and pathnames. 
-
-The `measles_data` subdirectory includes counts of measles made at different times in different cities in California. Say that we wanted to read them all in and make put them into one long dataframe with the variables `city`, `count`, and `date`. You can put together the things you've learned so far, along with a few new ideas (including doing a loop), to do this very easily. 
-
-We'll talk more later about using loops and functions to make your programming more efficient, but for right now just look through this code and see if you can get a feel for how it's working (make sure your directory for this course is your working directory):
-
-```{r, fig.width=10, fig.height=4, message = FALSE}
-## Create a vector of all the file names in the `measles_data` subdirectory
-measles_files <- list.files("data/measles_data")
-measles_files
-
-## Create a vector of all the dates for files by taking the 
-## `.txt` off each of these file names and change it into
-## a date
-measles_dates <- sub(".txt", "", measles_files)
-measles_dates
-class(measles_dates)
-measles_dates <- mdy(measles_dates)
-measles_dates
-
-## Before I show the loop, let me talk you through some 
-## of the parts of it:
-i <- 1 # I'm setting the index to 1
-
-## Now I'll use `paste0` to create the first file name
-## I want to read.
-file_name <- paste0("data/measles_data/", measles_files[i])
-file_name
-
-## Now I'll read in that tab-delimited file
-df <- read_tsv(file_name, col_names = c("city", "count"))
-head(df)
-
-## Now I'll add on a column with the date for all the 
-## values from that file. Notice that I'm using `i` to 
-## index this, as well
-
-df <- mutate(df, date = measles_dates[i])
-head(df)
-
-## Loop through and read in files. After the first file,
-## add on the new information to the data that's already 
-## been read in. Note that you can use `rbind` to add on 
-## new rows to a dataframe as long as the new and old rows
-## have the same number of columns and the same column names.
-for(i in 1:length(measles_files)){
-        file_name <- paste0("data/measles_data/", measles_files[i])
-        df <- read_tsv(file_name, col_names = c("city", "count"))
-        df <- mutate(df, date = measles_dates[i])
-        if(i == 1){
-                ca_measles <- df
-        } else { 
-                 ca_measles <- rbind(ca_measles, df)
-                }
-}
-
-dim(ca_measles)
-summary(ca_measles)
-
-library(ggplot2)
-ggplot(subset(ca_measles, city %in% c("LOS ANGELES", "SAN DIEGO", "ORANGE")),
-       aes(x = date, y = count)) + 
-        geom_line()  + 
-        facet_grid(. ~ city)
-```
-
