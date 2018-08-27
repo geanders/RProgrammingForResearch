@@ -466,9 +466,14 @@ ebola[1:3, 1:3]
 
 ## Data cleaning
 
+The following video covers the section on "Data Cleaning":
+
 <iframe width="560" height="315" src="https://www.youtube.com/embed/EUJcgIU8xmY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
-Once you have loaded data into R, you'll likely need to clean it up a little before you're ready to analyze it. Here, I'll go over the first steps of how to do that with functions from `dplyr`, another package in the tidyverse. Here are some of the most common data-cleaning tasks, along with the corresponding `dplyr` function for each: 
+Once you have loaded data into R, you'll likely need to clean it up a little before you're ready to 
+analyze it. Here, I'll go over the first steps of how to do that with functions from `dplyr`, another
+package in the tidyverse. Here are some of the most common data-cleaning tasks, along with the
+corresponding `dplyr` function for each: 
 
 ```{r echo = FALSE}
 dc_func <- data.frame(task = c("Renaming columns",
@@ -502,7 +507,7 @@ head(daily_show)
 A first step is often re-naming the columns of the dataframe. It can be hard to work with a column name that: 
 
 - is long
-- includes spaces
+- includes spaces or other special characters
 - includes upper case
 
 You can check out the column names for a dataframe using the `colnames` function, with the dataframe object as the argument. Several of the column names in `daily_show` have some of these issues: 
@@ -579,10 +584,11 @@ For example, the `job` column in `daily_show` sometimes uses upper case and some
 head(unique(daily_show$job), 10)
 ```
 
-To make all the observations in the `job` column lowercase, use the `tolower` function within a `mutate` function: 
+To make all the observations in the `job` column lowercase, use the `str_to_lower` function from the `stringr` package within a `mutate` function: 
 
 ```{r}
-mutate(daily_show, job = tolower(job))
+library(stringr)
+mutate(daily_show, job = str_to_lower(job))
 ```
 
 ### Base R equivalents to `dplyr` functions
@@ -606,6 +612,9 @@ You will see these alternatives used in older code examples.
 
 ## Dates and filtering
 
+The following video covers the lecture material on working with dates in R and on filtering a dataframe
+to a subset of rows using logical operators:
+
 <iframe width="560" height="315" src="https://www.youtube.com/embed/v-nRrFnYl50" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 ### Dates in R
@@ -628,7 +637,11 @@ To find out the class of a vector (including a column in a dataframe -- remember
 class(daily_show$date)
 ```
 
-It is especially common to need to convert dates during the data cleaning process, since date columns will usually be read into R as characters or factors -- you can do some interesting things with vectors that are in a Date class that you cannot do with a vector in a character class. To convert a vector to the `Date` class, you can use the `as.Date` function. For example, to convert the `date` column in the `daily_show` data into a Date class, you can run:
+It is especially common to need to convert dates during the data cleaning process, since date columns will usually be read into R as characters or factors -- you can do some interesting things with vectors that are in a Date class that you cannot do with a vector in a character class. 
+
+To convert a vector to the `Date` class, if you'd like to only use base R, you can use the `as.Date` function. I'll walk through how to use `as.Date`, since it's often used in older R code. However, I recommend in your own code that you instead use the `lubridate` package, which I'll talk about later in this section. 
+
+For example, to convert the `date` column in the `daily_show` data into a Date class, you can run:
 
 ```{r}
 daily_show <- mutate(daily_show,
@@ -747,8 +760,8 @@ Operator  | Meaning | Example
 `==`      | equals  | `category == "Acting"`
 `!=`      | does not equal | `category != "Comedy`
 `%in%`    | is in | `category %in% c("Academic", "Science")`
-`is.na()` | is NA | `is.na(job)`
-`!is.na()`| is not NA | `!is.na(job)`
+`is.na()` | is missing | `is.na(job)`
+`!is.na()`| is not missing | `!is.na(job)`
 `&`       | and | `year == 2015 & category == "Academic"`
 `|`       | or | `year == 2015 | category == "Academic"`
 
@@ -760,6 +773,8 @@ Two common errors with logical operators are: (1) Using `=` instead of `==` to c
 
 
 ## Piping
+
+The following video covers the lecture material on piping:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6beqELKjuG4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 

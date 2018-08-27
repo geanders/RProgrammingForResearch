@@ -585,6 +585,7 @@ ebola[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span
 </div>
 <div id="data-cleaning" class="section level2">
 <h2><span class="header-section-number">2.4</span> Data cleaning</h2>
+<p>The following video covers the section on “Data Cleaning”:</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/EUJcgIU8xmY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
 <p>Once you have loaded data into R, you’ll likely need to clean it up a little before you’re ready to analyze it. Here, I’ll go over the first steps of how to do that with functions from <code>dplyr</code>, another package in the tidyverse. Here are some of the most common data-cleaning tasks, along with the corresponding <code>dplyr</code> function for each:</p>
@@ -634,7 +635,7 @@ daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span 
 <p>A first step is often re-naming the columns of the dataframe. It can be hard to work with a column name that:</p>
 <ul>
 <li>is long</li>
-<li>includes spaces</li>
+<li>includes spaces or other special characters</li>
 <li>includes upper case</li>
 </ul>
 <p>You can check out the column names for a dataframe using the <code>colnames</code> function, with the dataframe object as the argument. Several of the column names in <code>daily_show</code> have some of these issues:</p>
@@ -716,8 +717,9 @@ Don’t forget that, if you want to change column names in the saved object, you
 ##  [4] &quot;film actress&quot;       &quot;Singer-lyricist&quot;    &quot;model&quot;             
 ##  [7] &quot;stand-up comedian&quot;  &quot;actress&quot;            &quot;comedian&quot;          
 ## [10] &quot;Singer-songwriter&quot;</code></pre>
-<p>To make all the observations in the <code>job</code> column lowercase, use the <code>tolower</code> function within a <code>mutate</code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mutate</span>(daily_show, <span class="dt">job =</span> <span class="kw">tolower</span>(job))</code></pre></div>
+<p>To make all the observations in the <code>job</code> column lowercase, use the <code>str_to_lower</code> function from the <code>stringr</code> package within a <code>mutate</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(stringr)
+<span class="kw">mutate</span>(daily_show, <span class="dt">job =</span> <span class="kw">str_to_lower</span>(job))</code></pre></div>
 <pre><code>## # A tibble: 2,693 x 4
 ##    job                date    category guest_name      
 ##    &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
@@ -767,6 +769,7 @@ Don’t forget that, if you want to change column names in the saved object, you
 </div>
 <div id="dates-and-filtering" class="section level2">
 <h2><span class="header-section-number">2.5</span> Dates and filtering</h2>
+<p>The following video covers the lecture material on working with dates in R and on filtering a dataframe to a subset of rows using logical operators:</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/v-nRrFnYl50" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
 <div id="dates-in-r" class="section level3">
@@ -806,7 +809,9 @@ Don’t forget that, if you want to change column names in the saved object, you
 <p>To find out the class of a vector (including a column in a dataframe – remember each column can be thought of as a vector), you can use <code>class()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(daily_show<span class="op">$</span>date)</code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<p>It is especially common to need to convert dates during the data cleaning process, since date columns will usually be read into R as characters or factors – you can do some interesting things with vectors that are in a Date class that you cannot do with a vector in a character class. To convert a vector to the <code>Date</code> class, you can use the <code>as.Date</code> function. For example, to convert the <code>date</code> column in the <code>daily_show</code> data into a Date class, you can run:</p>
+<p>It is especially common to need to convert dates during the data cleaning process, since date columns will usually be read into R as characters or factors – you can do some interesting things with vectors that are in a Date class that you cannot do with a vector in a character class.</p>
+<p>To convert a vector to the <code>Date</code> class, if you’d like to only use base R, you can use the <code>as.Date</code> function. I’ll walk through how to use <code>as.Date</code>, since it’s often used in older R code. However, I recommend in your own code that you instead use the <code>lubridate</code> package, which I’ll talk about later in this section.</p>
+<p>For example, to convert the <code>date</code> column in the <code>daily_show</code> data into a Date class, you can run:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">daily_show &lt;-<span class="st"> </span><span class="kw">mutate</span>(daily_show,
                      <span class="dt">date =</span> <span class="kw">as.Date</span>(date, <span class="dt">format =</span> <span class="st">&quot;%m/%d/%y&quot;</span>))
 <span class="kw">head</span>(daily_show, <span class="dv">3</span>)</code></pre></div>
@@ -997,12 +1002,12 @@ You must use the <code>format</code> argument to specify what your date column l
 </tr>
 <tr class="even">
 <td><code>is.na()</code></td>
-<td>is NA</td>
+<td>is missing</td>
 <td><code>is.na(job)</code></td>
 </tr>
 <tr class="odd">
 <td><code>!is.na()</code></td>
-<td>is not NA</td>
+<td>is not missing</td>
 <td><code>!is.na(job)</code></td>
 </tr>
 <tr class="even">
@@ -1027,6 +1032,7 @@ Two common errors with logical operators are: (1) Using <code>=</code> instead o
 </div>
 <div id="piping" class="section level2">
 <h2><span class="header-section-number">2.6</span> Piping</h2>
+<p>The following video covers the lecture material on piping:</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6beqELKjuG4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
 <p>So far, I’ve shown how to use these <code>dplyr</code> functions one at a time to clean up the data, reassigning the dataframe object at each step. However, there’s a trick called “piping” that will let you clean up your code a bit when you’re writing a script to clean data.</p>
