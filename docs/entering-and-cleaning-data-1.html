@@ -167,16 +167,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="2.1" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
 <li class="chapter" data-level="2.2" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#reading-data-into-r"><i class="fa fa-check"></i><b>2.2</b> Reading data into R</a><ul>
 <li class="chapter" data-level="2.2.1" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#reading-local-flat-files"><i class="fa fa-check"></i><b>2.2.1</b> Reading local flat files</a></li>
-<li class="chapter" data-level="2.2.2" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#the-read_-functions"><i class="fa fa-check"></i><b>2.2.2</b> The <code>read_*</code> functions</a></li>
-<li class="chapter" data-level="2.2.3" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#reading-online-flat-files"><i class="fa fa-check"></i><b>2.2.3</b> Reading online flat files</a></li>
-<li class="chapter" data-level="2.2.4" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#saving-and-loading-r-objects"><i class="fa fa-check"></i><b>2.2.4</b> Saving and loading R objects</a></li>
-<li class="chapter" data-level="2.2.5" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#reading-other-file-types"><i class="fa fa-check"></i><b>2.2.5</b> Reading other file types</a></li>
+<li class="chapter" data-level="2.2.2" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#reading-in-other-file-types"><i class="fa fa-check"></i><b>2.2.2</b> Reading in other file types</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#directories-and-pathnames"><i class="fa fa-check"></i><b>2.3</b> Directories and pathnames</a><ul>
 <li class="chapter" data-level="2.3.1" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#directory-structure"><i class="fa fa-check"></i><b>2.3.1</b> Directory structure</a></li>
 <li class="chapter" data-level="2.3.2" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#working-directory"><i class="fa fa-check"></i><b>2.3.2</b> Working directory</a></li>
 <li class="chapter" data-level="2.3.3" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#file-and-directory-pathnames"><i class="fa fa-check"></i><b>2.3.3</b> File and directory pathnames</a></li>
 <li class="chapter" data-level="2.3.4" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#diversion-paste"><i class="fa fa-check"></i><b>2.3.4</b> Diversion: <code>paste</code></a></li>
+<li class="chapter" data-level="2.3.5" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#reading-online-flat-files"><i class="fa fa-check"></i><b>2.3.5</b> Reading online flat files</a></li>
 </ul></li>
 <li class="chapter" data-level="2.4" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#data-cleaning"><i class="fa fa-check"></i><b>2.4</b> Data cleaning</a><ul>
 <li class="chapter" data-level="2.4.1" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#renaming-columns"><i class="fa fa-check"></i><b>2.4.1</b> Renaming columns</a></li>
@@ -249,7 +247,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>There are four basic steps you will often repeat as you prepare to analyze data in R:</p>
 <ol style="list-style-type: decimal">
 <li>Identify where the data is (If it’s on your computer, which directory? If it’s online, what’s the url?)</li>
-<li>Read data into R (<code>read.csv</code>, <code>read.table</code>) using the file path you figured out in step 1</li>
+<li>Read data into R (e.g., <code>read_delim</code>, <code>read_csv</code> from the <code>readr</code> package) using the file path you figured out in step 1</li>
 <li>Check to make sure the data came in correctly (<code>dim</code>, <code>head</code>, <code>tail</code>, <code>str</code>)</li>
 <li>Clean the data up</li>
 </ol>
@@ -257,6 +255,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="reading-data-into-r" class="section level2">
 <h2><span class="header-section-number">2.2</span> Reading data into R</h2>
+<p>The following video covers the slides in this section on “Reading data into R”:</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/JJr_ZPIx_ok" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
 <p>Data comes in files of all shapes and sizes. R has the capability to read data in from many of these, even proprietary files for other software (e.g., Excel and SAS files). As a small sample, here are some of the types of data files that R can read and work with:</p>
@@ -275,8 +274,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h3><span class="header-section-number">2.2.1</span> Reading local flat files</h3>
 <p>Much of the data that you will want to read in will be in flat files. Basically, these are files that you can open using a text editor; the most common type you’ll work with are probably comma-separated files (often with a <code>.csv</code> or <code>.txt</code> file extension). Most flat files come in two general categories:</p>
 <ol style="list-style-type: decimal">
-<li><p>Fixed width files</p></li>
-<li><p>Delimited files</p></li>
+<li><p>Fixed width files; and</p></li>
+<li><p>Delimited files:</p></li>
 </ol>
 <ul>
 <li>“.csv”: Comma-separated values</li>
@@ -284,6 +283,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>Other possible delimiters: colon, semicolon, pipe (“|”)</li>
 </ul>
 <p><em>Fixed width files</em> are files where a column always has the same width, for all the rows in the column. These tend to look very neat and easy-to-read when you open them in a text editor. For example, the first few rows of a fixed-width file might look like this:</p>
+<p>Fixed width files used to be very popular, and they make it easier to look at data when you open the file in a text editor. However, now it’s pretty rare to just use a text editor to open a file and check out the data, and these files can be a bit of a pain to read into R and other programs because you sometimes have to specify exactly how wide each of the columns is. You may come across a fixed width file every now and then, though, particularly when working with older data sets, so it’s useful to be able to recognize one and to know how to read it in.</p>
 <pre><code>Course            Number          Day          Time
 Intro to Epi      501             M/W/F        9:00-9:50
 Advanced Epi      521             T/Th         1:00-2:15</code></pre>
@@ -291,182 +291,128 @@ Advanced Epi      521             T/Th         1:00-2:15</code></pre>
 <pre><code>Course, Number, Day, Time
 &quot;Intro to Epi&quot;, 501, &quot;M/W/F&quot;, &quot;9:00-9:50&quot;
 &quot;Advanced Epi&quot;, 521, &quot;T/Th&quot;, &quot;1:00-2:15&quot;</code></pre>
+<p>Delimited files are very easy to read into R. You just need to be able to figure out what character is used as a delimiter (commas in the example above) and specify that to R in the function call to read in the data.</p>
 <p>These flat files can have a number of different file extensions. The most generic is <code>.txt</code>, but they will also have ones more specific to their format, like <code>.csv</code> for a comma-delimited file or <code>.fwf</code> for a fixed with file.</p>
 <p>R can read in data from both fixed with and delimited flat files. The only catch is that you need to tell R a bit more about the format of the flat file, including whether it is fixed width or delimited. If the file is fixed width, you will usually have to tell R the width of each column. If the file is delimited, you’ll need to tell R which delimiter is being used.</p>
-<p>If the file is delimited, you can use the <code>read.table</code> family of functions to read it in. This family of functions includes several specialized functions. All members of the <code>read.table</code> family are doing the same basic thing. The only difference is what defaults each function has for the separator (<code>sep</code>) and the decimal point (<code>dec</code>). Members of the <code>read.table</code> family include:</p>
+<p>If the file is delimited, you can use the <code>read_delim</code> family of functions from the <code>readr</code> package to read it in. This family of functions includes several specialized functions. All members of the <code>read_delim</code> family are doing the same basic thing. The only difference is what defaults each function has for the delimiter (<code>delim</code>). Members of the <code>read_delim</code> family include:</p>
 <table>
 <thead>
 <tr class="header">
-<th align="left">Function</th>
-<th align="left">Separator</th>
-<th align="left">Decimial point</th>
+<th>Function</th>
+<th>Delimiter</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left"><code>read.table</code></td>
-<td align="left">comma</td>
-<td align="left">period</td>
+<td><code>read_csv</code></td>
+<td>comma</td>
 </tr>
 <tr class="even">
-<td align="left"><code>read.csv</code></td>
-<td align="left">comma</td>
-<td align="left">period</td>
+<td><code>read_csv2</code></td>
+<td>semi-colon</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>read.csv2</code></td>
-<td align="left">semi-colon</td>
-<td align="left">comma</td>
+<td><code>read_table2</code></td>
+<td>whitespace</td>
 </tr>
 <tr class="even">
-<td align="left"><code>read.delim</code></td>
-<td align="left">tab</td>
-<td align="left">period</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>read.delim2</code></td>
-<td align="left">tab</td>
-<td align="left">period</td>
+<td><code>read_tsv</code></td>
+<td>tab</td>
 </tr>
 </tbody>
 </table>
-<p>You can use <code>read.table</code> to read in any delimited file, regardless of the separator and the value used for the decimal point. However, you will need to specify these values using the <code>sep</code> and <code>dec</code> parameters if they differ from the defaults for <code>read.table</code> (a space for the delimiter and period for the decimal). If you remember the more specialized function call, therefore, you can save yourself some typing. There are a few other default values besides <code>sep</code> and <code>dec</code> that differ between different functions in this family: <code>header</code>, for example, specifies whether the first row should be used as column names.</p>
-<p>For example, to read in the Ebola data, which is comma-delimited, you could either use <code>read.table</code> with a <code>sep</code> argument specified or use <code>read.csv</code>, in which case you don’t have to specify <code>sep</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># These two calls do the same thing</span>
-ebola &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>,
-                    <span class="dt">header =</span> <span class="ot">TRUE</span>)
-ebola &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>)</code></pre></div>
-<p>These functions have a number of different parameters to help you tell R how to read in data. For example, if the first few lines of the file aren’t part of the tabular data, you can tell R how many rows of the file to skip before it starts reading in the data. If the data uses an unusual value for missing data (e.g., -999), you can specify that, as well. Some of the interesting parameters with the <code>read.table</code> family of functions are:</p>
+<p>You can use <code>read_delim</code> to read in any delimited file, regardless of the delimiter. However, you will need to specify the delimiter using the <code>delim</code> parameters. If you remember the more specialized function call (e.g., <code>read_csv</code> for a comma delimited file), therefore, you can save yourself some typing.</p>
+<p>For example, to read in the Ebola data, which is comma-delimited, you could either use <code>read_table</code> with a <code>delim</code> argument specified or use <code>read_csv</code>, in which case you don’t have to specify <code>delim</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(readr)
+
+<span class="co"># The following two calls do the same thing</span>
+ebola &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>, <span class="dt">delim =</span> <span class="st">&quot;,&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Date = col_character(),
+##   Day = col_integer(),
+##   Cases_Guinea = col_integer(),
+##   Cases_Liberia = col_integer(),
+##   Cases_SierraLeone = col_integer(),
+##   Cases_Nigeria = col_integer(),
+##   Cases_Senegal = col_integer(),
+##   Cases_UnitedStates = col_integer(),
+##   Cases_Spain = col_integer(),
+##   Cases_Mali = col_integer(),
+##   Deaths_Guinea = col_integer(),
+##   Deaths_Liberia = col_integer(),
+##   Deaths_SierraLeone = col_integer(),
+##   Deaths_Nigeria = col_integer(),
+##   Deaths_Senegal = col_integer(),
+##   Deaths_UnitedStates = col_integer(),
+##   Deaths_Spain = col_integer(),
+##   Deaths_Mali = col_integer()
+## )</code></pre>
+<div class="rmdtip">
+<p>
+The message that R prints after this call (“Parsed with column specification:..”) lets you know what classes were used for each column (this function tries to guess the appropriate class and typically gets it right).
+</p>
+<p>
+If <code>readr</code> doesn’t correctly guess some of the columns classes you can use the <code>type_convert()</code> function to take another go at guessing them after you’ve tweaked the formats of the rogue columns.
+</p>
+</div>
+<p>This family of functions has a few other helpful options you can specify. For example, if you want to skip the first few lines of a file before you start reading in the data, you can use <code>skip</code> to set the number of lines to skip. If you only want to read in a few lines of the data, you can use the <code>n_max</code> option. For example, if you have a really long file, and you want to save time by only reading in the first ten lines as you figure out what other options to use in <code>read_delim</code> for that file, you could include the option <code>n_max = 10</code> in the <code>read_delim</code> call. Here is a table of some of the most useful options common to the <code>read_delim</code> family of functions:</p>
 <table>
 <thead>
 <tr class="header">
-<th align="left">Option</th>
-<th align="left">Description</th>
+<th>Option</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left"><code>sep</code></td>
-<td align="left">What is the delimiter in the data?</td>
+<td><code>skip</code></td>
+<td>How many lines of the start of the file should you skip?</td>
 </tr>
 <tr class="even">
-<td align="left"><code>skip</code></td>
-<td align="left">How many lines of the start of the file should you skip?</td>
+<td><code>col_names</code></td>
+<td>What would you like to use as the column names?</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>header</code></td>
-<td align="left">Does the first line you read give column names?</td>
+<td><code>col_types</code></td>
+<td>What would you like to use as the column types?</td>
 </tr>
 <tr class="even">
-<td align="left"><code>as.is</code></td>
-<td align="left">Should you bring in strings as characters, not factors?</td>
+<td><code>n_max</code></td>
+<td>How many rows do you want to read in?</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>nrows</code></td>
-<td align="left">How many rows do you want to read in?</td>
-</tr>
-<tr class="even">
-<td align="left"><code>na.strings</code></td>
-<td align="left">How are missing values coded?</td>
+<td><code>na</code></td>
+<td>How are missing values coded?</td>
 </tr>
 </tbody>
 </table>
 <div class="rmdnote">
 <p>
-Remember that you can always find out more about a function by looking at its help file. For example, check out <code>?read.table</code> and <code>?read.fwf</code>. You can also use the help files to determine the default values of arguments for each function.
+Remember that you can always find out more about a function by looking at its help file. For example, check out <code>?read_delim</code> and <code>?read_fwf</code>. You can also use the help files to determine the default values of arguments for each function.
 </p>
 </div>
-</div>
-<div id="the-read_-functions" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> The <code>read_*</code> functions</h3>
-<p>The <code>read.table</code> family of functions are part of base R. There is a newer package called <code>readr</code> that has a family of <code>read_*</code> functions. These functions are very similar, but have some more sensible defaults. Compared to the <code>read.table</code> family of functions, the <code>read_*</code> functions:</p>
+<p>So far, we’ve only looked at functions from the <code>readr</code> package for reading in data files. There is a similar family of functions available in base R, the <code>read.table</code> family of functions. The <code>readr</code> family of functions is very similar to the base R <code>read.table</code> functions, but have some more sensible defaults. Compared to the <code>read.table</code> family of functions, the <code>readr</code> functions:</p>
 <ul>
 <li>Work better with large datasets: faster, includes progress bar</li>
 <li>Have more sensible defaults (e.g., characters default to characters, not factors)</li>
 </ul>
-<p>Functions in the <code>read_*</code> family include:</p>
+<p>I recommend that you always use the <code>readr</code> functions rather than their base R alternatives, given these advantages. However, you are likely to come across code that someone else has written that uses one of these base R functions, so it’s helpful to know what they are. Functions in the <code>read.table</code> family include:</p>
 <ul>
-<li><code>read_csv</code>, <code>read_tsv</code> (specific delimiters)</li>
-<li><code>read_delim</code>, <code>read_table</code> (generic)</li>
-<li><code>read_fwf</code></li>
-<li><code>read_log</code></li>
-<li><code>read_lines</code></li>
+<li><code>read.csv</code></li>
+<li><code>read.delim</code></li>
+<li><code>read.table</code></li>
+<li><code>read.fwf</code></li>
 </ul>
-<p>These functions work very similarly to functions from the <code>read.table</code> family. For example, to read in the Daily Show guest data, you can call:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(readr)
-daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/daily_show_guests.csv&quot;</span>, <span class="dt">skip =</span> <span class="dv">4</span>)</code></pre></div>
-<pre><code>## Parsed with column specification:
-## cols(
-##   YEAR = col_integer(),
-##   GoogleKnowlege_Occupation = col_character(),
-##   Show = col_character(),
-##   Group = col_character(),
-##   Raw_Guest_List = col_character()
-## )</code></pre>
-<p>The message that R prints after this call (“Parsed with column specification:..”) lets you know what classes R used for each column (this function tries to guess the appropriate function and, unlike the <code>readr</code> functions, will assign characters to a character rather than factor class – this is usually what you want).</p>
 <div class="rmdnote">
 <p>
-The <code>readr</code> package is a member of the tidyverse of packages. The <em>tidyverse</em> describes an evolving collection of R packages with a common philosophy, and they are unquestionably changing the way people code in R. Most were developed in part or full by Hadley Wickham and others at RStudio. Many of these packages are only a few years old, but have been rapidly adapted by the R community. As a result, newer examples of R code will often look very different from the code in older R scripts, including examples in books that are more than a few years old. In this course, I’ll focus on “tidyverse” functions when possible, but I do put in details about base R equivalent functions or processes at some points – this will help you interpret older code. You can use the <code>tidyverse</code> package to download all tidyverse packages at one.
-</p>
-</div>
-<div class="rmdtip">
-<p>
-If <code>readr</code> doesn’t guess some of the columns classes you can use the <code>type_convert()</code> function to take another go at guessing them after you’ve tweaked the formats of the rogue columns.
+The <code>readr</code> package is a member of the tidyverse of packages. The <em>tidyverse</em> describes an evolving collection of R packages with a common philosophy, and they are unquestionably changing the way people code in R. Many were developed in part or full by Hadley Wickham and others at RStudio. Many of these packages are less than ten years old, but have been rapidly adapted by the R community. As a result, newer examples of R code will often look very different from the code in older R scripts, including examples in books that are more than a few years old. In this course, I’ll focus on “tidyverse” functions when possible, but I do put in details about base R equivalent functions or processes at some points—this will help you interpret older code. You can use the <code>tidyverse</code> package to download all tidyverse packages at one.
 </p>
 </div>
 </div>
-<div id="reading-online-flat-files" class="section level3">
-<h3><span class="header-section-number">2.2.3</span> Reading online flat files</h3>
-<p>So far, I’ve only shown you how to read in data from files that are saved to your computer. R can also read in data directly from the web. If a flat file is posted online, you can read it into R in almost exactly the same way that you would read in a local file. The only difference is that you will use the file’s url instead of a local file path for the <code>file</code> argument.</p>
-<p>With the <code>read_*</code> family of functions, you can do this both for flat files from a non-secure webpage (i.e., one that starts with <code>http</code>) and for files from a secure webpage (i.e., one that starts with <code>https</code>), including GitHub and Dropbox.</p>
-<p>For example, to read in data from this <a href="https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv">GitHub repository of Ebola data</a>, you can run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">url &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;https://raw.githubusercontent.com/cmrivers/&quot;</span>,
-              <span class="st">&quot;ebola/master/country_timeseries.csv&quot;</span>)
-ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(url)
-ebola[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</code></pre></div>
-<pre><code>## # A tibble: 3 x 3
-##   Date       Day Cases_Guinea
-##   &lt;chr&gt;    &lt;int&gt;        &lt;int&gt;
-## 1 1/5/2015   289         2776
-## 2 1/4/2015   288         2775
-## 3 1/3/2015   287         2769</code></pre>
-</div>
-<div id="saving-and-loading-r-objects" class="section level3">
-<h3><span class="header-section-number">2.2.4</span> Saving and loading R objects</h3>
-<p>You can save an R object you’ve created as an <code>.RData</code> file.</p>
-<p>To save an R object in a <code>.RData</code> file, use the <code>save</code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">save</span>(ebola, <span class="dt">file =</span> <span class="st">&quot;Ebola.RData&quot;</span>)
-<span class="kw">list.files</span>()</code></pre></div>
-<pre><code>##  [1] &quot;_book&quot;                         &quot;_bookdown.yml&quot;                
-##  [3] &quot;_build.sh&quot;                     &quot;_deploy.sh&quot;                   
-##  [5] &quot;_output.yml&quot;                   &quot;01-course_info.Rmd&quot;           
-##  [7] &quot;02-prelim.Rmd&quot;                 &quot;03-databasics.Rmd&quot;            
-##  [9] &quot;book.bib&quot;                      &quot;data&quot;                         
-## [11] &quot;DESCRIPTION&quot;                   &quot;Ebola.RData&quot;                  
-## [13] &quot;figures&quot;                       &quot;homework.Rmd&quot;                 
-## [15] &quot;index.Rmd&quot;                     &quot;LICENSE&quot;                      
-## [17] &quot;packages.bib&quot;                  &quot;preamble.tex&quot;                 
-## [19] &quot;README.md&quot;                     &quot;references.Rmd&quot;               
-## [21] &quot;RProgrammingForResearch.Rmd&quot;   &quot;RProgrammingForResearch.Rproj&quot;
-## [23] &quot;slides&quot;                        &quot;style.css&quot;                    
-## [25] &quot;toc.css&quot;                       &quot;vocabulary.Rmd&quot;</code></pre>
-<p>Notice that, once you save the object, a new file named “Ebola.RData” is listed in the files in your current working directory. The default is for R to save the R object in your current working directory; to save it elsewhere, use a full relative or absolute pathname for the <code>file</code> argument.</p>
-<p>Once you’ve saved an R object, you can re-load it later using the <code>load</code> function with the object’s file path. For example, since I’ve saved this R object, I can remove it from my current R workspace using the <code>rm</code> function, after which it will not show up when I run <code>ls</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(ebola)
-<span class="kw">ls</span>()</code></pre></div>
-<pre><code>## [1] &quot;ld_genetics&quot; &quot;my_dir&quot;      &quot;url&quot;</code></pre>
-<p>Then I can use the <code>load</code> command to re-load the object, after which it will again show up as an object in my R workspace:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&quot;Ebola.RData&quot;</span>)
-<span class="kw">ls</span>()</code></pre></div>
-<pre><code>## [1] &quot;ebola&quot;       &quot;ld_genetics&quot; &quot;my_dir&quot;      &quot;url&quot;</code></pre>
-<p>There is one caveat for saving R objects: some people suggest you avoid this if possible, to make your research more reproducible (which is why we’re not covering it in the course slides). Imagine someone wants to look at your data and code in 30 years. R might not work the same way, so you might not be able to read an <code>.RData</code> file. Notice that, if you try to open an <code>.RData</code> file in a text edit, it won’t make any sense. However, you can open flat files (e.g., <code>.csv</code>, <code>.txt</code>) and R scripts (<code>.R</code>) in text editors – you should still be able to do this regardless of what happens to R. Some potential exceptions, when it might be useful to save an R object, include when:</p>
-<ul>
-<li>You have an object that you need to save that has a structure that won’t work well in a flat file (a list rather than a dataframe, for example); or</li>
-<li>Your starting dataset is very large, and it would take a long time for you to read in your data fresh every time. In this case it may make sense to do some data cleaning and then save the cleaned R object as a <code>.RData</code> file, but be sure to also save the script you used to clean the raw data.</li>
-</ul>
-</div>
-<div id="reading-other-file-types" class="section level3">
-<h3><span class="header-section-number">2.2.5</span> Reading other file types</h3>
+<div id="reading-in-other-file-types" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Reading in other file types</h3>
 <p>Later in the course, we’ll talk about how to open a variety of other file types in R. However, you might find it immediately useful to be able to read in files from other statistical programs.</p>
 <p>There are two “tidyverse” packages—<code>readxl</code> and <code>haven</code>—that help with this. They allow you to read in files from the following formats:</p>
 <table>
@@ -624,6 +570,22 @@ heat_mort &lt;- read.csv(my_file)</code></pre>
                   &quot;RCourseFall2015/CourseText/heat_mort.csv&quot;)
 heat_mort &lt;- read.csv(my_file)</code></pre>
 <p>You will end up using <code>paste()</code> and <code>paste0()</code> for many other applications, but this is a good example of how you can start using these functions to start to get a feel for them.</p>
+</div>
+<div id="reading-online-flat-files" class="section level3">
+<h3><span class="header-section-number">2.3.5</span> Reading online flat files</h3>
+<p>So far, I’ve only shown you how to read in data from files that are saved to your computer. R can also read in data directly from the web. If a flat file is posted online, you can read it into R in almost exactly the same way that you would read in a local file. The only difference is that you will use the file’s url instead of a local file path for the <code>file</code> argument.</p>
+<p>With the <code>read_*</code> family of functions, you can do this both for flat files from a non-secure webpage (i.e., one that starts with <code>http</code>) and for files from a secure webpage (i.e., one that starts with <code>https</code>), including GitHub and Dropbox.</p>
+<p>For example, to read in data from this <a href="https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv">GitHub repository of Ebola data</a>, you can run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">url &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;https://raw.githubusercontent.com/cmrivers/&quot;</span>,
+              <span class="st">&quot;ebola/master/country_timeseries.csv&quot;</span>)
+ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(url)
+ebola[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   Date       Day Cases_Guinea
+##   &lt;chr&gt;    &lt;int&gt;        &lt;int&gt;
+## 1 1/5/2015   289         2776
+## 2 1/4/2015   288         2775
+## 3 1/3/2015   287         2769</code></pre>
 </div>
 </div>
 <div id="data-cleaning" class="section level2">
@@ -1405,7 +1367,7 @@ first_five <span class="co"># Two days tied for the highest deaths counts (Jan. 
 <p>Example R code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plot the data
 <span class="kw">plot</span>(ebola_liberia<span class="op">$</span>date, ebola_liberia<span class="op">$</span>cases)</code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-149-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-144-1.png" width="672" /></p>
 </div>
 <div id="piping-1" class="section level3">
 <h3><span class="header-section-number">2.7.6</span> Piping</h3>

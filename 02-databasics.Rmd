@@ -9,13 +9,15 @@
 There are four basic steps you will often repeat as you prepare to analyze data in R: 
 
 1. Identify where the data is (If it's on your computer, which directory? If it's online, what's the url?)
-2. Read data into R (`read.csv`, `read.table`) using the file path you figured out in step 1
+2. Read data into R (e.g., `read_delim`, `read_csv` from the `readr` package) using the file path you figured out in step 1
 3. Check to make sure the data came in correctly (`dim`, `head`, `tail`, `str`)
 4. Clean the data up 
 
 In this chapter, I'll go basics for each of these steps, as well as dive a bit deeper into some related topics you should learn now to make your life easier as you get started using R for research.
 
 ## Reading data into R
+
+The following video covers the slides in this section on "Reading data into R":
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/JJr_ZPIx_ok" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
@@ -36,15 +38,23 @@ Often, it is possible to read in and clean up even incredibly messy data, by usi
 
 Much of the data that you will want to read in will be in flat files. Basically, these are files that you can open using a text editor; the most common type you'll work with are probably comma-separated files (often with a `.csv` or `.txt` file extension). Most flat files come in two general categories:
 
-1. Fixed width files
+1. Fixed width files; and
 
-2. Delimited files 
+2. Delimited files: 
 
 - ".csv": Comma-separated values
 - ".tab", ".tsv": Tab-separated values
 - Other possible delimiters: colon, semicolon, pipe ("|")
 
 *Fixed width files* are files where a column always has the same width, for all the rows in the column. These tend to look very neat and easy-to-read when you open them in a text editor. For example, the first few rows of a fixed-width file might look like this: 
+
+Fixed width files used to be very popular, and they make it easier to look at data
+when you open the file in a text editor. However, now it's pretty rare to just use 
+a text editor to open a file and check out the data, and these files can be a bit 
+of a pain to read into R and other programs because you sometimes have to specify 
+exactly how wide each of the columns is. You may come across a fixed width file 
+every now and then, though, particularly when working with older data sets, so it's 
+useful to be able to recognize one and to know how to read it in.
 
 ```
 Course            Number          Day          Time
@@ -60,159 +70,109 @@ Course, Number, Day, Time
 "Advanced Epi", 521, "T/Th", "1:00-2:15"
 ```
 
+Delimited files are very easy to read into R. You just need to be able to figure out 
+what character is used as a delimiter (commas in the example above) and specify that
+to R in the function call to read in the data. 
+
 These flat files can have a number of different file extensions. The most generic is `.txt`, but they will also have ones more specific to their format, like `.csv` for a comma-delimited file or `.fwf` for a fixed with file.
 
 R can read in data from both fixed with and delimited flat files. The only catch is that you need to tell R a bit more about the format of the flat file, including whether it is fixed width or delimited. If the file is fixed width, you will usually have to tell R the width of each column. If the file is delimited, you'll need to tell R which delimiter is being used. 
 
-If the file is delimited, you can use the `read.table` family of functions to read it in. This family of functions includes several specialized functions. All members of the `read.table` family are doing the same basic thing. The only difference is what defaults each function has for the separator (`sep`) and the decimal point (`dec`). Members of the `read.table` family include:
+If the file is delimited, you can use the `read_delim` family of functions from the 
+`readr` package to read it in. This family of functions includes several specialized
+functions. All members of the `read_delim` family are doing the same basic thing. The
+only difference is what defaults each function has for the delimiter (`delim`). 
+Members of the `read_delim` family include:
 
-```{r echo = FALSE}
-read.table.funcs <- data.frame(func = c("`read.table`", "`read.csv`", "`read.csv2`",
-                                        "`read.delim`", "`read.delim2`"),
-                               sep = c("comma", "comma", "semi-colon", 
-                                       "tab", "tab"),
-                               dec = c("period", "period", "comma", 
-                                       "period", "period"))
-knitr::kable(read.table.funcs, col.names = c("Function", "Separator", "Decimial point"))
+Function     | Delimiter
+------------ | ---------- 
+`read_csv`    |  comma     
+`read_csv2`   | semi-colon 
+`read_table2` | whitespace
+`read_tsv`    | tab
+
+You can use `read_delim` to read in any delimited file, regardless of the delimiter.
+However, you will need to specify the delimiter using the `delim` parameters. If you
+remember the more specialized function call (e.g., `read_csv` for a comma delimited
+file), therefore, you can save yourself some typing. 
+
+For example, to read in the Ebola data, which is comma-delimited, you could either use `read_table` with a `delim` argument specified or use `read_csv`, in which case you don't have to specify `delim`:
+
+```{r, message = FALSE}
+library(readr)
+
+# The following two calls do the same thing
+ebola <- read_delim("data/country_timeseries.csv", delim = ",")
 ```
-
-You can use `read.table` to read in any delimited file, regardless of the separator and the value used for the decimal point. However, you will need to specify these values using the `sep` and `dec` parameters if they differ from the defaults for `read.table` (a space for the delimiter and period for the decimal). If you remember the more specialized function call, therefore, you can save yourself some typing. There are a few other default values besides `sep` and `dec` that differ between different functions in this family: `header`, for example, specifies whether the first row should be used as column names.
-
-For example, to read in the Ebola data, which is comma-delimited, you could either use `read.table` with a `sep` argument specified or use `read.csv`, in which case you don't have to specify `sep`:
-
 ```{r}
-# These two calls do the same thing
-ebola <- read.table("data/country_timeseries.csv", sep = ",",
-                    header = TRUE)
-ebola <- read.csv("data/country_timeseries.csv")
+ebola <- read_csv("data/country_timeseries.csv")
 ```
 
-These functions have a number of different parameters to help you tell R how to read in data. For example, if the first few lines of the file aren't part of the tabular data, you can tell R how many rows of the file to skip before it starts reading in the data. If the data uses an unusual value for missing data (e.g., -999), you can specify that, as well. Some of the interesting parameters with the `read.table` family of functions are:
+```{block, type = 'rmdtip'}
+The message that R prints after this call ("Parsed with column specification:.. ") lets
+you know what classes were used for each column (this function tries to guess the
+appropriate class and typically gets it right).
 
-```{r echo = FALSE}
-read.table_opts <- data.frame(Option = c("`sep`",
-                                         "`skip`", 
-                                         "`header`",
-                                         "`as.is`",
-                                         "`nrows`", 
-                                         "`na.strings`"),
-                              Description = c("What is the delimiter in the data?",
-                                              "How many lines of the start of the file should you skip?", 
-                                              "Does the first line you read give column names?", 
-                                              "Should you bring in strings as characters, not factors?", 
-                                              "How many rows do you want to read in?", 
-                                              "How are missing values coded?"))
-knitr::kable(read.table_opts)
+If `readr` doesn't correctly guess some of the columns classes you can use the
+`type_convert()` function to take another go at guessing them after you've tweaked the
+formats of the rogue columns.
 ```
+
+This family of functions has a few other helpful options you can specify. For example,
+if you want to skip the first few lines of a file before you start reading in the data,
+you can use `skip` to set the number of lines to skip. If you only want to read in 
+a few lines of the data, you can use the `n_max` option. For example, if you have a 
+really long file, and you want to save time by only reading in the first ten lines
+as you figure out what other options to use in `read_delim` for that file, you could
+include the option `n_max = 10` in the `read_delim` call. Here is a table of some of
+the most useful options common to the `read_delim` family of functions: 
+
+Option  | Description
+------- | -----------
+`skip`    | How many lines of the start of the file should you skip?
+`col_names`  | What would you like to use as the column names?
+`col_types`   | What would you like to use as the column types?
+`n_max`   | How many rows do you want to read in?
+`na` | How are missing values coded?
+
 
 ```{block, type = 'rmdnote'}
-Remember that you can always find out more about a function by looking at its help file. For example, check out `?read.table` and `?read.fwf`. You can also use the help files to determine the default values of arguments for each function.
+Remember that you can always find out more about a function by looking at its help file. For example, check out `?read_delim` and `?read_fwf`. You can also use the help files to determine the default values of arguments for each function.
 ```
 
-### The `read_*` functions
-
-The `read.table` family of functions are part of base R. There is a newer package called `readr` that has a family of `read_*` functions. These functions are very similar, but have some more sensible defaults. Compared to the `read.table` family of functions, the `read_*` functions: 
+So far, we've only looked at functions from the `readr` package for reading in data
+files. There is a similar family of functions available in base R, the `read.table`
+family of functions. The `readr` family of functions is very similar to the base R 
+`read.table` functions, but have some more sensible defaults. Compared to the
+`read.table` family of functions, the `readr` functions: 
 
 - Work better with large datasets: faster, includes progress bar
 - Have more sensible defaults (e.g., characters default to characters, not factors)
 
-Functions in the `read_*` family include:
+I recommend that you always use the `readr` functions rather than their base R 
+alternatives, given these advantages. However, you are likely to come across code
+that someone else has written that uses one of these base R functions, so it's 
+helpful to know what they are. Functions in the `read.table` family include:
 
-- `read_csv`, `read_tsv` (specific delimiters)
-- `read_delim`, `read_table` (generic)
-- `read_fwf`
-- `read_log`
-- `read_lines`
-
-These functions work very similarly to functions from the `read.table` family. For example, to read in the Daily Show guest data, you can call: 
-
-```{r}
-library(readr)
-daily_show <- read_csv("data/daily_show_guests.csv", skip = 4)
-```
-
-The message that R prints after this call ("Parsed with column specification:.. ") lets you know what classes R used for each column (this function tries to guess the appropriate function and, unlike the `readr` functions, will assign characters to a character rather than factor class -- this is usually what you want).
+- `read.csv`
+- `read.delim`
+- `read.table` 
+- `read.fwf`
 
 ```{block, type = 'rmdnote'}
-The `readr` package is a member of the tidyverse of packages. The *tidyverse* describes an evolving collection of R packages with a common philosophy, and they are unquestionably changing the way people code in R. Most were developed in part or full by Hadley Wickham and others at RStudio. Many of these packages are only a few years old, but have been rapidly adapted by the R community. As a result, newer examples of R code will often look very different from the code in older R scripts, including examples in books that are more than a few years old. In this course, I'll focus on "tidyverse" functions when possible, but I do put in details about base R equivalent functions or processes at some points -- this will help you interpret older code. You can use the `tidyverse` package to download all tidyverse packages at one. 
+The `readr` package is a member of the tidyverse of packages. The *tidyverse* describes
+an evolving collection of R packages with a common philosophy, and they are
+unquestionably changing the way people code in R. Many were developed in part or full by
+Hadley Wickham and others at RStudio. Many of these packages are less than ten years old,
+but have been rapidly adapted by the R community. As a result, newer examples of R code
+will often look very different from the code in older R scripts, including examples in
+books that are more than a few years old. In this course, I'll focus on "tidyverse"
+functions when possible, but I do put in details about base R equivalent functions or
+processes at some points---this will help you interpret older code. You can use the
+`tidyverse` package to download all tidyverse packages at one. 
 ```
 
-```{block, type = 'rmdtip'}
-If `readr` doesn't guess some of the columns classes you can use the `type_convert()` function to take another go at guessing them after you've tweaked the formats of the rogue columns.
-```
-
-### Reading online flat files
-
-So far, I've only shown you how to read in data from files that are saved to your computer. R can also read in data directly from the web. If a flat file is posted online, you can read it into R in almost exactly the same way that you would read in a local file. The only difference is that you will use the file's url instead of a local file path for the `file` argument.
-
-With the `read_*` family of functions, you can do this both for flat files from a non-secure webpage (i.e., one that starts with `http`) and for files from a secure webpage (i.e., one that starts with `https`), including GitHub and Dropbox. 
-
-For example, to read in data from this [GitHub repository of Ebola data](https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv), you can run:
-
-```{r message = FALSE}
-url <- paste0("https://raw.githubusercontent.com/cmrivers/",
-              "ebola/master/country_timeseries.csv")
-ebola <- read_csv(url)
-ebola[1:3, 1:3]
-```
-
-### Saving and loading R objects
-
-You can save an R object you've created as an `.RData` file. 
-
-To save an R object in a `.RData` file, use the `save` function:
-
-```{r eval = FALSE}
-save(ebola, file = "Ebola.RData")
-list.files()
-```
-
-```
-##  [1] "_book"                         "_bookdown.yml"                
-##  [3] "_build.sh"                     "_deploy.sh"                   
-##  [5] "_output.yml"                   "01-course_info.Rmd"           
-##  [7] "02-prelim.Rmd"                 "03-databasics.Rmd"            
-##  [9] "book.bib"                      "data"                         
-## [11] "DESCRIPTION"                   "Ebola.RData"                  
-## [13] "figures"                       "homework.Rmd"                 
-## [15] "index.Rmd"                     "LICENSE"                      
-## [17] "packages.bib"                  "preamble.tex"                 
-## [19] "README.md"                     "references.Rmd"               
-## [21] "RProgrammingForResearch.Rmd"   "RProgrammingForResearch.Rproj"
-## [23] "slides"                        "style.css"                    
-## [25] "toc.css"                       "vocabulary.Rmd"
-```
-
-Notice that, once you save the object, a new file named "Ebola.RData" is listed in the files in your current working directory. The default is for R to save the R object in your current working directory; to save it elsewhere, use a full relative or absolute pathname for the `file` argument.
-
-Once you've saved an R object, you can re-load it later using the `load` function with the object's file path. For example, since I've saved this R object, I can remove it from my current R workspace using the `rm` function, after which it will not show up when I run `ls`:
-
-```{r eval = FALSE}
-rm(ebola)
-ls()
-```
-
-```
-## [1] "ld_genetics" "my_dir"      "url"
-```
-
-Then I can use the `load` command to re-load the object, after which it will again show up as an object in my R workspace:
-
-```{r eval = FALSE}
-load("Ebola.RData")
-ls()
-```
-
-```
-## [1] "ebola"       "ld_genetics" "my_dir"      "url"
-```
-
-There is one caveat for saving R objects: some people suggest you avoid this if possible, to make your research more reproducible (which is why we're not covering it in the course slides). Imagine someone wants to look at your data and code in 30 years. R might not work the same way, so you might not be able to read an `.RData` file. Notice that, if you try to open an `.RData` file in a text edit, it won't make any sense. However, you can open flat files (e.g., `.csv`, `.txt`) and R scripts (`.R`) in text editors -- you should still be able to do this regardless of what happens to R. Some potential exceptions, when it might be useful to save an R object, include when: 
-
-- You have an object that you need to save that has a structure that won't work well in a flat file (a list rather than a dataframe, for example); or
-- Your starting dataset is very large, and it would take a long time for you to read in your data fresh every time. In this case it may make sense to do some data cleaning and then save the cleaned R object as a `.RData` file, but be sure to also save the script you used to clean the raw data.
-
-### Reading other file types
+### Reading in other file types
 
 Later in the course, we'll talk about how to open a variety of other file types in R. However, you might find it immediately useful to be able to read in files from other statistical programs. 
 
@@ -408,6 +368,21 @@ heat_mort <- read.csv(my_file)
 ```
 
 You will end up using `paste()` and `paste0()` for many other applications, but this is a good example of how you can start using these functions to start to get a feel for them.
+
+### Reading online flat files
+
+So far, I've only shown you how to read in data from files that are saved to your computer. R can also read in data directly from the web. If a flat file is posted online, you can read it into R in almost exactly the same way that you would read in a local file. The only difference is that you will use the file's url instead of a local file path for the `file` argument.
+
+With the `read_*` family of functions, you can do this both for flat files from a non-secure webpage (i.e., one that starts with `http`) and for files from a secure webpage (i.e., one that starts with `https`), including GitHub and Dropbox. 
+
+For example, to read in data from this [GitHub repository of Ebola data](https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv), you can run:
+
+```{r message = FALSE}
+url <- paste0("https://raw.githubusercontent.com/cmrivers/",
+              "ebola/master/country_timeseries.csv")
+ebola <- read_csv(url)
+ebola[1:3, 1:3]
+```
 
 
 ## Data cleaning
