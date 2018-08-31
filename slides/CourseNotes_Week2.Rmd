@@ -190,7 +190,7 @@ Many members of the `readr` package that read delimited files are doing the same
 
 Some key members of the `readr` family for delimited data:
 
-Function     | Separator  
+Function     | Delimiter
 ------------ | ---------- 
 `read_csv`    |  comma     
 `read_csv2`   | semi-colon 
@@ -239,7 +239,7 @@ knitr::kable(read_funcs, col.names = c("File type", "Function", "Package"))
 
 ## In-course exercise
 
-We'll take another break here to work on the next part of the In-Course Exercise (Section 2.7.1 and 2.7.2).
+We'll take break here to work on the start of the In-Course Exercise (Sections 2.7.1 and 2.7.2).
 
 # Directory structure
 
@@ -318,34 +318,10 @@ list.files("CourseText")
 knitr::include_graphics("../figures/FileDirectoryStructure.png")
 ```
 
-## Taking advantage of `paste0`
 
-You can create an object with your directory name using `paste0`, and then use that to set your directory. We'll take a lot of advantage of this for reading in files.
 
-\medskip
 
-The convention for `paste0` is:
 
-```{r, eval = FALSE}
-## Generic code
-[object name] <- paste0("[first thing you want to paste]",
-                        "[what you want to add to that]",
-                        "[more you want to add]")
-```
-
-## Taking advantage of `paste0`
-
-Here's an example:
-
-```{r}
-my_dir <- paste0("~/RProgrammingForResearch",
-                 "data/measles_data")
-my_dir
-```
-
-```{r, eval = FALSE}
-setwd(my_dir)
-```
 
 ## Relative versus absolute pathnames
 
@@ -353,13 +329,6 @@ When you want to reference a directory or file that is not in your working direc
 
 - *Relative pathname*: How to get to the file or directory from your current working directory
 - *Absolute pathname*: How to get to the file or directory from anywhere on the computer
-
-## Relative versus absolute pathnames
-
-If directions worked like pathnames, here is how you would tell someone to get to this building: 
-
-- *Relative pathname*: Turn right on Center, then turn right when you get to the intersection, then go to the second building on your left (only works if you started on Prospect going west right before the intersection with Center).
-- *Absolute pathname*: Go to 350 W. Lake Street, Fort Collins, CO, USA.
 
 ## Relative versus absolute pathnames
 
@@ -375,15 +344,23 @@ Say your current working directory was `/Users/brookeanderson/RProgrammingForRes
 "data"
 ```
 
-## Computer directory structure
+## Relative versus absolute pathnames
 
-```{r echo = FALSE, fig.align='center', out.width = "275pt"}
-knitr::include_graphics("../figures/FileDirectoryStructure.png")
-```
+Both methods of writing filenames have their own advantages and disadvantages: 
+
+- *Relative pathname*: Which file you are indicating depends on which working directory you are in, which means that your code will break if you try to re-run it from a different working directory. However, relative pathways in your code make it easier for you to share a working version of a project with someone else. For most of this course, we will focus on using relative pathnames, especially when you start collaborating.
+- *Absolute pathname*: No matter what working directory you're in, it is completely clear to your computer which file you mean when you use an absolute pathname. However, your code will not work on someone else's computer without modifications (because the structure of their computer's full directory will be different).
+
+## Relative versus absolute pathnames
+
+I **strongly** recommend saving your data files somewhere in the directory structure of the R Project in which you're working and then using **relative pathnames** to reference that file when you need to read it in. 
+
+This practice establishes good habits for making your research computationally reproducible.
+
 
 ## Getting around directories
 
-There are a few abbreviations you can use to represent certain relative locations when you're using `setwd()`:
+There are a few abbreviations you can use to represent certain relative locations:
 
 \small
 
@@ -412,69 +389,56 @@ If `data` is a subdirectory of the subdirectory `Ex` of your current working dir
 "Ex/data"
 ```
 
-## Relative versus absolute pathnames
+## Reading in an online flat file
 
-Both methods of writing filenames have their own advantages and disadvantages: 
+Once you understand this idea of giving R directions to a file to read it, 
+you shouldn't be too surprised that R can also do this for flat files that
+are hosted online. 
 
-- *Relative pathname*: Which file you are indicating depends on which working directory you are in, which means that your code will break if you try to re-run it from a different working directory. However, relative pathways in your code make it easier for you to share a working version of a project with someone else. For most of this course, we will focus on using relative pathnames, especially when you start collaborating.
-- *Absolute pathname*: No matter what working directory you're in, it is completely clear to your computer which file you mean when you use an absolute pathname. However, your code will not work on someone else's computer without modifications (because the structure of their computer's full directory will be different).
+In this case, the file isn't even on your computer, so you need to give R
+the directions to find it online. You do that by putting the file's online
+address as the file name. For example, to read in the shipwreck data directly
+from GitHub, you can run:
 
-## Relative versus absolute pathnames
+```{r message = FALSE} 
+shipwreck_url <- paste0("https://raw.githubusercontent.com/",
+                        "geanders/RProgrammingForResearch/",
+                        "master/data/", 
+                        "AWOIS_Wrecks_KnownYear.tab")
+shipwrecks <- read_tsv(shipwreck_url)
+```
 
-I **strongly** recommend saving your data files somewhere in the directory structure of the R Project in which you're working and then using **relative pathnames** to reference that file when you need to read it in. 
+## Taking advantage of `paste0`
 
-This practice establishes good habits for making your research computationally reproducible.
+You can create an object with your directory name using `paste0`, and then use that to set your directory. We'll take a lot of advantage of this for reading in files.
+
+\medskip
+
+The convention for `paste0` is:
+
+```{r, eval = FALSE}
+## Generic code
+[object name] <- paste0("[first thing you want to paste]",
+                        "[what you want to add to that]",
+                        "[more you want to add]")
+```
+
+## Taking advantage of `paste0`
+
+Here's an example:
+
+```{r, message = FALSE}
+shipwreck_url <- paste0("https://raw.githubusercontent.com/",
+                        "geanders/RProgrammingForResearch/",
+                        "master/data/", 
+                        "AWOIS_Wrecks_KnownYear.tab")
+shipwrecks <- read_tsv(shipwreck_url)
+```
 
 ## In-course exercise 
 
-We'll take a break now to do the first part of the in-course exercise (Sections 2.7.3).
+We'll take a break now to do the next part of the in-course exercise (Section 2.7.3).
 
-# Tidyverse
-
-## The "tidyverse"
-
-You will also see code that uses functions like `read.csv` and `read.table` to read in flat files. These are from the `read.table` family of functions, which are part of base R. The `readr` functions are very similar, but have some more sensible defaults, including in determining column classes. \medskip
-
-Compared to the `read.table` family of functions, the `read_*` functions: 
-
-- Work better with large datasets: faster, includes progress bar
-- Have more sensible defaults (e.g., characters default to characters, not factors)
-
-## The "tidyverse"
-
-The `readr` package is part of the "tidyverse"-- a collection of recent and developing packages for R, many written by Hadley Wickham. \medskip
-
-```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
-knitr::include_graphics("../figures/tidyverse_hexbin.jpeg")
-```
-
-
-## The "tidyverse"
-
-```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = 'center'}
-knitr::include_graphics("../figures/HadleyObama.png")
-```
-
-\begin{center}
-"A giant among data nerds"
-\end{center}
-
-\footnotesize{
-\url{https://priceonomics.com/hadley-wickham-the-man-who-revolutionized-r/}}
-
-## Cheatsheets
-
-```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = 'center'}
-knitr::include_graphics("../figures/rstudio_cheatsheet.png")
-```
-
-## Cheatsheets
-
-RStudio has several very helpful **cheatsheets**. These are one-page sheets (front and back) that cover many of the main functions for a certain topic or task in R. These cheatsheets cover a lot of the main "tidyverse" functions.
-
-You can access these directly from RStudio. Go to "Help" -> "Cheatsheets" and select the cheatsheet on the topic of interest. 
-
-You can find even more of these cheatsheets at https://www.rstudio.com/resources/cheatsheets/.
 
 # Data cleaning
 
@@ -506,7 +470,7 @@ Today, we'll talk about using functions from the `dplyr` and `lubridate` package
 
 To use these functions, you'll need to load those packages: 
 
-```{r message = FALSE}
+```{r message = FALSE, warning = FALSE}
 library("dplyr")
 library("lubridate")
 ```
@@ -515,9 +479,16 @@ library("lubridate")
 
 As an example, let's look at the Daily Show data:
 
-```{r message = FALSE}
+```{r message = FALSE, echo = FALSE}
 daily_show <- read_csv("../data/daily_show_guests.csv",
                        skip = 4)
+```
+```{r eval = FALSE}
+daily_show <- read_csv("data/daily_show_guests.csv",
+                       skip = 4)
+```
+
+```{r}
 head(daily_show, 3)
 ```
 
@@ -775,7 +746,8 @@ diff(range(daily_show$date))
 The `lubridate` package also includes functions to pull out certain elements of a date. For example, we could use `wday` to create a new column with the weekday of each show: 
 
 ```{r}
-daily_show <- mutate(daily_show, show_day = wday(date, label = TRUE)) 
+daily_show <- mutate(daily_show, 
+                     show_day = wday(date, label = TRUE)) 
 head(select(daily_show, date, show_day), 3)
 ```
 
