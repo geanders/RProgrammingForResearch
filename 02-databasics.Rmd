@@ -104,6 +104,7 @@ library(readr)
 # The following two calls do the same thing
 ebola <- read_delim("data/country_timeseries.csv", delim = ",")
 ```
+
 ```{r}
 ebola <- read_csv("data/country_timeseries.csv")
 ```
@@ -111,7 +112,7 @@ ebola <- read_csv("data/country_timeseries.csv")
 ```{block, type = 'rmdtip'}
 The message that R prints after this call ("Parsed with column specification:.. ") lets
 you know what classes were used for each column (this function tries to guess the
-appropriate class and typically gets it right).
+appropriate class and typically gets it right). You can suppress the message using the `cols_types = cols()` argument.
 
 If `readr` doesn't correctly guess some of the columns classes you can use the
 `type_convert()` function to take another go at guessing them after you've tweaked the
@@ -168,8 +169,8 @@ but have been rapidly adapted by the R community. As a result, newer examples of
 will often look very different from the code in older R scripts, including examples in
 books that are more than a few years old. In this course, I'll focus on "tidyverse"
 functions when possible, but I do put in details about base R equivalent functions or
-processes at some points---this will help you interpret older code. You can use the
-`tidyverse` package to download all tidyverse packages at one. 
+processes at some points---this will help you interpret older code. You can download all the tidyverse packages using
+`install.packages("tidyverse")`, `library(tidyverse)` makes all the tidyverse functions available for use.
 ```
 
 ### Reading in other file types
@@ -188,7 +189,7 @@ read_funcs <- data.frame(file_type = c("Excel",
                          func = c("`read_excel`",
                                   "`read_sas`",
                                   "`read_spss`",
-                                  "`read_stata"),
+                                  "`read_stata`"),
                          pkg = c("`readxl`",
                                  "`haven`",
                                  "`haven`",
@@ -684,7 +685,7 @@ Thurs, 23 October 2008 | "%a, %d %B %Y"
 You must use the `format` argument to specify what your date column looks like **before** it's converted to a Date class, not how you'd like it to look after its converted. Once an objects is in a date class, it will always be printed out using a common format, unless you change it back into a character class. (Confusingly, there is a `format` function that you can use to convert from a Date class to a character class and, in that case, the `format` argument does specify how the final date will look. This is mainly useful as a last step in data analysis, when you're creating plot labels of table columns, for example.)
 ```
 
-There is also a function in the tidyverse, called `lubridate`, that helps in parsing dates. In many cases you can use functions from this package to parse dates much more easily, without having to specify specific starting formats. 
+There is also a package in the tidyverse, called `lubridate`, that helps in parsing dates. In many cases you can use functions from this package to parse dates much more easily, without having to specify specific starting formats. 
 
 The `ymd` function from lubridate can be used to parse a column into a Date class, regardless of the original format of the date, as long as the date elements are in the order: year, month, day. For example:
 
@@ -733,6 +734,10 @@ mutate(daily_show,
        show_day = wday(date, label = TRUE)) %>%
   select(date, show_day, guest_name) %>%
   slice(1:5)
+```
+
+```{block, type = 'rmdwarning'}
+R functions tend to use the timezone of **YOUR** computer's operating system by default, or UTC, or GMT. You need to be careful when working with dates and times to either specify the time zone or convince yourself the default behavior works for your application.
 ```
 
 ### Filtering to certain rows
