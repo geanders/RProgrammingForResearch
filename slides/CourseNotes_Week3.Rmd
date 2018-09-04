@@ -10,62 +10,25 @@ fontsize: 10pt
 options(width = 50)
 ```
 
-# Tidyverse
+# Odds and ends
 
-## The "tidyverse"
+## Next graded materials
 
-You will also see code that uses functions like `read.csv` and `read.table` to read in flat files. These are from base R. The `readr` functions are very similar, but have some more sensible defaults, including in determining column classes. \medskip
+The next graded materials are: 
 
-Compared to the `read.table` family of functions, the `read_*` functions: 
+- Homework #1: Due Sept. 12 (next Wednesday)
+- Quiz on Chapter 2: Sept. 10 (next Monday)
 
-- Work better with large datasets: faster, includes progress bar
-- Have more sensible defaults (e.g., characters default to characters, not factors)
-
-## The "tidyverse"
-
-The `readr` package is part of the "tidyverse"-- a collection of recent and developing packages for R, many written by Hadley Wickham. \medskip
-
-```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
-knitr::include_graphics("../figures/tidyverse_hexbin.jpeg")
-```
-
-
-## The "tidyverse"
-
-```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = 'center'}
-knitr::include_graphics("../figures/HadleyObama.png")
-```
-
-\begin{center}
-"A giant among data nerds"
-\end{center}
-
-\footnotesize{
-\url{https://priceonomics.com/hadley-wickham-the-man-who-revolutionized-r/}}
-
-## Cheatsheets
-
-```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = 'center'}
-knitr::include_graphics("../figures/rstudio_cheatsheet.png")
-```
-
-## Cheatsheets
-
-RStudio has several very helpful **cheatsheets**. These are one-page sheets (front and back) that cover many of the main functions for a certain topic or task in R. These cheatsheets cover a lot of the main "tidyverse" functions.
-
-You can access these directly from RStudio. Go to "Help" -> "Cheatsheets" and select the cheatsheet on the topic of interest. 
-
-You can find even more of these cheatsheets at https://www.rstudio.com/resources/cheatsheets/.
+As a reminder, the material for Quiz 2 is covered through the online lectures. 
 
 # Data from R packages
 
 ## Data from R packages
 
-So far we've covered three ways to get data into R:
+So far we've covered two ways to get data into R:
 
 1. From flat files (either on your computer or online)
 2. From files like SAS and Excel
-3. From R objects (i.e., using `load()`)
 
 Many R packages come with their own data, which is very easy to load and use.
 
@@ -96,7 +59,7 @@ data()
 
 To find out all of the datasets available within a certain package, run `data` with the argument `package`:
 
-```{r}
+```{r eval = FALSE}
 data(package = "faraway")
 ```
 
@@ -163,9 +126,8 @@ You can use *logical vectors*, created with these statements, for a lot of thing
 A logical statement outputs a *logical vector*. This logical vector will be the same length as the original vector tested by the logical statement:
 
 ```{r}
-is_male <- nepali$sex == "Male"
 length(nepali$sex)
-length(is_male)
+length(nepali$sex == "Male")
 ```
 
 ## Logical vectors
@@ -174,7 +136,7 @@ Each element of the logical vector can only have one of three values (`TRUE`, `F
 
 ```{r}
 head(nepali$sex)
-head(is_male)
+head(nepali$sex == "Male")
 ```
 
 ## Logical vectors
@@ -235,9 +197,20 @@ nepali %>%
 
 ## Logical vectors
 
-All of the values in a logical vector are saved with a number underneath. Values of `TRUE` are saved as 1 and values of `FALSE` are saved as 0. 
+All of the values in a logical vector are saved, at a deeper level, with a number. Values of `TRUE` are saved as 1 and values of `FALSE` are saved as 0. 
 
-You can use `sum()` to get the sum of all values in a vector. Because logical vector values are linked with numerical values of 0 or 1, you can use `sum()` to find out how many males and females are in the dataset:
+```{r}
+head(nepali$is_male)
+```
+
+```{r}
+head(as.numeric(nepali$is_male))
+```
+
+
+## Logical vectors
+
+Therefore, you can use `sum()` to get the sum of all values in a vector. Because logical vector values are linked with numerical values of 0 or 1, you can use `sum()` to find out how many males and females are in the dataset:
 
 ```{r}
 sum(nepali$is_male)
@@ -246,13 +219,52 @@ sum(!nepali$is_male)
 
 ## In-course exercise
 
-We'll take a break now to start the in-course exercise for this week (Sections 3.6.1 and 3.6.2).
+We'll take a break now to start the in-course exercise for this week (Sections 3.5.1 and 3.5.2).
+
+# Tidyverse and cheatsheets
+
+## The "tidyverse"
+
+So far, we have used a number of packages that are part of the *tidyverse*. The tidyverse is a collection of recent and developing packages for R, many written by Hadley Wickham. \medskip
+
+```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/tidyverse_hexbin.jpeg")
+```
+
+
+## The "tidyverse"
+
+```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = 'center'}
+knitr::include_graphics("../figures/HadleyObama.png")
+```
+
+\begin{center}
+"A giant among data nerds"
+\end{center}
+
+\footnotesize{
+\url{https://priceonomics.com/hadley-wickham-the-man-who-revolutionized-r/}}
+
+## Cheatsheets
+
+RStudio has several very helpful **cheatsheets**. These are one-page sheets (front and back) that cover many of the main functions for a certain topic or task in R. These cheatsheets cover a lot of the main "tidyverse" functions.
+
+You can access these directly from RStudio. Go to "Help" -> "Cheatsheets" and select the cheatsheet on the topic of interest. 
+
+You can find even more of these cheatsheets at https://www.rstudio.com/resources/cheatsheets/.
+
+## Cheatsheets
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = 'center'}
+knitr::include_graphics("../figures/rstudio_cheatsheet.png")
+```
+
 
 # Simple statistics
 
 ## Simple statistics functions
 
-We've looked at how to subset, arrange, and add to a dataframe. Next we'll look at how to summarizes a dataframe. 
+We've looked at how to subset, filter, arrange, and add to a dataframe. Next we'll look at how to summarize a dataframe. 
 
 We'll start by looking at some simple statistics functions from base R, and then we'll look at how some of those functions can be used with the `summarize` function from the `dplyr` package to quickly get interesting summaries of data.
 
@@ -262,22 +274,31 @@ Here are some simple statistics functions you will likely use often:
 
 Function  | Description
 --------- | -----------------
-`range()` | Range (minimum and maximum) of vector 
-`min()`, `max()` | Minimum or maximum of vector
-`mean()`, `median()` | Mean or median of vector
-`table()` | Number of observations per level for a factor vector
-`cor()` | Determine correlation(s) between two or more vectors
-`summary()` | Summary statistics, depends on class
+`min()` | Minimum of values in the vector
+`max()` | Maximum of values in the vector
+`mean()` | Mean of values in the vector
+`median()` | Median of values in the vector
 
 ## Simple statistic examples
 
-All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`-- see help files).
+All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`---see help files).
 
 ```{r}
 mean(nepali$wt, na.rm = TRUE)
-range(nepali$ht, na.rm = TRUE)
-table(nepali$sex)
+min(nepali$wt, na.rm = TRUE)
 ```
+
+## Simple statistics functions
+
+There are also a collection of basic statistical functions that can input one or more vectors and that input more than one values: 
+
+Function  | Description
+--------- | -----------------
+`summary()` | Provides summary statistics for values in the vector
+`range()` | Gives the minimum and maximum of values in the vector
+`cor()` | Gives the correlation(s) of different vectors
+
+For example, the `range()` function inputs a vector and then outputs two values---the minimum and maximum of values in the vector---in a vector of length 2.
 
 ## Simple statistic examples
 
@@ -347,7 +368,7 @@ As another note, because the output from `summarize` is also a dataframe, we cou
 
 ## The `summarize` function
 
-There are some special functions that you can use with `summarize`: 
+There are some special functions that are particularly useful to use with `summarize` and other functions from the `dplyr` package: 
 
 Function | Description
 ---------------|-------------
@@ -370,7 +391,7 @@ nepali %>%
 
 ## Grouping and summarizing
 
-Often, you'll want to get summaries of the data stratified by groups within the data. For example, in the Nepali dataset, you may want to get summaries by sex or by whether the child was short or tall. 
+Often, you'll want to get summaries of the data stratified by groups within the data. For example, in the `nepali` dataset, you may want to get summaries by sex or by whether the child was short or tall. 
 
 To get grouped summaries of a dataframe, you can first use the `group_by` function from the `dplyr` package to "group" the dataset, and then when you run "summarize", it will be applied **by group** to the data. 
 
@@ -447,10 +468,6 @@ nepali %>%
             mean_wt = mean(wt, na.rm = TRUE))
 ```
 
-## In-course exercise
-
-We'll take a break now to continue the in-course exercise for this week (Section 3.6.3).
-
 ## More reading / practice
 
 If you would like more reading and practice on what we've covered so far on transforming data, see chapter 5 of the "R for Data Science" book suggested at the start of the course. 
@@ -458,6 +475,10 @@ If you would like more reading and practice on what we've covered so far on tran
 As a reminder, that is available at: 
 
 http://r4ds.had.co.nz
+
+## In-course exercise
+
+We'll take a break now to continue the in-course exercise for this week (Section 3.5.3).
 
 # Plots 
 
@@ -641,7 +662,7 @@ nepali %>%
 
 ## In-course exercise
 
-We'll take a break now to continue the in-course exercise for this week (Section 3.6.4).
+We'll take a break now to continue the in-course exercise for this week (Section 3.5.4).
 
 ## Plot aesthetics
 
@@ -752,7 +773,7 @@ ggplot(data = nepali) +
 
 ## In-course exercise
 
-We’ll take a break now to continue the in-course exercise for this week (Section 3.6.5).
+We’ll take a break now to continue the in-course exercise for this week (Section 3.5.5).
 
 ## Adding geoms
 
@@ -852,4 +873,4 @@ ggplot(nepali, aes(x = sex, y = ht, group = sex)) +
 
 ## In-course exercise
 
-We'll take a break now to finish the in-course exercise for this week (Section 3.6.6).
+We'll take a break now to finish the in-course exercise for this week (Section 3.5.6).
