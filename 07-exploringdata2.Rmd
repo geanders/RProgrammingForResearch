@@ -21,6 +21,273 @@ study_months
 (study_months <- c("Jan", "Feb", "Mar"))
 ```
 
+## Regression models 
+
+### Formula structure
+
+*Regression models* can be used to estimate how the expected value of a *dependent variable* changes as *independent variables* change. \medskip
+
+In R, regression formulas take this structure:
+
+```{r eval = FALSE}
+## Generic code
+[response variable] ~ [indep. var. 1] +  [indep. var. 2] + ...
+```
+
+Notice that a tilde, `~`, is used to separate the independent and dependent variables and that a plus sign, `+`, is used to join independent variables. This format mimics the statistical notation:
+
+$$
+Y_i \sim X_1 + X_2 + X_3
+$$
+
+You will use this type of structure in R fo a lot of different function calls, including those for linear models (fit with the `lm` function) and generalized linear models (fit with the `glm` function).
+
+There are some conventions that can be used in R formulas. Common ones include: 
+
+```{r echo = FALSE}
+for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
+                                       "`1`", "`-`"),
+                        Meaning = c("evaluate the formula inside `I()` before fitting (e.g., `I(x1 + x2)`)",
+                                    "fit the interaction between `x1` and `x2` variables",
+                                    "fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)",
+                                    "include as independent variables all variables other than the response (e.g., `y ~ .`)",
+                                    "intercept (e.g., `y ~ 1` for an intercept-only model)",
+                                    "do not include a variable in the dataframe as an independent variables (e.g., `y ~ . - x1`); usually used in conjunction with `.` or `1`"))
+pander::pander(for_convs, split.cells = c(1,1,58),
+               justify = c("center", "left"))
+```
+
+### Linear models
+
+To fit a linear model, you can use the function `lm()`. This function is part of the `stats` package, which comes installed with base R. In this function, you can use the `data` option to specify the dataframe from which to get the vectors. 
+
+```{r}
+mod_a <- lm(wt ~ ht, data = nepali)
+```
+
+This previous call fits the model:
+
+$$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
+
+where: 
+
+- $Y_{i}$ : weight of child $i$
+- $X_{1,i}$ : height of child $i$
+
+
+If you run the `lm` function without saving it as an object, R will fit the regression and print out the function call and the estimated model coefficients: 
+
+```{r}
+lm(wt ~ ht, data = nepali)
+```
+
+However, to be able to use the model later for things like predictions and model assessments, you should save the output of the function as an R object: 
+
+```{r}
+mod_a <- lm(wt ~ ht, data = nepali)
+```
+
+This object has a special class, `lm`: 
+
+```{r}
+class(mod_a)
+```
+
+This class is a special type of list object. If you use `is.list` to check, you can confirm that this object is a list: 
+
+```{r}
+is.list(mod_a)
+```
+
+There are a number of functions that you can apply to an `lm` object. These include:
+
+```{r echo = FALSE}
+mod_objects <- data.frame(Function = c("`summary`", "`coefficients`", 
+                                   "`fitted`",
+                                   "`plot`", "`residuals`"),
+                          Description = c("Get a variety of information on the model, including coefficients and p-values for the coefficients",
+                                   "Pull out just the coefficients for a model",
+                                   "Get the fitted values from the model (for the data used to fit the model)",
+                                   "Create plots to help assess model assumptions",
+                                   "Get the model residuals"))
+pander::pander(mod_objects, split.cells = c(1,1,58),
+               justify = c("center", "left"))
+```
+
+For example, you can get the coefficients from the model by running:
+
+```{r}
+coefficients(mod_a)
+```
+
+The estimated coefficient for the intercept is always given under the name "(Intercept)". Estimated coefficients for independent variables are given based on their column names in the original data ("ht" here, for $\beta_1$, or the estimated increase in expected weight for a one unit increase in height).
+
+You can use the output from a `coefficients` call to plot a regression line based on the model fit on top of points showing the original data (Figure \@ref(fig:modelcoefplot)). 
+
+```{r modelcoefplot, fig.height = 3.5, fig.width = 5, warning = FALSE, fig.align = "center", fig.cap = "Example of using the output from a coefficients call to add a regression line to a scatterplot."}
+mod_coef <- coefficients(mod_a)
+ggplot(nepali, aes(x = ht, y = wt)) + 
+  geom_point(size = 0.2) + 
+  xlab("Height (cm)") + ylab("Weight (kg)") + 
+  geom_abline(aes(intercept = mod_coef[1],
+                  slope = mod_coef[2]), col = "blue")
+```
+
+```{block, type = "rmdnote"}
+You can also add a linear regression line to a scatterplot by adding the geom `geom_smooth` using the argument `method = "lm"`.
+```
+
+You can use the function `residuals` on an `lm` object to pull out the residuals from the model fit:
+
+```{r}
+head(residuals(mod_a))
+```
+
+The result of a `residuals` call is a vector with one element for each of the non-missing observations (rows) in the dataframe you used to fit the model. Each value gives the different between the model fitted value and the observed value for each of these observations, in the same order the observations show up in the dataframe. The residuals are in the same order as the observations in the original dataframe. 
+
+```{block, type = "rmdtip"}
+You can also use the shorter function `coef` as an alternative to `coefficients` and the shorter function `resid` as an alternative to `residuals`.
+```
+
+As noted in the subsection on simple statistics functions, the `summary` function returns different output depending on the type of object that is input to the function. If you input a regression model object to `summary`, the function gives you a lot of information about the model. For example, here is the output returned by running `summary` for the linear regression model object we just created: 
+
+```{r}
+summary(mod_a)
+```
+
+This output includes a lot of useful elements, including (1) basic summary statistics for the residuals (to meet model assumptions, the median should be around zero and the absolute values fairly similar for the first and third quantiles), (2) coefficient estimates, standard errors, and p-values, and (3) some model summary statistics, including residual standard error, degrees of freedom, number of missing observations, and F-statistic.
+
+The object returned by the `summary()` function when it is applied to an `lm` object is a list, which you can confirm using the `is.list` function: 
+
+```{r}
+is.list(summary(mod_a))
+```
+
+With any list, you can use the `names` function to get the names of all of the different elements of the object: 
+
+```{r}
+names(summary(mod_a))
+```
+
+You can use the `$` operator to pull out any element of the list. For example, to pull out the table with information on the estimated model coefficients, you can run:
+
+```{r}
+summary(mod_a)$coefficients
+```
+
+The `plot` function, like the `summary` function, will give different output depending on the class of the object that you input. For an `lm` object, you can use the `plot` function to get a number of useful diagnostic plots that will help you check regression assumptions (Figure \@ref(fig:plotlmexample)):
+
+```{r eval = FALSE}
+plot(mod_a)
+```
+
+```{r plotlmexample, echo = FALSE, out.width = '\\textwidth', fig.align = "center", fig.cap = "Example output from running the plot function with an lm object as the input."}
+oldpar <- par(mfrow = c(2, 2))
+plot(mod_a)
+par(oldpar)
+```
+
+You can also use binary variables or factors as independent variables in regression models. For example, in the `nepali` dataset, `sex` is a factor variable with the levels "Male" and "Female". You can fit a linear model of weight regressed on sex for this data with the call: 
+
+```{r}
+mod_b <- lm(wt ~ sex, data = nepali)
+```
+
+This call fits the model:
+
+$$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
+
+where $X_{1,i}$ : sex of child $i$, where 0 = male and 1 = female. 
+
+Here are the estimated coefficients from fitting this model:
+
+```{r}
+summary(mod_b)$coefficients
+```
+
+You'll notice that, in addition to an estimated intercept (`(Intercept)`), the other estimated coefficient is `sexFemale` rather than just `sex`, although the column name in the dataframe input to `lm` for this variable is `sex`. 
+
+This is because, when a factor or binary variable is input as an independent variable in a linear regression model, R will fit an estimated coefficient for all levels of factors *except* the first factor level. By default, this first factor level is used as the baseline level, and so its estimated mean is given by the estimated intercept, while the other model coefficients give the estimated *difference* from this baseline. 
+
+For example, the model fit above tells us that the estimated mean weight of males is `r round(coef(mod_b)[1], 1)`, while the estimated mean weight of females is `r round(coef(mod_b)[1], 1)` + `r round(coef(mod_b)[2], 1)` = `r round(coef(mod_b)[1], 1) + round(coef(mod_b)[2], 1)`.
+
+If you would prefer that a different level of the factor be the baseline (for example, "Female" rather than "Male" for the previous regression), you can do that by using the `levels` argument in the `factor` function to reset factor levels. For example: 
+
+```{r}
+nepali_reset <- nepali %>%
+  mutate(sex = factor(sex, levels = c("Female", "Male")))
+mod_b_reset <- lm(wt ~ sex, data = nepali_reset)
+summary(mod_b_reset)$coef
+```
+
+Now, `(Intercept)` gives the estimated mean weight for females, while the second estimated coefficient gives the estimated mean difference for males compared to the expected value for females.
+
+### Generalized linear models (GLMs)
+
+You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). \medskip
+
+For linear models, the only difference between `lm` and `glm` are the mechanics of how they estimate the model coefficients (`lm` uses least squares while `glm` uses maximum likelihood). You will (almost always) get exactly the same estimated coefficients regardless of whether you use `glm` or `lm` to fit a linear regression. 
+
+For example, here is the code to fit a linear regression model for weight regressed on height from the `nepali` dataset:
+
+```{r}
+mod_c <- glm(wt ~ ht, data = nepali)
+```
+
+This call fits the same regression model I fit earlier with the `lm` function and saved as `mod_a`. You can see that the two methods give exactly the same coefficient estimates: 
+
+```{r}
+coef(mod_c)
+coef(mod_a)
+```
+
+Unlike the `lm` function, however, the `glm` function also allows you to fit other model types, including logistic and Poisson models. You can specify the model type using the `family` argument to the `glm` call:
+
+```{r echo = FALSE}
+glm_types <- data.frame(type = c("Linear", "Logistic", "Poisson"),
+                        opt = c("`family = gaussian(link = 'identity')`",
+                                "`family = binomial(link = 'logit')`", 
+                                "`family = poisson(link = 'log')`"))
+knitr::kable(glm_types, col.names = c("Model type", "`family` argument"))
+```
+
+For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability of a child weighing more than 13 kg is associated with the child's sex. 
+
+First, create a binary variable in the `nepali` dataset, `wt_over_13`, that is `TRUE` if a child weighed more than 13 kilograms and FALSE otherwise. You can use the `mutate` function from `dplyr` to add this new column (which, as a note, is a logical vector):
+
+```{r}
+nepali <- nepali %>% 
+  mutate(wt_over_13 = wt > 13)
+head(nepali)
+```
+
+Now you can fit a logistic regression of `wt_over_13` regressed on sex, using a logistic model:
+
+```{r}
+mod_d <- glm(wt_over_13 ~ sex, data = nepali,
+             family = binomial(link = "logit"))
+```
+
+Elements of a GLM can be pulled out in the same way that we looked at elements from the linear model fit with `lm`. For example, to see a table of estimated model coefficients, you can run: 
+
+```{r}
+summary(mod_d)$coef
+```
+
+Because this model was a logistic model, fit with a log link, here the model coefficient estimate for `sexFemale` gives an estimate of the **log odds** of weight higher than 13 kg associated with females versus males. The p-value for this estimate (`Pr(>|z|)` = `r round(summary(mod_d)$coef[2, 4], 2)`) isn't very small, suggesting that the difference between male and female children in the odds of weighing more than 13 kg is not statistically significant. 
+
+### References-- statistics in R
+
+One great (and free online for CSU students through our library) book to find out more about using R for basic statistics is:
+
+- [Introductory Statistics with R](http://discovery.library.colostate.edu/Record/.b44705323)
+
+If you want all the details about fitting linear models and GLMs in R, Julian Faraway's books are fantastic. He has one on linear models and one on extensions including logistic and Poisson models:
+
+- [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691) (also free online through the CSU library)
+- [Extending the Linear Model with R](http://www.amazon.com/Extending-Linear-Model-Generalized-Nonparametric/dp/158488424X/ref=sr_1_1?ie=UTF8&qid=1442252668&sr=8-1&keywords=extending+linear+model+r)
+
+
 ## Loops
 
 Loops allow you to "walk through" and repeat the same code for different values of an index. For each run of the loop, R is told that, for **some index** in **some vector**, do **some code**. For example, the following loop specifies: For `i` in `1:3`, `print(i)`.
