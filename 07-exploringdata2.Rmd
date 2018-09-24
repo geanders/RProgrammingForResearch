@@ -325,6 +325,8 @@ summary(mod_b_reset)$coef
 
 Now, `(Intercept)` gives the estimated mean weight for females, while the second estimated coefficient gives the estimated mean difference for males compared to the expected value for females.
 
+---
+
 ### Generalized linear models (GLMs)
 
 You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). \medskip
@@ -379,6 +381,8 @@ summary(mod_d)$coef
 
 Because this model was a logistic model, fit with a log link, here the model coefficient estimate for `sexFemale` gives an estimate of the **log odds** of weight higher than 13 kg associated with females versus males. The p-value for this estimate (`Pr(>|z|)` = `r round(summary(mod_d)$coef[2, 4], 2)`) isn't very small, suggesting that the difference between male and female children in the odds of weighing more than 13 kg is not statistically significant. 
 
+---
+
 ### References-- statistics in R
 
 One great (and free online for CSU students through our library) book to find out more about using R for basic statistics is:
@@ -389,6 +393,8 @@ If you want all the details about fitting linear models and GLMs in R, Julian Fa
 
 - [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691) (also free online through the CSU library)
 - [Extending the Linear Model with R](http://www.amazon.com/Extending-Linear-Model-Generalized-Nonparametric/dp/158488424X/ref=sr_1_1?ie=UTF8&qid=1442252668&sr=8-1&keywords=extending+linear+model+r)
+
+---
 
 ## In-course exercise
 
@@ -413,6 +419,8 @@ For this part of the exercise, you'll use a dataset on weather, air pollution, a
 - Plot temperature (x-axis) versus dewpoint temperature (y-axis) for Chicago. Add in the regression line from the model you fit by using the results from `augment`.
 - Use `autoplot` on the model object to generate some model diagnostic plots (make sure you have the `ggfortify` package loaded and installed).
 - Try fitting the regression as a GLM, using `glm()`. Are your coefficients different?
+
+---
 
 #### Example R code:
 
@@ -498,11 +506,15 @@ tidy(mod_1)
 tidy(mod_1a)
 ```
 
+---
+
 ### Using regression models to explore data #2
 
 - Does $PM_{10}$ vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable. Some of the overall model summaries will compare this model to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you're fitting.
 - Try using `glm()` to run a Poisson regression of respiratory deaths (`resp`) on temperature during summer days. Start by creating a subset with just summer days called `summer`. (Hint: Use the `month` function with the argument `label = TRUE` from `lubridate` to do this-- just pull out the subset where the month is 6, 7, or 8, for "Jun", "Jul", and "Aug".) Try to write out the regression equation for the model you're fitting.
 - The coefficient for the temperature variable in this model is our best estimate (based on this model) of the **log relative risk** for a one degree Celcius increase in temperature. What is the **relative risk** associated with a one degree Celsius increase?
+
+---
 
 #### Example R code:
 
@@ -585,7 +597,7 @@ tidy(mod_3, conf.int = TRUE) %>%
   mutate_at(vars(estimate:conf.high), funs(exp(.)))
 ```
 
-
+---
 
 ### Exploring Fatality Analysis Reporting System (FARS) data
 
@@ -624,6 +636,8 @@ accident %>%
   geom_smooth(se = FALSE)
 ```
 
+---
+
 #### Example R code
 
 Here is example code for the section above: 
@@ -654,6 +668,8 @@ accident %>%
   theme_few() + 
   geom_smooth(se = FALSE)
 ```
+
+---
 
 ### Using a function and `purrr` to create state-specific plots
 
@@ -777,7 +793,6 @@ plot_fars <- function(df){
     xlab("Time of day") + ylab("# of monthly accidents") 
 }
 ```
-
 
 Here are some examples of what should happen when you run this function:
 
@@ -978,4 +993,6 @@ library(cowplot)
 plot_grid(plotlist = state_plots[["plots"]], 
           ncol = 2, labels = "AUTO")
 ```
+
+---
 
