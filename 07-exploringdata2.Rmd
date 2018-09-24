@@ -10,6 +10,58 @@ data(worldcup)
 library(ggthemes)
 ```
 
+## Matrices
+
+A matrix is like a data frame, but all the values in all columns must be of the same class (e.g., numeric, character). 
+
+R uses matrices a lot for its underlying math (e.g., for the linear algebra operations required for fitting regression models). R can do matrix operations quite quickly.
+
+You can create a matrix with the `matrix` function. Input a vector with the values to fill the matrix and `ncol` to set the number of columns:
+
+```{r cab}
+foo <- matrix(1:10, ncol = 5)
+foo
+```
+
+By default, the matrix will fill up by column. You can fill it by row with the `byrow` function: 
+
+```{r cac}
+foo <- matrix(1:10, ncol = 5, byrow = TRUE)
+foo
+```
+
+In certain situations, you might want to work with a matrix instead of a data frame (for example, in cases where you were concerned about speed -- a matrix is more memory efficient than the corresponding data frame). If you want to convert a data frame to a matrix, you can use the `as.matrix` function: 
+
+```{r cad}
+foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
+                  col_3 = 5:6, col_4 = 7:8,
+                  col_5 = 9:10)
+(foo <- as.matrix(foo))
+```
+
+You can index matrices with square brackets, just like data frames: 
+
+```{r cae}
+foo[1, 1:2]
+```
+
+You cannot, however, use `dplyr` functions with matrices: 
+
+```{r caf, eval = FALSE}
+foo %>% filter(col_1 == 1)
+```
+
+All elements in a matrix must have the same class. \bigskip
+
+The matrix will default to make all values the most general class of any of the values, in any column. For example, if we replaced one numeric value with the character "a", everything would turn into a character:
+
+```{r cag}
+foo[1, 1] <- "a"
+foo
+```
+
+---
+
 ## Regression models 
 
 ### Formula structure
