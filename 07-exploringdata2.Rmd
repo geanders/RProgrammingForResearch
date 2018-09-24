@@ -157,6 +157,12 @@ pander::pander(for_convs, split.cells = c(1,1,58),
 
 To fit a linear model, you can use the function `lm()`. This function is part of the `stats` package, which comes installed with base R. In this function, you can use the `data` option to specify the dataframe from which to get the vectors. 
 
+```{r, echo=FALSE}
+library(forcats)
+nepali_fct <- as_data_frame(nepali) %>%
+              mutate(sex = fct_recode(factor(sex), Male = "1", Female = "2"))
+```
+
 ```{r}
 mod_a <- lm(wt ~ ht, data = nepali)
 ```
@@ -311,7 +317,8 @@ If you would prefer that a different level of the factor be the baseline (for ex
 
 ```{r}
 nepali_reset <- nepali %>%
-  mutate(sex = factor(sex, levels = c("Female", "Male")))
+  mutate(sex = factor(sex, levels = c("2", "1")))
+
 mod_b_reset <- lm(wt ~ sex, data = nepali_reset)
 summary(mod_b_reset)$coef
 ```
