@@ -98,38 +98,56 @@ In the swirl environment, knowing about the following commands will be helpful:
 
 While they aren't required for class, you should consider trying out some other swirl lessons later in the course. You can look through the [course directory](http://swirlstats.com/scn/title.html) to see what other courses and lessons are available. For the first part of our course, you might find the "Exploratory Data Analysis" course helpful. If you would like to learn more about using R for statistical analysis, you might find the "Regression Models" course helpful. 
 
-## Homework #2
+## Homework #2 (Updated for 2018)
 
-**Due date: Sept. 27**
+**Due date: Sept. 28 by 5 p.m.**
 
-For Homework 2, recreate the R Markdown document that you can download from [here](https://github.com/geanders/RProgrammingForResearch/raw/master/Homework/Homework_2.docx). 
+For this assignment, you will submit the assignment to me **by email** by the due date. You should include three files in your submission: 
 
-Here are some initial instructions and tips: 
+1. The final rendered Word document (rendered from an RMarkdown file).
+2. The original RMarkdown file used to create that final document.
+3. The dataset you used for the assignment.
 
-- Your goal is to create an R Markdown document that you can compile to create a Word document that looks just like the example document we've linked above. 
-- You will turn in (by email) both the compiled Word document and the .Rmd original file.
-- Add your name as "Author" and the due date of the assignment as "Date". You should add these within the R Markdown document, rather than changing them in the final, compiled Word document.
-- If you want to get started before you know how to use R Markdown, you can go ahead and write all of the necessary code to replicate the output and figures in the document in an R script. 
-- The code chunks here have been hidden with the option `echo = FALSE`, but you should include your code in your final document. 
-- Set the chunk options `warning = FALSE` and `message = FALSE` to prevent warnings and messages from being printed out. You will get some messages and warnings in the code from things like missing values and from loading packages, but you want to hide all of those messages in your final document.
-- For things like templates, colors, level of transparency, and point size, you will receive full credit if you create figures that are visually similar to the ones shown in the example document. In other words, if the example document shows some transparency in points, you will get full credit if you also include some transparency in the points in your plot, but you do not have to include the exact same value of `alpha`. 
-- Pay close attention to the typeface used in text of the original document. If something is shown in boldface or "typewriter" fontface in the original, make sure you've written your Rmarkdown code to have the same type.
-- In R, there are often many different ways to achieve something. As long as your code *works*, it's fine if you haven't coded it exactly like we have in our version. However, your output should look identical to ours (or, in the case of color, transparency, point size, and themes, visually similar).
-- You will not lose points if you cannot recreate the table in the document (although you should try to!).
-- The last section, under the heading "Extra challenge-- not graded", is not graded. However, if you'd like an extra challenge, you're welcome to try it out and include it in your final submission!
+For this assignment, start by picking a dataset either from your own research or something interesting available online (if you're struggling to find something, check out [Five Thirty Eight's GitHub data repository](https://github.com/fivethirtyeight/data)). You will then use this dataset to practice what you've learned with R so far. This will also be a chance, if you're using a dataset from your own research for me to get an idea of how you might be planning to use R in future research. 
 
-If you need them, here are some further tips: 
+**Very important note**: Some research datasets have privacy constraints. This includes any datasets collected from human subjects, but can also include other datasets. For some projects, the principal investigator may prefer to keep the data private until publication of results. Before using a dataset for this project, please confirm with your research advisor that there are no constraints on the data. I do not plan to make the results of this assignment public, but I also do not want to us to be emailing back and forth a dataset with any constraints.
 
-- You will learn Rmarkdown in Week 5 of the course. However, if you want to get started on this exercise before you learn how to use Rmarkdown, you can start by working on the regular R code to read in the data and create the figures shown in the document.
-- Functions from the tidyverse (especially from `dplyr`, `readr`, and `ggplot` packages) will make your life much easier for this exercise. You can now install and load the `tidyverse` package to load them all at once. 
-- To rename column names with "special" characters in them, wrap the whole old column name in backticks. For example, to change a column name that has a dollar sign in it, you would use something like "``rename(new_col_name = `old_col_name$` ``)". 
-- To change the size of a figure in a report, use the "fig.width" and "fig.height" chunk options. 
-- You will want to use `scale_fill_brewer` in several of the figures.
-- Don't forget that, within functions like `scale_x_continuous`, you can use the argument `breaks` to set where the axis has breaks, and then `labels` to set what will actually be shown at each break. 
-- The string "\\n" can be included in legends and labels to include a carriage return.
-- Coordinates can be flipped in a graph with the `coord_flip` geom. So, if you can figure out a way to make a graph with the coordinates flipped, use that code and just add `coord_flip` at the end.
+Using your dataset, create an RMarkdown document with the content listed below. Each section I've listed below should be included in the RMarkdown document as its own section, with a section header created using Markdown code. 
 
-## Homework #3
+- **Section 1: Description of the data**: Describe the dataset you are using, both in terms of the **content** (what is this data measuring? how was it collected? what kinds of research questions are you hoping to use it to answer?) and in terms of its **format** (what type of file is it saved in? what if it is in a flat file, is it fixed width or delimited? if it is delimited, what is the delimiter? if it is binary, what is the program that would normally be used to open it?).
+- **Section 2: Reading the data into R**: Include code that reads the data into R and assigns it to a dataframe object that you can use later in the document. Explain in the text which R function you used to read in the data (e.g., `read_csv`) and which package it came from (if it was not a base R function). If there were any special options you needed to use (e.g., `skip` to skip some rows without data), list those and explain why you used them. Next, include some code to clean the data (e.g., rename columns, convert any dates into a "Date" format). You can filter to certain rows if you would like, but do **not** filter out missing values, as we'll want to learn more about those later.   
+- **Section 3: Characteristics of the data**: Describe the dataframe you just read in. How many rows does it have? How many columns? (Use inline code in the RMarkdown document to put this information into a sentence that reads "This dataframe has ... rows and ... columns.".) What are the names of the columns? What does each row measure (i.e., what is the unit of observation)? Include a table (using Markdown directly or `kable`) explaining what each column measures. This table should have three columns: (1) the column name in the R dataframe; (2) a very brief description of what each column measures; and (3) the units (if any) of the measurement in the column.
+- **Section 4: Summary statistics**: Pick three columns of the dataframe. Use the `summarize` function to get the following summaries of these columns: (1) minimum value; (2) maximum value; (3) mean value; (4) number of missing values. If there are missing values, make sure you use the appropriate options in summarizing these values to exclude those when calculating the minimum, maximum, and mean. Assign the result of this `summarize` call to a new R object, and print it out, so these summaries show up in your final, rendered Word document.  
+- **Section 5: Visualizing the data**: Create two plots of your dataframe. One should use a "statistical" geom (e.g., histogram, bar chart, boxplot) and one a "non-statistical" geom (e.g., scatterplot, line plot for time series). Explain why these plots help you learn more about this data and about the interesting research questions you're hoping to explore with the data. Be sure to customize the final size of each plot in the Word document using the `fig.width` and `fig.height` commands. For each plot, also be sure to customize the x- and y-axis labels. Finally, explain how each plot is following at least two of the principles of "good graphics" covered in week 4 of the course (Chapter 4 of the book)---if necessary, use `ggplot` functions and options to make the plots comply with some of these principles. 
+
+<!-- For Homework 2, recreate the R Markdown document that you can download from [here](https://github.com/geanders/RProgrammingForResearch/raw/master/Homework/Homework_2.docx).  -->
+
+<!-- Here are some initial instructions and tips:  -->
+
+<!-- - Your goal is to create an R Markdown document that you can compile to create a Word document that looks just like the example document we've linked above.  -->
+<!-- - You will turn in (by email) both the compiled Word document and the .Rmd original file. -->
+<!-- - Add your name as "Author" and the due date of the assignment as "Date". You should add these within the R Markdown document, rather than changing them in the final, compiled Word document. -->
+<!-- - If you want to get started before you know how to use R Markdown, you can go ahead and write all of the necessary code to replicate the output and figures in the document in an R script.  -->
+<!-- - The code chunks here have been hidden with the option `echo = FALSE`, but you should include your code in your final document.  -->
+<!-- - Set the chunk options `warning = FALSE` and `message = FALSE` to prevent warnings and messages from being printed out. You will get some messages and warnings in the code from things like missing values and from loading packages, but you want to hide all of those messages in your final document. -->
+<!-- - For things like templates, colors, level of transparency, and point size, you will receive full credit if you create figures that are visually similar to the ones shown in the example document. In other words, if the example document shows some transparency in points, you will get full credit if you also include some transparency in the points in your plot, but you do not have to include the exact same value of `alpha`.  -->
+<!-- - Pay close attention to the typeface used in text of the original document. If something is shown in boldface or "typewriter" fontface in the original, make sure you've written your Rmarkdown code to have the same type. -->
+<!-- - In R, there are often many different ways to achieve something. As long as your code *works*, it's fine if you haven't coded it exactly like we have in our version. However, your output should look identical to ours (or, in the case of color, transparency, point size, and themes, visually similar). -->
+<!-- - You will not lose points if you cannot recreate the table in the document (although you should try to!). -->
+<!-- - The last section, under the heading "Extra challenge-- not graded", is not graded. However, if you'd like an extra challenge, you're welcome to try it out and include it in your final submission! -->
+
+<!-- If you need them, here are some further tips:  -->
+
+<!-- - You will learn Rmarkdown in Week 5 of the course. However, if you want to get started on this exercise before you learn how to use Rmarkdown, you can start by working on the regular R code to read in the data and create the figures shown in the document. -->
+<!-- - Functions from the tidyverse (especially from `dplyr`, `readr`, and `ggplot` packages) will make your life much easier for this exercise. You can now install and load the `tidyverse` package to load them all at once.  -->
+<!-- - To rename column names with "special" characters in them, wrap the whole old column name in backticks. For example, to change a column name that has a dollar sign in it, you would use something like "``rename(new_col_name = `old_col_name$` ``)".  -->
+<!-- - To change the size of a figure in a report, use the "fig.width" and "fig.height" chunk options.  -->
+<!-- - You will want to use `scale_fill_brewer` in several of the figures. -->
+<!-- - Don't forget that, within functions like `scale_x_continuous`, you can use the argument `breaks` to set where the axis has breaks, and then `labels` to set what will actually be shown at each break.  -->
+<!-- - The string "\\n" can be included in legends and labels to include a carriage return. -->
+<!-- - Coordinates can be flipped in a graph with the `coord_flip` geom. So, if you can figure out a way to make a graph with the coordinates flipped, use that code and just add `coord_flip` at the end. -->
+
+## Homework #3 
 
 **Due date: Oct. 11**
 

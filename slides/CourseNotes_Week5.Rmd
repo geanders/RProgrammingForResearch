@@ -120,6 +120,8 @@ knitr::include_graphics("../figures/example_output.png")
 
 To write a file in Markdown, you'll need to learn the conventions for creating formatting. This table shows what you would need to write in a flat file for some common formatting choices: \medskip
 
+\small
+
 ```{r echo = FALSE}
 markdown_format <- data.frame(Code = c("`**text**`",
                                        "`*text*`",
@@ -139,37 +141,66 @@ markdown_format <- data.frame(Code = c("`**text**`",
 knitr::kable(markdown_format)
 ```
 
+## Markdown conventions
+
+To create a list, you can use the following syntax (*Note*: The empty lines before and after the list items must be included or the list won't be created correctly.):
+
+\small
+
+```
+Here are the items in my list: 
+
+- List item 1
+- List item 2
+
+Those are all the items.
+```
+
 
 
 ## Markdown conventions
 
 Some other simple things you can do:
 
-- Lists (ordered or bulleted)
 - Equations
 - Tables
 - Figures from file
 - Block quotes
-- Superscripts
 
 \bigskip
 
 For more Markdown conventions, see [RStudio's R Markdown Reference Guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) (link also available through "Help" in RStudio). 
 
+## In-course exercise
 
-# Literate programming in R
+We'll take a break now to do the first part of the In-Course Exercise (Section 5.6.1). I am having you try out writing an RMarkdown file before we talk more about how they work. 
+
+The next slide has the basic instructions for creating a new RMarkdown file. I will also walk you through these steps to start the exercise.
+
+## Basics
+
+- To open a new RMarkdown file, go to "File" -> "New File" -> "RMarkdown..." -> for now, chose a "Document" in "HTML" format.
+- This will open a new R Markdown file in RStudio. The file extension for RMarkdown files is ".Rmd". 
+- The new file comes with some example code and text. You can run the file as-is to try out the example. You will ultimately delete this example code and text and replace it with your own.
+- Once you "knit" the R Markdown file, R will render an HTML file with the output. This is automatically saved in the same directory where you saved your .Rmd file.
+- Write everything besides R code using Markdown syntax.
+
+# Literate programming 
 
 ## Literate programming
 
-**Literate programming**, an idea developed by Donald Knuth, mixes code that can be executed with regular text. \medskip 
+- **Literate programming** mixes code that can be executed with regular text.
+- The files you create can then be rendered, to run any embedded code. 
+- The final output will have results from your code and the regular text.
 
-```{r echo = FALSE, out.width = "0.9\\textwidth"}
+## Literate programming
+
+Literate programming was developed by **Donald Knuth**. \medskip 
+
+```{r echo = FALSE, out.width = "\\textwidth"}
 knitr::include_graphics("../figures/KnuthCheck.jpg")
 ```
 
-\medskip
-
-The files you create can then be rendered, to run any embedded code. The final output will have results from your code and the regular text. 
 
 ## Literate programming with `knitr`
 
@@ -193,7 +224,7 @@ In essence, `knitr` allows you to write an R Markdown file that can be rendered 
 
 ## Chunk syntax
 
-To include R code in an RMarkdown document, separate off the code chunk using the following syntax:
+To include R code in an RMarkdown document, separate the code chunk using the following syntax:
 
     `r ''````{r}
     my_vec <- 1:10
@@ -268,7 +299,7 @@ Add these options in the opening brackets and separate multiple ones with commas
 
 \bigskip 
 
-We will go over other options later, once you've gotten the chance to try writting R Markdown files.
+We will go over other options later, once you've gotten the chance to try adding R code into RMarkdown files.
 
 ## Global options
 
@@ -310,6 +341,10 @@ There are `` `r '\x60r nrow(nepali)\x60'` `` observations in the `nepali` data s
 Once the file is rendered, this gives: \bigskip
 
 There are `r nrow(nepali)` observations in the `nepali` data set. The average age is `r mean(nepali$age, na.rm = TRUE)` months.
+
+## In-course exercise
+
+We'll now take a break to do the next section of the In-Course Exercise (Section 5.6.2).
 
 # Working with Rmd files
 
@@ -494,6 +529,10 @@ Note that this grouping often happens naturally when using tidyverse functions, 
 
 We'll learn more about satisfying these guidelines when we talk about writing your own functions in the next part of the class.
 
+## In-course exercise
+
+We'll now take a break to do the final two sections of the In-Course Exercise (Section 5.6.3 and 5.6.4).
+
 # More with knitr
 
 ## Equations in `knitr`
@@ -563,7 +602,7 @@ To make your research more reproducible, use the second choice.
 
 ## Saving graphics files
 
-To use code export a figure you created in R, take three steps: 
+To use code to export a figure you created in R, take three steps: 
 
 1. Open a graphics device (e.g., `pdf("MyFile.pdf")`).
 2. Write the code to print your plot. 
