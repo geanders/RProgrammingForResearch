@@ -10,16 +10,119 @@ data(worldcup)
 library(ggthemes)
 ```
 
-## Parentheses
+---
 
-If you put parentheses around an entire code statement, it will both run the code and print out the answer.
+## Matrices
 
-```{r}
-study_months <- c("Jan", "Feb", "Mar")
-study_months
+A matrix is like a data frame, but all the values in all columns must be of the same class (e.g., numeric, character).
 
-(study_months <- c("Jan", "Feb", "Mar"))
+R uses matrices a lot for its underlying math (e.g., for the linear algebra operations required for fitting regression models). R can do matrix operations quite quickly.
+
+You can create a matrix with the `matrix` function. Input a vector with the values to fill the matrix and `ncol` to set the number of columns:
+
+```{r cab}
+foo <- matrix(1:10, ncol = 5)
+foo
 ```
+
+By default, the matrix will fill up by column. You can fill it by row with the `byrow` function:
+
+```{r cac}
+foo <- matrix(1:10, ncol = 5, byrow = TRUE)
+foo
+```
+
+In certain situations, you might want to work with a matrix instead of a data frame (for example, in cases where you were concerned about speed -- a matrix is more memory efficient than the corresponding data frame). If you want to convert a data frame to a matrix, you can use the `as.matrix` function:
+
+```{r cad}
+foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
+                  col_3 = 5:6, col_4 = 7:8,
+                  col_5 = 9:10)
+(foo <- as.matrix(foo))
+```
+
+You can index matrices with square brackets, just like data frames:
+
+```{r cae}
+foo[1, 1:2]
+```
+
+You cannot, however, use `dplyr` functions with matrices:
+
+```{r caf, eval = FALSE}
+foo %>% filter(col_1 == 1)
+```
+
+All elements in a matrix must have the same class. \bigskip
+
+The matrix will default to make all values the most general class of any of the values, in any column. For example, if we replaced one numeric value with the character "a", everything would turn into a character:
+
+```{r cag}
+foo[1, 1] <- "a"
+foo
+```
+
+---
+
+## Lists
+
+In this section, we'll talk about the `purrr` package, which contains functions that allow you to map a function to all values in a vector, matrix, or list. \bigskip
+
+First, you need to know about the `list` object type in R:
+
+A list has different elements, just like a data frame has different columns. However, the different elements of a list can have different lengths (unlike the columns of a data frame). The different elements can also have different classes.
+
+```{r cah}
+bar <- list(some_letters = letters[1:3],
+            some_numbers = 1:5, 
+            some_logical_values = c(TRUE, FALSE))
+bar
+```
+
+To index an element from a list, use double square brackets. You can use bracket indexing either with numbers (which element in the list?) or with names. You can also index lists with the `$` operator.
+
+```{r cai}
+bar[[1]]
+bar[["some_numbers"]]
+bar$some_logical_values
+```
+
+To access a specific value within a list element we can index the element e.g.:
+
+```{r caii}
+bar[[1]][[2]]
+```
+
+Lists can be used to contain data with an unusual structure and / or lots of different components. For example, the information from fitting a regression is often stored as a list:
+
+```{r caj}
+my_mod <- glm(rnorm(10) ~ c(1:10))
+is.list(my_mod)
+```
+
+The `names` function returns the name of each element in the list:
+
+```{r cak}
+head(names(my_mod), 3)
+my_mod[["coefficients"]]
+```
+
+A list can even contain other lists! We can use the `str` function to see the structure of a list:
+
+```{r cakk}
+a_list <- list(list("a", "b"), list(1, 2))
+
+str(a_list)
+```
+
+Sometimes you'll see unnecessary lists-of-lists, perhaps when importing data into R created! Or a list with multiple elements that you would like to combine. You can remove a level of hierarchy from a list using the `flatten` function from the `purrr` package:
+
+```{r cakl}
+library(purrr)
+str(flatten(a_list))
+```
+
+---
 
 ## Regression models 
 
@@ -42,7 +145,7 @@ $$
 
 You will use this type of structure in R fo a lot of different function calls, including those for linear models (fit with the `lm` function) and generalized linear models (fit with the `glm` function).
 
-There are some conventions that can be used in R formulas. Common ones include: 
+There are some conventions that can be used in R formulas. Common ones include:
 
 ```{r echo = FALSE}
 for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
@@ -52,14 +155,20 @@ for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
                                     "fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)",
                                     "include as independent variables all variables other than the response (e.g., `y ~ .`)",
                                     "intercept (e.g., `y ~ 1` for an intercept-only model)",
-                                    "do not include a variable in the dataframe as an independent variables (e.g., `y ~ . - x1`); usually used in conjunction with `.` or `1`"))
+                                    "do not include a variable in the data frame as an independent variables (e.g., `y ~ . - x1`); usually used in conjunction with `.` or `1`"))
 pander::pander(for_convs, split.cells = c(1,1,58),
                justify = c("center", "left"))
 ```
 
 ### Linear models
 
-To fit a linear model, you can use the function `lm()`. This function is part of the `stats` package, which comes installed with base R. In this function, you can use the `data` option to specify the dataframe from which to get the vectors. 
+To fit a linear model, you can use the function `lm()`. This function is part of the `stats` package, which comes installed with base R. In this function, you can use the `data` option to specify the data frame from which to get the vectors. 
+
+```{r, echo=FALSE}
+library(forcats)
+nepali_fct <- as_data_frame(nepali) %>%
+              mutate(sex = fct_recode(factor(sex), Male = "1", Female = "2"))
+```
 
 ```{r}
 mod_a <- lm(wt ~ ht, data = nepali)
@@ -69,31 +178,31 @@ This previous call fits the model:
 
 $$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
 
-where: 
+where:
 
 - $Y_{i}$ : weight of child $i$
 - $X_{1,i}$ : height of child $i$
 
 
-If you run the `lm` function without saving it as an object, R will fit the regression and print out the function call and the estimated model coefficients: 
+If you run the `lm` function without saving it as an object, R will fit the regression and print out the function call and the estimated model coefficients:
 
 ```{r}
 lm(wt ~ ht, data = nepali)
 ```
 
-However, to be able to use the model later for things like predictions and model assessments, you should save the output of the function as an R object: 
+However, to be able to use the model later for things like predictions and model assessments, you should save the output of the function as an R object:
 
 ```{r}
 mod_a <- lm(wt ~ ht, data = nepali)
 ```
 
-This object has a special class, `lm`: 
+This object has a special class, `lm`:
 
 ```{r}
 class(mod_a)
 ```
 
-This class is a special type of list object. If you use `is.list` to check, you can confirm that this object is a list: 
+This class is a special type of list object. If you use `is.list` to check, you can confirm that this object is a list:
 
 ```{r}
 is.list(mod_a)
@@ -143,13 +252,13 @@ You can use the function `residuals` on an `lm` object to pull out the residuals
 head(residuals(mod_a))
 ```
 
-The result of a `residuals` call is a vector with one element for each of the non-missing observations (rows) in the dataframe you used to fit the model. Each value gives the different between the model fitted value and the observed value for each of these observations, in the same order the observations show up in the dataframe. The residuals are in the same order as the observations in the original dataframe. 
+The result of a `residuals` call is a vector with one element for each of the non-missing observations (rows) in the data frame you used to fit the model. Each value gives the different between the model fitted value and the observed value for each of these observations, in the same order the observations show up in the data frame. The residuals are in the same order as the observations in the original data frame.
 
 ```{block, type = "rmdtip"}
 You can also use the shorter function `coef` as an alternative to `coefficients` and the shorter function `resid` as an alternative to `residuals`.
 ```
 
-As noted in the subsection on simple statistics functions, the `summary` function returns different output depending on the type of object that is input to the function. If you input a regression model object to `summary`, the function gives you a lot of information about the model. For example, here is the output returned by running `summary` for the linear regression model object we just created: 
+As noted in the subsection on simple statistics functions, the `summary` function returns different output depending on the type of object that is input to the function. If you input a regression model object to `summary`, the function gives you a lot of information about the model. For example, here is the output returned by running `summary` for the linear regression model object we just created:
 
 ```{r}
 summary(mod_a)
@@ -157,13 +266,13 @@ summary(mod_a)
 
 This output includes a lot of useful elements, including (1) basic summary statistics for the residuals (to meet model assumptions, the median should be around zero and the absolute values fairly similar for the first and third quantiles), (2) coefficient estimates, standard errors, and p-values, and (3) some model summary statistics, including residual standard error, degrees of freedom, number of missing observations, and F-statistic.
 
-The object returned by the `summary()` function when it is applied to an `lm` object is a list, which you can confirm using the `is.list` function: 
+The object returned by the `summary()` function when it is applied to an `lm` object is a list, which you can confirm using the `is.list` function:
 
 ```{r}
 is.list(summary(mod_a))
 ```
 
-With any list, you can use the `names` function to get the names of all of the different elements of the object: 
+With any list, you can use the `names` function to get the names of all of the different elements of the object:
 
 ```{r}
 names(summary(mod_a))
@@ -187,7 +296,7 @@ plot(mod_a)
 par(oldpar)
 ```
 
-You can also use binary variables or factors as independent variables in regression models. For example, in the `nepali` dataset, `sex` is a factor variable with the levels "Male" and "Female". You can fit a linear model of weight regressed on sex for this data with the call: 
+You can also use binary variables or factors as independent variables in regression models. For example, in the `nepali` dataset, `sex` is a factor variable with the levels "Male" and "Female". You can fit a linear model of weight regressed on sex for this data with the call:
 
 ```{r}
 mod_b <- lm(wt ~ sex, data = nepali)
@@ -205,22 +314,25 @@ Here are the estimated coefficients from fitting this model:
 summary(mod_b)$coefficients
 ```
 
-You'll notice that, in addition to an estimated intercept (`(Intercept)`), the other estimated coefficient is `sexFemale` rather than just `sex`, although the column name in the dataframe input to `lm` for this variable is `sex`. 
+You'll notice that, in addition to an estimated intercept (`(Intercept)`), the other estimated coefficient is `sexFemale` rather than just `sex`, although the column name in the data frame input to `lm` for this variable is `sex`. 
 
 This is because, when a factor or binary variable is input as an independent variable in a linear regression model, R will fit an estimated coefficient for all levels of factors *except* the first factor level. By default, this first factor level is used as the baseline level, and so its estimated mean is given by the estimated intercept, while the other model coefficients give the estimated *difference* from this baseline. 
 
 For example, the model fit above tells us that the estimated mean weight of males is `r round(coef(mod_b)[1], 1)`, while the estimated mean weight of females is `r round(coef(mod_b)[1], 1)` + `r round(coef(mod_b)[2], 1)` = `r round(coef(mod_b)[1], 1) + round(coef(mod_b)[2], 1)`.
 
-If you would prefer that a different level of the factor be the baseline (for example, "Female" rather than "Male" for the previous regression), you can do that by using the `levels` argument in the `factor` function to reset factor levels. For example: 
+If you would prefer that a different level of the factor be the baseline (for example, "Female" rather than "Male" for the previous regression), you can do that by using the `levels` argument in the `factor` function to reset factor levels. For example:
 
 ```{r}
 nepali_reset <- nepali %>%
-  mutate(sex = factor(sex, levels = c("Female", "Male")))
+  mutate(sex = factor(sex, levels = c("2", "1")))
+
 mod_b_reset <- lm(wt ~ sex, data = nepali_reset)
 summary(mod_b_reset)$coef
 ```
 
 Now, `(Intercept)` gives the estimated mean weight for females, while the second estimated coefficient gives the estimated mean difference for males compared to the expected value for females.
+
+---
 
 ### Generalized linear models (GLMs)
 
@@ -234,7 +346,7 @@ For example, here is the code to fit a linear regression model for weight regres
 mod_c <- glm(wt ~ ht, data = nepali)
 ```
 
-This call fits the same regression model I fit earlier with the `lm` function and saved as `mod_a`. You can see that the two methods give exactly the same coefficient estimates: 
+This call fits the same regression model I fit earlier with the `lm` function and saved as `mod_a`. You can see that the two methods give exactly the same coefficient estimates:
 
 ```{r}
 coef(mod_c)
@@ -268,13 +380,60 @@ mod_d <- glm(wt_over_13 ~ sex, data = nepali,
              family = binomial(link = "logit"))
 ```
 
-Elements of a GLM can be pulled out in the same way that we looked at elements from the linear model fit with `lm`. For example, to see a table of estimated model coefficients, you can run: 
+Elements of a GLM can be pulled out in the same way that we looked at elements from the linear model fit with `lm`. For example, to see a table of estimated model coefficients, you can run:
 
 ```{r}
 summary(mod_d)$coef
 ```
 
 Because this model was a logistic model, fit with a log link, here the model coefficient estimate for `sexFemale` gives an estimate of the **log odds** of weight higher than 13 kg associated with females versus males. The p-value for this estimate (`Pr(>|z|)` = `r round(summary(mod_d)$coef[2, 4], 2)`) isn't very small, suggesting that the difference between male and female children in the odds of weighing more than 13 kg is not statistically significant. 
+
+---
+
+## Handling model objects
+
+The `broom` package contains tools for converting statistical objects into nice tidy data frames. The tools in the `broom` package make it easy to process statistical results in R using the tools of the `tidyverse`.
+
+### broom::tidy
+
+The `tidy()` function returns a data frame with information on the fitted model terms. For example, when applied to one of our linear models we get:
+
+```{r tidy_example}
+  library(broom)
+  kable(tidy(mod_a), digits = 3)
+```
+
+```{r tidy_class}
+  class(tidy(mod_a))
+```
+
+You can pass arguments to the `tidy()` function. For example, include confidence intervals:
+
+```{r tidy_cis}
+  kable(tidy(mod_a, conf.int = TRUE), digits = 3)
+```
+
+---
+
+### broom::augment
+
+The `augment()` function adds information about a fitted model to the dataset used to fit the model. For example, when applied to one of our linear models we get information on the fitted values and residuals included in the output:
+
+```{r augment_example, warning = FALSE}
+  kable(head(broom::augment(mod_a), 3), digits = 3)
+```
+
+---
+
+### broom::glance
+
+The `glance()` functions returns a one row summary of a fitted model object: For example:
+
+```{r glance_example, warning = FALSE}
+  kable(glance(mod_a, conf.int = TRUE), digits = 3)
+```
+
+---
 
 ### References-- statistics in R
 
@@ -287,809 +446,7 @@ If you want all the details about fitting linear models and GLMs in R, Julian Fa
 - [Linear Models with R](http://discovery.library.colostate.edu/Record/.b41119691) (also free online through the CSU library)
 - [Extending the Linear Model with R](http://www.amazon.com/Extending-Linear-Model-Generalized-Nonparametric/dp/158488424X/ref=sr_1_1?ie=UTF8&qid=1442252668&sr=8-1&keywords=extending+linear+model+r)
 
-
-## Loops
-
-Loops allow you to "walk through" and repeat the same code for different values of an index. For each run of the loop, R is told that, for **some index** in **some vector**, do **some code**. For example, the following loop specifies: For `i` in `1:3`, `print(i)`.
-
-```{r}
-for(i in c(1, 2, 3)){
-        print(i)
-}
-```
-
-Note that this code is equivalent to: 
-
-```{r}
-i <- 1
-print(i)
-i <- 2
-print(i)
-i <- 3
-print(i)
-```
-
-Often, the index will be set to a number for each cycle of the loop, and then the index will be used within the code to index vectors or dataframes: 
-
-```{r}
-study_months <- c("Jan", "Feb", "Mar")
-for(i in c(1, 3)){
-        print(study_months[i])
-}
-```
-
-Often, you want to set the index to sequential numbers (e.g., 1, 2, 3, 4). In this case, you can save time by using the `:` notation to create a vector of a sequence of numbers:
-
-```{r}
-for(i in 1:3){
-        print(i)
-}
-```
-
-With this notation, sometimes it may be helpful to use the `length` function to set the largest index value for the loop as the length of a vector (or `nrow` for indexing a dataframe). For example:
-
-```{r}
-study_months <- c("Jan", "Feb", "Mar")
-for(i in 1:length(study_months)){
-        print(study_months[i])
-}
-```
-
-Sometimes, you want to set the index for each cycle of the loop to something that is not a number. You can set the index to any class of vector. 
-
-Remember that a loop works by saying for **some index** in **some vector**, do **some code**. For example, you may want to run: for `study_month` in `study_months`, `print(study_month)`:
-
-```{r}
-study_months <- c("Jan", "Feb", "Mar")
-for(study_month in study_months){
-        print(study_month)
-}
-```
-
-Note that this is equivalent to: 
-
-```{r}
-study_month <- "Jan"
-print(study_month)
-study_month <- "Feb"
-print(study_month)
-study_month <- "Mar"
-print(study_month)
-```
-
-What would this loop do?
-
-```{r, eval = FALSE}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-for(i in 1:length(vars)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        print(var_mean)
-}
-```
-
-```{r}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-for(i in 1:length(vars)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        print(var_mean)
-}
-```
-
-What would this loop do?
-
-```{r, eval = FALSE}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-for(i in 1:length(vars)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        var_mean <- round(var_mean, 1)
-        out <- paste0("mean of ", vars[i], ": ", var_mean)
-        print(out)
-}
-```
-
-To figure out, you can set `i <- 1` and then walk through the loop:
-
-```{r}
-i <- 1
-(var_mean <- mean(worldcup[ , vars[i]]))
-(var_mean <- round(var_mean, 1))
-(out <- paste0("mean of ", vars[i], ": ", var_mean))
-```
-
-```{r}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-for(i in 1:length(vars)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        var_mean <- round(var_mean, 1)
-        out <- paste0("mean of ", vars[i], ": ", var_mean)
-        print(out)
-}
-```
-
-Often, it's convenient to create a dataset to fill up as you loop through:
-
-```{r, eval = FALSE}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-my_df <- data.frame(variable = vars, mean = NA)
-for(i in 1:nrow(my_df)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        my_df[i , "mean"] <- round(var_mean, 1)
-}
-```
-
-
-```{r}
-vars <- c("Time", "Shots", "Passes", "Tackles", "Saves")
-(my_df <- data.frame(variable = vars, mean = NA))
-```
-
-```{r}
-i <- 1
-(var_mean <- mean(worldcup[ , vars[i]]))
-my_df[i , "mean"] <- round(var_mean, 1)
-my_df
-```
-
-
-```{r}
-for(i in 1:nrow(my_df)){
-        var_mean <- mean(worldcup[ , vars[i]])
-        my_df[i , "mean"] <- round(var_mean, 1)
-}
-my_df
-```
-
-Note: This is a pretty simplistic example. There are some easier ways to have done this:
-
-```{r}
-worldcup %>% 
-  summarize(Time = mean(Time), Passes = mean(Passes),
-            Shots = mean(Shots), Tackles = mean(Tackles),
-            Saves = mean(Saves)) %>%
-  gather(key = var, value = mean) %>%
-  mutate(mean = round(mean, 1))
-```
-
-Another way to have done this is with `apply`:
-
-```{r}
-means <- apply(worldcup[ , vars], 2, mean)
-(means <- round(means, 1))
-```
-
-However, you can use this same looping process for much more complex tasks that you can't do as easily with `apply` or `dplyr` tools.
-
-Loops can be very useful for more complex repeated tasks. For example:
-
-```{r, echo = FALSE, fig.width = 6, fig.height = 4}
-positions <- unique(worldcup$Position)
-pos_est <- data.frame(position = positions,
-                      est = NA, se = NA)
-
-for(i in 1:nrow(pos_est)){
-        pos_df <- worldcup %>% 
-          filter(Position == positions[i]) 
-        pos_mod <- glm(Passes ~ Time,
-                       data = pos_df,
-                       family = poisson(link = "log"))
-        pos_coefs <- summary(pos_mod)$coefficients[2, 1:2]
-        pos_est[i, c("est", "se")] <- pos_coefs
-}
-
-pos_est <- pos_est %>%
-  mutate(lower_ci = est - 1.96 * se,
-         upper_ci = est + 1.96 * se)
-
-rr_per90 <- function(est){
-        out <- exp(est * 90)
-        return(out)
-}
-
-pos_est[ , c("rr_est", "rr_low", "rr_high")] <- 
-        apply(pos_est[ , c("est", "lower_ci", "upper_ci")], 2, rr_per90)
-
-pos_est <- arrange(pos_est, rr_est) %>%
-        mutate(position = factor(position, levels = position))
-
-ggplot(pos_est, aes(x = rr_low, y = position)) + 
-        geom_segment(aes(xend = rr_high, yend = position)) + 
-        geom_point(aes(x = rr_est, y = position)) + 
-        theme_few() + 
-        ylab("") + 
-        scale_x_continuous("Relative rate of passes\nper 90 minute increase in minutes played",
-                           limits = c(1.0, max(pos_est$rr_high))) + 
-        geom_vline(aes(xintercept = 1), color = "lightgray")
-```
-
-Creating this graph requires that you: 
-
-- Create a subset limited to each of the four positions
-- Fit a Poisson regression of Passes on Time within each subset
-- Pull the regression coefficient and standard error from each model
-- Use those values to calculate 95% confidence intervals
-- Convert everything from log relative rate to relative rate
-- Plot everything
-
-Create a vector with the names of all positions. Create an empty dataframe to store regression results:
-
-```{r}
-(positions <- unique(worldcup$Position))
-(pos_est <- data.frame(position = positions,
-                       est = NA, se = NA))
-```
-
-Loop through and fit a Poisson regression model for each subset of data. Save regression coefficients in the empty dataframe:
-
-```{r}
-for(i in 1:nrow(pos_est)){
-        pos_df <- worldcup %>%
-          filter(Position == positions[i]) 
-        pos_mod <- glm(Passes ~ Time,
-                       data = pos_df,
-                       family = poisson(link = "log"))
-        pos_coefs <- summary(pos_mod)$coefficients[2, 1:2]
-        pos_est[i, c("est", "se")] <- pos_coefs
-}
-pos_est[1:2, ]
-```
-
-Calculate 95% confidence intervals for log relative risk values:
-
-```{r}
-pos_est <- pos_est %>%
-  mutate(lower_ci = est - 1.96 * se,
-         upper_ci = est + 1.96 * se)
-
-pos_est %>%
-  select(position, est, lower_ci, upper_ci) 
-```
-
-Calculate relative risk per 90 minute increase in minutes played: 
-
-```{r}
-pos_est <- pos_est %>%
-  mutate(rr_est = exp(90 * est),
-         rr_low = exp(90 * lower_ci),
-         rr_high = exp(90 * upper_ci))
-pos_est %>%
-  select(position, rr_est, rr_low, rr_high) 
-```
-
-Re-level the `position` factor so the plot will be ordered from highest to lowest estimates:
-
-```{r}
-pos_est <- arrange(pos_est, rr_est) %>%
-        mutate(position = factor(position,
-                                 levels = position))
-pos_est %>% select(position, est)
-```
-
-Create the plot:
-
-```{r, fig.width = 6, fig.height = 4}
-ggplot(pos_est, aes(x = rr_low, y = position)) + 
-        geom_segment(aes(xend = rr_high, yend = position)) + 
-        geom_point(aes(x = rr_est, y = position)) + 
-        theme_few() + 
-        ylab("") + 
-        scale_x_continuous(paste("Relative rate of passes\nper",
-                                 "90 minute increase in minutes played"),
-                           limits = c(1.0, max(pos_est$rr_high))) + 
-        geom_vline(aes(xintercept = 1), color = "lightgray")
-```
-
-## Other control structures
-
-### if / else loops 
-
-There are other control structures you can use in your R code. Two that you will commonly use within R functions are `if` and `ifelse` statements. \bigskip
-
-An `if` statement tells R that, **if** a certain condition is true, **do** run some code. For example, if you wanted to print out only odd numbers between 1 and 5, one way to do that is with an `if` statement: (Note: the `%%` operator in R returns the remainder of the first value (i) divided by the second value (2).) 
-
-```{r}
-for(i in 1:5){
-  if(i %% 2 == 1){
-    print(i)
-  }
-}
-```
-
-The `if` statement runs some code if a condition is true, but does nothing if it is false. If you'd like different code to run depending on whether the condition is true or false, you can us an if / else or an if / else if / else statement. 
-
-```{r}
-for(i in 1:5){
-  if(i %% 2 == 1){
-    print(i)
-  } else {
-    print(paste(i, "is even"))
-  }
-}
-```
-
-What would this code do? \bigskip 
-
-```{r eval = FALSE}
-for(i in 1:100){
-  if(i %% 3 == 0 & i %% 5 == 0){
-    print("FizzBuzz")
-  } else if(i %% 3 == 0){
-    print("Fizz")
-  } else if(i %% 5 == 0){
-    print("Buzz")
-  } else {
-    print(i)
-  }
-}
-```
-
-If / else statements are extremely useful in functions. \bigskip
-
-In R, the `if` statement evaluates everything in the parentheses and, if that evaluates to `TRUE`, runs everything in the braces. This means that you can trigger code in an `if` statement with a single-value logical vector: 
-
-```{r}
-weekend <- TRUE
-if(weekend){
-  print("It's the weekend!")
-}
-```
-
-This functionality can be useful with parameters you choose to include when writing your own functions (e.g., `print = TRUE`).
-
-### Some other control structures
-
-The control structures you are most likely to use in data analysis with R are "for" loops and "if / else" statements. However, there are a few other control structures you may occasionally find useful: 
-
-- `next`
-- `break`
-- `while`
-
-You can use the `next` structure to skip to the next round of a loop when a certain condition is met. For example, we could have used this code to print out odd numbers between 1 and 5:
-
-```{r}
-for(i in 1:5){
-  if(i %% 2 == 0){
-    next
-  }
-  print(i)
-}
-```
-
-You can use `break` to break out of a loop if a certain condition is met. For example, the final code will break out of the loop once `i` is over 3, so it will only print the numbers 1 through 3:
-
-```{r}
-for(i in 1:5){
-  if(i > 3){
-    break
-  }
-  print(i)
-}
-```
-
-```{r}
-my_sum <- 1
-while(my_sum < 10){
-  my_sum <- my_sum * 2
-  print(my_sum)
-}
-```
-
-## Functions
-
-As you move to larger projects, you will find yourself using the same code a lot. \bigskip
-
-Examples include: 
-
-- Reading in data from a specific type of equipment (air pollution monitor, accelerometer)
-- Running a specific type of analysis
-- Creating a specific type of plot or map
-
-\bigskip 
-
-If you find yourself cutting and pasting a lot, convert the code to a function.
-
-Advantages of writing functions include: 
-
-- Coding is more efficient
-- Easier to change your code (if you've cut and paste code and you want to change something, you have to change it everywhere - this is an easy way to accidentally create bugs in your code)
-- Easier to share code with others
-
-You can name a function anything you want (although try to avoid names of preexisting-existing functions). You then define any inputs (arguments; separate multiple arguments with commas) and put the code to run in braces:
-
-```{r, eval = FALSE}
-## Note: this code will not run
-[function name] <- function([any arguments]){
-        [code to run]
-}
-```
-
-Here is an example of a very basic function. This function takes a number as input and adds 1 to that number. 
-
-```{r}
-add_one <- function(number){
-        out <- number + 1
-        return(out)
-}
-
-add_one(number = 3)
-add_one(number = -1)
-```
-
-- Functions can input any type of R object (for example, vectors, data frames, even other functions and ggplot objects)
-- Similarly, functions can output any type of R object
-- When defining a function, you can set default values for some of the parameters
-- You can explicitly specify the value to return from the function
-- There are ways to check for errors in the arguments a user inputs to the function
-
-For example, the following function inputs a data frame (`datafr`) and a one-element vector (`child_id`) and returns only rows in the data frame where it's `id` column matches `child_id`. It includes a default value for `datafr`, but not for `child_id`. 
-
-```{r}
-subset_nepali <- function(datafr = nepali, child_id){
-  datafr <- datafr %>%
-    filter(id == child_id)
-  return(datafr)
-}
-```
-
-If an argument is not given for a parameter with a default, the function will run using the default value for that parameter. For example:
-
-```{r}
-subset_nepali(child_id = "120011")
-```
-
-
-If an argument is not given for a parameter without a default, the function call will result in an error. For example:
-
-```{r error = TRUE}
-subset_nepali(datafr = nepali)
-```
-
-By default, the function will return the last defined object, although the choice of using `return` can affect printing behavior when you run the function. For example, I could have written the `subset_nepali` function like this: 
-
-```{r}
-subset_nepali <- function(datafr = nepali, child_id){
-  datafr <- datafr %>%
-    filter(id == child_id)
-}
-```
-
-In this case, the output will not automatically print out when you call the function without assigning it to an R object:
-
-```{r}
-subset_nepali(child_id = "120011")
-```
-
-However, the output can be assigned to an R object in the same way as when the function was defined without `return`:
-
-```{r}
-first_childs_data <- subset_nepali(child_id = "120011")
-first_childs_data
-```
-
-The `return` function can also be used to return an object other than the last defined object (although doesn't tend to be something you need to do very often). For example, if you did not use `return` in the following code, it will output "Test output":
-
-```{r}
-subset_nepali <- function(datafr = nepali, child_id){
-  datafr <- datafr %>%
-    filter(id == child_id)
-  a <- "Test output"
-}
-(subset_nepali(child_id = "120011"))
-```
-
-Conversely, you can use `return` to output `datafr`, even though it's not the last object defined:
-
-```{r}
-subset_nepali <- function(datafr = nepali, child_id){
-  datafr <- datafr %>%
-    filter(id == child_id)
-  a <- "Test output"
-  return(datafr)
-}
-subset_nepali(child_id = "120011")
-```
-
-You can use `stop` to stop execution of the function and give the user an error message. For example, the `subset_nepali` function will fail if the user inputs a data frame that does not have a column named "id":
-
-```{r eval = FALSE}
-subset_nepali(datafr = data.frame(wt = rnorm(10)),
-              child_id = "12011")
-```
-```
- Error: comparison (1) is possible only for 
- atomic and list types 
-```
-
-You can rewrite the function to stop if the input `datafr` does not have a column named "id":
-
-```{r eval = FALSE}
-subset_nepali <- function(datafr = nepali, child_id){
-  if(!("id" %in% colnames(datafr))){
-    stop("`datafr` must include a column named `id`")
-  }
-  datafr <- datafr %>%
-    filter(id == child_id)
-  return(datafr)
-}
-subset_nepali(datafr = data.frame(wt = rnorm(10)),
-              child_id = "12011")
-```
-
-```
-Error in subset_nepali(datafr = data.frame(wt = rnorm(10)),
-child_id = "12011") : 
-  `datafr` must include a column named `id`
-```
-
-The `stop` function is particularly important if the function would keep running with the wrong input, but would result in the wrong output. \bigskip
-
-You can also output warnings and messages using the functions `warning` and `message`.
-
-
-## Regular expressions
-
-For these examples, we'll use some data on passengers of the Titanic. You can load this data using:
-
-```{r}
-# install.packages("titanic")
-library(titanic)
-data("titanic_train")
-```
-
-We will be using the `stringr` package:
-
-```{r}
-library(stringr)
-```
-
-This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). Here are the first few values of "Name": 
-
-```{r}
-titanic_train %>% select(Name) %>% slice(1:3)
-```
-
-We've already done some things to manipulate strings. For example, if we wanted to separate "Name" into last name and first name (including title), we could actually do that with the `separate` function: 
-
-```{r}
-titanic_train %>% 
-  select(Name) %>% 
-  slice(1:3) %>% 
-  separate(Name, c("last_name", "first_name"), sep = ", ")
-```
-
-
-Notice that `separate` is looking for a regular pattern (", ") and then doing something based on the location of that pattern in each string (splitting the string). \bigskip
-
-There are a variety of functions in R that can perform manipulations based on finding regular patterns in character strings. 
-
-
-The `str_detect` function will look through each element of a character vector for a designated pattern. If the pattern is there, it will return `TRUE`, and otherwise `FALSE`. The convention is: 
-
-```
-## Generic code
-str_detect(string = [vector you want to check], 
-           pattern = [pattern you want to check for])
-```
-
-For example, to create a logical vector specifying which of the Titanic passenger names include "Mrs.", you can call:
-
-```{r}
-mrs <- str_detect(titanic_train$Name, "Mrs.")
-head(mrs)
-```
-
-
-The result is a logical vector, so `str_detect` can be used in `filter` to subset data to only rows where the passenger's name includes "Mrs.":
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "Mrs.")) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-
-There is an older, base R function called `grepl` that does something very similar (although note that the order of the arguments is reversed).
-
-```{r}
-titanic_train %>%
-  filter(grepl("Mrs.", Name)) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-The `str_extract` function can be used to extract a string (if it exists) from each value in a character vector. It follows similar conventions to `str_detect`:
-
-```
-## Generic code
-str_extract(string = [vector you want to check], 
-           pattern = [pattern you want to check for])
-```
-
-
-For example, you might want to extract "Mrs." if it exists in a passenger's name:
-
-```{r}
-titanic_train %>%
-  mutate(mrs = str_extract(Name, "Mrs.")) %>%
-  select(Name, mrs) %>%
-  slice(1:3)
-```
-
-Notice that now we're creating a new column (`mrs`) that either has "Mrs." (if there's a match) or is missing (`NA`) if there's not a match. 
-
-
-For this first example, we were looking for an exact string ("Mrs"). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find "Mr." or "Mrs.": 
-
-```{r}
-titanic_train %>%
-  mutate(title = str_extract(Name, "Mr\\.|Mrs\\.")) %>%
-  select(Name, title) %>%
-  slice(1:3)
-```
-
-Note that this pattern uses a special operator (`|`) to find one pattern **or** another. Double backslashes (`\\`) **escape** the special character ".". 
-
-
-As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally: 
-
-```
-. * + ^ ? $ \ | ( ) [ ] { }
-```
-
-
-Notice that "Mr." and "Mrs." both start with "Mr", end with ".", and may or may not have an "s" in between. 
-
-```{r}
-titanic_train %>%
-  mutate(title = str_extract(Name, "Mr(s)*\\.")) %>%
-  select(Name, title) %>%
-  slice(1:3)
-```
-
-This pattern uses `(s)*` to match zero or more "s"s at this spot in the pattern. 
-
-
-In the previous code, we found "Mr." and "Mrs.", but missed "Miss.". We could tweak the pattern again to try to capture that, as well. For all three, we have the pattern that it starts with "M", has some lowercase letters, and then ends with ".".  
-
-```{r}
-titanic_train %>%
-  mutate(title = str_extract(Name, "M[a-z]+\\.")) %>%
-  select(Name, title) %>%
-  slice(1:3)
-```
-
-
-The last pattern used `[a-z]+` to match one or more lowercase letters. The `[a-z]`is a **character class**. \bigskip 
-
-You can also match digits (`[0-9]`), uppercase letters (`[A-Z]`), just some letters (`[aeiou]`), etc. \bigskip
-
-You can negate a character class by starting it with `^`. For example, `[^0-9]` will match anything that **isn't** a digit. 
-
-
-Sometimes, you want to match a pattern, but then only subset a part of it. For example, each passenger seems to have a title ("Mr.", "Mrs.", etc.) that comes after ", " and before ". ". We can use this pattern to find the title, but then we get some extra stuff with the match: 
-
-```{r}
-titanic_train %>%
-  mutate(title = str_extract(Name, ",\\s[A-Za-z]*\\.\\s")) %>%
-  select(title) %>%
-  slice(1:3)
-```
-
-As a note, in this pattern, `\\s` is used to match a space. 
-
-
-We are getting things like ", Mr. ", when we really want "Mr". We can use the `str_match` function to do this. We group what we want to extract from the pattern in parentheses, and then the function returns a matrix. The first column is the full pattern match, and each following column gives just what matches within the groups. 
-
-```{r}
-head(str_match(titanic_train$Name,
-          pattern = ",\\s([A-Za-z]*)\\.\\s"))
-```
-
-
-To get just the title, then, we can run:
-
-```{r}
-titanic_train %>%
-  mutate(title = 
-           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
-  select(Name, title) %>%
-  slice(1:3)
-```
-
-The `[ , 2]` pulls out just the second column from the matrix returned by `str_match`. 
-
-
-Here are some of the most common titles: 
-
-```{r}
-titanic_train %>%
-  mutate(title = 
-           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
-  group_by(title) %>% summarize(n = n()) %>%
-  arrange(desc(n)) %>% slice(1:5)
-```
-
-
-Here are a few other examples of regular expressions in action with this dataset. \bigskip
-
-Get just names that start with ("^") the letter "A":
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "^A")) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-
-Get names with "II" or "III" (`{2,}` says to match at least two times):
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "I{2,}")) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-
-Get names with "Andersen" or "Anderson" (alternatives in square brackets):
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "Anders[eo]n")) %>%
-  select(Name)
-```
-
-
-
-Get names that start with ("^" outside of brackets) the letters "A" and "B":
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "^[AB]")) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-
-Get names that end with ("$") the letter "b" (either lowercase or uppercase):
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "[bB]$")) %>%
-  select(Name) 
-```
-
-
-Some useful regular expression operators include: 
-
-```{r echo = FALSE}
-reg_exp <- data_frame("Operator" = c(".",
-                                     "*",
-                                     "*?",
-                                     "+",
-                                     "+?",
-                                     "^",
-                                     "$", 
-                                     "[...]"),
-                      "Meaning" = c("Any character", 
-                                    "Match 0 or more times (greedy)",
-                                    "Match 0 or more times (non-greedy)",
-                                    "Match 1 or more times (greedy)",
-                                    "Match 1 or more times (non-greedy)",
-                                    "Starts with (in brackets, negates)",
-                                    "Ends with",
-                                    "Character classes"))
-knitr::kable(reg_exp)
-```
-
-
-For more on these patterns, see: 
-
-- Help file for the `stringi-search-regex` function in the `stringi` package (which should install when you install `stringr`)
-- [Introduction to stringr](https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html) by Hadley Wickham
-- [Handling and Processing Strings in R](http://gastonsanchez.com/Handling_and_Processing_Strings_in_R.pdf) by Gaston Sanchez (seven chapter ebook)
-- http://gskinner.com/RegExr and http://www.txt2re.com: Interactive tools for helping you build regular expression pattern strings
+---
 
 ## In-course exercise
 
@@ -1106,7 +463,7 @@ library(devtools)
 library(ggfortify)
 ```
 
-For this part of the exercise, you'll use a dataset on weather, air pollution, and mortality counts in Chicago, IL. This dataset is called `chicagoNMMAPS` and is part of the `dlnm` package. Change the name of the dataframe to  `chic` (this object name is shorter and will be easier to work with). Check out the data a bit to see what variables you have, and then perform the following tasks:
+For this part of the exercise, you'll use a dataset on weather, air pollution, and mortality counts in Chicago, IL. This dataset is called `chicagoNMMAPS` and is part of the `dlnm` package. Change the name of the data frame to `chic` (this object name is shorter and will be easier to work with). Check out the data a bit to see what variables you have, and then perform the following tasks:
 
 - Write out (on paper, not in R) the regression equation for regressing dewpoint temperature on temperature. 
 - Try fitting a linear regression of dew point temperature (`dptp`) regressed on temperature (`temp`). Save this model as the object `mod_1`. 
@@ -1115,9 +472,11 @@ For this part of the exercise, you'll use a dataset on weather, air pollution, a
 - Use `autoplot` on the model object to generate some model diagnostic plots (make sure you have the `ggfortify` package loaded and installed).
 - Try fitting the regression as a GLM, using `glm()`. Are your coefficients different?
 
+---
+
 #### Example R code:
 
-The regression equation for the model you want to fit, regressing dewpoint temperature on temperature, is: 
+The regression equation for the model you want to fit, regressing dewpoint temperature on temperature, is:
 
 $$
 Y_t \sim \beta_0 + \beta_1 X_t
@@ -1125,7 +484,7 @@ $$
 
 where $Y_t$ is the dewpoint temperature on day $t$, $X_t$ is the temperature on day $t$, and $\beta_0$ and $\beta_1$ are model coefficients. 
 
-Install and load the `dlnm` package and then load the `chicagoNMMAPS` data. Change the name of the dataframe to `chic`, so it will be shorter to call for the rest of your work. 
+Install and load the `dlnm` package and then load the `chicagoNMMAPS` data. Change the name of the data frame to `chic`, so it will be shorter to call for the rest of your work. 
 ```{r, message = FALSE, warning = FALSE}
 # install.packages("dlnm")
 library(dlnm)
@@ -1148,14 +507,13 @@ tidy(mod_1)
 
 There does seem to be an association between temperature and dewpoint temperature: a unit increase in temperature is associated with a `r round(coef(mod_1)[2], 1)` unit increase in dewpoint temperature. The p-value for the temperature coefficient is <2e-16. This is far below 0.05, which suggests we would be very unlikely to see such a strong association by chance if the null hypothesis, that the two variables are not associated, were true.
 
-You can also check overall model summaries using the `glance` function: 
+You can also check overall model summaries using the `glance` function:
 
 ```{r}
 glance(mod_1)
 ```
 
-
-To create plots of the observations and the fit model, use the `augment` function to add model output (e.g., predictions, residuals) to the original dataframe of observed temperatures and dew point temperatures:
+To create plots of the observations and the fit model, use the `augment` function to add model output (e.g., predictions, residuals) to the original data frame of observed temperatures and dew point temperatures:
 
 ```{r warning = FALSE, message = FALSE}
 augment(mod_1) %>% 
@@ -1178,7 +536,7 @@ Plot some plots to check model assumptions for the model you fit using the `auto
 autoplot(mod_1)
 ```
 
-Try fitting the model using `glm()`. Call it `mod_1a`. Compare the coefficients for the two models. You can use the `tidy` function on an `lm` or `glm` object to pull out just the model coefficients and associated model results. Here, I've used a pipeline of code to create a tidy dataframe that merges these "tidy" coefficient outputs (from the two models) into a single dataframe):
+Try fitting the model using `glm()`. Call it `mod_1a`. Compare the coefficients for the two models. You can use the `tidy` function on an `lm` or `glm` object to pull out just the model coefficients and associated model results. Here, I've used a pipeline of code to create a tidy data frame that merges these "tidy" coefficient outputs (from the two models) into a single data frame):
 
 ```{r}
 mod_1a <- glm(dptp ~ temp, data = chic)
@@ -1192,18 +550,22 @@ tidy(mod_1) %>%
 
 The results from the two models are identical.
 
-As a note, you could have also just run `tidy` on each model object, without merging them together into a single dataframe: 
+As a note, you could have also just run `tidy` on each model object, without merging them together into a single data frame:
 
 ```{r}
 tidy(mod_1)
 tidy(mod_1a)
 ```
 
+---
+
 ### Using regression models to explore data #2
 
 - Does $PM_{10}$ vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable. Some of the overall model summaries will compare this model to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you're fitting.
 - Try using `glm()` to run a Poisson regression of respiratory deaths (`resp`) on temperature during summer days. Start by creating a subset with just summer days called `summer`. (Hint: Use the `month` function with the argument `label = TRUE` from `lubridate` to do this-- just pull out the subset where the month is 6, 7, or 8, for "Jun", "Jul", and "Aug".) Try to write out the regression equation for the model you're fitting.
 - The coefficient for the temperature variable in this model is our best estimate (based on this model) of the **log relative risk** for a one degree Celcius increase in temperature. What is the **relative risk** associated with a one degree Celsius increase?
+
+---
 
 #### Example R code:
 
@@ -1263,7 +625,7 @@ glance(mod_3)
 tidy(mod_3)
 ```
 
-Use the fitted model coefficient to determine the relative risk for a one degree Celcius increase in temperature. First, remember that you can use the `tidy()` function to read out the model coefficients. The second of these is the value for the temperature coefficient. That means that you can use indexing (`[2]`) to get just that value. That's the log relative risk; take the exponent to get the relative risk.
+Use the fitted model coefficient to determine the relative risk for a one degree Celsius increase in temperature. First, remember that you can use the `tidy()` function to read out the model coefficients. The second of these is the value for the temperature coefficient. That means that you can use indexing (`[2]`) to get just that value. That's the log relative risk; take the exponent to get the relative risk.
 
 ```{r}
 tidy(mod_3) %>% 
@@ -1277,7 +639,7 @@ As a note, you can use the `conf.int` parameter in `tidy` to also pull confidenc
 tidy(mod_3, conf.int = TRUE)
 ```
 
-You could use this to get the confidence interval for relative risk (check out the `mutate_at` function if you haven't seen it before): 
+You could use this to get the confidence interval for relative risk (check out the `mutate_at` function if you haven't seen it before):
 
 ```{r}
 tidy(mod_3, conf.int = TRUE) %>% 
@@ -1286,7 +648,7 @@ tidy(mod_3, conf.int = TRUE) %>%
   mutate_at(vars(estimate:conf.high), funs(exp(.)))
 ```
 
-
+---
 
 ### Exploring Fatality Analysis Reporting System (FARS) data
 
@@ -1325,9 +687,11 @@ accident %>%
   geom_smooth(se = FALSE)
 ```
 
+---
+
 #### Example R code
 
-Here is example code for the section above: 
+Here is example code for the section above:
 
 ```{r check12, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 library(tidyverse)
@@ -1356,11 +720,13 @@ accident %>%
   geom_smooth(se = FALSE)
 ```
 
+---
+
 ### Using a function and `purrr` to create state-specific plots
 
 Next, you will write a function to create state-specific plots from this data, then use it to create plots for the states of Colorado, Texas, California, and New York. 
 
-- The FARS data includes a column called `STATE`, but it gives state as a one- or two-digit code, rather than by name. These codes are the state Federal Information Processing Standard (FIPS) codes. A dataset with state names and FIPS codes is available at http://www2.census.gov/geo/docs/reference/state.txt. Read that data into an R object called `state_fips` and clean it so the first few lines look like this (hint: to change the `state` column to an integer class, you can use the function `as.integer`): 
+- The FARS data includes a column called `STATE`, but it gives state as a one- or two-digit code, rather than by name. These codes are the state Federal Information Processing Standard (FIPS) codes. A dataset with state names and FIPS codes is available at http://www2.census.gov/geo/docs/reference/state.txt. Read that data into an R object called `state_fips` and clean it so the first few lines look like this (hint: to change the `state` column to an integer class, you can use the function `as.integer`):
 
 ```{r check11, echo = FALSE, warning = FALSE, message = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
@@ -1372,7 +738,7 @@ state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
 state_fips %>% slice(1:5)
 ```
 
-- Read the 2015 FARS data into an R object named `accident`. Use all the date and time information to create a column named `date` with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new `date` variable). Filter out any values where the date-time does not render (i.e., `date` is a missing value). The first few rows of the cleaned dataframe should look like this:
+- Read the 2015 FARS data into an R object named `accident`. Use all the date and time information to create a column named `date` with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new `date` variable). Filter out any values where the date-time does not render (i.e., `date` is a missing value). The first few rows of the cleaned data frame should look like this:
 
 ```{r check10, warning = FALSE, message = FALSE, echo = FALSE}
 accident <- read_csv("data/accident.csv") %>%
@@ -1389,7 +755,7 @@ accident <- read_csv("data/accident.csv") %>%
 accident %>% slice(1:5)
 ```
 
-- Join the information from `state_fips` into the `accident` dataframe. There may be a few locations in the `state_fips` dataframe that are not included in the `accident` dataframe (e.g., Virgin Islands), so when you join keep all observations in `accident` but only the observations in `state_fips` that match at least one row of `accident`. The first few rows of the joined dataset should look like this: 
+- Join the information from `state_fips` into the `accident` data frame. There may be a few locations in the `state_fips` data frame that are not included in the `accident` data frame (e.g., Virgin Islands), so when you join keep all observations in `accident` but only the observations in `state_fips` that match at least one row of `accident`. The first few rows of the joined dataset should look like this:
 
 ```{r echo = FALSE}
 accident <- accident %>%
@@ -1406,7 +772,7 @@ accident %>%
   summarize(accidents = n())
 ```
 
-- Write a function that inputs a dataframe (`df`) and outputs this type of summary dataframe (like the one just created for Colorado) for whatever data is in the input dataframe. Below are some examples of how this function should work: 
+- Write a function that inputs a data frame (`df`) and outputs this type of summary data frame (like the one just created for Colorado) for whatever data is in the input data frame. Below are some examples of how this function should work:
 
 ```{r echo = FALSE}
 summarize_fars <- function(df){
@@ -1462,7 +828,7 @@ accident %>%
   ggtitle(paste("Fatal accidents in", "Colorado", "in 2015"))
 ```
 
-- Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any dataframe with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you will need to explicitly print the output from your function. See the examples of using the function below.) 
+- Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any data frame with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you will need to explicitly print the output from your function. See the examples of using the function below.) 
 
 ```{r check8, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 plot_fars <- function(df){
@@ -1478,7 +844,6 @@ plot_fars <- function(df){
     xlab("Time of day") + ylab("# of monthly accidents") 
 }
 ```
-
 
 Here are some examples of what should happen when you run this function:
 
@@ -1517,7 +882,7 @@ plot_grid(plotlist = state_plots[["plots"]],
 
 #### Example R code
 
-Here is the code to read the dataset with state names and FIPS codes at http://www2.census.gov/geo/docs/reference/state.txt into an R object called `state_fips` and clean it so the first few lines: 
+Here is the code to read the dataset with state names and FIPS codes at http://www2.census.gov/geo/docs/reference/state.txt into an R object called `state_fips` and clean it so the first few lines:
 
 ```{r check7, echo = FALSE, warning = FALSE, message = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
@@ -1549,7 +914,7 @@ accident <- read_csv("data/accident.csv") %>%
 accident %>% slice(1:5)
 ```
 
-A few notes: 
+A few notes:
 
 - Notice that `select` is using the `:` operator to pick several columns in a row.
 - Some of the column names in all caps are changed to lower case to make them easier to work with. 
@@ -1558,7 +923,7 @@ A few notes:
 - The `hour` function from `lubridate` is used to check if the time of the accident falls in "daytime" or not
 - Some of the accidents are missing some date information. A `filter` is used to filter that out. 
 
-Join the information from `state_fips` into the `accident` dataframe. There may be a few locations in the `state_fips` dataframe that are not included in the `accident` dataframe (e.g., Virgin Islands), so when you join keep all observations in `accident` but only the observations in `state_fips` that match at least one row of `accident`. You can use the following code for this: 
+Join the information from `state_fips` into the `accident` data frame. There may be a few locations in the `state_fips` data frame that are not included in the `accident` data frame (e.g., Virgin Islands), so when you join keep all observations in `accident` but only the observations in `state_fips` that match at least one row of `accident`. You can use the following code for this:
 
 ```{r echo = FALSE}
 accident <- accident %>%
@@ -1592,7 +957,7 @@ accident %>%
   knitr::kable()
 ```
 
-Write a function that inputs a dataframe (`df`) and outputs this type of summary dataframe (like the one just created for Colorado). You can do that with the following code. Note that, because it inputs a dataframe and outputs a dataframe, you can include it in a pipeline. 
+Write a function that inputs a data frame (`df`) and outputs this type of summary data frame (like the one just created for Colorado). You can do that with the following code. Note that, because it inputs a data frame and outputs a data frame, you can include it in a pipeline. 
 
 ```{r}
 summarize_fars <- function(df){
@@ -1634,7 +999,7 @@ accident %>%
 ```
 
 
-Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any dataframe with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you must explicitly print the plot object. For example, you could assign the plot to `fars_plot`, and then you would run `print(fars_plot)` within your loop as the last step.) 
+Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any data frame with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you must explicitly print the plot object. For example, you could assign the plot to `fars_plot`, and then you would run `print(fars_plot)` within your loop as the last step.)
 
 ```{r check2, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 plot_fars <- function(df){
@@ -1654,7 +1019,7 @@ plot_fars <- function(df){
 
 Notice how similar this function is to the code you wrote in the previous step. 
 
-Once you have written this function, what happens when you run the following code? The following code applies this function to the subset of data from each of four states. The output (`state_plots`) is a nested dataframe, where the new `plots` column is a list of `ggplot` objects. If you run `print` on this list, it will print each of these plots out separately (use the arrow buttons in the "Plots" Pane in RStudio to browse through these plots).
+Once you have written this function, what happens when you run the following code? The following code applies this function to the subset of data from each of four states. The output (`state_plots`) is a nested data frame, where the new `plots` column is a list of `ggplot` objects. If you run `print` on this list, it will print each of these plots out separately (use the arrow buttons in the "Plots" Pane in RStudio to browse through these plots).
 
 ```{r check1, fig.width = 6, fig.height = 3, fig.align = "center", eval = FALSE}
 library(purrr)
@@ -1679,4 +1044,6 @@ library(cowplot)
 plot_grid(plotlist = state_plots[["plots"]], 
           ncol = 2, labels = "AUTO")
 ```
+
+---
 
