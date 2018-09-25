@@ -25,14 +25,14 @@ foo <- matrix(1:10, ncol = 5)
 foo
 ```
 
-By default, the matrix will fill up by column. You can fill it by row with the `byrow` function: 
+By default, the matrix will fill up by column. You can fill it by row with the `byrow` function:
 
 ```{r cac}
 foo <- matrix(1:10, ncol = 5, byrow = TRUE)
 foo
 ```
 
-In certain situations, you might want to work with a matrix instead of a data frame (for example, in cases where you were concerned about speed -- a matrix is more memory efficient than the corresponding data frame). If you want to convert a data frame to a matrix, you can use the `as.matrix` function: 
+In certain situations, you might want to work with a matrix instead of a data frame (for example, in cases where you were concerned about speed -- a matrix is more memory efficient than the corresponding data frame). If you want to convert a data frame to a matrix, you can use the `as.matrix` function:
 
 ```{r cad}
 foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
@@ -41,13 +41,13 @@ foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
 (foo <- as.matrix(foo))
 ```
 
-You can index matrices with square brackets, just like data frames: 
+You can index matrices with square brackets, just like data frames:
 
 ```{r cae}
 foo[1, 1:2]
 ```
 
-You cannot, however, use `dplyr` functions with matrices: 
+You cannot, however, use `dplyr` functions with matrices:
 
 ```{r caf, eval = FALSE}
 foo %>% filter(col_1 == 1)
@@ -145,7 +145,7 @@ $$
 
 You will use this type of structure in R fo a lot of different function calls, including those for linear models (fit with the `lm` function) and generalized linear models (fit with the `glm` function).
 
-There are some conventions that can be used in R formulas. Common ones include: 
+There are some conventions that can be used in R formulas. Common ones include:
 
 ```{r echo = FALSE}
 for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
@@ -155,14 +155,14 @@ for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
                                     "fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)",
                                     "include as independent variables all variables other than the response (e.g., `y ~ .`)",
                                     "intercept (e.g., `y ~ 1` for an intercept-only model)",
-                                    "do not include a variable in the dataframe as an independent variables (e.g., `y ~ . - x1`); usually used in conjunction with `.` or `1`"))
+                                    "do not include a variable in the data frame as an independent variables (e.g., `y ~ . - x1`); usually used in conjunction with `.` or `1`"))
 pander::pander(for_convs, split.cells = c(1,1,58),
                justify = c("center", "left"))
 ```
 
 ### Linear models
 
-To fit a linear model, you can use the function `lm()`. This function is part of the `stats` package, which comes installed with base R. In this function, you can use the `data` option to specify the dataframe from which to get the vectors. 
+To fit a linear model, you can use the function `lm()`. This function is part of the `stats` package, which comes installed with base R. In this function, you can use the `data` option to specify the data frame from which to get the vectors. 
 
 ```{r, echo=FALSE}
 library(forcats)
@@ -178,31 +178,31 @@ This previous call fits the model:
 
 $$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
 
-where: 
+where:
 
 - $Y_{i}$ : weight of child $i$
 - $X_{1,i}$ : height of child $i$
 
 
-If you run the `lm` function without saving it as an object, R will fit the regression and print out the function call and the estimated model coefficients: 
+If you run the `lm` function without saving it as an object, R will fit the regression and print out the function call and the estimated model coefficients:
 
 ```{r}
 lm(wt ~ ht, data = nepali)
 ```
 
-However, to be able to use the model later for things like predictions and model assessments, you should save the output of the function as an R object: 
+However, to be able to use the model later for things like predictions and model assessments, you should save the output of the function as an R object:
 
 ```{r}
 mod_a <- lm(wt ~ ht, data = nepali)
 ```
 
-This object has a special class, `lm`: 
+This object has a special class, `lm`:
 
 ```{r}
 class(mod_a)
 ```
 
-This class is a special type of list object. If you use `is.list` to check, you can confirm that this object is a list: 
+This class is a special type of list object. If you use `is.list` to check, you can confirm that this object is a list:
 
 ```{r}
 is.list(mod_a)
@@ -252,13 +252,13 @@ You can use the function `residuals` on an `lm` object to pull out the residuals
 head(residuals(mod_a))
 ```
 
-The result of a `residuals` call is a vector with one element for each of the non-missing observations (rows) in the dataframe you used to fit the model. Each value gives the different between the model fitted value and the observed value for each of these observations, in the same order the observations show up in the dataframe. The residuals are in the same order as the observations in the original dataframe. 
+The result of a `residuals` call is a vector with one element for each of the non-missing observations (rows) in the data frame you used to fit the model. Each value gives the different between the model fitted value and the observed value for each of these observations, in the same order the observations show up in the data frame. The residuals are in the same order as the observations in the original data frame.
 
 ```{block, type = "rmdtip"}
 You can also use the shorter function `coef` as an alternative to `coefficients` and the shorter function `resid` as an alternative to `residuals`.
 ```
 
-As noted in the subsection on simple statistics functions, the `summary` function returns different output depending on the type of object that is input to the function. If you input a regression model object to `summary`, the function gives you a lot of information about the model. For example, here is the output returned by running `summary` for the linear regression model object we just created: 
+As noted in the subsection on simple statistics functions, the `summary` function returns different output depending on the type of object that is input to the function. If you input a regression model object to `summary`, the function gives you a lot of information about the model. For example, here is the output returned by running `summary` for the linear regression model object we just created:
 
 ```{r}
 summary(mod_a)
@@ -266,13 +266,13 @@ summary(mod_a)
 
 This output includes a lot of useful elements, including (1) basic summary statistics for the residuals (to meet model assumptions, the median should be around zero and the absolute values fairly similar for the first and third quantiles), (2) coefficient estimates, standard errors, and p-values, and (3) some model summary statistics, including residual standard error, degrees of freedom, number of missing observations, and F-statistic.
 
-The object returned by the `summary()` function when it is applied to an `lm` object is a list, which you can confirm using the `is.list` function: 
+The object returned by the `summary()` function when it is applied to an `lm` object is a list, which you can confirm using the `is.list` function:
 
 ```{r}
 is.list(summary(mod_a))
 ```
 
-With any list, you can use the `names` function to get the names of all of the different elements of the object: 
+With any list, you can use the `names` function to get the names of all of the different elements of the object:
 
 ```{r}
 names(summary(mod_a))
@@ -296,7 +296,7 @@ plot(mod_a)
 par(oldpar)
 ```
 
-You can also use binary variables or factors as independent variables in regression models. For example, in the `nepali` dataset, `sex` is a factor variable with the levels "Male" and "Female". You can fit a linear model of weight regressed on sex for this data with the call: 
+You can also use binary variables or factors as independent variables in regression models. For example, in the `nepali` dataset, `sex` is a factor variable with the levels "Male" and "Female". You can fit a linear model of weight regressed on sex for this data with the call:
 
 ```{r}
 mod_b <- lm(wt ~ sex, data = nepali)
@@ -314,13 +314,13 @@ Here are the estimated coefficients from fitting this model:
 summary(mod_b)$coefficients
 ```
 
-You'll notice that, in addition to an estimated intercept (`(Intercept)`), the other estimated coefficient is `sexFemale` rather than just `sex`, although the column name in the dataframe input to `lm` for this variable is `sex`. 
+You'll notice that, in addition to an estimated intercept (`(Intercept)`), the other estimated coefficient is `sexFemale` rather than just `sex`, although the column name in the data frame input to `lm` for this variable is `sex`. 
 
 This is because, when a factor or binary variable is input as an independent variable in a linear regression model, R will fit an estimated coefficient for all levels of factors *except* the first factor level. By default, this first factor level is used as the baseline level, and so its estimated mean is given by the estimated intercept, while the other model coefficients give the estimated *difference* from this baseline. 
 
 For example, the model fit above tells us that the estimated mean weight of males is `r round(coef(mod_b)[1], 1)`, while the estimated mean weight of females is `r round(coef(mod_b)[1], 1)` + `r round(coef(mod_b)[2], 1)` = `r round(coef(mod_b)[1], 1) + round(coef(mod_b)[2], 1)`.
 
-If you would prefer that a different level of the factor be the baseline (for example, "Female" rather than "Male" for the previous regression), you can do that by using the `levels` argument in the `factor` function to reset factor levels. For example: 
+If you would prefer that a different level of the factor be the baseline (for example, "Female" rather than "Male" for the previous regression), you can do that by using the `levels` argument in the `factor` function to reset factor levels. For example:
 
 ```{r}
 nepali_reset <- nepali %>%
@@ -346,7 +346,7 @@ For example, here is the code to fit a linear regression model for weight regres
 mod_c <- glm(wt ~ ht, data = nepali)
 ```
 
-This call fits the same regression model I fit earlier with the `lm` function and saved as `mod_a`. You can see that the two methods give exactly the same coefficient estimates: 
+This call fits the same regression model I fit earlier with the `lm` function and saved as `mod_a`. You can see that the two methods give exactly the same coefficient estimates:
 
 ```{r}
 coef(mod_c)
@@ -380,7 +380,7 @@ mod_d <- glm(wt_over_13 ~ sex, data = nepali,
              family = binomial(link = "logit"))
 ```
 
-Elements of a GLM can be pulled out in the same way that we looked at elements from the linear model fit with `lm`. For example, to see a table of estimated model coefficients, you can run: 
+Elements of a GLM can be pulled out in the same way that we looked at elements from the linear model fit with `lm`. For example, to see a table of estimated model coefficients, you can run:
 
 ```{r}
 summary(mod_d)$coef
@@ -392,11 +392,11 @@ Because this model was a logistic model, fit with a log link, here the model coe
 
 ## Handling model objects
 
-The `broom` packge contains tools for converting statistical objects into nice tidy data frames. The tools in the `broom` package make it easy to process statistical results in R using the tools of the `tidyverse`.
+The `broom` package contains tools for converting statistical objects into nice tidy data frames. The tools in the `broom` package make it easy to process statistical results in R using the tools of the `tidyverse`.
 
 ### broom::tidy
 
-The `tidy()` function returns a data frame with informaion on the fitted model terms. For example, when applied to one of our linear models we get:
+The `tidy()` function returns a data frame with information on the fitted model terms. For example, when applied to one of our linear models we get:
 
 ```{r tidy_example}
   library(broom)
@@ -427,7 +427,7 @@ The `augment()` function adds information about a fitted model to the dataset us
 
 ### broom::glance
 
-The `glance()` functions returnsa one row summary of a fitted model object: For example:
+The `glance()` functions returns a one row summary of a fitted model object: For example:
 
 ```{r glance_example, warning = FALSE}
   kable(glance(mod_a, conf.int = TRUE), digits = 3)
@@ -463,7 +463,7 @@ library(devtools)
 library(ggfortify)
 ```
 
-For this part of the exercise, you'll use a dataset on weather, air pollution, and mortality counts in Chicago, IL. This dataset is called `chicagoNMMAPS` and is part of the `dlnm` package. Change the name of the dataframe to  `chic` (this object name is shorter and will be easier to work with). Check out the data a bit to see what variables you have, and then perform the following tasks:
+For this part of the exercise, you'll use a dataset on weather, air pollution, and mortality counts in Chicago, IL. This dataset is called `chicagoNMMAPS` and is part of the `dlnm` package. Change the name of the data frame to `chic` (this object name is shorter and will be easier to work with). Check out the data a bit to see what variables you have, and then perform the following tasks:
 
 - Write out (on paper, not in R) the regression equation for regressing dewpoint temperature on temperature. 
 - Try fitting a linear regression of dew point temperature (`dptp`) regressed on temperature (`temp`). Save this model as the object `mod_1`. 
@@ -476,7 +476,7 @@ For this part of the exercise, you'll use a dataset on weather, air pollution, a
 
 #### Example R code:
 
-The regression equation for the model you want to fit, regressing dewpoint temperature on temperature, is: 
+The regression equation for the model you want to fit, regressing dewpoint temperature on temperature, is:
 
 $$
 Y_t \sim \beta_0 + \beta_1 X_t
@@ -484,7 +484,7 @@ $$
 
 where $Y_t$ is the dewpoint temperature on day $t$, $X_t$ is the temperature on day $t$, and $\beta_0$ and $\beta_1$ are model coefficients. 
 
-Install and load the `dlnm` package and then load the `chicagoNMMAPS` data. Change the name of the dataframe to `chic`, so it will be shorter to call for the rest of your work. 
+Install and load the `dlnm` package and then load the `chicagoNMMAPS` data. Change the name of the data frame to `chic`, so it will be shorter to call for the rest of your work. 
 ```{r, message = FALSE, warning = FALSE}
 # install.packages("dlnm")
 library(dlnm)
@@ -507,13 +507,13 @@ tidy(mod_1)
 
 There does seem to be an association between temperature and dewpoint temperature: a unit increase in temperature is associated with a `r round(coef(mod_1)[2], 1)` unit increase in dewpoint temperature. The p-value for the temperature coefficient is <2e-16. This is far below 0.05, which suggests we would be very unlikely to see such a strong association by chance if the null hypothesis, that the two variables are not associated, were true.
 
-You can also check overall model summaries using the `glance` function: 
+You can also check overall model summaries using the `glance` function:
 
 ```{r}
 glance(mod_1)
 ```
 
-To create plots of the observations and the fit model, use the `augment` function to add model output (e.g., predictions, residuals) to the original dataframe of observed temperatures and dew point temperatures:
+To create plots of the observations and the fit model, use the `augment` function to add model output (e.g., predictions, residuals) to the original data frame of observed temperatures and dew point temperatures:
 
 ```{r warning = FALSE, message = FALSE}
 augment(mod_1) %>% 
@@ -536,7 +536,7 @@ Plot some plots to check model assumptions for the model you fit using the `auto
 autoplot(mod_1)
 ```
 
-Try fitting the model using `glm()`. Call it `mod_1a`. Compare the coefficients for the two models. You can use the `tidy` function on an `lm` or `glm` object to pull out just the model coefficients and associated model results. Here, I've used a pipeline of code to create a tidy dataframe that merges these "tidy" coefficient outputs (from the two models) into a single dataframe):
+Try fitting the model using `glm()`. Call it `mod_1a`. Compare the coefficients for the two models. You can use the `tidy` function on an `lm` or `glm` object to pull out just the model coefficients and associated model results. Here, I've used a pipeline of code to create a tidy data frame that merges these "tidy" coefficient outputs (from the two models) into a single data frame):
 
 ```{r}
 mod_1a <- glm(dptp ~ temp, data = chic)
@@ -550,7 +550,8 @@ tidy(mod_1) %>%
 
 The results from the two models are identical.
 
-As a note, you could have also just run `tidy` on each model object, without merging them together into a single dataframe: 
+As a note, you could have also just run `tidy` on each model object, without merging them together into a single data frame:
+
 ```{r}
 tidy(mod_1)
 tidy(mod_1a)
@@ -624,7 +625,7 @@ glance(mod_3)
 tidy(mod_3)
 ```
 
-Use the fitted model coefficient to determine the relative risk for a one degree Celcius increase in temperature. First, remember that you can use the `tidy()` function to read out the model coefficients. The second of these is the value for the temperature coefficient. That means that you can use indexing (`[2]`) to get just that value. That's the log relative risk; take the exponent to get the relative risk.
+Use the fitted model coefficient to determine the relative risk for a one degree Celsius increase in temperature. First, remember that you can use the `tidy()` function to read out the model coefficients. The second of these is the value for the temperature coefficient. That means that you can use indexing (`[2]`) to get just that value. That's the log relative risk; take the exponent to get the relative risk.
 
 ```{r}
 tidy(mod_3) %>% 
@@ -638,7 +639,7 @@ As a note, you can use the `conf.int` parameter in `tidy` to also pull confidenc
 tidy(mod_3, conf.int = TRUE)
 ```
 
-You could use this to get the confidence interval for relative risk (check out the `mutate_at` function if you haven't seen it before): 
+You could use this to get the confidence interval for relative risk (check out the `mutate_at` function if you haven't seen it before):
 
 ```{r}
 tidy(mod_3, conf.int = TRUE) %>% 
@@ -690,7 +691,7 @@ accident %>%
 
 #### Example R code
 
-Here is example code for the section above: 
+Here is example code for the section above:
 
 ```{r check12, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 library(tidyverse)
@@ -725,7 +726,7 @@ accident %>%
 
 Next, you will write a function to create state-specific plots from this data, then use it to create plots for the states of Colorado, Texas, California, and New York. 
 
-- The FARS data includes a column called `STATE`, but it gives state as a one- or two-digit code, rather than by name. These codes are the state Federal Information Processing Standard (FIPS) codes. A dataset with state names and FIPS codes is available at http://www2.census.gov/geo/docs/reference/state.txt. Read that data into an R object called `state_fips` and clean it so the first few lines look like this (hint: to change the `state` column to an integer class, you can use the function `as.integer`): 
+- The FARS data includes a column called `STATE`, but it gives state as a one- or two-digit code, rather than by name. These codes are the state Federal Information Processing Standard (FIPS) codes. A dataset with state names and FIPS codes is available at http://www2.census.gov/geo/docs/reference/state.txt. Read that data into an R object called `state_fips` and clean it so the first few lines look like this (hint: to change the `state` column to an integer class, you can use the function `as.integer`):
 
 ```{r check11, echo = FALSE, warning = FALSE, message = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
@@ -737,7 +738,7 @@ state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
 state_fips %>% slice(1:5)
 ```
 
-- Read the 2015 FARS data into an R object named `accident`. Use all the date and time information to create a column named `date` with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new `date` variable). Filter out any values where the date-time does not render (i.e., `date` is a missing value). The first few rows of the cleaned dataframe should look like this:
+- Read the 2015 FARS data into an R object named `accident`. Use all the date and time information to create a column named `date` with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new `date` variable). Filter out any values where the date-time does not render (i.e., `date` is a missing value). The first few rows of the cleaned data frame should look like this:
 
 ```{r check10, warning = FALSE, message = FALSE, echo = FALSE}
 accident <- read_csv("data/accident.csv") %>%
@@ -754,7 +755,7 @@ accident <- read_csv("data/accident.csv") %>%
 accident %>% slice(1:5)
 ```
 
-- Join the information from `state_fips` into the `accident` dataframe. There may be a few locations in the `state_fips` dataframe that are not included in the `accident` dataframe (e.g., Virgin Islands), so when you join keep all observations in `accident` but only the observations in `state_fips` that match at least one row of `accident`. The first few rows of the joined dataset should look like this: 
+- Join the information from `state_fips` into the `accident` data frame. There may be a few locations in the `state_fips` data frame that are not included in the `accident` data frame (e.g., Virgin Islands), so when you join keep all observations in `accident` but only the observations in `state_fips` that match at least one row of `accident`. The first few rows of the joined dataset should look like this:
 
 ```{r echo = FALSE}
 accident <- accident %>%
@@ -771,7 +772,7 @@ accident %>%
   summarize(accidents = n())
 ```
 
-- Write a function that inputs a dataframe (`df`) and outputs this type of summary dataframe (like the one just created for Colorado) for whatever data is in the input dataframe. Below are some examples of how this function should work: 
+- Write a function that inputs a data frame (`df`) and outputs this type of summary data frame (like the one just created for Colorado) for whatever data is in the input data frame. Below are some examples of how this function should work:
 
 ```{r echo = FALSE}
 summarize_fars <- function(df){
@@ -827,7 +828,7 @@ accident %>%
   ggtitle(paste("Fatal accidents in", "Colorado", "in 2015"))
 ```
 
-- Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any dataframe with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you will need to explicitly print the output from your function. See the examples of using the function below.) 
+- Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any data frame with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you will need to explicitly print the output from your function. See the examples of using the function below.) 
 
 ```{r check8, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 plot_fars <- function(df){
@@ -881,7 +882,7 @@ plot_grid(plotlist = state_plots[["plots"]],
 
 #### Example R code
 
-Here is the code to read the dataset with state names and FIPS codes at http://www2.census.gov/geo/docs/reference/state.txt into an R object called `state_fips` and clean it so the first few lines: 
+Here is the code to read the dataset with state names and FIPS codes at http://www2.census.gov/geo/docs/reference/state.txt into an R object called `state_fips` and clean it so the first few lines:
 
 ```{r check7, echo = FALSE, warning = FALSE, message = FALSE}
 state_fips <- read_delim("http://www2.census.gov/geo/docs/reference/state.txt",
@@ -913,7 +914,7 @@ accident <- read_csv("data/accident.csv") %>%
 accident %>% slice(1:5)
 ```
 
-A few notes: 
+A few notes:
 
 - Notice that `select` is using the `:` operator to pick several columns in a row.
 - Some of the column names in all caps are changed to lower case to make them easier to work with. 
@@ -922,7 +923,7 @@ A few notes:
 - The `hour` function from `lubridate` is used to check if the time of the accident falls in "daytime" or not
 - Some of the accidents are missing some date information. A `filter` is used to filter that out. 
 
-Join the information from `state_fips` into the `accident` dataframe. There may be a few locations in the `state_fips` dataframe that are not included in the `accident` dataframe (e.g., Virgin Islands), so when you join keep all observations in `accident` but only the observations in `state_fips` that match at least one row of `accident`. You can use the following code for this: 
+Join the information from `state_fips` into the `accident` data frame. There may be a few locations in the `state_fips` data frame that are not included in the `accident` data frame (e.g., Virgin Islands), so when you join keep all observations in `accident` but only the observations in `state_fips` that match at least one row of `accident`. You can use the following code for this:
 
 ```{r echo = FALSE}
 accident <- accident %>%
@@ -956,7 +957,7 @@ accident %>%
   knitr::kable()
 ```
 
-Write a function that inputs a dataframe (`df`) and outputs this type of summary dataframe (like the one just created for Colorado). You can do that with the following code. Note that, because it inputs a dataframe and outputs a dataframe, you can include it in a pipeline. 
+Write a function that inputs a data frame (`df`) and outputs this type of summary data frame (like the one just created for Colorado). You can do that with the following code. Note that, because it inputs a data frame and outputs a data frame, you can include it in a pipeline. 
 
 ```{r}
 summarize_fars <- function(df){
@@ -998,7 +999,7 @@ accident %>%
 ```
 
 
-Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any dataframe with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you must explicitly print the plot object. For example, you could assign the plot to `fars_plot`, and then you would run `print(fars_plot)` within your loop as the last step.) 
+Now write a function called `plot_fars` to create a plot like the one you just made for Colorado for any data frame with the format of `accident` (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (*Hint*: To get a function to print out a plot created with ggplot, you must explicitly print the plot object. For example, you could assign the plot to `fars_plot`, and then you would run `print(fars_plot)` within your loop as the last step.)
 
 ```{r check2, echo = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
 plot_fars <- function(df){
@@ -1018,7 +1019,7 @@ plot_fars <- function(df){
 
 Notice how similar this function is to the code you wrote in the previous step. 
 
-Once you have written this function, what happens when you run the following code? The following code applies this function to the subset of data from each of four states. The output (`state_plots`) is a nested dataframe, where the new `plots` column is a list of `ggplot` objects. If you run `print` on this list, it will print each of these plots out separately (use the arrow buttons in the "Plots" Pane in RStudio to browse through these plots).
+Once you have written this function, what happens when you run the following code? The following code applies this function to the subset of data from each of four states. The output (`state_plots`) is a nested data frame, where the new `plots` column is a list of `ggplot` objects. If you run `print` on this list, it will print each of these plots out separately (use the arrow buttons in the "Plots" Pane in RStudio to browse through these plots).
 
 ```{r check1, fig.width = 6, fig.height = 3, fig.align = "center", eval = FALSE}
 library(purrr)
