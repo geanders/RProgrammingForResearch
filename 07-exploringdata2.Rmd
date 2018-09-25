@@ -390,6 +390,51 @@ Because this model was a logistic model, fit with a log link, here the model coe
 
 ---
 
+## Handling model objects
+
+The `broom` packge contains tools for converting statistical objects into nice tidy data frames. The tools in the `broom` package make it easy to process statistical results in R using the tools of the `tidyverse`.
+
+### broom::tidy
+
+The `tidy()` function returns a data frame with informaion on the fitted model terms. For example, when applied to one of our linear models we get:
+
+```{r tidy_example}
+  library(broom)
+  kable(tidy(mod_a), digits = 3)
+```
+
+```{r tidy_class}
+  class(tidy(mod_a))
+```
+
+You can pass arguments to the `tidy()` function. For example, include confidence intervals:
+
+```{r tidy_cis}
+  kable(tidy(mod_a, conf.int = TRUE), digits = 3)
+```
+
+---
+
+### broom::augment
+
+The `augment()` function adds information about a fitted model to the dataset used to fit the model. For example, when applied to one of our linear models we get information on the fitted values and residuals included in the output:
+
+```{r augment_example, warning = FALSE}
+  kable(head(broom::augment(mod_a), 3), digits = 3)
+```
+
+---
+
+### broom::glance
+
+The `glance()` functions returnsa one row summary of a fitted model object: For example:
+
+```{r glance_example, warning = FALSE}
+  kable(glance(mod_a, conf.int = TRUE), digits = 3)
+```
+
+---
+
 ### References-- statistics in R
 
 One great (and free online for CSU students through our library) book to find out more about using R for basic statistics is:
@@ -468,7 +513,6 @@ You can also check overall model summaries using the `glance` function:
 glance(mod_1)
 ```
 
-
 To create plots of the observations and the fit model, use the `augment` function to add model output (e.g., predictions, residuals) to the original dataframe of observed temperatures and dew point temperatures:
 
 ```{r warning = FALSE, message = FALSE}
@@ -507,7 +551,6 @@ tidy(mod_1) %>%
 The results from the two models are identical.
 
 As a note, you could have also just run `tidy` on each model object, without merging them together into a single dataframe: 
-
 ```{r}
 tidy(mod_1)
 tidy(mod_1a)
