@@ -4,7 +4,7 @@
 
 [Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6.pdf) a pdf of the lecture slides covering this topic.
 
-```{r echo = FALSE, message = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(knitr)
 ```
@@ -602,9 +602,9 @@ There is no example R code for this -- try to figure out the code yourselves. We
 ### Exploring Fatality Analysis Reporting System (FARS) data
 
 - Explore the interactive visualization at http://metrocosm.com/10-years-of-traffic-accidents-mapped.html. This was created by Max Galka using this dataset. 
-- Go to [FARS web page](http://www.nhtsa.gov/FARS). We want to get the raw data on fatal accidents. Navigate this page to figure out how you can get this raw data for the whole county for 2015 (hint: you'll need to access the raw data using FTP, and you may have more success with some web browsers that others). Save 2015 "National" data (csv format) to your computer. What is the structure of how this data is saved (e.g., directory structure, file structure)?
-- On the [FARS web page](http://www.nhtsa.gov/FARS), find the documentation describing this raw data. Look through both this documentation (*Fatality Analysis Reporting System (FARS) Analytical User's Manual 1975-2016*) and the raw files you downloaded to figure out what information is included in the data. 
-- Read the `accident.csv` file for 2015 into R (this is one of the files you'll get if you download the raw data for 2015). Use the documentation to figure out what each column represents. 
+- Go to [FARS web page](http://www.nhtsa.gov/FARS). We want to get the raw data on fatal accidents. Navigate this page to figure out how you can get this raw data for the whole county for 2016 (hint: you'll need to access the raw data using FTP, and you may have more success with some web browsers, like Chrome, than others). Save 2016 "National" data (csv format) to your computer. What is the structure of how this data is saved (e.g., directory structure, file structure)?
+- On the [FARS web page](http://www.nhtsa.gov/FARS), find the documentation describing this raw data. Look through both this documentation (*2016 Crash Report Sampling System (CRSS):Analytical User's Manual*) and the raw files you downloaded to figure out what information is included in the data. 
+- Read the `accident.csv` file for 2016 into R (this is one of the files you'll get if you download the raw data for 2016). Use the documentation to figure out what each column represents. 
 - Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format. (Hint: Functions from the `lubridate` package will be very helpful, including `yday` and `wday`).
 - Discuss which of the variables in this dataset could be used to merge the dataset with other appropriate data, either other datasets in the FARS raw data, or outside datasets. 
 - Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I'd like you to try to figure it out yourselves first.
@@ -630,7 +630,7 @@ accident %>%
             weekend = first(weekend)) %>%
   ggplot(aes(x = yday, y = accidents, color = weekend)) + 
   geom_point(alpha = 0.5) + 
-  xlab("Day of the year in 2015") + 
+  xlab("Day of the year in 2016") + 
   ylab("# of fatal accidents") + 
   theme_few() + 
   geom_smooth(se = FALSE)
