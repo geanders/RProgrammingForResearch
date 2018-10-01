@@ -1,8 +1,9 @@
 ---
-title: "Reporting data results #2"
-output: 
+title: 'Reporting data results #2'
+output:
+  ioslides_presentation: default
   beamer_presentation:
-    theme: "metropolis"
+    theme: metropolis
 fontsize: 10pt
 ---
 
@@ -37,6 +38,252 @@ nepali <- nepali %>%
                       labels = c("Male", "Female"))) %>%
   # Limit to first obs. per child
   distinct(id, .keep_all = TRUE)
+```
+
+# Functions
+
+## Functions
+
+As you move to larger projects, you will find yourself using the same code a lot. \bigskip
+
+Examples include: 
+
+- Reading in data from a specific type of equipment (air pollution monitor, accelerometer)
+- Running a specific type of analysis (e.g., fitting the same model format to many datasets)
+- Creating a specific type of plot or map
+
+\bigskip 
+
+If you find yourself cutting and pasting a lot, convert the code to a function.
+
+## Functions
+
+Advantages of writing functions include: 
+
+- Coding is more efficient
+- Easier to change your code (if you've cut and paste code and you want to change something, you have to change it everywhere)
+- Easier to share code with others
+
+## Functions
+
+You can name a function anything you want, as long as you follow the naming rules for all R objects (although try to avoid names of preexisting-existing functions). You then specify any inputs (arguments; separate multiple arguments with commas) and put the code to run in braces. You **define** a function as an R object just like you do with other R objects (`<-`).
+
+Here is the basic structure of "where things go" in an R function definition. 
+
+```{r, eval = FALSE}
+## Note: this code will not run
+[function name] <- function([any arguments]){
+        [code to run]
+}
+```
+
+## Functions
+
+Here is an example of a very basic function. This function takes a number as input and adds 1 to that number. An R function will only return one R object. By default, that object will be the last line of code in the function body.
+
+```{r}
+add_one <- function(number){
+        number + 1 # Value returned by the function
+}
+
+add_one(number = 1:3)
+add_one(number = -1)
+```
+
+## Functions
+
+```{r eval = FALSE}
+add_one <- function(number){
+        number + 1 # Value returned by the function
+}
+```
+
+- I picked the name of the function (`add_one`) (just like you pick what name you want to use with any R object)
+- The only input is a numeric vector. I pick the name I want to use for the vector that is input to the function. I picked `number`.
+- Within the code inside the function, the `number` refers to the numeric vector object that the user passed into the function.
+
+## Functions
+
+As another example, you could write a small function to fit a specific model to a dataframe you input and return the model object:
+
+```{r}
+fit_ht_wt_mod <- function(df){
+  lm(wt ~ ht + sex, data = df) # Returns result from this call
+}
+```
+
+- I picked the name of the function (`fit_ht_wt_mod`) (just like you pick what name you want to use with any R object)
+- The only input is a dataframe. I pick the name I want to use for the dataframe that is input to the function. I picked `df` (I often use this as a default parameter name for a dataframe).
+- Within the code inside the function, the `df` refers to the dataframe object that the user passed into the function.
+
+## Functions
+
+Now you can apply that function within a tidy pipeline, for example to fit the model to a specific subset of the data (all children with an age over 12 months):
+
+```{r}
+nepali %>% 
+  filter(age > 12) %>% 
+  fit_ht_wt_mod() %>% 
+  tidy()
+```
+
+## Functions 
+
+- Functions can input any type of R object (for example, vectors, data frames, even other functions and ggplot objects)
+- Similarly, functions can output any type of R object
+- However, functions can only output one R object. If you have complex things you want to output, a list might be a good choice for the output object type.
+- Functions can have "side effects". Examples include printing something or drawing a plot. Any action that a function takes *besides returning an R object* is a "side effect". 
+
+## Functions-- parameter defaults 
+
+When defining a function, you can set default values for some of the parameters. For example, in the `add_one` function, you can set the default value of the `number` input to `0`. 
+
+```{r}
+add_one <- function(number = 0){
+        number + 1 # Value returned by the function
+}
+```
+
+\small
+
+Now, if someone runs the function without providing a value for `number`, the function will use `0`. If they do provide a value for `number`, the function will use that instead.
+
+```{r}
+add_one()    # Uses 0 for `number`
+add_one(number = 3:5)   # Uses 5 for `number`
+```
+
+## Functions-- parameters
+
+You could write a function with no parameters:
+
+```{r}
+hello_world <- function(){
+  print("Hello world!")
+}
+
+hello_world()
+```
+
+However, this will be pretty uncommon as you're first learning to write functions. 
+
+## Functions-- parameters
+
+You can include multiple parameters, some with defaults and some without. For example, you could write a function that inputs two numbers and adds them. If you don't include a second value, `0` will be added as the second number:
+
+```{r}
+add_two_numbers <- function(first_number, second_number = 0){
+  first_number + second_number
+}
+```
+
+```{r}
+add_two_numbers(first_number = 5:7, second_number = 0:2)
+add_two_numbers(first_number = 5:7)
+```
+
+## Functions-- the `return` function 
+
+You can explicitly specify the value to return from the function (use `return` function). 
+
+```{r eval = FALSE}
+add_one <- function(number = 0){
+        new_number <- number + 1 
+        return(new_number)
+}
+```
+
+If using `return` helps you think about what's happening with the code in your function, you can use it. However, outside of a few exceptions, you usually won't need to do it.
+
+## Functions-- Error checking
+
+There are ways to check for errors in the arguments a user inputs to the function. One useful check is to see if user inputs are in the required class. 
+
+The `assertive` package has some functions that you can use for common checks of the inputs to a function. If someone inputs something of the wrong class, it will give a useful error message. For example, the `assert_is_numeric` function will check if an object is in a numeric class. If so, it will do nothing. If not, it will return an error message:
+
+```{r error = TRUE}
+library(assertive)
+assert_is_numeric(1:3)
+assert_is_numeric(c("a", "b"))
+```
+
+## Functions-- Error checking
+
+You could add this in the code for the `add_one` function, so a useful error message will be returned if a user tries to input something besides a numeric vector for `number`:
+
+```{r}
+add_one <- function(number){
+  assert_is_numeric(number)
+  number + 1 
+}
+```
+
+```{r error = TRUE}
+add_one(number = 1:3)
+add_one(number = c("a", "b"))
+```
+
+## Functions-- Error checking
+
+I would recommend that you not worry about this too much when you're learning to write functions for your own use. 
+
+However, once you have mastered the basics of writing functions and start writing them for others to use, you'll want to start incorporating this. 
+
+## `if` / `else`
+
+In R, the `if` statement evaluates everything in the parentheses and, if that evaluates to `TRUE`, runs everything in the braces. This means that you can trigger code in an `if` statement with a single-value logical vector: 
+
+```{r}
+tell_date <- function(){
+  cat("Today's date is: ")
+  cat(format(Sys.time(), "%b %d, %Y"))
+  
+  todays_wday <- lubridate::wday(Sys.time(),
+                                 label = TRUE)
+  if(todays_wday %in% c("Sat", "Sun")){
+    cat("\n")
+    cat("It's the weekend!")
+  }
+}
+```
+
+## `if` / `else`
+
+```{r}
+tell_date()
+```
+
+## `if` / `else`
+
+You can add `else if` and `else` statements to tell R what to do if the condition in the `if` statement isn't met. 
+
+For example, in the `tell_date` function, we might want to add some code so it will print `"It's almost the weekend!"` on Fridays and how many days until Saturday on other weekdays.
+
+## `if` / `else`
+
+```{r}
+tell_date <- function(){
+  # Print out today's date
+  cat("Today's date is: ")
+  cat(format(Sys.time(), "%b %d, %Y."), "\n")
+  
+  # Add something based on the weekday of today's date
+  todays_wday <- lubridate::wday(Sys.time())
+  
+  if(todays_wday %in% c(1, 7)){      # What to do on Sat / Sun
+    cat("It's the weekend!")
+  } else if (todays_wday == c(6)) {  # What to do on Friday
+    cat("It's almost the weekend!")
+  } else {                           # What to do other days
+    cat("It's ", 7 - todays_wday, "days until the weekend.")
+  }
+}
+```
+
+## `if` / `else`
+
+```{r}
+tell_date()
 ```
 
 # Functional programming
@@ -167,1173 +414,4 @@ nepali %>%
   facet_wrap(~ young, ncol = 2)
 ```
 
-
-<!-- # Loops -->
-
-<!-- ## Loops -->
-
-<!-- Loops allow you to "walk through" and repeat the same code for different values of an index. \bigskip -->
-
-<!-- For each run of the loop, R is told that, for **some index** in **some vector**, do **some code**. \bigskip -->
-
-<!-- For `i` in `1:3`, `print(i)`: -->
-
-<!-- ```{r} -->
-<!-- for(i in c(1, 2, 3)){ -->
-<!--         print(i) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Note that this code is equivalent to:  -->
-
-<!-- ```{r} -->
-<!-- i <- 1 -->
-<!-- print(i) -->
-<!-- i <- 2 -->
-<!-- print(i) -->
-<!-- i <- 3 -->
-<!-- print(i) -->
-<!-- ``` -->
-
-
-<!-- ## Loops -->
-
-<!-- Often, the index will be set to a number for each cycle of the loop, and then the index will be used within the code to index vectors or data frames:  -->
-
-<!-- ```{r} -->
-<!-- study_months <- c("Jan", "Feb", "Mar") -->
-<!-- for(i in c(1, 3)){ -->
-<!--         print(study_months[i]) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Often, you want to set the index to sequential numbers (e.g., 1, 2, 3, 4). In this case, you can save time by using the `:` notation to create a vector of a sequence of numbers: -->
-
-<!-- ```{r} -->
-<!-- for(i in 1:3){ -->
-<!--         print(i) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- With this notation, sometimes it may be helpful to use the `length` function to set the largest index value for the loop as the length of a vector (or `nrow` for indexing a data frame). For example: -->
-
-<!-- ```{r} -->
-<!-- study_months <- c("Jan", "Feb", "Mar") -->
-<!-- for(i in 1:length(study_months)){ -->
-<!--         print(study_months[i]) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Sometimes, you want to set the index for each cycle of the loop to something that is not a number. You can set the index to any class of vector. \bigskip -->
-
-<!-- Remember that a loop works by saying for **some index** in **some vector**, do **some code**. \bigskip -->
-
-<!-- For example, you may want to run: for `study_month` in `study_months`, `print(study_month)`: -->
-
-<!-- ```{r} -->
-<!-- study_months <- c("Jan", "Feb", "Mar") -->
-<!-- for(study_month in study_months){ -->
-<!--         print(study_month) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Note that this is equivalent to:  -->
-
-<!-- ```{r} -->
-<!-- study_month <- "Jan" -->
-<!-- print(study_month) -->
-<!-- study_month <- "Feb" -->
-<!-- print(study_month) -->
-<!-- study_month <- "Mar" -->
-<!-- print(study_month) -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- What would this loop do? -->
-
-<!-- ```{r, eval = FALSE} -->
-<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
-<!-- for(i in 1:length(vars)){ -->
-<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
-<!--         print(var_mean) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- ```{r} -->
-<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
-<!-- for(i in 1:length(vars)){ -->
-<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
-<!--         print(var_mean) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- What would this loop do? -->
-
-<!-- ```{r, eval = FALSE} -->
-<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
-<!-- for(i in 1:length(vars)){ -->
-<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
-<!--         var_mean <- round(var_mean, 1) -->
-<!--         out <- paste0("mean of ", vars[i], ": ", var_mean) -->
-<!--         print(out) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- To figure out, you can set `i <- 1` and then walk through the loop: -->
-
-<!-- ```{r} -->
-<!-- i <- 1 -->
-<!-- (var_mean <- mean(worldcup[ , vars[i]])) -->
-<!-- (var_mean <- round(var_mean, 1)) -->
-<!-- (out <- paste0("mean of ", vars[i], ": ", var_mean)) -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- ```{r} -->
-<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
-<!-- for(i in 1:length(vars)){ -->
-<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
-<!--         var_mean <- round(var_mean, 1) -->
-<!--         out <- paste0("mean of ", vars[i], ": ", var_mean) -->
-<!--         print(out) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Often, it's convenient to create a data set to fill up as you loop through: -->
-
-<!-- ```{r, eval = FALSE} -->
-<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
-<!-- my_df <- data.frame(variable = vars, mean = NA) -->
-<!-- for(i in 1:nrow(my_df)){ -->
-<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
-<!--         my_df[i , "mean"] <- round(var_mean, 1) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- ```{r} -->
-<!-- vars <- c("Time", "Shots", "Passes", "Tackles", "Saves") -->
-<!-- (my_df <- data.frame(variable = vars, mean = NA)) -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-<!-- ```{r} -->
-<!-- i <- 1 -->
-<!-- (var_mean <- mean(worldcup[ , vars[i]])) -->
-<!-- my_df[i , "mean"] <- round(var_mean, 1) -->
-<!-- my_df -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- ```{r} -->
-<!-- for(i in 1:nrow(my_df)){ -->
-<!--         var_mean <- mean(worldcup[ , vars[i]]) -->
-<!--         my_df[i , "mean"] <- round(var_mean, 1) -->
-<!-- } -->
-<!-- my_df -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Note: This is a pretty simplistic example. There are some easier ways to have done this: -->
-
-<!-- ```{r} -->
-<!-- worldcup %>%  -->
-<!--   summarize(Time = mean(Time), Passes = mean(Passes), -->
-<!--             Shots = mean(Shots), Tackles = mean(Tackles), -->
-<!--             Saves = mean(Saves)) %>% -->
-<!--   gather(key = var, value = mean) %>% -->
-<!--   mutate(mean = round(mean, 1)) -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Note: This is a pretty simplistic example. There are some easier ways to have done this: -->
-
-<!-- ```{r} -->
-<!-- means <- apply(worldcup[ , vars], 2, mean) -->
-<!-- (means <- round(means, 1)) -->
-<!-- ``` -->
-
-<!-- However, you can use this same looping process for much more complex tasks that you can't do as easily with `apply` or `dplyr` tools. -->
-
-<!-- ## Loops -->
-
-<!-- Loops can be very useful for more complex repeated tasks. For example: -->
-
-<!-- ```{r, echo = FALSE, fig.width = 6, fig.height = 4} -->
-<!-- positions <- unique(worldcup$Position) -->
-<!-- pos_est <- data.frame(position = positions, -->
-<!--                       est = NA, se = NA) -->
-
-<!-- for(i in 1:nrow(pos_est)){ -->
-<!--         pos_df <- worldcup %>%  -->
-<!--           filter(Position == positions[i])  -->
-<!--         pos_mod <- glm(Passes ~ Time, -->
-<!--                        data = pos_df, -->
-<!--                        family = poisson(link = "log")) -->
-<!--         pos_coefs <- summary(pos_mod)$coefficients[2, 1:2] -->
-<!--         pos_est[i, c("est", "se")] <- pos_coefs -->
-<!-- } -->
-
-<!-- pos_est <- pos_est %>% -->
-<!--   mutate(lower_ci = est - 1.96 * se, -->
-<!--          upper_ci = est + 1.96 * se) -->
-
-<!-- rr_per90 <- function(est){ -->
-<!--         out <- exp(est * 90) -->
-<!--         return(out) -->
-<!-- } -->
-
-<!-- pos_est[ , c("rr_est", "rr_low", "rr_high")] <-  -->
-<!--         apply(pos_est[ , c("est", "lower_ci", "upper_ci")], 2, rr_per90) -->
-
-<!-- pos_est <- arrange(pos_est, rr_est) %>% -->
-<!--         mutate(position = factor(position, levels = position)) -->
-
-<!-- ggplot(pos_est, aes(x = rr_low, y = position)) +  -->
-<!--         geom_segment(aes(xend = rr_high, yend = position)) +  -->
-<!--         geom_point(aes(x = rr_est, y = position)) +  -->
-<!--         theme_few() +  -->
-<!--         ylab("") +  -->
-<!--         scale_x_continuous("Relative rate of passes\nper 90 minute increase in minutes played", -->
-<!--                            limits = c(1.0, max(pos_est$rr_high))) +  -->
-<!--         geom_vline(aes(xintercept = 1), color = "lightgray") -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Creating this graph requires:  -->
-
-<!-- - Create a subset limited to each of the four positions -->
-<!-- - Fit a Poisson regression of Passes on Time within each subset -->
-<!-- - Pull the regression coefficient and standard error from each model -->
-<!-- - Use those values to calculate 95% confidence intervals -->
-<!-- - Convert everything from log relative rate to relative rate -->
-<!-- - Plot everything -->
-
-<!-- ## Loops -->
-
-<!-- Create a vector with the names of all positions. Create an empty data frame to store regression results. -->
-
-<!-- ```{r} -->
-<!-- (positions <- unique(worldcup$Position)) -->
-<!-- (pos_est <- data.frame(position = positions, -->
-<!--                        est = NA, se = NA)) -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Loop through and fit a Poisson regression model for each subset of data. Save regression coefficients in the empty data frame. -->
-
-<!-- ```{r} -->
-<!-- for(i in 1:nrow(pos_est)){ -->
-<!--         pos_df <- worldcup %>% -->
-<!--           filter(Position == positions[i])  -->
-<!--         pos_mod <- glm(Passes ~ Time, -->
-<!--                        data = pos_df, -->
-<!--                        family = poisson(link = "log")) -->
-<!--         pos_coefs <- summary(pos_mod)$coefficients[2, 1:2] -->
-<!--         pos_est[i, c("est", "se")] <- pos_coefs -->
-<!-- } -->
-<!-- pos_est[1:2, ] -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Calculate 95% confidence intervals for log relative risk values. -->
-
-<!-- ```{r} -->
-<!-- pos_est <- pos_est %>% -->
-<!--   mutate(lower_ci = est - 1.96 * se, -->
-<!--          upper_ci = est + 1.96 * se) -->
-
-<!-- pos_est %>% -->
-<!--   select(position, est, lower_ci, upper_ci)  -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Calculate relative risk per 90 minute increase in minutes played.  -->
-
-<!-- ```{r} -->
-<!-- pos_est <- pos_est %>% -->
-<!--   mutate(rr_est = exp(90 * est), -->
-<!--          rr_low = exp(90 * lower_ci), -->
-<!--          rr_high = exp(90 * upper_ci)) -->
-<!-- pos_est %>% -->
-<!--   select(position, rr_est, rr_low, rr_high)  -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Re-level the `position` factor so the plot will be ordered from highest to lowest estimates. -->
-
-<!-- ```{r} -->
-<!-- pos_est <- arrange(pos_est, rr_est) %>% -->
-<!--         mutate(position = factor(position, -->
-<!--                                  levels = position)) -->
-<!-- pos_est %>% select(position, est) -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- Create the plot: -->
-
-<!-- ```{r, eval = FALSE} -->
-<!-- ggplot(pos_est, aes(x = rr_low, y = position)) +  -->
-<!--         geom_segment(aes(xend = rr_high, yend = position)) +  -->
-<!--         geom_point(aes(x = rr_est, y = position)) +  -->
-<!--         theme_few() +  -->
-<!--         ylab("") +  -->
-<!--         scale_x_continuous(paste("Relative rate of",  -->
-<!--                                  "passes\nper 90 minute",  -->
-<!--                                  "increase in minutes played"), -->
-<!--                            limits = c(1.0,  -->
-<!--                                       max(pos_est$rr_high))) +  -->
-<!--         geom_vline(aes(xintercept = 1), color = "lightgray") -->
-<!-- ``` -->
-
-<!-- ## Loops -->
-
-<!-- ```{r, echo = FALSE, fig.width = 6, fig.height = 4} -->
-<!-- ggplot(pos_est, aes(x = rr_low, y = position)) +  -->
-<!--         geom_segment(aes(xend = rr_high, yend = position)) +  -->
-<!--         geom_point(aes(x = rr_est, y = position)) +  -->
-<!--         theme_few() +  -->
-<!--         ylab("") +  -->
-<!--         scale_x_continuous(paste("Relative rate of passes\nper", -->
-<!--                                  "90 minute increase in minutes played"), -->
-<!--                            limits = c(1.0, max(pos_est$rr_high))) +  -->
-<!--         geom_vline(aes(xintercept = 1), color = "lightgray") -->
-<!-- ``` -->
-
-# Point maps
-
-## Point maps 
-
-It is very easy to create point maps in R based on longitude and latitude values of specific locations. \bigskip
-
-To get a base map, you can use the `map_data` function from the `ggplot2` package to pull data for maps at different levels ("usa", "state", "world", "county").
-
-## Point maps 
-
-The maps you pull using `map_data` are just data frames. They include the data you need to plot polygon shapes for areas like states and counties. 
-
-```{r warning = FALSE, message = FALSE}
-library(ggplot2)
-us_map <- map_data("state")
-head(us_map, 3)
-```
-
-You can add points to these based on latitude and longitude.
-
-## Point maps 
-
-Map choices with `map_data` are currently limited to: 
-
-- `county`
-- `state`
-- `usa`
-- `france`
-- `italy`
-- `nz`
-- `world`
-- `world2`
-
-## Point maps 
-
-Mapping uses the `long` and `lat` columns from this data for location:
-
-```{r fig.width = 6, fig.height = 2.5, fig.align = "center"}
-north_carolina <- us_map %>% 
-  filter(region == "north carolina")
-ggplot(north_carolina, aes(x = long, y = lat)) +
-  geom_point() 
-```
-
-## Point maps 
-
-If you try to plot lines, however, you'll have a problem:
-
-```{r fig.width = 3.5, fig.height = 2.25, fig.align = "center"}
-carolinas <- us_map %>% 
-  filter(str_detect(region, "carolina"))
-ggplot(carolinas, aes(x = long, y = lat)) + 
-  geom_path()
-```
-
-## Point maps 
-
-The `group` column fixes this problem. It will plot a separate path or polygon for each separate group. For mapping, this gives separate groupings for mainland versus islands and for different states:
-
-```{r}
-carolinas %>%
-  group_by(group) %>%
-  slice(1)
-```
-
-## Point maps
-
-Using `group = group` avoids the extra lines from the earlier map:
-
-```{r fig.width = 3.5, fig.height = 2.25, fig.align = "center"}
-ggplot(carolinas, aes(x = long, y = lat,
-                      group = group)) + 
-  geom_path()
-```
-
-## Point maps
-
-To plot filled regions, use `geom_polygon` with `fill = region`. Also, the "void" theme is often useful when mapping:
-
-```{r fig.width = 4.5, fig.height = 2, fig.align = "center"}
-ggplot(carolinas, aes(x = long, y = lat,
-                      group = group,
-                      fill = region)) + 
-  geom_polygon(color = "black") + 
-  theme_void()
-```
-
-## Point maps 
-
-Here is an example of plotting all of the US by state:
-
-```{r}
-map_1 <- ggplot(us_map, aes(x = long, y = lat,
-                            group = group)) + 
-        geom_polygon(fill = "dodgerblue",
-                     color = "white") +
-        theme_void()
-```
-
-## Point maps
-
-```{r fig.width = 6.5, fig.height = 4, fig.align = "center"}
-map_1
-```
-
-## Point maps 
-
-To add points to these maps, you can use `geom_point`, again using longitude and latitude to define position. \bigskip
-
-Here I'll use an example of data points related to the story told in last year's ["Serial" podcast](http://serialpodcast.org). 
-
-```{r}
-serial <- read.csv("../data/serial_map_data.csv")
-head(serial, 3)
-```
-
-## Point maps 
-
-[David Robinson](https://github.com/dgrtwo/serial-ggvis/blob/master/serial-preprocessing.Rmd) figured out a way to convert the x and y coordinates in this data to latitude and longitude coordinates. I'm also adding a column for whether of not the point is a cell tower.
-
-```{r message = FALSE, warning = FALSE}
-library(dplyr)
-serial <- serial %>%
-    mutate(long = -76.8854 + 0.00017022 * x,
-           lat  = 39.23822 + 1.371014e-04 * y,
-           tower = Type == "cell-site")
-```
-
-## Point maps 
-
-```{r message = FALSE, warning = FALSE}
-serial[c(1:2, (nrow(serial) - 1):nrow(serial)), 
-       c("Type", "Name", "long", "lat", "tower")]
-```
-
-## Point maps 
-
-Now I can map just Baltimore City and Baltimore County in Maryland and add these points. \bigskip
-
-I used `map_data` to pull the "county" map and specified "region" as "maryland", to limit the map just to Maryland counties. 
-
-```{r}
-baltimore <- map_data('county', region = 'maryland')
-head(baltimore, 3)
-```
-
-## Point maps
-
-From that, I filter to just rows where the `subregion` column was "baltimore city" or "baltimore". 
-
-```{r}
-baltimore <- baltimore %>%
-  filter(subregion %in% c("baltimore city",
-                          "baltimore"))
-head(baltimore, 3)
-```
-
-## Point maps
-
-I used `geom_point` to plot the points. When you plot points, you need to "ungroup" the `group` column you used to plot the polygons for counties. To do that, set `group = NA` in the `geom_point` statement. 
-
-```{r}
-balt_plot <- ggplot(baltimore, 
-                    aes(x = long, y = lat, group = group)) + 
-        geom_polygon(fill = "lightblue", color = "black") +
-        geom_point(data = serial, aes(x = long, y = lat,
-                                      group = NA,
-                                      color = tower)) + 
-        theme_bw()
-```
-
-## Point maps
-
-```{r fig.width = 7, fig.height = 4}
-balt_plot
-```
-
-# Choropleths
-
-## Choropleths in R
-
-There's a fantastic new(-ish) package in R to plot choropleth maps. You could also plot choropleths using `ggplot` and other mapping functions, but I would strongly recommend this new package if you're mapping the US. \bigskip
-
-You will need to install and load the `choroplethr` package in R to use the functions below.
-
-```{r message = FALSE, warning = FALSE}
-# install.packages("choroplethr")
-library(choroplethr)
-
-# install.packages("choroplethrMaps")
-library(choroplethrMaps)
-```
-
-## Choropleths in R
-
-At the most basic level, you can use this package to plot some data that comes automatically with the package (you'll just need to load the data using the `data` function). For example, if you wanted to plot state-by-state populations as of 2012, you could use:
-
-```{r warning = FALSE, message=FALSE}
-data(df_pop_state)
-map_3 <- state_choropleth(df_pop_state)
-```
-
-## Choropleths in R
-
-```{r fig.width=8, fig.height=3.5}
-map_3
-```
-
-
-## Choropleths in R
-
-You can find out more about the `df_pop_state` data if you type `?df_pop_state`. Notice that, for the data frame, the location is given in a column called `region` and the population size to plot is in a column called `value`. 
-
-```{r}
-head(df_pop_state, 3)
-```
-
-
-## Choropleths in R
-
-You could use this function to create any state-level choropleth you wanted, as long as you could create a data frame with a column for states called `region` and a column with the value you want to show called `value`.
-
-## Choropleths in R
-
-You can run similar functions at different spatial resolutions (for example, county or zip code):
-
-```{r}
-data(df_pop_county)
-head(df_pop_county, 3)
-```
-
-## Choropleths in R
-
-You can plot choropleths at this level, as well:
-
-```{r warning = FALSE, message = FALSE}
-map_4 <- county_choropleth(df_pop_county)
-```
-
-## Choropleths in R
-
-```{r fig.width=8, fig.height=4}
-map_4
-```
-
-
-## Choropleths in R
-
-You can even do this for countries of the world:
-
-```{r fig.width = 8, fig.height = 3.5, warning=FALSE, message=FALSE}
-data(df_pop_country)
-country_choropleth(df_pop_country)
-```
-
-## Choropleths in R
-
-You can zoom into states or counties. For example, to plot population by county in Colorado, you could run:
-
-```{r fig.width = 6, fig.height = 3, message = FALSE, warning = FALSE}
-county_choropleth(df_pop_county, state_zoom = "colorado")
-```
-
-## Choropleths in R
-
-You can also use this package to map different tables from the US Census' American Community Survey. \bigskip 
-
-The package includes the `choroplethr_acs()` function to do this, with an option for which level of map you want (`map = `, choices are "state", "country", and "zip"). If you want to map at the state level, for example, use `state_choroplethr_acs()` (other options are county level and zip code level). 
-
-## Choropleths in R
-
-These functions pull recent Census data directly from the US Census using its API, so they require you to get an API key, which you can get [here](http://api.census.gov/data/key_signup.html). \bigskip
-
-Once you put in your request, they'll email you your key. Once they give you your API key, you'll need to install it on R:
-
-```{r echo = FALSE, message = FALSE, warning = FALSE}
-library(acs)
-api.key.install(Sys.getenv("acskey"))
-```
-
-```{r eval = FALSE}
-library(acs)
-api.key.install('[your census api key]');
-```
-
-## Choropleths in R
-
-You can pick from a large number of American Community Survey tables-- [see here](http://factfinder.census.gov/faces/affhelp/jsf/pages/metadata.xhtml?lang=en&type=dataset&id=dataset.en.ACS_12_5YR) for the list plus ID numbers. If the table has multiple columns, you will be prompted to select which one you want to plot. \bigskip
-
-## Choropleths in R
-
-For example, table B19301 gives per-capita income, so if you wanted to plot that, you could run:
-
-```{r fig.width = 3, fig.height = 2.75, message = FALSE, eval = FALSE}
-county_choropleth_acs(tableId = "B19301",
-                       state_zoom = c("wyoming",
-                                      "colorado"))
-
-```
-
-## Choropleths in R
-
-```{r fig.width = 10, fig.height = 6, message = FALSE, echo = FALSE, fig.align = "center"}
-county_choropleth_acs(tableId = "B19301",
-                       state_zoom = c("wyoming",
-                                      "colorado"))
-
-```
-
-
-## Google Maps API
-
-The `ggmap` package allows you to use tools from Google Maps directly from R.
-
-```{r message=FALSE, warning = FALSE}
-## install.packages("ggmap")
-library(ggmap)
-```
-
-This package uses the Google Maps API, so you should read their [terms of service](http://developers.google.com/maps/terms) and make sure you follow them. In particular, you are limited to just a certain number of queries per time. 
-
-## Google Maps API
-
-You can use the `get_map` function to get maps for different locations. \bigskip 
-
-You can either use the longitude and latitude of the center point of the map, along with the `zoom` option to say how much to zoom in (3: continent to 20: building) or you can use a character string to specify a location. \bigskip
-
-If you do the second, `get_map` will actually use the Google Maps API to geocode the string to a latitude and longitude and then get the map (you can imagine that this is like searching in Google Maps in the search box for a location).
-
-```{r message = FALSE, warning = FALSE, fig.width = 3.5, fig.height = 3.5, fig.align = "center", eval = FALSE}
-beijing <- get_map("Beijing", zoom = 12)
-ggmap(beijing)
-```
-
-## Google Maps API
-
-```{r message = FALSE, warning = FALSE, fig.width = 3.5, fig.height = 3.5, fig.align = "center", echo = FALSE}
-beijing <- get_map("Beijing", zoom = 12)
-ggmap(beijing)
-```
-
-## Google Maps API
-
-With this package, you can get maps from the following different sources:
-
-- Google Maps
-- OpenStreetMap
-- Stamen Maps
-- CloudMade Maps (You may need a separate API key for this)
-
-## Google Maps API
-
-Here are different examples of Beijing using different map sources. (Also, note that I'm using the option `extent = "device"` to fill up the whole plot are with the map, instead of including axis labels and titles.)
-
-```{r message = FALSE, warning = FALSE}
-beijing_a <- get_map("Beijing", zoom = 12,
-                     source = "stamen", maptype = "toner")
-a <- ggmap(beijing_a, extent = "device")
-
-beijing_b <- get_map("Beijing", zoom = 12,
-                     source = "stamen", maptype = "watercolor")
-b <- ggmap(beijing_b, extent = "device")
-
-beijing_c <- get_map("Beijing", zoom = 12,
-                     source = "google", maptype = "hybrid")
-c <- ggmap(beijing_c, extent = "device")
-```
-
-## Google Maps API
-
-```{r fig.width = 7}
-grid.arrange(a, b, c, nrow = 1) 
-```
-
-
-## Google Maps API
-
-As with the maps from `ggplot2`, you can add points to these maps:
-
-```{r warning = FALSE, message = FALSE, echo = FALSE}
-library(tidyr)
-serial_phone <- read.csv("../data/serial_phone_data.csv") %>% 
-        mutate(Cell_Site = substring(Cell_Site, 1, 4),
-               Call_Time = as.POSIXct(Call_Time, format = "%d/%m/%y %H:%M",
-                                      tz = "EST")) %>%
-        left_join(serial, by = c("Cell_Site" = "Name")) %>%
-        select(Person_Called, Call_Time, Duration, long, lat) %>%
-        filter(!(Person_Called %in% c("incoming", "# + Adnan cell"))) %>%
-        arrange(Call_Time)
-```
-
-```{r message = FALSE, warning = FALSE, fig.width = 5}
-serial_map <- get_map(c(-76.7, 39.3), zoom = 12,
-                      source = "stamen",
-                      maptype = "toner")
-serial_map <- ggmap(serial_map, extent = "device") + 
-        geom_point(data = serial_phone,
-                   aes(x = long, y = lat),
-                   color = "red", size = 3,
-                   alpha = 0.4) +
-        geom_point(data = subset(serial,
-                                 Type != "cell-site"),
-                   aes(x = long, y = lat),
-                   color = "darkgoldenrod1",
-                   size = 2)
-```
-
-## Google Maps API
-
-```{r warning = FALSE, message = FALSE, fig.width = 4, fig.height = 4, fig.align = "center", echo = FALSE}
-serial_map
-```
-
-
-## Google Maps API
-
-You can also use the Google Maps API, through the `geocode` function, to get the latitude and longitude of specific locations. Basically, if the string would give you the right location if you typed it in Google Maps, `geocode` should be able to geocode it.
-
-For example, you can get the location of CSU:
-
-```{r message = FALSE, warning = FALSE}
-geocode("Colorado State University")
-```
-
-## Google Maps API
-
-You can also get a location by address through this:
-
-```{r message = FALSE, warning = FALSE}
-geocode("1 First St NE, Washington, DC")
-```
-
-## Google Maps API
-
-You can get distances, too, using the `mapdist` function with two locations. This will give you distance and also time. 
-
-```{r message = FALSE, warning = FALSE}
-mapdist("Fort Collins CO",
-        "1 First St NE, Washington, DC") %>%
-  select(from, miles, hours)
-```
-
-# String operations
-
-## String operations
-
-For these examples, we'll use some data on passengers of the Titanic. You can load this data using:
-
-```{r}
-# install.packages("titanic")
-library(titanic)
-data("titanic_train")
-```
-
-We will be using the `stringr` package:
-
-```{r}
-library(stringr)
-```
-
-## String operations
-
-This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). Here are the first few values of "Name": 
-
-```{r}
-titanic_train %>% select(Name) %>% slice(1:3)
-```
-
-## String operations
-
-The `str_trim` function from the `stringr` package allows you to trim leading and trailing whitespace: 
-
-```{r}
-with_spaces <- c("    a ", "  bob", " gamma")
-with_spaces
-str_trim(with_spaces)
-```
-
-This is rarer, but if you ever want to, you can add leading and / or trailing whitespace to elements of a character vector with `str_pad` from the `stringr` package.
-
-## String operations
-
-There are also functions to change a full character string to uppercase, lowercase, or title case: 
-
-```{r echo = FALSE}
-library(titanic)
-data(titanic_train)
-```
-
-```{r}
-titanic_train$Name[1]
-str_to_upper(titanic_train$Name[1])
-str_to_lower(titanic_train$Name[1])
-str_to_title(str_to_lower(titanic_train$Name[1]))
-```
-
-# Regular expressions
-
-## Regular expressions
-
-We've already done some things to manipulate strings. For example, if we wanted to separate "Name" into last name and first name (including title), we could actually do that with the `separate` function: 
-
-```{r}
-titanic_train %>% 
-  select(Name) %>% 
-  slice(1:3) %>% 
-  separate(Name, c("last_name", "first_name"), sep = ", ")
-```
-
-## Regular expressions
-
-Notice that `separate` is looking for a regular pattern (", ") and then doing something based on the location of that pattern in each string (splitting the string). \bigskip
-
-There are a variety of functions in R that can perform manipulations based on finding regular patterns in character strings. 
-
-## Regular expressions
-
-The `str_detect` function will look through each element of a character vector for a designated pattern. If the pattern is there, it will return `TRUE`, and otherwise `FALSE`. The convention is: 
-
-```
-## Generic code
-str_detect(string = [vector you want to check], 
-           pattern = [pattern you want to check for])
-```
-
-For example, to create a logical vector specifying which of the Titanic passenger names include "Mrs.", you can call:
-
-```{r}
-mrs <- str_detect(titanic_train$Name, "Mrs\\.")
-head(mrs)
-```
-
-
-## Regular expressions
-
-The result is a logical vector, so `str_detect` can be used in `filter` to subset data to only rows where the passenger's name includes "Mrs.":
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "Mrs\\.")) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-## Regular expressions
-
-As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally: 
-
-```
-. * + ^ ? $ \ | ( ) [ ] { }
-```
-
-
-## Regular expressions
-
-There is an older, base R function called `grepl` that does something very similar (although note that the order of the arguments is reversed).
-
-```{r}
-titanic_train %>%
-  filter(grepl("Mrs\\.", Name)) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-## Regular expressions
-
-The `str_extract` function can be used to extract a string (if it exists) from each value in a character vector. It follows similar conventions to `str_detect`:
-
-```
-## Generic code
-str_extract(string = [vector you want to check], 
-           pattern = [pattern you want to check for])
-```
-
-## Regular expressions
-
-For example, you might want to extract "Mrs." if it exists in a passenger's name:
-
-```{r}
-titanic_train %>%
-  mutate(mrs = str_extract(Name, "Mrs\\.")) %>%
-  select(Name, mrs) %>%
-  slice(1:3)
-```
-
-Notice that now we're creating a new column (`mrs`) that either has "Mrs." (if there's a match) or is missing (`NA`) if there's not a match. 
-
-## Regular expressions
-
-For this first example, we were looking for an exact string ("Mrs"). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find "Mr." or "Mrs.": 
-
-\small
-
-```{r}
-titanic_train %>%
-  mutate(title = str_extract(Name, "Mr\\.|Mrs\\.")) %>%
-  select(Name, title) %>%
-  slice(1:3)
-```
-
-Note that this pattern uses a special operator (`|`) to find one pattern **or** another. Double backslashs (`\\`) **escape** the special character ".". 
-
-## Regular expressions
-
-Notice that "Mr." and "Mrs." both start with "Mr", end with ".", and may or may not have an "s" in between. 
-
-```{r}
-titanic_train %>%
-  mutate(title = str_extract(Name, "Mr(s)*\\.")) %>%
-  select(Name, title) %>%
-  slice(1:3)
-```
-
-This pattern uses `(s)*` to match zero or more "s"s at this spot in the pattern. 
-
-## Regular expressions
-
-In the previous code, we found "Mr." and "Mrs.", but missed "Miss.". We could tweak the pattern again to try to capture that, as well. For all three, we have the pattern that it starts with "M", has some lowercase letters, and then ends with ".".  
-
-```{r}
-titanic_train %>%
-  mutate(title = str_extract(Name, "M[a-z]+\\.")) %>%
-  select(Name, title) %>%
-  slice(1:3)
-```
-
-## Regular expressions
-
-The last pattern used `[a-z]+` to match one or more lowercase letters. The `[a-z]`is a **character class**. \bigskip 
-
-You can also match digits (`[0-9]`), uppercase letters (`[A-Z]`), just some letters (`[aeiou]`), etc. \bigskip
-
-You can negate a character class by starting it with `^`. For example, `[^0-9]` will match anything that **isn't** a digit. 
-
-## Regular expressions 
-
-Sometimes, you want to match a pattern, but then only subset a part of it. For example, each passenger seems to have a title ("Mr.", "Mrs.", etc.) that comes after ", " and before ". ". We can use this pattern to find the title, but then we get some extra stuff with the match: 
-
-```{r}
-titanic_train %>%
-  mutate(title = str_extract(Name, ",\\s[A-Za-z]*\\.\\s")) %>%
-  select(title) %>%
-  slice(1:3)
-```
-
-As a note, in this pattern, `\\s` is used to match a space. 
-
-## Regular expressions 
-
-We are getting things like ", Mr. ", when we really want "Mr". We can use the `str_match` function to do this. We group what we want to extract from the pattern in parentheses, and then the function returns a matrix. The first column is the full pattern match, and each following column gives just what matches within the groups. 
-
-```{r}
-head(str_match(titanic_train$Name,
-          pattern = ",\\s([A-Za-z]*)\\.\\s"))
-```
-
-## Regular expressions 
-
-To get just the title, then, we can run:
-
-```{r}
-titanic_train %>%
-  mutate(title = 
-           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
-  select(Name, title) %>%
-  slice(1:3)
-```
-
-The `[ , 2]` pulls out just the second column from the matrix returned by `str_match`. 
-
-## Regular expressions 
-
-Here are some of the most common titles: 
-
-```{r}
-titanic_train %>%
-  mutate(title = 
-           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
-  group_by(title) %>% summarize(n = n()) %>%
-  arrange(desc(n)) %>% slice(1:5)
-```
-
-## Regular expressions
-
-The following slides have a few other examples of regular expressions in action with this dataset. \bigskip
-
-Get just names that start with ("^") the letter "A":
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "^A")) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-## Regular expressions
-
-Get names with "II" or "III" (`{2,}` says to match at least two times):
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "I{2,}")) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-## Regular expressions
-
-Get names with "Andersen" or "Anderson" (alternatives in square brackets):
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "Anders[eo]n")) %>%
-  select(Name)
-```
-
-
-## Regular expressions
-
-Get names that start with ("^" outside of brackets) the letters "A" and "B":
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "^[AB]")) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-## Regular expressions
-
-Get names that end with ("$") the letter "b" (either lowercase or uppercase):
-
-```{r}
-titanic_train %>%
-  filter(str_detect(Name, "[bB]$")) %>%
-  select(Name) 
-```
-
-## Regular expression
-
-Some useful regular expression operators include: 
-
-```{r echo = FALSE}
-reg_exp <- data_frame("Operator" = c(".",
-                                     "*",
-                                     "*?",
-                                     "+",
-                                     "+?",
-                                     "^",
-                                     "$", 
-                                     "[...]"),
-                      "Meaning" = c("Any character", 
-                                    "Match 0 or more times (greedy)",
-                                    "Match 0 or more times (non-greedy)",
-                                    "Match 1 or more times (greedy)",
-                                    "Match 1 or more times (non-greedy)",
-                                    "Starts with (in brackets, negates)",
-                                    "Ends with",
-                                    "Character classes"))
-knitr::kable(reg_exp)
-```
-
-## Regular expressions
-
-For more on these patterns, see: 
-
-- Help file for the `stringi-search-regex` function in the `stringi` package (which should install when you install `stringr`)
-- Chapter 14 of R For Data Science
-- http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
-
-<!-- # Final group project -->
-
-<!-- ## Final group project -->
-
-<!-- - Group size: Three or four students -->
-<!-- - If you'd like, you may form your own groups. For any students who do not form a group, I will randomly assign groups (or add on to groups that have started). -->
-
-<!-- ## Final group project -->
-
-<!-- Important dates:  -->
-
-<!-- - October 17: Due date for creating groups. Email me your group members. -->
-<!-- - October 24: Due date (by start of class) for a two-paragraph summary of the question you'd like to answer, including some ideas on where you might find the data.  -->
-<!-- - December 5: First submission of written report will be due. -->
-<!-- - Week of December 12: Final presentation and final draft of written report due. -->
-
-<!-- ## Final group project -->
-
-<!-- - You will have in-class group work time during the "Advanced" weeks to work on this. This project will also require work with your group outside of class. -->
-<!-- - You will be able to get feedback and help from me during the in-class group work time.  -->
-<!-- - Your project should not use any datasets from your own research or from other classes. -->
-<!-- - Part of the grade will be on the writing and presentation of the final project. -->
-
-<!-- ## Final group project -->
-
-<!-- To get an idea of what your final product should look like, check out these links: -->
-
-<!-- - [Does Christmas come earlier each year?](http://www.statslife.org.uk/culture/1892-does-christmas-really-come-earlier-every-year) -->
-<!-- - [Hilary: the most poisoned baby name in US history](http://hilaryparker.com/2013/01/30/hilary-the-most-poisoned-baby-name-in-us-history/) -->
-<!-- - [Every Guest Jon Stewart Ever Had On "The Daily Show"](http://fivethirtyeight.com/datalab/every-guest-jon-stewart-ever-had-on-the-daily-show/) -->
-<!-- - [Should Travelers Avoid Flying Airlines That Have Had Crashes in the Past?](http://fivethirtyeight.com/features/should-travelers-avoid-flying-airlines-that-have-had-crashes-in-the-past/) -->
-<!-- - [Billion-Dollar Billy Beane](http://fivethirtyeight.com/features/billion-dollar-billy-beane/) -->
-
-<!-- Part of your final project will be to design a Shiny app. \bigskip -->
-
-<!-- To see some examples of Shiny apps, see the [Shiny gallery](http://shiny.rstudio.com/gallery/). -->
 
