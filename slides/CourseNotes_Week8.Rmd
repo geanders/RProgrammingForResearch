@@ -332,11 +332,44 @@ read_run_csv <- function(file){
   rename_all(clean_names) %>%
   filter(distance == "1" & split != "Summary") %>%
   mutate_at(vars(matches("time|pace")), hms) %>%
-  mutate_if(is.character, as.numeric)
+  mutate_if(is.character, as.numeric) %>%
+  mutate(filename = sub(".csv", "", basename(file)))
   
 }
 read_run_csv(files[1])
 ```
 
+## Applying a function repeatedly
 
+We can use our own custom functions with the `map()` functions:
+
+```{r, warning=FALSE}
+rd <- suppressWarnings(map(files, read_run_csv))
+
+class(rd)
+
+length(rd)
+```
+
+## Applying a function repeatedly
+
+We now have a list of dataframes! We can map functions to each element in our lists of dataframes:
+
+```{r}
+run_sum <- function(x){
+  summarise(x, 
+            distance = sum(distance, na.rm = TRUE),
+            gain = sum(elevation_gain, na.rm = TRUE),
+            loss = sum(elev_loss, na.rm = TRUE),
+            pace = mean(avg_pace, na.rm = TRUE),
+            t_min = min(avg_temperature, na.rm = TRUE),
+            t_max = max(avg_temperature, na.rm = TRUE),
+            t_mean = mean(avg_temperature, na.rm = TRUE))
+}
+```
+
+```{r}
+out <- map_df(rd, run_sum)
+out
+```
 
