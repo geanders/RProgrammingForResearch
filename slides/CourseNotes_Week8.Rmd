@@ -1,6 +1,7 @@
 ---
 title: 'Reporting data results #2'
 output:
+  slidy_presentation: default
   ioslides_presentation: default
   beamer_presentation:
     theme: metropolis
@@ -300,118 +301,18 @@ my_list <- list(a = 1:2, b = 3:5)
 map(my_list, add_one)
 ```
 
-## Applying a function repeatedly 
-
-This can also be very useful if you have a dataframe for which you would like to apply the same function to subsets of the data. For example, for the `nepali` data you may want to apply the model of weight regressed on height and sex separately for children 12 months and younger versus older children. 
-
-First, we can add a factor variable that specifies whether the child is younger or older than 12 months:
-
-```{r}
-nepali <- nepali %>% 
-  mutate(young = age < 12,
-         young = factor(young, levels = c(TRUE, FALSE), 
-                        labels = c("younger", "older"))) 
-```
-
-## Applying a function repeatedly 
-
-```{r}
-nepali %>% 
-  slice(1:3)
-```
-
-
-## Applying a function repeatedly 
-
-Then, you can use the `nest` function to "nest" a dataframe by a factor variable. This function will create a column that actually stores its own dataframe:
-
-```{r}
-nested_nepali <- nepali %>% 
-  group_by(young) %>% 
-  nest()
-nested_nepali
-```
-
-## Applying a function repeatedly 
-
-Each element of the `data` column in the nested dataset is actually a full dataframe:
-
-```{r}
-nested_nepali$data[[1]] %>% slice(1:3)
-```
-
-## Applying a function repeatedly 
-
-Now, you can use `map` to apply the modeling function to each of these subsets of the dataframe. Use `mutate` to add a column with the results. We can also add a column with the results of applying `augment` to each of the model results:
-
-\small
-
-```{r message = FALSE, warning = FALSE}
-modeled_nepali <- nepali %>% 
-  group_by(young) %>% 
-  nest() %>% 
-  mutate(mod_results = map(data, fit_ht_wt_mod),
-         augmented_data = map(mod_results, augment))
-modeled_nepali
-```
-
-## Applying a function repeatedly 
-
-Each element of the `mod_results` column is the output from an `lm` model:
-
-```{r}
-modeled_nepali$mod_results[[1]]
-```
-
-## Applying a function repeatedly 
-
-We can apply `tidy` and `glance` to this output, just like we did with the output from fitting a single model:
-
-```{r}
-tidy(modeled_nepali$mod_results[[1]])
-```
-
-## Applying a function repeatedly 
-
-To get back to a regular dataframe, you can "unnest". Before you do this, you should limit the data to only columns that will "unnest" to the same number of rows (if you have multiple columns with dataframes or lists in them). For example, we could unnest the `augmented_data` column, so we can plot observed data versus the model fit:
-
-```{r}
-modeled_nepali %>% 
-  select(young, augmented_data) %>% 
-  unnest() %>% 
-  slice(1:3) %>% select(1:7)
-```
-
-## Applying a function repeatedly 
-
-\small
-
-```{r out.width = "\\textwidth", fig.align = "center", fig.width = 6, fig.height = 2}
-modeled_nepali %>% 
-  select(young, augmented_data) %>% 
-  unnest() %>% 
-  ggplot(aes(x = ht, y = wt, group = sex, color = sex)) + 
-  geom_point(size = 0.8) + 
-  geom_line(aes(y = .fitted), size = 1.2) + 
-  facet_wrap(~ young, ncol = 2)
-```
-
 ## Applying a function repeatedly
 
-The full pipe for creating this figure is: 
+One of the most common `repeated` tasks you might want to do is load in multiple data files:
 
-```{r eval = FALSE}
-nepali %>%
-  group_by(young) %>%    # Group by young and nest 
-  nest() %>%             # to model each group of "young"
-  mutate(mod_results = map(data, fit_ht_wt_mod), 
-         augmented_data = map(mod_results, augment)) %>% 
-  select(young, augmented_data) %>%  
-  unnest %>%             # Unnest `augmented_data` (nested)
-  ggplot(aes(x = ht, y = wt, group = sex, color = sex)) + 
-  geom_point(size = 0.8) + 
-  geom_line(aes(y = .fitted), size = 1.2) + 
-  facet_wrap(~ young, ncol = 2)
+```{r}
+library(readr)
+library(dplyr)
+library(purrr)
+files <- list.files("../data/running", pattern = ".csv", full.names = TRUE)
+df <- map(files, read_csv, col_types = cols(.default = "c")) %>%
+      bind_rows()
+
+head(df, 15)
 ```
-
 
