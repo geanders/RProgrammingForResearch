@@ -25,7 +25,7 @@
 <meta name="author" content="Brooke Anderson and Rachel Severson">
 
 
-<meta name="date" content="2018-09-26">
+<meta name="date" content="2018-09-30">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -312,6 +312,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.4.3" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#more-extensive-data-wrangling"><i class="fa fa-check"></i><b>6.4.3</b> More extensive data wrangling</a></li>
 <li class="chapter" data-level="6.4.4" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#tidying-vadeaths-data"><i class="fa fa-check"></i><b>6.4.4</b> Tidying <code>VADeaths</code> data</a></li>
 <li class="chapter" data-level="6.4.5" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#exploring-fatality-analysis-reporting-system-fars-data"><i class="fa fa-check"></i><b>6.4.5</b> Exploring Fatality Analysis Reporting System (FARS) data</a></li>
+<li class="chapter" data-level="6.4.6" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#baby-names"><i class="fa fa-check"></i><b>6.4.6</b> Baby names</a></li>
+<li class="chapter" data-level="6.4.7" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#more-with-baby-names"><i class="fa fa-check"></i><b>6.4.7</b> More with baby names</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
@@ -494,34 +496,34 @@ y &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="
 <p>The following examples are from <code>tidyr</code> help files and show the effects of gathering and spreading a dataset.</p>
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</code></pre></div>
-<pre><code>##         time           X         Y         Z
-## 1 2009-01-01  0.73739022  1.280170 -1.088980
-## 2 2009-01-02 -1.09290634 -1.630775 -4.736517
-## 3 2009-01-03  0.02153739  2.795653  2.924699</code></pre>
+<pre><code>##         time         X         Y          Z
+## 1 2009-01-01 0.5000039  1.776886 -1.0885799
+## 2 2009-01-02 0.1635406 -2.022940  0.6475204
+## 3 2009-01-03 0.2004221  5.282023 -4.0581064</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</code></pre></div>
-<pre><code>##         time           X         Y         Z
-## 1 2009-01-01  0.73739022  1.280170 -1.088980
-## 2 2009-01-02 -1.09290634 -1.630775 -4.736517
-## 3 2009-01-03  0.02153739  2.795653  2.924699</code></pre>
+<pre><code>##         time         X         Y          Z
+## 1 2009-01-01 0.5000039  1.776886 -1.0885799
+## 2 2009-01-02 0.1635406 -2.022940  0.6475204
+## 3 2009-01-03 0.2004221  5.282023 -4.0581064</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>gather</code> to convert wide data to long data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">long_stocks &lt;-<span class="st"> </span><span class="kw">gather</span>(wide_stocks, <span class="dt">key =</span> stock,
                       <span class="dt">value =</span> price, <span class="op">-</span>time)
 long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</code></pre></div>
-<pre><code>##         time stock       price
-## 1 2009-01-01     X  0.73739022
-## 2 2009-01-02     X -1.09290634
-## 3 2009-01-03     X  0.02153739
-## 4 2009-01-04     X -1.76438096
-## 5 2009-01-05     X  1.19878982</code></pre>
+<pre><code>##         time stock     price
+## 1 2009-01-01     X 0.5000039
+## 2 2009-01-02     X 0.1635406
+## 3 2009-01-03     X 0.2004221
+## 4 2009-01-04     X 0.3211986
+## 5 2009-01-05     X 0.5944828</code></pre>
 <p>In this “long” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</code></pre></div>
-<pre><code>##         time stock       price
-## 1 2009-01-01     X  0.73739022
-## 2 2009-01-02     X -1.09290634
-## 3 2009-01-03     X  0.02153739
-## 4 2009-01-04     X -1.76438096
-## 5 2009-01-05     X  1.19878982</code></pre>
+<pre><code>##         time stock     price
+## 1 2009-01-01     X 0.5000039
+## 2 2009-01-02     X 0.1635406
+## 3 2009-01-03     X 0.2004221
+## 4 2009-01-04     X 0.3211986
+## 5 2009-01-05     X 0.5944828</code></pre>
 <p>The format for a <code>gather</code> call is:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generic code
 new_df &lt;-<span class="st"> </span><span class="kw">gather</span>(old_df,
@@ -543,12 +545,12 @@ new_df &lt;-<span class="st"> </span><span class="kw">gather</span>(old_df,
 <p>If you have data in a “long” format and would like to spread it out, you can use <code>spread</code> to do that:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks &lt;-<span class="st"> </span><span class="kw">spread</span>(long_stocks, <span class="dt">key =</span> stock, <span class="dt">value =</span> price)
 stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</code></pre></div>
-<pre><code>##         time           X          Y         Z
-## 1 2009-01-01  0.73739022  1.2801696 -1.088980
-## 2 2009-01-02 -1.09290634 -1.6307746 -4.736517
-## 3 2009-01-03  0.02153739  2.7956532  2.924699
-## 4 2009-01-04 -1.76438096 -0.2076843  4.685565
-## 5 2009-01-05  1.19878982  0.6577886  4.270217</code></pre>
+<pre><code>##         time         X          Y          Z
+## 1 2009-01-01 0.5000039  1.7768861 -1.0885799
+## 2 2009-01-02 0.1635406 -2.0229403  0.6475204
+## 3 2009-01-03 0.2004221  5.2820226 -4.0581064
+## 4 2009-01-04 0.3211986 -2.9651790  0.4924098
+## 5 2009-01-05 0.5944828 -0.7281587 -4.0892323</code></pre>
 <p>Notice that this reverses the action of <code>gather</code>.</p>
 <p>“Spread” data is typically not tidy, so you often won’t want to use <code>spread</code> when you are preparing data for analysis. However, <code>spread</code> can be very helpful in creating clean tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>spread</code> to rearrange the final summary to create an attractive table.</p>
@@ -557,11 +559,11 @@ stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</spa
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">N =</span> <span class="kw">n</span>(), <span class="dt">mean =</span> <span class="kw">mean</span>(price), <span class="dt">sd =</span> <span class="kw">sd</span>(price))
 stock_summary</code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   stock     N  mean    sd
-##   &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10 0.401  1.61
-## 2 Y        10 0.495  1.63
-## 3 Z        10 1.03   3.92</code></pre>
+##   stock     N    mean    sd
+##   &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 X        10 -0.0297 0.888
+## 2 Y        10  0.668  2.37 
+## 3 Z        10 -1.32   2.37</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stock_summary <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,
                                     <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span>
@@ -581,9 +583,9 @@ stock_summary</code></pre></div>
 <tbody>
 <tr class="odd">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">0.4 (1.61)</td>
-<td align="left">0.49 (1.63)</td>
-<td align="left">1.03 (3.92)</td>
+<td align="left">-0.03 (0.89)</td>
+<td align="left">0.67 (2.37)</td>
+<td align="left">-1.32 (2.37)</td>
 </tr>
 <tr class="even">
 <td align="left">N</td>
@@ -954,7 +956,368 @@ ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(ebola_url)
 <li>Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I’d like you to try to figure it out yourselves first.</li>
 </ul>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-51-1.png" width="576" /></p>
+</div>
+<div id="baby-names" class="section level3">
+<h3><span class="header-section-number">6.4.6</span> Baby names</h3>
+<p>In the Fall 2018 session, we seem to have an unusually high percent of the class with names that start with an “A” or “K”. In this part of the exercise, we’ll see if we can figure out whether the proportion of “A” and “K” names is unusual.</p>
+<p>There is a package on CRAN called <code>babynames</code> with data on baby names by year in the United States, based on data from the U.S.’s Social Security Administration. We will use this data to compare the proportion of “A” and “K” names in our class with the proportion in these baby names. We’ll also do a few other things to explore this data.</p>
+<ul>
+<li>First, check out patterns in your own name. Is your name included in this dataset? Has your name been used for males and females? How have the patterns in the proportion of babies with your name, for both males and females, changed over time (use a plot to look at this)?</li>
+<li>In the year you were born, what were the 5 most popular baby names for males and females? Try to come up with some attractive ways (figures and tables) to show this.</li>
+</ul>
+<div id="example-r-code-12" class="section level4">
+<h4><span class="header-section-number">6.4.6.1</span> Example R code</h4>
+<p>Install and load the <code>babynames</code> package and its “babynames” dataframe:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;babynames&quot;)</span>
+<span class="kw">library</span>(babynames)
+<span class="kw">data</span>(<span class="st">&quot;babynames&quot;</span>)</code></pre></div>
+<p>Remember that you can use <code>?babynames</code> to find out more about this dataframe.</p>
+<p>Check out patterns in your own name. Is your name included in this dataset? You can use <code>filter</code> to create a subset of this data where you’ve filtered down to just the rows with your name. To see if your name ever shows up, you can use <code>count</code> on this dataframe—if your name never shows up, then you will have 0 rows in the new dataframe. As long as there’s at least one row, your name shows up somewhere. (If your name is not in here, try your middle or last name, or the name of a fictional character you like, for the rest of these exercises.)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_name &lt;-<span class="st"> </span>babynames <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &quot;Brooke&quot;</span>)
+my_name <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>()</code></pre></div>
+<pre><code>## # A tibble: 1 x 1
+##      nn
+##   &lt;int&gt;
+## 1   171</code></pre>
+<p>Has your name been used for males and females? To figure this out, you can group the dataset with rows with your name by the <code>sex</code> column and then use <code>count</code> to count the number of rows in the dataset for males and females. If your name has only been used for one gender, then only one row will result from running this code (for an example, try my first name, “Georgiana”).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_name <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(sex) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>()</code></pre></div>
+<pre><code>## # A tibble: 2 x 2
+## # Groups:   sex [2]
+##   sex      nn
+##   &lt;chr&gt; &lt;int&gt;
+## 1 F        80
+## 2 M        91</code></pre>
+<p>How have the patterns in the proportion of babies with your name, for both males and females, changed over time (use a plot to look at this)? To check this out, I recommend you create a plot of the proportion of babies with your name (<code>prop</code>) versus year (<code>year</code>). You can use color to show these patterns for males and females separately. I’ve done some extra things here to (1) relabel the <code>sex</code> factor, so the label shows up with clearer names and (2) change the labels for the x-, y-, and color scales.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(forcats)
+my_name <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sex =</span> <span class="kw">fct_recode</span>(sex, <span class="dt">Male =</span> <span class="st">&quot;M&quot;</span>, <span class="dt">Female =</span> <span class="st">&quot;F&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> prop, <span class="dt">color =</span> sex)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Proportion of babies</span><span class="ch">\n</span><span class="st">of each sex named &#39;Brooke&#39;&quot;</span>,
+       <span class="dt">color =</span> <span class="st">&quot;&quot;</span>)</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-55-1.png" width="576" /></p>
+<p>In the year you were born, what were the 5 most popular baby names for males and females?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">top_my_year &lt;-<span class="st"> </span>babynames <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">1981</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(sex) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(prop)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)
 
+top_my_year</code></pre></div>
+<pre><code>## # A tibble: 10 x 5
+## # Groups:   sex [2]
+##     year sex   name            n   prop
+##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;       &lt;int&gt;  &lt;dbl&gt;
+##  1 1981. F     Jennifer    57043 0.0319
+##  2 1981. F     Jessica     42527 0.0238
+##  3 1981. F     Amanda      34373 0.0192
+##  4 1981. F     Sarah       28171 0.0158
+##  5 1981. F     Melissa     28007 0.0157
+##  6 1981. M     Michael     68765 0.0369
+##  7 1981. M     Christopher 50224 0.0270
+##  8 1981. M     Matthew     43326 0.0233
+##  9 1981. M     Jason       41928 0.0225
+## 10 1981. M     David       40646 0.0218</code></pre>
+<p>If you’d like to show this in a prettier way, you could show this as a table:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
+top_my_year <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">rank =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Since the data is grouped by sex, this will rank</span>
+<span class="st">                           </span><span class="co"># separately for females and males</span>
+<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># You have to ungroup before you can run `mutate` on `sex`</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sex =</span> <span class="kw">fct_recode</span>(sex, <span class="dt">Male =</span> <span class="st">&quot;M&quot;</span>, <span class="dt">Female =</span> <span class="st">&quot;F&quot;</span>),
+         <span class="dt">percent =</span> <span class="kw">round</span>(<span class="dv">100</span> <span class="op">*</span><span class="st"> </span>prop, <span class="dv">1</span>),
+         <span class="dt">percent =</span> <span class="kw">paste</span>(percent, <span class="st">&quot;%&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(sex, rank, name, percent) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">kable</span>()</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">sex</th>
+<th align="right">rank</th>
+<th align="left">name</th>
+<th align="left">percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Female</td>
+<td align="right">1</td>
+<td align="left">Jennifer</td>
+<td align="left">3.2%</td>
+</tr>
+<tr class="even">
+<td align="left">Female</td>
+<td align="right">2</td>
+<td align="left">Jessica</td>
+<td align="left">2.4%</td>
+</tr>
+<tr class="odd">
+<td align="left">Female</td>
+<td align="right">3</td>
+<td align="left">Amanda</td>
+<td align="left">1.9%</td>
+</tr>
+<tr class="even">
+<td align="left">Female</td>
+<td align="right">4</td>
+<td align="left">Sarah</td>
+<td align="left">1.6%</td>
+</tr>
+<tr class="odd">
+<td align="left">Female</td>
+<td align="right">5</td>
+<td align="left">Melissa</td>
+<td align="left">1.6%</td>
+</tr>
+<tr class="even">
+<td align="left">Male</td>
+<td align="right">1</td>
+<td align="left">Michael</td>
+<td align="left">3.7%</td>
+</tr>
+<tr class="odd">
+<td align="left">Male</td>
+<td align="right">2</td>
+<td align="left">Christopher</td>
+<td align="left">2.7%</td>
+</tr>
+<tr class="even">
+<td align="left">Male</td>
+<td align="right">3</td>
+<td align="left">Matthew</td>
+<td align="left">2.3%</td>
+</tr>
+<tr class="odd">
+<td align="left">Male</td>
+<td align="right">4</td>
+<td align="left">Jason</td>
+<td align="left">2.3%</td>
+</tr>
+<tr class="even">
+<td align="left">Male</td>
+<td align="right">5</td>
+<td align="left">David</td>
+<td align="left">2.2%</td>
+</tr>
+</tbody>
+</table>
+<p>You could also show it as a figure:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(scales)
+top_my_year <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">name =</span> <span class="kw">fct_reorder</span>(name, prop, <span class="dt">desc =</span> <span class="ot">TRUE</span>),
+         <span class="dt">sex =</span> <span class="kw">fct_recode</span>(sex, <span class="dt">Male =</span> <span class="st">&quot;M&quot;</span>, <span class="dt">Female =</span> <span class="st">&quot;F&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> name)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">weight =</span> prop)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Percent of babies with name in 1981&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> percent) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>sex, <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_classic</span>()</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-58-1.png" width="576" /></p>
+</div>
+</div>
+<div id="more-with-baby-names" class="section level3">
+<h3><span class="header-section-number">6.4.7</span> More with baby names</h3>
+<p>Now let’s look at baby names based on the letter they start with.</p>
+<ul>
+<li>For the full dataframe, what proportion of baby names start with each letter? See if you can create a figure to help show this. Create the same plot using the names of people from our class.</li>
+<li>What proportion of names start with “A” or “K” across the full dataset? How about for the years from 1980 to 1995? Finally, how does the proportion change over the years in the dataframe?</li>
+</ul>
+<div id="example-r-code-13" class="section level4">
+<h4><span class="header-section-number">6.4.7.1</span> Example R code</h4>
+<p>For the full dataframe, what proportion of baby names start with “A” or “K”?</p>
+<p>To start, create a column with the first letter of each name. You can use functions in the <code>stringr</code> package to do this. The easiest might be to use the position of the first letter to pull that information.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(stringr)
+top_letters &lt;-<span class="st"> </span>babynames <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first_letter =</span> <span class="kw">str_sub</span>(name, <span class="dv">1</span>, <span class="dv">1</span>))
+
+top_letters <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(name, first_letter) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</code></pre></div>
+<pre><code>## # A tibble: 5 x 2
+##   name      first_letter
+##   &lt;chr&gt;     &lt;chr&gt;       
+## 1 Mary      M           
+## 2 Anna      A           
+## 3 Emma      E           
+## 4 Elizabeth E           
+## 5 Minnie    M</code></pre>
+<p>Now we can group by letter and figure out these proportions. First, while the data is grouped, count the number of names with each letter. Then, ungroup and use mutate to divide this by the total number of names:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">top_letters &lt;-<span class="st"> </span>top_letters <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(first_letter) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">sum</span>(n)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop =</span> n <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(n)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(prop))
+
+top_letters</code></pre></div>
+<pre><code>## # A tibble: 26 x 3
+##    first_letter        n   prop
+##    &lt;chr&gt;           &lt;int&gt;  &lt;dbl&gt;
+##  1 J            43937781 0.129 
+##  2 M            32272079 0.0947
+##  3 A            27836232 0.0817
+##  4 C            25039495 0.0735
+##  5 D            23953374 0.0703
+##  6 R            23388453 0.0686
+##  7 S            20967535 0.0615
+##  8 L            18449395 0.0541
+##  9 K            16608111 0.0487
+## 10 E            16504812 0.0484
+## # ... with 16 more rows</code></pre>
+<p>Here’s one way to visualize this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">top_letters <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first_letter =</span> <span class="kw">fct_reorder</span>(first_letter, prop)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> first_letter)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">weight =</span> prop)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> percent) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Percent of names that start with ...&quot;</span>)</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-61-1.png" width="384" /></p>
+<p>Create the same plot using the names of people in our class. First, create a vector with the names of people in our class:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">student_list &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;Aeriel&quot;</span>, <span class="st">&quot;Rebecca&quot;</span>, <span class="st">&quot;Grant&quot;</span>,
+                                    <span class="st">&quot;Amy&quot;</span>, <span class="st">&quot;Jessy&quot;</span>, <span class="st">&quot;Alyssa&quot;</span>,
+                                    <span class="st">&quot;Camron&quot;</span>, <span class="st">&quot;Anastasia&quot;</span>, <span class="st">&quot;Kyle&quot;</span>,
+                                    <span class="st">&quot;Ana&quot;</span>, <span class="st">&quot;Amanda&quot;</span>, <span class="st">&quot;Kathleen&quot;</span>, 
+                                    <span class="st">&quot;Kyle&quot;</span>, <span class="st">&quot;Ana&quot;</span>, <span class="st">&quot;Amanda&quot;</span>, <span class="st">&quot;Kathleen&quot;</span>,
+                                    <span class="st">&quot;Kayla&quot;</span>, <span class="st">&quot;Nichole&quot;</span>, <span class="st">&quot;Randy&quot;</span>, <span class="st">&quot;Katy&quot;</span>,
+                                    <span class="st">&quot;Devin&quot;</span>))
+student_list &lt;-<span class="st"> </span>student_list <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first_letter =</span> <span class="kw">str_sub</span>(name, <span class="dv">1</span>, <span class="dv">1</span>))
+student_list</code></pre></div>
+<pre><code>## # A tibble: 21 x 2
+##    name      first_letter
+##    &lt;chr&gt;     &lt;chr&gt;       
+##  1 Aeriel    A           
+##  2 Rebecca   R           
+##  3 Grant     G           
+##  4 Amy       A           
+##  5 Jessy     J           
+##  6 Alyssa    A           
+##  7 Camron    C           
+##  8 Anastasia A           
+##  9 Kyle      K           
+## 10 Ana       A           
+## # ... with 11 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">student_list <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(first_letter) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop =</span> n <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(n)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first_letter =</span> <span class="kw">fct_reorder</span>(first_letter, prop)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> first_letter)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">weight =</span> prop)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> percent) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Percent of students with</span><span class="ch">\n</span><span class="st">a name that starts with ...&quot;</span>)</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-62-1.png" width="288" /></p>
+<p>What proportion of names start with “A” or “K” across the full dataset? You can create a dataframe that (1) pulls out the first letter of each name (just like we did for the last part of the question) and (2) tests whether that first letter is an “A” or a “K” (using a logical statement):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_or_k &lt;-<span class="st"> </span>babynames <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first_letter =</span> <span class="kw">str_sub</span>(name, <span class="dv">1</span>, <span class="dv">1</span>),
+         <span class="dt">a_or_k =</span> first_letter <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;K&quot;</span>))
+
+a_or_k <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(name, first_letter, a_or_k) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</code></pre></div>
+<pre><code>## # A tibble: 5 x 3
+##   name      first_letter a_or_k
+##   &lt;chr&gt;     &lt;chr&gt;        &lt;lgl&gt; 
+## 1 Mary      M            FALSE 
+## 2 Anna      A            TRUE  
+## 3 Emma      E            FALSE 
+## 4 Elizabeth E            FALSE 
+## 5 Minnie    M            FALSE</code></pre>
+<p>Next, group by this logical column (<code>a_or_k</code>) and figure out the number of baby names for each group. Then, to get the proportion of the total, ungroup and mutate to divide by the total number across the data:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_or_k <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(a_or_k) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop =</span> nn <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(nn))</code></pre></div>
+<pre><code>## # A tibble: 2 x 3
+##   a_or_k      nn  prop
+##   &lt;lgl&gt;    &lt;int&gt; &lt;dbl&gt;
+## 1 FALSE  1563948 0.841
+## 2 TRUE    294741 0.159</code></pre>
+<p>How about for the years from 1980 to 1995? These proportions probably change over time, so let’s try to get the proportion for a time period relevant for this class. You can get this information very similarly as the last question, just filter to this range of years first:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_or_k_80s90s &lt;-<span class="st"> </span>babynames <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="dv">1980</span> <span class="op">&lt;=</span><span class="st"> </span>year <span class="op">&amp;</span><span class="st"> </span>year <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1995</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first_letter =</span> <span class="kw">str_sub</span>(name, <span class="dv">1</span>, <span class="dv">1</span>),
+         <span class="dt">a_or_k =</span> first_letter <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;K&quot;</span>))</code></pre></div>
+<p>You can doublecheck that this dataframe has the right range of years:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_or_k_80s90s <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">min_year =</span> <span class="kw">min</span>(year),
+            <span class="dt">max_year =</span> <span class="kw">max</span>(year))</code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##   min_year max_year
+##      &lt;dbl&gt;    &lt;dbl&gt;
+## 1    1980.    1995.</code></pre>
+<p>Now do the same calculation as we did with the full dataset:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_or_k_80s90s <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(a_or_k) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop =</span> nn <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(nn))</code></pre></div>
+<pre><code>## # A tibble: 2 x 3
+##   a_or_k     nn  prop
+##   &lt;lgl&gt;   &lt;int&gt; &lt;dbl&gt;
+## 1 FALSE  298118 0.830
+## 2 TRUE    60893 0.170</code></pre>
+<p>Finally, how does the proportion change over the years in the dataframe? You can start from the <code>a_or_k</code> dataframe we created earlier. Group by year and the logical column <code>a_or_k</code> and then calculate the total number of baby names for each combination of year and <code>a_or_k</code> value. Then ungroup the data, group just by <code>year</code>, and get the proportion each year. Finally, filter to just the rows where <code>a_or_k</code> is true and plot how this changes over the years:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_or_k_year &lt;-<span class="st"> </span>a_or_k <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(year, a_or_k) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>()
+a_or_k_year</code></pre></div>
+<pre><code>## # A tibble: 272 x 3
+## # Groups:   year, a_or_k [272]
+##     year a_or_k    nn
+##    &lt;dbl&gt; &lt;lgl&gt;  &lt;int&gt;
+##  1 1880. FALSE   1788
+##  2 1880. TRUE     212
+##  3 1881. FALSE   1724
+##  4 1881. TRUE     211
+##  5 1882. FALSE   1904
+##  6 1882. TRUE     223
+##  7 1883. FALSE   1859
+##  8 1883. TRUE     225
+##  9 1884. FALSE   2059
+## 10 1884. TRUE     238
+## # ... with 262 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_or_k_year &lt;-<span class="st"> </span>a_or_k_year <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(year) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop =</span> nn <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(nn))
+a_or_k_year</code></pre></div>
+<pre><code>## # A tibble: 272 x 4
+## # Groups:   year [136]
+##     year a_or_k    nn  prop
+##    &lt;dbl&gt; &lt;lgl&gt;  &lt;int&gt; &lt;dbl&gt;
+##  1 1880. FALSE   1788 0.894
+##  2 1880. TRUE     212 0.106
+##  3 1881. FALSE   1724 0.891
+##  4 1881. TRUE     211 0.109
+##  5 1882. FALSE   1904 0.895
+##  6 1882. TRUE     223 0.105
+##  7 1883. FALSE   1859 0.892
+##  8 1883. TRUE     225 0.108
+##  9 1884. FALSE   2059 0.896
+## 10 1884. TRUE     238 0.104
+## # ... with 262 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_or_k_year <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(a_or_k <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> prop)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">name =</span> <span class="st">&quot;Percent of baby&#39;s with names</span><span class="ch">\n</span><span class="st">that start with &#39;A&#39; or &#39;K&#39;&quot;</span>,
+                     <span class="dt">labels =</span> percent) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">y =</span> <span class="dv">0</span>)</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-68-1.png" width="576" /></p>
+
+</div>
 </div>
 </div>
 </div>
