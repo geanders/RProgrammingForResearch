@@ -316,3 +316,27 @@ df <- map(files, read_csv, col_types = cols(.default = "c")) %>%
 head(df, 15)
 ```
 
+## Applying a function repeatedly
+
+We can use our own custom functions with the `map()` functions:
+
+```{r, include=FALSE}
+clean_names <- function(x){gsub(" ", "_", tolower(x))}
+```
+
+```{r, warning=FALSE, message=FALSE}
+library(lubridate)
+
+read_run_csv <- function(file){
+  read_csv(file, col_types = cols(.default = "c")) %>%
+  rename_all(clean_names) %>%
+  filter(distance == "1" & split != "Summary") %>%
+  mutate_at(vars(matches("time|pace")), hms) %>%
+  mutate_if(is.character, as.numeric)
+  
+}
+read_run_csv(files[1])
+```
+
+
+
