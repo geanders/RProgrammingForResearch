@@ -117,7 +117,7 @@ Example: exposure and outcome data stored in different files:
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.1).
+We'll take a break now to do the In-Course Exercise (Section 6.6.1).
 
 
 # Joining datasets
@@ -238,7 +238,7 @@ full_join(x, y, by = list(x = c("course", "student"),
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.2).
+We'll take a break now to do the In-Course Exercise (Section 6.6.2).
 
 # Gathering
 
@@ -460,7 +460,7 @@ ebola %>%
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.3).
+We'll take a break now to do the In-Course Exercise (Section 6.6.3).
 
 ## `unite`
 
@@ -588,7 +588,7 @@ y %>%
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.4).
+We'll take a break now to do the In-Course Exercise (Section 6.6.4).
 
 # Tidying with `dplyr` 
 
@@ -710,7 +710,83 @@ http://metrocosm.com/10-years-of-traffic-accidents-mapped.html
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.5).
+We'll take a break now to do the In-Course Exercise (Section 6.6.5).
+
+# `forcats`
+
+## `forcats`
+
+Hadley Wickham has developed a package called `forcats` that helps you work with categorical variables (factors). I'll show some examples of its functions using the `worldcup` data set:
+
+```{r}
+library(forcats)
+library(faraway)
+data(worldcup)
+```
+
+## `forcats`
+
+The `fct_recode` function can be used to change the labels of a function (along the lines of using `factor` with `levels` and `labels` to reset factor labels). \bigskip
+
+One big advantage is that `fct_recode` lets you change labels for some, but not all, levels. For example, here are the team names:
+\footnotesize
+```{r}
+worldcup %>% 
+  filter(Team == "USA") %>%
+  slice(1:3) %>% select(Team, Position, Time)
+```
+
+## `forcats`
+
+If you just want to change "USA" to "United States", you can run: 
+
+```{r}
+worldcup <- worldcup %>%
+  mutate(Team = fct_recode(Team, `United States` = "USA"))
+worldcup %>%
+  filter(Team == "United States") %>%
+  slice(1:3) %>% select(Team, Position, Time)
+```
+
+## `forcats`
+
+You can use the `fct_lump` function to lump uncommon factors into an "Other" category. For example, to lump the two least common positions together, you can run (`n` specifies how many categories to keep outside of "Other"): 
+
+```{r}
+worldcup %>%
+  mutate(Position = fct_lump(Position, n = 2)) %>%
+  count(Position)
+```
+
+## `forcats`
+
+You can use the `fct_infreq` function to reorder the levels of a factor from most common to least common:
+
+```{r}
+levels(worldcup$Position)
+worldcup <- worldcup %>%
+  mutate(Position = fct_infreq(Position))
+levels(worldcup$Position)
+```
+
+
+## `forcats`
+
+If you want to reorder one factor by another variable (ascending order), you can use `fct_reorder` (e.g., homework 3). For example, to re-level `Position` by the average shots on goals for each position, you can run:
+
+```{r}
+levels(worldcup$Position)
+worldcup <- worldcup %>%
+  group_by(Position) %>%
+  mutate(ave_shots = mean(Shots)) %>%
+  ungroup() %>%
+  mutate(Position = fct_reorder(Position, ave_shots))
+levels(worldcup$Position)
+```
+
+## In-course exercise
+
+We'll now take a break to do Section 6.6.6 of the In-Course Exercise. 
 
 
 # String operations
@@ -1041,3 +1117,6 @@ For more on these patterns, see:
 - Chapter 14 of R For Data Science
 - http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
 
+## In-course exercise
+
+We'll now take a break to do Section 6.6.7 of the In-Course Exercise. 
