@@ -303,7 +303,7 @@ map(my_list, add_one)
 
 ## Applying a function repeatedly
 
-One of the most common `repeated` tasks you might want to do is load in multiple data files:
+One of the most common `repeated` tasks you might want to do is loading in multiple data files:
 
 ```{r}
 library(readr)
@@ -318,7 +318,7 @@ head(df, 15)
 
 ## Applying a function repeatedly
 
-We can use our own custom functions with the `map()` functions:
+We can use our own custom functions with `map()`:
 
 ```{r, include=FALSE}
 clean_names <- function(x){gsub(" ", "_", tolower(x))}
@@ -341,7 +341,7 @@ read_run_csv(files[1])
 
 ## Applying a function repeatedly
 
-We can use our own custom functions with the `map()` functions:
+Here we `map` our function `read_run_csv` over each element in the vector of `files`:
 
 ```{r, warning=FALSE}
 rd <- suppressWarnings(map(files, read_run_csv))
@@ -353,7 +353,7 @@ length(rd)
 
 ## Applying a function repeatedly
 
-We now have a list of dataframes! We can map functions to each element in our lists of dataframes:
+We now have a list of data frames! We can `map` functions to each element in our lists of data frames:
 
 ```{r}
 run_sum <- function(x){
@@ -378,7 +378,7 @@ run_summary
 
 ## Applying a function repeatedly
 
-And just for fun we cando the same thing with a different dataset:
+And just for fun we can do the same thing with a different dataset. Here we see that our `map` functions are useful for dealing with the objects created when loading `XML` files:
 
 ```{r, eval = FALSE}
 library(XML)
@@ -399,6 +399,8 @@ tcx_data <- map(files_xml, read_tcx)
 
 ## Applying a function repeatedly
 
+This time we want to calculate statistics on the altitude:
+
 ```{r, eval = FALSE}
 tcx_sum <- function(x){
   summarise(x, 
@@ -409,9 +411,11 @@ tcx_sum <- function(x){
 }
 ```
 
+We use `map_df()` to create a new data frame:
+
 ```{r, eval = FALSE}
 tcx_summary <- map_df(tcx_data, tcx_sum)
-tcx_summary
+head(tcx_summary,3)
 ```
 
 ```{r, eval=FALSE, include=FALSE}
@@ -424,7 +428,7 @@ tcx_summary
 
 ## Applying a function repeatedly
 
-We'd like to see which variable best predicts pace.
+We'd like to see which variable best predicts pace. First let's organize our data into a suitable format:
 
 ```{r}
 library(tidyr)
@@ -437,7 +441,7 @@ head(run, 3)
 
 ## Applying a function repeatedly
 
-We can create a model function and regress each variabl using `nest()`:
+We can create a model function and regress each variable using `nest()`:
 
 ```{r}
 model_lm <- function(df) {
