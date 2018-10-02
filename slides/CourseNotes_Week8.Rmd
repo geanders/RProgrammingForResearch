@@ -469,4 +469,21 @@ results <- map_df(lm_models$mod, glance) %>%
 kable(results, digits = 2)
 ```
 
+## Applying a function repeatedly
+
+Finally, you might want to `map` over multiple inputs in parallel. You can do this using the `pmap()` function:
+
+```{r}
+txt_fun <- function(distance, gain, loss, pace_mins) {
+  paste("Nick ran for", distance, "miles up", gain, "and down", loss, "feet in",
+        round(distance * pace_mins, 0), "minutes")
+}
+```
+
+```{r}
+run_summary %>%
+  select(distance, gain, loss, pace_mins) %>%
+  pmap_chr(txt_fun) %>% 
+  tail()
+```
 
