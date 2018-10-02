@@ -117,7 +117,7 @@ Example: exposure and outcome data stored in different files:
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.1).
+We'll take a break now to do the In-Course Exercise (Section 6.6.1).
 
 
 # Joining datasets
@@ -238,7 +238,7 @@ full_join(x, y, by = list(x = c("course", "student"),
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.2).
+We'll take a break now to do the In-Course Exercise (Section 6.6.2).
 
 # Gathering
 
@@ -460,7 +460,7 @@ ebola %>%
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.3).
+We'll take a break now to do the In-Course Exercise (Section 6.6.3).
 
 ## `unite`
 
@@ -588,7 +588,7 @@ y %>%
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.4).
+We'll take a break now to do the In-Course Exercise (Section 6.6.4).
 
 # Tidying with `dplyr` 
 
@@ -710,5 +710,413 @@ http://metrocosm.com/10-years-of-traffic-accidents-mapped.html
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.4.5).
+We'll take a break now to do the In-Course Exercise (Section 6.6.5).
 
+# `forcats`
+
+## `forcats`
+
+Hadley Wickham has developed a package called `forcats` that helps you work with categorical variables (factors). I'll show some examples of its functions using the `worldcup` data set:
+
+```{r}
+library(forcats)
+library(faraway)
+data(worldcup)
+```
+
+## `forcats`
+
+The `fct_recode` function can be used to change the labels of a function (along the lines of using `factor` with `levels` and `labels` to reset factor labels). \bigskip
+
+One big advantage is that `fct_recode` lets you change labels for some, but not all, levels. For example, here are the team names:
+\footnotesize
+```{r}
+worldcup %>% 
+  filter(Team == "USA") %>%
+  slice(1:3) %>% select(Team, Position, Time)
+```
+
+## `forcats`
+
+If you just want to change "USA" to "United States", you can run: 
+
+```{r}
+worldcup <- worldcup %>%
+  mutate(Team = fct_recode(Team, `United States` = "USA"))
+worldcup %>%
+  filter(Team == "United States") %>%
+  slice(1:3) %>% select(Team, Position, Time)
+```
+
+## `forcats`
+
+You can use the `fct_lump` function to lump uncommon factors into an "Other" category. For example, to lump the two least common positions together, you can run (`n` specifies how many categories to keep outside of "Other"): 
+
+```{r}
+worldcup %>%
+  mutate(Position = fct_lump(Position, n = 2)) %>%
+  count(Position)
+```
+
+## `forcats`
+
+You can use the `fct_infreq` function to reorder the levels of a factor from most common to least common:
+
+```{r}
+levels(worldcup$Position)
+worldcup <- worldcup %>%
+  mutate(Position = fct_infreq(Position))
+levels(worldcup$Position)
+```
+
+
+## `forcats`
+
+If you want to reorder one factor by another variable (ascending order), you can use `fct_reorder` (e.g., homework 3). For example, to re-level `Position` by the average shots on goals for each position, you can run:
+
+```{r}
+levels(worldcup$Position)
+worldcup <- worldcup %>%
+  group_by(Position) %>%
+  mutate(ave_shots = mean(Shots)) %>%
+  ungroup() %>%
+  mutate(Position = fct_reorder(Position, ave_shots))
+levels(worldcup$Position)
+```
+
+## In-course exercise
+
+We'll now take a break to do Section 6.6.6 of the In-Course Exercise. 
+
+
+# String operations
+
+## String operations
+
+For these examples, we'll use some data on passengers of the Titanic. You can load this data using:
+
+```{r}
+# install.packages("titanic")
+library(titanic)
+data("titanic_train")
+```
+
+We will be using the `stringr` package:
+
+```{r}
+library(stringr)
+```
+
+## String operations
+
+This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). Here are the first few values of "Name": 
+
+```{r}
+titanic_train %>% select(Name) %>% slice(1:3)
+```
+
+## String operations
+
+The `str_trim` function from the `stringr` package allows you to trim leading and trailing whitespace: 
+
+```{r}
+with_spaces <- c("    a ", "  bob", " gamma")
+with_spaces
+str_trim(with_spaces)
+```
+
+This is rarer, but if you ever want to, you can add leading and / or trailing whitespace to elements of a character vector with `str_pad` from the `stringr` package.
+
+## String operations
+
+There are also functions to change a full character string to uppercase, lowercase, or title case: 
+
+```{r echo = FALSE}
+library(titanic)
+data(titanic_train)
+```
+
+```{r}
+titanic_train$Name[1]
+str_to_upper(titanic_train$Name[1])
+str_to_lower(titanic_train$Name[1])
+str_to_title(str_to_lower(titanic_train$Name[1]))
+```
+
+# Regular expressions
+
+## Regular expressions
+
+We've already done some things to manipulate strings. For example, if we wanted to separate "Name" into last name and first name (including title), we could actually do that with the `separate` function: 
+
+```{r}
+titanic_train %>% 
+  select(Name) %>% 
+  slice(1:3) %>% 
+  separate(Name, c("last_name", "first_name"), sep = ", ")
+```
+
+## Regular expressions
+
+Notice that `separate` is looking for a regular pattern (", ") and then doing something based on the location of that pattern in each string (splitting the string). \bigskip
+
+There are a variety of functions in R that can perform manipulations based on finding regular patterns in character strings. 
+
+## Regular expressions
+
+The `str_detect` function will look through each element of a character vector for a designated pattern. If the pattern is there, it will return `TRUE`, and otherwise `FALSE`. The convention is: 
+
+```
+## Generic code
+str_detect(string = [vector you want to check], 
+           pattern = [pattern you want to check for])
+```
+
+For example, to create a logical vector specifying which of the Titanic passenger names include "Mrs.", you can call:
+
+```{r}
+mrs <- str_detect(titanic_train$Name, "Mrs\\.")
+head(mrs)
+```
+
+
+## Regular expressions
+
+The result is a logical vector, so `str_detect` can be used in `filter` to subset data to only rows where the passenger's name includes "Mrs.":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "Mrs\\.")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally: 
+
+```
+. * + ^ ? $ \ | ( ) [ ] { }
+```
+
+
+## Regular expressions
+
+There is an older, base R function called `grepl` that does something very similar (although note that the order of the arguments is reversed).
+
+```{r}
+titanic_train %>%
+  filter(grepl("Mrs\\.", Name)) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+The `str_extract` function can be used to extract a string (if it exists) from each value in a character vector. It follows similar conventions to `str_detect`:
+
+```
+## Generic code
+str_extract(string = [vector you want to check], 
+           pattern = [pattern you want to check for])
+```
+
+## Regular expressions
+
+For example, you might want to extract "Mrs." if it exists in a passenger's name:
+
+```{r}
+titanic_train %>%
+  mutate(mrs = str_extract(Name, "Mrs\\.")) %>%
+  select(Name, mrs) %>%
+  slice(1:3)
+```
+
+Notice that now we're creating a new column (`mrs`) that either has "Mrs." (if there's a match) or is missing (`NA`) if there's not a match. 
+
+## Regular expressions
+
+For this first example, we were looking for an exact string ("Mrs"). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find "Mr." or "Mrs.": 
+
+\small
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, "Mr\\.|Mrs\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+Note that this pattern uses a special operator (`|`) to find one pattern **or** another. Double backslashs (`\\`) **escape** the special character ".". 
+
+## Regular expressions
+
+Notice that "Mr." and "Mrs." both start with "Mr", end with ".", and may or may not have an "s" in between. 
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, "Mr(s)*\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+This pattern uses `(s)*` to match zero or more "s"s at this spot in the pattern. 
+
+## Regular expressions
+
+In the previous code, we found "Mr." and "Mrs.", but missed "Miss.". We could tweak the pattern again to try to capture that, as well. For all three, we have the pattern that it starts with "M", has some lowercase letters, and then ends with ".".  
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, "M[a-z]+\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+The last pattern used `[a-z]+` to match one or more lowercase letters. The `[a-z]`is a **character class**. \bigskip 
+
+You can also match digits (`[0-9]`), uppercase letters (`[A-Z]`), just some letters (`[aeiou]`), etc. \bigskip
+
+You can negate a character class by starting it with `^`. For example, `[^0-9]` will match anything that **isn't** a digit. 
+
+## Regular expressions 
+
+Sometimes, you want to match a pattern, but then only subset a part of it. For example, each passenger seems to have a title ("Mr.", "Mrs.", etc.) that comes after ", " and before ". ". We can use this pattern to find the title, but then we get some extra stuff with the match: 
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, ",\\s[A-Za-z]*\\.\\s")) %>%
+  select(title) %>%
+  slice(1:3)
+```
+
+As a note, in this pattern, `\\s` is used to match a space. 
+
+## Regular expressions 
+
+We are getting things like ", Mr. ", when we really want "Mr". We can use the `str_match` function to do this. We group what we want to extract from the pattern in parentheses, and then the function returns a matrix. The first column is the full pattern match, and each following column gives just what matches within the groups. 
+
+```{r}
+head(str_match(titanic_train$Name,
+          pattern = ",\\s([A-Za-z]*)\\.\\s"))
+```
+
+## Regular expressions 
+
+To get just the title, then, we can run:
+
+```{r}
+titanic_train %>%
+  mutate(title = 
+           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+The `[ , 2]` pulls out just the second column from the matrix returned by `str_match`. 
+
+## Regular expressions 
+
+Here are some of the most common titles: 
+
+```{r}
+titanic_train %>%
+  mutate(title = 
+           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
+  group_by(title) %>% summarize(n = n()) %>%
+  arrange(desc(n)) %>% slice(1:5)
+```
+
+## Regular expressions
+
+The following slides have a few other examples of regular expressions in action with this dataset. \bigskip
+
+Get just names that start with ("^") the letter "A":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "^A")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+Get names with "II" or "III" (`{2,}` says to match at least two times):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "I{2,}")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+Get names with "Andersen" or "Anderson" (alternatives in square brackets):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "Anders[eo]n")) %>%
+  select(Name)
+```
+
+
+## Regular expressions
+
+Get names that start with ("^" outside of brackets) the letters "A" and "B":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "^[AB]")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+Get names that end with ("$") the letter "b" (either lowercase or uppercase):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "[bB]$")) %>%
+  select(Name) 
+```
+
+## Regular expression
+
+Some useful regular expression operators include: 
+
+```{r echo = FALSE}
+reg_exp <- data_frame("Operator" = c(".",
+                                     "*",
+                                     "*?",
+                                     "+",
+                                     "+?",
+                                     "^",
+                                     "$", 
+                                     "[...]"),
+                      "Meaning" = c("Any character", 
+                                    "Match 0 or more times (greedy)",
+                                    "Match 0 or more times (non-greedy)",
+                                    "Match 1 or more times (greedy)",
+                                    "Match 1 or more times (non-greedy)",
+                                    "Starts with (in brackets, negates)",
+                                    "Ends with",
+                                    "Character classes"))
+knitr::kable(reg_exp)
+```
+
+## Regular expressions
+
+For more on these patterns, see: 
+
+- Help file for the `stringi-search-regex` function in the `stringi` package (which should install when you install `stringr`)
+- Chapter 14 of R For Data Science
+- http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
+
+## In-course exercise
+
+We'll now take a break to do Section 6.6.7 of the In-Course Exercise. 
