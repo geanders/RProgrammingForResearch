@@ -122,7 +122,7 @@ fit_ht_wt_mod <- function(df){
 Now you can apply that function within a tidy pipeline, for example to fit the model to a specific subset of the data (all children with an age over 12 months):
 
 ```{r}
-nepali %>% 
+nepali %>%
   filter(age > 12) %>% 
   fit_ht_wt_mod() %>% 
   tidy()
@@ -333,7 +333,7 @@ read_run_csv <- function(file){
   filter(distance == "1" & split != "Summary") %>%
   mutate_at(vars(matches("time|pace")), hms) %>%
   mutate_if(is.character, as.numeric) %>%
-  mutate(filename = sub(".csv", "", basename(file)))
+  mutate(file_name = sub(".csv", "", basename(file)))
   
 }
 read_run_csv(files[1])
@@ -360,16 +360,113 @@ run_sum <- function(x){
   summarise(x, 
             distance = sum(distance, na.rm = TRUE),
             gain = sum(elevation_gain, na.rm = TRUE),
+            gain_per_mile = mean(elevation_gain, na.rm = TRUE),
+            loss_per_mile = mean(elev_loss, na.rm = TRUE),
             loss = sum(elev_loss, na.rm = TRUE),
-            pace = mean(avg_pace, na.rm = TRUE),
+            pace_mins = mean(as.numeric(avg_pace) / 60, na.rm = TRUE),
             t_min = min(avg_temperature, na.rm = TRUE),
             t_max = max(avg_temperature, na.rm = TRUE),
-            t_mean = mean(avg_temperature, na.rm = TRUE))
+            t_mean = mean(avg_temperature, na.rm = TRUE),
+            file_name = first(file_name))
 }
 ```
 
 ```{r}
-out <- map_df(rd, run_sum)
-out
+run_summary <- map_df(rd, run_sum)
+run_summary
 ```
+
+## Applying a function repeatedly
+
+And just for fun we cando the same thing with a different dataset:
+
+```{r, eval = FALSE}
+library(XML)
+
+read_tcx <- function(x){
+  out <- suppressWarnings(getNodeSet(xmlParse(x), "//ns:Trackpoint", "ns") %>%
+  map(xmlToList) %>%
+  map_df(data.frame) %>%
+  mutate(file_name = sub(".tcx", "", basename(x))))
+  print(x)
+  return(out)
+}
+
+files_xml <- list.files("../data/running", pattern = ".tcx", full.names = TRUE)
+
+tcx_data <- map(files_xml, read_tcx)
+```
+
+## Applying a function repeatedly
+
+```{r, eval = FALSE}
+tcx_sum <- function(x){
+  summarise(x, 
+            e_min = min(as.numeric(AltitudeMeters), na.rm = TRUE),
+            e_max = max(as.numeric(AltitudeMeters), na.rm = TRUE),
+            e_mean = mean(as.numeric(AltitudeMeters), na.rm = TRUE),
+            file_name = first(file_name))
+}
+```
+
+```{r, eval = FALSE}
+tcx_summary <- map_df(tcx_data, tcx_sum)
+tcx_summary
+```
+
+```{r, eval=FALSE, include=FALSE}
+  write_csv(tcx_summary, "../data/elevation.csv")
+```
+
+```{r, echo=FALSE}
+  elevation <- read_csv("../data/elevation.csv", col_types = cols())
+```
+
+## Applying a function repeatedly
+
+We'd like to see which variable best predicts pace.
+
+```{r}
+library(tidyr)
+  run <- left_join(run_summary, elevation, by = "file_name") %>%
+         select(-file_name) %>%
+         gather("var", "value", -pace_mins)
+
+head(run, 3)
+```
+
+## Applying a function repeatedly
+
+We can create a model function and regress each variabl using `nest()`:
+
+```{r}
+model_lm <- function(df) {
+  lm(pace_mins ~ value, data = df)
+}
+```
+
+Fit models:
+
+```{r}
+lm_models <- run %>%
+             group_by(var) %>%
+             nest() %>%
+             mutate(mod = map(data, model_lm))
+
+head(lm_models, 2)
+```
+
+## Applying a function repeatedly
+
+We can use `map_df` and our friend the `broom` package to create tidy model output for **all** the models combined:
+
+```{r}
+library(broom)
+results <- map_df(lm_models$mod, glance) %>%
+           arrange(-r.squared) %>%
+           mutate(variable = lm_models$var)
+
+kable(results, digits = 2)
+```
+
 
