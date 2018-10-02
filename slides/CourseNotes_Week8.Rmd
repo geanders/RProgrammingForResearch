@@ -1,6 +1,7 @@
 ---
 title: 'Reporting data results #2'
 output:
+  slidy_presentation: default
   ioslides_presentation: default
   beamer_presentation:
     theme: metropolis
@@ -121,7 +122,7 @@ fit_ht_wt_mod <- function(df){
 Now you can apply that function within a tidy pipeline, for example to fit the model to a specific subset of the data (all children with an age over 12 months):
 
 ```{r}
-nepali %>% 
+nepali %>%
   filter(age > 12) %>% 
   fit_ht_wt_mod() %>% 
   tidy()
@@ -288,11 +289,11 @@ tell_date()
 
 # Functional programming
 
-## Applying a function repeatedly 
+## Applying a function repeatedly
 
-One way that functions are really useful is that you can use the `map` family of functions from the `purrr` package to apply that function to all elements in a vector of a list (remember, a list could hold lots of similar dataframes). 
+You will often want to apply a function multiple times with different input. A powerful way to do this in R is using `lists`. We can use functions from the `purrr` library to `map` functions to each element of a list.
 
-For example, you could use `map` to apply the `add_one` function separately to 1, 2, and 3 by using `map` on a vector with those values:
+For example, you could use `map` to apply our `add_one` function separately to 1, 2, and 3 by using `map` on a vector with those values:
 
 ```{r message = FALSE}
 library(purrr)
@@ -300,118 +301,193 @@ my_list <- list(a = 1:2, b = 3:5)
 map(my_list, add_one)
 ```
 
-## Applying a function repeatedly 
+## Applying a function repeatedly
 
-This can also be very useful if you have a dataframe for which you would like to apply the same function to subsets of the data. For example, for the `nepali` data you may want to apply the model of weight regressed on height and sex separately for children 12 months and younger versus older children. 
-
-First, we can add a factor variable that specifies whether the child is younger or older than 12 months:
+One of the most common `repeated` tasks you might want to do is loading in multiple data files:
 
 ```{r}
-nepali <- nepali %>% 
-  mutate(young = age < 12,
-         young = factor(young, levels = c(TRUE, FALSE), 
-                        labels = c("younger", "older"))) 
-```
+library(readr)
+library(dplyr)
+library(purrr)
+files <- list.files("../data/running", pattern = ".csv", full.names = TRUE)
+df <- map(files, read_csv, col_types = cols(.default = "c")) %>%
+      bind_rows()
 
-## Applying a function repeatedly 
-
-```{r}
-nepali %>% 
-  slice(1:3)
-```
-
-
-## Applying a function repeatedly 
-
-Then, you can use the `nest` function to "nest" a dataframe by a factor variable. This function will create a column that actually stores its own dataframe:
-
-```{r}
-nested_nepali <- nepali %>% 
-  group_by(young) %>% 
-  nest()
-nested_nepali
-```
-
-## Applying a function repeatedly 
-
-Each element of the `data` column in the nested dataset is actually a full dataframe:
-
-```{r}
-nested_nepali$data[[1]] %>% slice(1:3)
-```
-
-## Applying a function repeatedly 
-
-Now, you can use `map` to apply the modeling function to each of these subsets of the dataframe. Use `mutate` to add a column with the results. We can also add a column with the results of applying `augment` to each of the model results:
-
-\small
-
-```{r message = FALSE, warning = FALSE}
-modeled_nepali <- nepali %>% 
-  group_by(young) %>% 
-  nest() %>% 
-  mutate(mod_results = map(data, fit_ht_wt_mod),
-         augmented_data = map(mod_results, augment))
-modeled_nepali
-```
-
-## Applying a function repeatedly 
-
-Each element of the `mod_results` column is the output from an `lm` model:
-
-```{r}
-modeled_nepali$mod_results[[1]]
-```
-
-## Applying a function repeatedly 
-
-We can apply `tidy` and `glance` to this output, just like we did with the output from fitting a single model:
-
-```{r}
-tidy(modeled_nepali$mod_results[[1]])
-```
-
-## Applying a function repeatedly 
-
-To get back to a regular dataframe, you can "unnest". Before you do this, you should limit the data to only columns that will "unnest" to the same number of rows (if you have multiple columns with dataframes or lists in them). For example, we could unnest the `augmented_data` column, so we can plot observed data versus the model fit:
-
-```{r}
-modeled_nepali %>% 
-  select(young, augmented_data) %>% 
-  unnest() %>% 
-  slice(1:3) %>% select(1:7)
-```
-
-## Applying a function repeatedly 
-
-\small
-
-```{r out.width = "\\textwidth", fig.align = "center", fig.width = 6, fig.height = 2}
-modeled_nepali %>% 
-  select(young, augmented_data) %>% 
-  unnest() %>% 
-  ggplot(aes(x = ht, y = wt, group = sex, color = sex)) + 
-  geom_point(size = 0.8) + 
-  geom_line(aes(y = .fitted), size = 1.2) + 
-  facet_wrap(~ young, ncol = 2)
+head(df, 15)
 ```
 
 ## Applying a function repeatedly
 
-The full pipe for creating this figure is: 
+We can use our own custom functions with `map()`:
 
-```{r eval = FALSE}
-nepali %>%
-  group_by(young) %>%    # Group by young and nest 
-  nest() %>%             # to model each group of "young"
-  mutate(mod_results = map(data, fit_ht_wt_mod), 
-         augmented_data = map(mod_results, augment)) %>% 
-  select(young, augmented_data) %>%  
-  unnest %>%             # Unnest `augmented_data` (nested)
-  ggplot(aes(x = ht, y = wt, group = sex, color = sex)) + 
-  geom_point(size = 0.8) + 
-  geom_line(aes(y = .fitted), size = 1.2) + 
-  facet_wrap(~ young, ncol = 2)
+```{r, include=FALSE}
+clean_names <- function(x){gsub(" ", "_", tolower(x))}
 ```
 
+```{r, warning=FALSE, message=FALSE}
+library(lubridate)
+
+read_run_csv <- function(file){
+  read_csv(file, col_types = cols(.default = "c")) %>%
+  rename_all(clean_names) %>%
+  filter(distance == "1" & split != "Summary") %>%
+  mutate_at(vars(matches("time|pace")), hms) %>%
+  mutate_if(is.character, as.numeric) %>%
+  mutate(file_name = sub(".csv", "", basename(file)))
+  
+}
+read_run_csv(files[1])
+```
+
+## Applying a function repeatedly
+
+Here we `map` our function `read_run_csv` over each element in the vector of `files`:
+
+```{r, warning=FALSE}
+rd <- suppressWarnings(map(files, read_run_csv))
+
+class(rd)
+
+length(rd)
+```
+
+## Applying a function repeatedly
+
+We now have a list of data frames! We can `map` functions to each element in our lists of data frames:
+
+```{r}
+run_sum <- function(x){
+  summarise(x, 
+            distance = sum(distance, na.rm = TRUE),
+            gain = sum(elevation_gain, na.rm = TRUE),
+            gain_per_mile = mean(elevation_gain, na.rm = TRUE),
+            loss_per_mile = mean(elev_loss, na.rm = TRUE),
+            loss = sum(elev_loss, na.rm = TRUE),
+            pace_mins = mean(as.numeric(avg_pace) / 60, na.rm = TRUE),
+            t_min = min(avg_temperature, na.rm = TRUE),
+            t_max = max(avg_temperature, na.rm = TRUE),
+            t_mean = mean(avg_temperature, na.rm = TRUE),
+            file_name = first(file_name))
+}
+```
+
+```{r}
+run_summary <- map_df(rd, run_sum)
+run_summary
+```
+
+## Applying a function repeatedly
+
+And just for fun we can do the same thing with a different dataset. Here we see that our `map` functions are useful for dealing with the objects created when loading `XML` files:
+
+```{r, eval = FALSE}
+library(XML)
+
+read_tcx <- function(x){
+  out <- suppressWarnings(getNodeSet(xmlParse(x), "//ns:Trackpoint", "ns") %>%
+  map(xmlToList) %>%
+  map_df(data.frame) %>%
+  mutate(file_name = sub(".tcx", "", basename(x))))
+  print(x)
+  return(out)
+}
+
+files_xml <- list.files("../data/running", pattern = ".tcx", full.names = TRUE)
+
+tcx_data <- map(files_xml, read_tcx)
+```
+
+## Applying a function repeatedly
+
+This time we want to calculate statistics on the altitude:
+
+```{r, eval = FALSE}
+tcx_sum <- function(x){
+  summarise(x, 
+            e_min = min(as.numeric(AltitudeMeters), na.rm = TRUE),
+            e_max = max(as.numeric(AltitudeMeters), na.rm = TRUE),
+            e_mean = mean(as.numeric(AltitudeMeters), na.rm = TRUE),
+            file_name = first(file_name))
+}
+```
+
+We use `map_df()` to create a new data frame:
+
+```{r, eval = FALSE}
+tcx_summary <- map_df(tcx_data, tcx_sum)
+head(tcx_summary,3)
+```
+
+```{r, eval=FALSE, include=FALSE}
+  write_csv(tcx_summary, "../data/elevation.csv")
+```
+
+```{r, echo=FALSE}
+  elevation <- read_csv("../data/elevation.csv", col_types = cols())
+```
+
+## Applying a function repeatedly
+
+We'd like to see which variable best predicts pace. First let's organize our data into a suitable format:
+
+```{r}
+library(tidyr)
+  run <- left_join(run_summary, elevation, by = "file_name") %>%
+         select(-file_name) %>%
+         gather("var", "value", -pace_mins)
+
+head(run, 3)
+```
+
+## Applying a function repeatedly
+
+We can create a model function and regress each variable using `nest()`:
+
+```{r}
+model_lm <- function(df) {
+  lm(pace_mins ~ value, data = df)
+}
+```
+
+Fit models:
+
+```{r}
+lm_models <- run %>%
+             group_by(var) %>%
+             nest() %>%
+             mutate(mod = map(data, model_lm))
+
+head(lm_models, 2)
+```
+
+## Applying a function repeatedly
+
+We can use `map_df` and our friend the `broom` package to create tidy model output for **all** the models combined:
+
+```{r}
+library(broom)
+results <- map_df(lm_models$mod, glance) %>%
+           arrange(-r.squared) %>%
+           mutate(variable = lm_models$var)
+
+kable(results, digits = 2)
+```
+
+## Applying a function repeatedly
+
+Finally, you might want to `map` over multiple inputs in parallel. You can do this using the `pmap()` function:
+
+```{r}
+txt_fun <- function(distance, gain, loss, pace_mins) {
+  paste("Nick ran for", distance, "miles up", gain, "and down", loss, "feet in",
+        round(distance * pace_mins, 0), "minutes")
+}
+```
+
+```{r}
+run_summary %>%
+  select(distance, gain, loss, pace_mins) %>%
+  pmap_chr(txt_fun) %>% 
+  tail()
+```
 
