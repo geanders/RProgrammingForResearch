@@ -1,8 +1,9 @@
 ---
 title: "Exploring data 2"
-output: 
+output:
+  ioslides_presentation: default
   beamer_presentation:
-    theme: "metropolis"
+    theme: metropolis
 fontsize: 10pt
 ---
 
@@ -15,6 +16,52 @@ library(ggthemes)
 library(faraway)
 data(worldcup)
 data(nepali)
+```
+
+# Matrices
+
+## Matrices
+
+A matrix is like a data frame, but all the values in all columns must be of the same class (e.g., numeric, character).
+
+Matrices can be faster and more memory efficient than data frames.
+
+
+They are essential for certain mathematical operations.
+
+## Matrices
+
+We can use the `matrix()` function to construct a matrix:
+
+```{r}
+foo <- matrix(1:10, ncol = 5)
+foo
+```
+
+## Matrices
+
+The `as.matrix()` function is used to convert an object to a matrix:
+
+```{r}
+foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
+                  col_3 = 5:6, col_4 = 7:8,
+                  col_5 = 9:10)
+foo <- as.matrix(foo)
+foo
+```
+
+## Matrices
+
+You can index matrices with square brackets, just like data frames: 
+
+```{r}
+foo[1, 1:2]
+```
+
+You cannot, however, use `dplyr` functions with matrices: 
+
+```{r, eval = FALSE}
+foo %>% filter(col_1 == 1)
 ```
 
 # Lists
@@ -80,7 +127,6 @@ example_df <- data_frame(letters = letters[1:3],
 class(example_df)
 is.list(example_df)
 ```
-
 
 # Regression models 
 
@@ -361,297 +407,4 @@ If you want all the details about fitting linear models and GLMs in R, Faraway's
 ## In-course exercise
 
 We'll take a break now to do part of the In-Course Exercise (Section 7.6.2).
-
-# Functions
-
-## Functions
-
-As you move to larger projects, you will find yourself using the same code a lot. \bigskip
-
-Examples include: 
-
-- Reading in data from a specific type of equipment (air pollution monitor, accelerometer)
-- Running a specific type of analysis (e.g., fitting the same model format to many datasets)
-- Creating a specific type of plot or map
-
-\bigskip 
-
-If you find yourself cutting and pasting a lot, convert the code to a function.
-
-## Functions
-
-Advantages of writing functions include: 
-
-- Coding is more efficient
-- Easier to change your code (if you've cut and paste code and you want to change something, you have to change it everywhere)
-- Easier to share code with others
-
-## Functions
-
-You can name a function anything you want, as long as you follow the naming rules for all R objects (although try to avoid names of preexisting-existing functions). You then specify any inputs (arguments; separate multiple arguments with commas) and put the code to run in braces. You **define** a function as an R object just like you do with other R objects (`<-`).
-
-Here is the basic structure of "where things go" in an R function definition. 
-
-```{r, eval = FALSE}
-## Note: this code will not run
-[function name] <- function([any arguments]){
-        [code to run]
-}
-```
-
-## Functions
-
-Here is an example of a very basic function. This function takes a number as input and adds 1 to that number. An R function will only return one R object. By default, that object will be the last line of code in the function body.
-
-```{r}
-add_one <- function(number){
-        number + 1 # Value returned by the function
-}
-
-add_one(number = 1:3)
-add_one(number = -1)
-```
-
-## Functions
-
-```{r eval = FALSE}
-add_one <- function(number){
-        number + 1 # Value returned by the function
-}
-```
-
-- I picked the name of the function (`add_one`) (just like you pick what name you want to use with any R object)
-- The only input is a numeric vector. I pick the name I want to use for the vector that is input to the function. I picked `number`.
-- Within the code inside the function, the `number` refers to the numeric vector object that the user passed into the function.
-
-## Functions
-
-As another example, you could write a small function to fit a specific model to a dataframe you input and return the model object:
-
-```{r}
-fit_ht_wt_mod <- function(df){
-  lm(wt ~ ht + sex, data = df) # Returns result from this call
-}
-```
-
-- I picked the name of the function (`fit_ht_wt_mod`) (just like you pick what name you want to use with any R object)
-- The only input is a dataframe. I pick the name I want to use for the dataframe that is input to the function. I picked `df` (I often use this as a default parameter name for a dataframe).
-- Within the code inside the function, the `df` refers to the dataframe object that the user passed into the function.
-
-## Functions
-
-Now you can apply that function within a tidy pipeline, for example to fit the model to a specific subset of the data (all children with an age over 12 months):
-
-```{r}
-nepali %>% 
-  filter(age > 12) %>% 
-  fit_ht_wt_mod() %>% 
-  tidy()
-```
-
-## Functions 
-
-- Functions can input any type of R object (for example, vectors, data frames, even other functions and ggplot objects)
-- Similarly, functions can output any type of R object
-- However, functions can only output one R object. If you have complex things you want to output, a list might be a good choice for the output object type.
-- Functions can have "side effects". Examples include printing something or drawing a plot. Any action that a function takes *besides returning an R object* is a "side effect". 
-
-## Functions-- parameter defaults 
-
-When defining a function, you can set default values for some of the parameters. For example, in the `add_one` function, you can set the default value of the `number` input to `0`. 
-
-```{r}
-add_one <- function(number = 0){
-        number + 1 # Value returned by the function
-}
-```
-
-\small
-
-Now, if someone runs the function without providing a value for `number`, the function will use `0`. If they do provide a value for `number`, the function will use that instead.
-
-```{r}
-add_one()    # Uses 0 for `number`
-add_one(number = 3:5)   # Uses 5 for `number`
-```
-
-## Functions-- parameters
-
-You could write a function with no parameters:
-
-```{r}
-hello_world <- function(){
-  print("Hello world!")
-}
-
-hello_world()
-```
-
-However, this will be pretty uncommon as you're first learning to write functions. 
-
-## Functions-- parameters
-
-You can include multiple parameters, some with defaults and some without. For example, you could write a function that inputs two numbers and adds them. If you don't include a second value, `0` will be added as the second number:
-
-```{r}
-add_two_numbers <- function(first_number, second_number = 0){
-  first_number + second_number
-}
-```
-
-```{r}
-add_two_numbers(first_number = 5:7, second_number = 0:2)
-add_two_numbers(first_number = 5:7)
-```
-
-## Functions-- the `return` function 
-
-You can explicitly specify the value to return from the function (use `return` function). 
-
-```{r eval = FALSE}
-add_one <- function(number = 0){
-        new_number <- number + 1 
-        return(new_number)
-}
-```
-
-If using `return` helps you think about what's happening with the code in your function, you can use it. However, outside of a few exceptions, you usually won't need to do it.
-
-## Functions-- Error checking
-
-There are ways to check for errors in the arguments a user inputs to the function. One useful check is to see if user inputs are in the required class. 
-
-The `assertive` package has some functions that you can use for common checks of the inputs to a function. If someone inputs something of the wrong class, it will give a useful error message. For example, the `assert_is_numeric` function will check if an object is in a numeric class. If so, it will do nothing. If not, it will return an error message:
-
-```{r error = TRUE}
-library(assertive)
-assert_is_numeric(1:3)
-assert_is_numeric(c("a", "b"))
-```
-
-## Functions-- Error checking
-
-You could add this in the code for the `add_one` function, so a useful error message will be returned if a user tries to input something besides a numeric vector for `number`:
-
-```{r}
-add_one <- function(number){
-  assert_is_numeric(number)
-  number + 1 
-}
-```
-
-```{r error = TRUE}
-add_one(number = 1:3)
-add_one(number = c("a", "b"))
-```
-
-## Functions-- Error checking
-
-I would recommend that you not worry about this too much when you're learning to write functions for your own use. 
-
-However, once you have mastered the basics of writing functions and start writing them for others to use, you'll want to start incorporating this. 
-
-## `if` / `else`
-
-In R, the `if` statement evaluates everything in the parentheses and, if that evaluates to `TRUE`, runs everything in the braces. This means that you can trigger code in an `if` statement with a single-value logical vector: 
-
-```{r}
-tell_date <- function(){
-  cat("Today's date is: ")
-  cat(format(Sys.time(), "%b %d, %Y"))
-  
-  todays_wday <- lubridate::wday(Sys.time(),
-                                 label = TRUE)
-  if(todays_wday %in% c("Sat", "Sun")){
-    cat("\n")
-    cat("It's the weekend!")
-  }
-}
-```
-
-## `if` / `else`
-
-```{r}
-tell_date()
-```
-
-## `if` / `else`
-
-You can add `else if` and `else` statements to tell R what to do if the condition in the `if` statement isn't met. 
-
-For example, in the `tell_date` function, we might want to add some code so it will print `"It's almost the weekend!"` on Fridays and how many days until Saturday on other weekdays.
-
-## `if` / `else`
-
-```{r}
-tell_date <- function(){
-  # Print out today's date
-  cat("Today's date is: ")
-  cat(format(Sys.time(), "%b %d, %Y."), "\n")
-  
-  # Add something based on the weekday of today's date
-  todays_wday <- lubridate::wday(Sys.time())
-  
-  if(todays_wday %in% c(1, 7)){      # What to do on Sat / Sun
-    cat("It's the weekend!")
-  } else if (todays_wday == c(6)) {  # What to do on Friday
-    cat("It's almost the weekend!")
-  } else {                           # What to do other days
-    cat("It's ", 7 - todays_wday, "days until the weekend.")
-  }
-}
-```
-
-## `if` / `else`
-
-```{r}
-tell_date()
-```
-
-<!-- ## Control structures -->
-
-<!-- The control structures you are most likely to use in data analysis with R are "for" loops and "if / else" statements. However, there are a few other control structures you may occasionally find useful:  -->
-
-<!-- - `next` -->
-<!-- - `break` -->
-<!-- - `while` -->
-
-<!-- ## `next` -->
-
-<!-- You can use the `next` structure to skip to the next round of a loop when a certain condition is met. For example, we could have used this code to print out odd numbers between 1 and 5: -->
-
-<!-- ```{r} -->
-<!-- for(i in 1:5){ -->
-<!--   if(i %% 2 == 0){ -->
-<!--     next -->
-<!--   } -->
-<!--   print(i) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## `break` -->
-
-<!-- You can use `break` to break out of a loop if a certain condition is met. For example, the final code will break out of the loop once `i` is over 3, so it will only print the numbers 1 through 3: -->
-
-<!-- ```{r} -->
-<!-- for(i in 1:5){ -->
-<!--   if(i > 3){ -->
-<!--     break -->
-<!--   } -->
-<!--   print(i) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## `while` -->
-
-<!-- ```{r} -->
-<!-- my_sum <- 1 -->
-<!-- while(my_sum < 10){ -->
-<!--   my_sum <- my_sum * 2 -->
-<!--   print(my_sum) -->
-<!-- } -->
-<!-- ``` -->
-
-
-
 
