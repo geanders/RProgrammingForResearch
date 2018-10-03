@@ -244,6 +244,333 @@ stock_summary %>%
   knitr::kable()
 ```
 
+## Working with factors
+
+Hadley Wickham has developed a package called `forcats` that helps you work with categorical variables (factors). I'll show some examples of its functions using the `worldcup` dataset:
+
+```{r b}
+library(forcats)
+library(faraway)
+data(worldcup)
+```
+
+The `fct_recode` function can be used to change the labels of a function (along the lines of using `factor` with `levels` and `labels` to reset factor labels).  
+
+One big advantage is that `fct_recode` lets you change labels for some, but not all, levels. For example, here are the team names:
+
+```{r c}
+library(stringr)
+worldcup %>%
+  filter(str_detect(Team, "^US")) %>%
+  slice(1:3) %>% select(Team, Position, Time)
+```
+
+If you just want to change "USA" to "United States," you can run: 
+
+```{r d}
+worldcup <- worldcup %>%
+  mutate(Team = fct_recode(Team, `United States` = "USA"))
+worldcup %>%
+  filter(str_detect(Team, "^Un")) %>%
+  slice(1:3) %>% select(Team, Position, Time)
+```
+
+You can use the `fct_lump` function to lump uncommon factors into an "Other" category. For example, to lump the two least common positions together, you can run (`n` specifies how many categories to keep outside of "Other"): 
+
+```{r e}
+worldcup %>%
+  dplyr::mutate(Position = forcats::fct_lump(Position, n = 2)) %>%
+  dplyr::count(Position)
+```
+
+You can use the `fct_infreq` function to reorder the levels of a factor from most common to least common:
+
+```{r f}
+levels(worldcup$Position)
+worldcup <- worldcup %>%
+  mutate(Position = fct_infreq(Position))
+levels(worldcup$Position)
+```
+
+If you want to reorder one factor by another variable (ascending order), you can use `fct_reorder` (e.g., homework 3). For example, to relevel `Position` by the average shots on goals for each position, you can run:
+
+```{r g}
+levels(worldcup$Position)
+worldcup <- worldcup %>%
+  group_by(Position) %>%
+  mutate(ave_shots = mean(Shots)) %>%
+  ungroup() %>%
+  mutate(Position = fct_reorder(Position, ave_shots))
+levels(worldcup$Position)
+```
+
+
+## String operations and regular expressions
+
+For these examples, we'll use some data on passengers of the Titanic. You can load this data using:
+
+```{r}
+# install.packages("titanic")
+library(titanic)
+data("titanic_train")
+```
+
+We will be using the `stringr` package:
+
+```{r}
+library(stringr)
+```
+
+This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). Here are the first few values of "Name": 
+
+```{r}
+titanic_train %>% select(Name) %>% slice(1:3)
+```
+
+We've already done some things to manipulate strings. For example, if we wanted to separate "Name" into last name and first name (including title), we could actually do that with the `separate` function: 
+
+```{r}
+titanic_train %>% 
+  select(Name) %>% 
+  slice(1:3) %>% 
+  separate(Name, c("last_name", "first_name"), sep = ", ")
+```
+
+
+Notice that `separate` is looking for a regular pattern (", ") and then doing something based on the location of that pattern in each string (splitting the string). \bigskip
+
+There are a variety of functions in R that can perform manipulations based on finding regular patterns in character strings. 
+
+
+The `str_detect` function will look through each element of a character vector for a designated pattern. If the pattern is there, it will return `TRUE`, and otherwise `FALSE`. The convention is: 
+
+```
+## Generic code
+str_detect(string = [vector you want to check], 
+           pattern = [pattern you want to check for])
+```
+
+For example, to create a logical vector specifying which of the Titanic passenger names include "Mrs.", you can call:
+
+```{r}
+mrs <- str_detect(titanic_train$Name, "Mrs.")
+head(mrs)
+```
+
+
+The result is a logical vector, so `str_detect` can be used in `filter` to subset data to only rows where the passenger's name includes "Mrs.":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "Mrs.")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+
+There is an older, base R function called `grepl` that does something very similar (although note that the order of the arguments is reversed).
+
+```{r}
+titanic_train %>%
+  filter(grepl("Mrs.", Name)) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+The `str_extract` function can be used to extract a string (if it exists) from each value in a character vector. It follows similar conventions to `str_detect`:
+
+```
+## Generic code
+str_extract(string = [vector you want to check], 
+           pattern = [pattern you want to check for])
+```
+
+
+For example, you might want to extract "Mrs." if it exists in a passenger's name:
+
+```{r}
+titanic_train %>%
+  mutate(mrs = str_extract(Name, "Mrs.")) %>%
+  select(Name, mrs) %>%
+  slice(1:3)
+```
+
+Notice that now we're creating a new column (`mrs`) that either has "Mrs." (if there's a match) or is missing (`NA`) if there's not a match. 
+
+
+For this first example, we were looking for an exact string ("Mrs"). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find "Mr." or "Mrs.": 
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, "Mr\\.|Mrs\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+Note that this pattern uses a special operator (`|`) to find one pattern **or** another. Double backslashes (`\\`) **escape** the special character ".". 
+
+
+As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally: 
+
+```
+. * + ^ ? $ \ | ( ) [ ] { }
+```
+
+
+Notice that "Mr." and "Mrs." both start with "Mr", end with ".", and may or may not have an "s" in between. 
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, "Mr(s)*\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+This pattern uses `(s)*` to match zero or more "s"s at this spot in the pattern. 
+
+
+In the previous code, we found "Mr." and "Mrs.", but missed "Miss.". We could tweak the pattern again to try to capture that, as well. For all three, we have the pattern that it starts with "M", has some lowercase letters, and then ends with ".".  
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, "M[a-z]+\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+
+The last pattern used `[a-z]+` to match one or more lowercase letters. The `[a-z]`is a **character class**. \bigskip 
+
+You can also match digits (`[0-9]`), uppercase letters (`[A-Z]`), just some letters (`[aeiou]`), etc. \bigskip
+
+You can negate a character class by starting it with `^`. For example, `[^0-9]` will match anything that **isn't** a digit. 
+
+
+Sometimes, you want to match a pattern, but then only subset a part of it. For example, each passenger seems to have a title ("Mr.", "Mrs.", etc.) that comes after ", " and before ". ". We can use this pattern to find the title, but then we get some extra stuff with the match: 
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, ",\\s[A-Za-z]*\\.\\s")) %>%
+  select(title) %>%
+  slice(1:3)
+```
+
+As a note, in this pattern, `\\s` is used to match a space. 
+
+
+We are getting things like ", Mr. ", when we really want "Mr". We can use the `str_match` function to do this. We group what we want to extract from the pattern in parentheses, and then the function returns a matrix. The first column is the full pattern match, and each following column gives just what matches within the groups. 
+
+```{r}
+head(str_match(titanic_train$Name,
+          pattern = ",\\s([A-Za-z]*)\\.\\s"))
+```
+
+
+To get just the title, then, we can run:
+
+```{r}
+titanic_train %>%
+  mutate(title = 
+           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+The `[ , 2]` pulls out just the second column from the matrix returned by `str_match`. 
+
+
+Here are some of the most common titles: 
+
+```{r}
+titanic_train %>%
+  mutate(title = 
+           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
+  group_by(title) %>% summarize(n = n()) %>%
+  arrange(desc(n)) %>% slice(1:5)
+```
+
+
+Here are a few other examples of regular expressions in action with this dataset. 
+
+Get just names that start with ("^") the letter "A":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "^A")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+
+Get names with "II" or "III" (`{2,}` says to match at least two times):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "I{2,}")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+
+Get names with "Andersen" or "Anderson" (alternatives in square brackets):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "Anders[eo]n")) %>%
+  select(Name)
+```
+
+
+
+Get names that start with ("^" outside of brackets) the letters "A" and "B":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "^[AB]")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+
+Get names that end with ("$") the letter "b" (either lowercase or uppercase):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "[bB]$")) %>%
+  select(Name) 
+```
+
+
+Some useful regular expression operators include: 
+
+```{r echo = FALSE}
+reg_exp <- data_frame("Operator" = c(".",
+                                     "*",
+                                     "*?",
+                                     "+",
+                                     "+?",
+                                     "^",
+                                     "$", 
+                                     "[...]"),
+                      "Meaning" = c("Any character", 
+                                    "Match 0 or more times (greedy)",
+                                    "Match 0 or more times (non-greedy)",
+                                    "Match 1 or more times (greedy)",
+                                    "Match 1 or more times (non-greedy)",
+                                    "Starts with (in brackets, negates)",
+                                    "Ends with",
+                                    "Character classes"))
+knitr::kable(reg_exp)
+```
+
+
+For more on these patterns, see: 
+
+- Help file for the `stringi-search-regex` function in the `stringi` package (which should install when you install `stringr`)
+- Chapter 14 of R For Data Science
+- http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
+
+
 ## In-course exercise 
 
 For today's exercise, we'll be using the following three datasets (click on the file name to access the correct file for today's class for each dataset): 
@@ -634,5 +961,299 @@ accident %>%
   ylab("# of fatal accidents") + 
   theme_few() + 
   geom_smooth(se = FALSE)
+```
+
+### Baby names
+
+In the Fall 2018 session, we seem to have an unusually high percent of the class 
+with names that start with an "A" or "K". In this part of the exercise, we'll see
+if we can figure out whether the proportion of "A" and "K" names is unusual.
+
+There is a package on CRAN called `babynames` with data on baby names by year in
+the United States, based on data from the U.S.'s Social Security Administration.
+We will use this data to compare the proportion of "A" and "K" names in our class
+with the proportion in these baby names. We'll also do a few other things to 
+explore this data.
+
+- First, check out patterns in your own name. Is your name included in this 
+dataset? Has your name been used for males and females? How have the patterns
+in the proportion of babies with your name, for both males and females, changed 
+over time (use a plot to look at this)?
+- In the year you were born, what were the 5 most popular baby names for males
+and females? Try to come up with some attractive ways (figures and tables) to 
+show this. 
+
+#### Example R code
+
+Install and load the `babynames` package and its "babynames" dataframe:
+
+```{r message = FALSE}
+# install.packages("babynames")
+library(babynames)
+data("babynames")
+```
+
+Remember that you can use `?babynames` to find out more about this dataframe. 
+
+Check out patterns in your own name. Is your name included in this 
+dataset? You can use `filter` to create a subset of this data where you've 
+filtered down to just the rows with your name. To see if your name ever 
+shows up, you can use `count` on this dataframe---if your name never shows 
+up, then you will have 0 rows in the new dataframe. As long as there's at least
+one row, your name shows up somewhere. (If your name is not in here, try 
+your middle or last name, or the name of a fictional character you like, for
+the rest of these exercises.)
+
+```{r}
+my_name <- babynames %>% 
+  filter(name == "Brooke")
+my_name %>% 
+  count()
+```
+
+Has your name been used for males and females? To figure this out, you can group
+the dataset with rows with your name by the `sex` column and then use `count` to 
+count the number of rows in the dataset for males and females. If your name has
+only been used for one gender, then only one row will result from running this
+code (for an example, try my first name, "Georgiana").
+
+```{r}
+my_name %>% 
+  group_by(sex) %>% 
+  count()
+```
+
+How have the patterns in the proportion of babies with your name, for both males
+and females, changed over time (use a plot to look at this)? To check this out, 
+I recommend you create a plot of the proportion of babies with your name (`prop`)
+versus year (`year`). You can use color to show these patterns for males and 
+females separately. I've done some extra things here to (1) relabel the `sex` 
+factor, so the label shows up with clearer names and (2) change the labels for the
+x-, y-, and color scales. 
+
+```{r fig.width = 6, fig.height = 3}
+library(forcats)
+my_name %>% 
+  mutate(sex = fct_recode(sex, Male = "M", Female = "F")) %>% 
+  ggplot(aes(x = year, y = prop, color = sex)) + 
+  geom_line() + 
+  labs(x = "Year", y = "Proportion of babies\nof each sex named 'Brooke'",
+       color = "")
+```
+
+In the year you were born, what were the 5 most popular baby names for males
+and females?
+
+```{r}
+top_my_year <- babynames %>% 
+  filter(year == 1981) %>% 
+  group_by(sex) %>% 
+  arrange(desc(prop)) %>% 
+  slice(1:5)
+
+top_my_year
+```
+
+If you'd like to show this in a prettier way, you could show this as a table:
+
+```{r}
+library(knitr)
+top_my_year %>% 
+  mutate(rank = 1:n()) %>% # Since the data is grouped by sex, this will rank
+                           # separately for females and males
+  ungroup() %>% # You have to ungroup before you can run `mutate` on `sex`
+  mutate(sex = fct_recode(sex, Male = "M", Female = "F"),
+         percent = round(100 * prop, 1),
+         percent = paste(percent, "%", sep = "")) %>% 
+  select(sex, rank, name, percent) %>% 
+  kable()
+```
+
+You could also show it as a figure: 
+
+```{r message = FALSE, fig.width = 6, fig.height = 3}
+library(scales)
+top_my_year %>% 
+  ungroup() %>% 
+  mutate(name = fct_reorder(name, prop, desc = TRUE),
+         sex = fct_recode(sex, Male = "M", Female = "F")) %>% 
+  ggplot(aes(x = name)) + 
+  geom_bar(aes(weight = prop)) + 
+  coord_flip() + 
+  labs(x = "", y = "Percent of babies with name in 1981") + 
+  theme(legend.position = "top") + 
+  scale_y_continuous(labels = percent) + 
+  facet_wrap(~ sex, scales = "free_y") + 
+  theme_classic()
+```
+
+### More with baby names
+
+Now let's look at baby names based on the letter they start with. 
+
+- For the full dataframe, what proportion of baby names start with each letter?
+See if you can create a figure to help show this. Create the same plot 
+using the names of people from our class. 
+- What proportion of names start with "A" or "K" across the full dataset? How
+about for the years from 1980 to 1995? Finally, how does the proportion change
+over the years in the dataframe?
+
+#### Example R code
+
+For the full dataframe, what proportion of baby names start with "A" or "K"?
+
+To start, create a column with the first letter of each name. You can use 
+functions in the `stringr` package to do this. The easiest might be to 
+use the position of the first letter to pull that information.
+
+```{r}
+library(stringr)
+top_letters <- babynames %>% 
+  mutate(first_letter = str_sub(name, 1, 1))
+
+top_letters %>% 
+  select(name, first_letter) %>% 
+  slice(1:5)
+```
+
+Now we can group by letter and figure out these proportions. First, while the data is
+grouped, count the number of names with each letter. Then, ungroup and use mutate
+to divide this by the total number of names:
+
+```{r}
+top_letters <- top_letters %>% 
+  group_by(first_letter) %>% 
+  summarize(n = sum(n)) %>% 
+  ungroup() %>% 
+  mutate(prop = n / sum(n)) %>% 
+  arrange(desc(prop))
+
+top_letters
+```
+
+Here's one way to visualize this: 
+
+```{r fig.height = 5, fig.width = 4}
+top_letters %>% 
+  mutate(first_letter = fct_reorder(first_letter, prop)) %>% 
+  ggplot(aes(x = first_letter)) + 
+  geom_bar(aes(weight = prop)) + 
+  coord_flip() + 
+  scale_y_continuous(labels = percent) + 
+  labs(x = "", y = "Percent of names that start with ...")
+```
+
+Create the same plot using the names of people in our class. First, create a 
+vector with the names of people in our class: 
+
+```{r fig.width = 3, fig.height = 4}
+student_list <- data_frame(name = c("Aeriel", "Rebecca", "Grant",
+                                    "Amy", "Jessy", "Alyssa",
+                                    "Camron", "Anastasia", "Kyle",
+                                    "Ana", "Amanda", "Kathleen", 
+                                    "Kyle", "Ana", "Amanda", "Kathleen",
+                                    "Kayla", "Nichole", "Randy", "Katy",
+                                    "Devin"))
+student_list <- student_list %>% 
+  mutate(first_letter = str_sub(name, 1, 1))
+student_list
+
+student_list %>% 
+  group_by(first_letter) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate(prop = n / sum(n)) %>% 
+  mutate(first_letter = fct_reorder(first_letter, prop)) %>% 
+  ggplot(aes(x = first_letter)) + 
+  geom_bar(aes(weight = prop)) + 
+  coord_flip() + 
+  scale_y_continuous(labels = percent) + 
+  labs(x = "", y = "Percent of students with\na name that starts with ...")
+```
+
+What proportion of names start with "A" or "K" across the full dataset? You can 
+create a dataframe that (1) pulls out the first letter of each name (just like 
+we did for the last part of the question) and (2) tests whether that first letter
+is an "A" or a "K" (using a logical statement):
+
+```{r}
+a_or_k <- babynames %>% 
+  mutate(first_letter = str_sub(name, 1, 1),
+         a_or_k = first_letter %in% c("A", "K"))
+
+a_or_k %>% 
+  select(name, first_letter, a_or_k) %>% 
+  slice(1:5)
+```
+
+Next, group by this logical column (`a_or_k`) and figure out the number of 
+baby names for each group. Then, to get the proportion of the total, ungroup
+and mutate to divide by the total number across the data: 
+
+```{r}
+a_or_k %>% 
+  group_by(a_or_k) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate(prop = nn / sum(nn))
+```
+
+
+How about for the years from 1980 to 1995? These proportions probably change over 
+time, so let's try to get the proportion for a time period relevant for this class. 
+You can get this information very similarly as the last question, just filter to 
+this range of years first:
+
+```{r}
+a_or_k_80s90s <- babynames %>% 
+  filter(1980 <= year & year <= 1995) %>% 
+  mutate(first_letter = str_sub(name, 1, 1),
+         a_or_k = first_letter %in% c("A", "K"))
+```
+
+You can doublecheck that this dataframe has the right range of years: 
+
+```{r}
+a_or_k_80s90s %>% 
+  summarize(min_year = min(year),
+            max_year = max(year))
+```
+
+Now do the same calculation as we did with the full dataset: 
+
+```{r}
+a_or_k_80s90s %>% 
+  group_by(a_or_k) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate(prop = nn / sum(nn))
+```
+
+Finally, how does the proportion change over the years in the dataframe? You can start
+from the `a_or_k` dataframe we created earlier. Group by year and the logical 
+column `a_or_k` and then calculate the total number of baby names for each 
+combination of year and `a_or_k` value. Then ungroup the data, group just by `year`,
+and get the proportion each year. Finally, filter to just the rows where `a_or_k`
+is true and plot how this changes over the years:
+
+```{r fig.width = 6, fig.height = 4}
+a_or_k_year <- a_or_k %>% 
+  group_by(year, a_or_k) %>% 
+  count()
+a_or_k_year
+
+a_or_k_year <- a_or_k_year %>% 
+  ungroup() %>% 
+  group_by(year) %>% 
+  mutate(prop = nn / sum(nn))
+a_or_k_year
+
+a_or_k_year %>% 
+  filter(a_or_k == TRUE) %>% 
+  ggplot(aes(x = year, y = prop)) + 
+  geom_line() + 
+  scale_y_continuous(name = "Percent of baby's with names\nthat start with 'A' or 'K'",
+                     labels = percent) + 
+  expand_limits(y = 0)
 ```
 

@@ -1,7 +1,6 @@
 ---
 title: "Exploring data 2"
 output:
-  ioslides_presentation: default
   beamer_presentation:
     theme: metropolis
 fontsize: 10pt
@@ -18,15 +17,172 @@ data(worldcup)
 data(nepali)
 ```
 
+# Simple statistical tests in R
+
+## Example: Probability of fatal crashes in Las Vegas
+
+Let's pull the fatal accident data just for the county that includes Las Vegas, NV. 
+
+Each US county has a unique identifier (FIPS code), composed of a two-digit state FIPS and a three-digit county FIPS code. The state FIPS for Nevada is 32; the county FIPS for Clark County is 003.
+
+## Example: Probability of fatal crashes in Las Vegas
+
+Therefore, we can filter down to Clark County data in the FARS data we collected with the following code:
+
+```{r message = FALSE, error = FALSE}
+library(readr)
+library(dplyr)
+clark_co_accidents <- read_csv("../data/accident.csv") %>% 
+  filter(STATE == 32 & COUNTY == 3)
+```
+
+We can also check the number of accidents: 
+
+```{r}
+clark_co_accidents %>% 
+  count()
+```
+
+## Example: Probability of fatal crashes in Las Vegas
+
+We want to test if the probability, on a Friday or Saturday, of a fatal accident occurring is higher than on other days of the week. Let's clean the data up a bit as a start: 
+
+```{r message = FALSE, warning = FALSE}
+library(tidyr)
+library(lubridate)
+clark_co_accidents <- clark_co_accidents %>% 
+  select(DAY, MONTH, YEAR) %>% 
+  unite(date, DAY, MONTH, YEAR, sep = "-") %>% 
+  mutate(date = dmy(date))
+```
+
+## Example: Probability of fatal crashes in Las Vegas
+
+Here's what the data looks like now: 
+
+```{r}
+clark_co_accidents %>% 
+  slice(1:5)
+```
+
+## Example: Probability of fatal crashes in Las Vegas
+
+Next, let's get the count of accidents by date: 
+
+```{r}
+clark_co_accidents <- clark_co_accidents %>% 
+  group_by(date) %>% 
+  count() %>% 
+  ungroup()
+clark_co_accidents %>% 
+  slice(1:3)
+```
+
+
+## Example: Probability of fatal crashes in Las Vegas
+
+We're missing the dates without a fatal crash, so let's add those. First, create a dataframe
+with all dates in 2016:
+
+```{r}
+all_dates <- data_frame(date = seq(ymd("2016-01-01"), 
+                                   ymd("2016-12-31"), by = 1))
+all_dates %>% 
+  slice(1:5)
+```
+
+## Example: Probability of fatal crashes in Las Vegas
+
+Then merge this with the original dataset on Las Vegas fatal crashes and make any day missing from the fatal crashes dataset have a "0" for number of fatal accidents (`n`):
+
+```{r}
+clark_co_accidents <- clark_co_accidents %>% 
+  right_join(all_dates, by = "date") %>% 
+  # If `n` is missing, set to 0. Otherwise keep value.
+  mutate(n = ifelse(is.na(n), 0, n))
+clark_co_accidents %>% 
+  slice(1:3)
+```
+
+## Example: Probability of fatal crashes in Las Vegas
+
+Next, let's add some information about day of week and weekend: 
+
+```{r}
+clark_co_accidents <- clark_co_accidents %>% 
+  mutate(weekday = wday(date, label = TRUE), 
+         weekend = weekday %in% c("Fri", "Sat"))
+clark_co_accidents %>% 
+  slice(1:3)
+```
+
+
+## Example: Probability of fatal crashes in Las Vegas
+
+Now let's calculate the probability that a day has at least one fatal crash, separately for weekends and weekdays: 
+
+```{r}
+clark_co_accidents <- clark_co_accidents %>% 
+  mutate(any_crash = n > 0)
+crash_prob <- clark_co_accidents %>% 
+  group_by(weekend) %>% 
+  summarize(n_days = n(),
+            crash_days = sum(any_crash)) %>% 
+  mutate(prob_crash_day = crash_days / n_days)
+crash_prob
+```
+
+## Example: Probability of fatal crashes in Las Vegas
+
+In R, you can use `prop.test` to test if two proportions are equal. Inputs include the total number of trials in each group (`n =`) and the number of "successes"" (`x = `):
+
+\footnotesize
+
+```{r}
+prop.test(x = crash_prob$crash_days, 
+          n = crash_prob$n_days)
+```
+
+## Find out more about statistical tests in R
+
+I won't be teaching in this course how to find the correct statistical test. That's 
+something you'll hopefully learn in a statistics course. 
+
+There are also a variety of books that can help you with this, including some that you 
+can access free online through CSU's library. One servicable introduction is "Statistical 
+Analysis with R for Dummies".
+
+## In-course exercise
+
+We'll take a break now to do the first part of the in-course exercise.
+
+## Output of statistical tests: List objects
+
+You can create an object from the output of any statistical test in R. Typically, this will be (at least at some level) in an object class called a "list":
+
+```{r}
+vegas_test <- prop.test(x = crash_prob$crash_days, 
+                        n = crash_prob$n_days)
+is.list(vegas_test)
+```
+
+## Output of statistical tests: List objects
+
+So far, we've mostly worked with two object types in R, **dataframes** and **vectors**.
+
+In the next subsection we'll look more at two object classes we haven't looked at much,
+**matrices** and **lists**. Both have important roles once you start applying more
+advanced methods to analyze your data. 
+
 # Matrices
 
 ## Matrices
 
-A matrix is like a data frame, but all the values in all columns must be of the same class (e.g., numeric, character).
+A matrix is like a data frame, but all the values in all columns must be of the same class (e.g., numeric, character). (Another way you can think of it is as a "wrapped" vector.)
 
-Matrices can be faster and more memory efficient than data frames.
-
-They are essential for certain mathematical operations.
+Matrices can be faster and more memory-efficient than data frames. Also, a lot of statistical
+methods within R code is implemented using linear algebra and other mathematical 
+techniques based on matrices.
 
 ## Matrices
 
@@ -62,6 +218,11 @@ You cannot, however, use `dplyr` functions with matrices:
 ```{r, eval = FALSE}
 foo %>% filter(col_1 == 1)
 ```
+```
+Error in UseMethod("filter_") : 
+  no applicable method for 'filter_' applied to an object of 
+  class "c('matrix', 'integer', 'numeric')"
+```
 
 # Lists
 
@@ -96,6 +257,7 @@ example_list[[2]]
 
 ## Indexing lists
 
+
 To access a specific value within a list element we can index the element using double, double brackets:
 
 ```{r}
@@ -107,6 +269,7 @@ Again, we can index using names or numeric indices:
 ```{r}
 example_list[["b"]][[1]]
 ```
+
 ## Exploring lists
 
 If an R object is a list, running `class` on the object will return "list": 
@@ -125,8 +288,30 @@ names(example_list)
 
 The `str` function is also useful for exploring the structure of a list object: 
 
+\footnotesize
+
 ```{r}
 str(example_list)
+```
+
+## Exploring lists
+
+A list can even contain other lists. We can use the `str` function to see the structure of a list:
+
+```{r cakk}
+a_list <- list(list("a", "b"), list(1, 2))
+
+str(a_list)
+```
+
+## Exploring lists
+
+Sometimes you'll see unnecessary lists-of-lists, perhaps when importing data into R created. Or a list with multiple elements that you would like to combine. You can remove a level of hierarchy from a list using the `flatten` function from the `purrr` package:
+
+```{r cakl, warning = FALSE}
+library(purrr)
+a_list
+flatten(a_list)
 ```
 
 ## Lists versus dataframes
@@ -140,33 +325,96 @@ class(example_df)
 is.list(example_df)
 ```
 
-# Regression models 
+## List object from statistical test
 
-## `nepali` example data
+Let's look at the list object from the statistical test we ran for Las Vegas: 
 
-For the `nepali` dataset, each observation is a single measurement for a child; there can be multiple observations per child. \medskip 
-
-I'll limit it to the columns with the child's id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
-
-```{r message = FALSE}
-nepali <- nepali %>%
-  # Limit to certain columns
-  select(id, sex, wt, ht, age) %>%
-  # Convert id and sex to factors
-  mutate(id = factor(id),
-         sex = factor(sex, levels = c(1, 2),
-                      labels = c("Male", "Female"))) %>%
-  # Limit to first obs. per child
-  distinct(id, .keep_all = TRUE)
-```
-
-## `nepali` example data
-
-The data now looks like:
+\footnotesize
 
 ```{r}
-head(nepali)
+str(vegas_test)
 ```
+
+## List object from statistical test
+
+We can pull out an element using the `$` notation: 
+
+```{r}
+vegas_test$p.value
+```
+
+Or using the `[[` notation:
+
+```{r}
+vegas_test[[4]]
+```
+
+## Broom package
+
+You may have noticed, though, that this output is not a tidy dataframe. 
+
+Ack! That means we can't use all the tidyverse tricks we've learned so far in the course!
+
+Fortunately, David Robinson noticed this problem and came up with a package called `broom` that can "tidy up" a lot of these kinds of objects.
+
+## Broom package
+
+The `broom` package has three main functions: 
+
+- `glance`: Return a one-row, tidy dataframe from a model or other R object
+- `tidy`: Return a tidy dataframe from a model or other R object
+- `augment`: "Augment" the dataframe you input to the statistical function
+
+## Broom package
+
+Here is the output for `tidy` for the `vegas_test` object (`augment`
+won't work for this type of object, and `glance` gives the same thing as `tidy`): 
+
+\footnotesize
+
+```{r}
+library(broom)
+tidy(vegas_test)
+```
+
+# Regression models 
+
+## World Cup example
+
+In the World Cup data, we may wonder if the number of tackles is associated with the time 
+the player played. Let's start by grabbing just the variables we care about (we'll be using `Position` later, so we'll include that):
+
+```{r}
+library(faraway)
+data(worldcup)
+worldcup <- worldcup %>% 
+  select(Time, Tackles, Position)
+worldcup %>% slice(1:3)
+```
+
+
+## World Cup example
+
+We can start by plotting the relationship between the time a player played and the
+number of tackles they had:
+
+```{r fig.height = 3, fig.width = 5, fig.align = "center", out.width = "0.7\\textwidth"}
+library(ggplot2)
+ggplot(worldcup, aes(Time, Tackles)) + 
+  geom_point() 
+```
+
+## World Cup example
+
+There does indeed seem to be an association. Next, we might want to test this using some 
+kind of statistical model or test. 
+
+Let's start by fitting a linear regression model, to see if there's evidence that tackles
+tend to change (increase or decrease) as the player's time played increases.
+
+(In a bit, we'll figure out that a linear model might not be the best way to model
+this, since the number of tackles is a count, rather than a variable with a normal
+distribution, but bear with me...)
 
 
 ## Formula structure
@@ -183,7 +431,7 @@ In R, regression formulas take this structure:
 Notice that `~` used to separate the independent and dependent variables and the `+` used to join independent variables. This format mimics the statistical notation:
 
 $$
-Y_i \sim X_1 + X_2 + X_3
+Y_i \sim X_1 + X_2 + \dots + \epsilon_{i}
 $$
 
 You will use this type of structure in R for a lot of different function calls, including those for linear models (`lm`) and generalized linear models (`glm`).
@@ -194,7 +442,7 @@ You will use this type of structure in R for a lot of different function calls, 
 To fit a linear model, you can use the function `lm()`. Use the `data` option to specify the dataframe from which to get the vectors. You can save the model as an object. 
 
 ```{r}
-mod_a <- lm(wt ~ ht, data = nepali)
+tackle_model <- lm(Tackles ~ Time, data = worldcup)
 ```
 
 This call fits the model:
@@ -203,32 +451,43 @@ $$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
 
 where: 
 
-- $Y_{i}$ : weight of child $i$
-- $X_{1,i}$ : height of child $i$
+- $Y_{i}$ : Number of tackles for player $i$ (dependent variable)
+- $X_{1,i}$ : Minutes played by player $i$ (independent variable)
+
+## Linear models
+
+A few things to point out: 
+
+- By default, an intercept is fit to the model.
+- If you specify a dataframe using `data` in the `lm` call, you can write the model formula using just the column names for the independent variable(s) and dependent variable you want, without quotation marks around those names.
+- You can save the output of fitting the model to an R object (if you don't, a summary of the fit model will be print out at the console).
 
 ## Model objects
 
 The output from fitting a model using `lm` is a list object: 
 
 ```{r}
-class(mod_a)
+class(tackle_model)
 ```
 
 This list object has a lot of different information from the model, including overall model summaries, estimated coefficients, fitted values, residuals, etc.
 
+\footnotesize
+
 ```{r}
-names(mod_a)
+names(tackle_model)
 ```
 
 ## Model objects and `broom`
 
-This list object is not in a "tidy" format. However, there is a package named `broom` that you can use to pull "tidy" dataframes from this model object. 
+This list object is not in a "tidy" format. However, you can use functions from `broom` to pull "tidy" dataframes from this model object. 
 
-For example, you can use the `glance` function to pull out a tidy dataframe with model summaries. 
+For example, you can use the `glance` function to pull out a one-row tidy dataframe with model summaries. 
+
+\footnotesize
 
 ```{r}
-library(broom)
-glance(mod_a)
+glance(tackle_model)
 ```
 
 ## Model objects and `broom`
@@ -236,17 +495,20 @@ glance(mod_a)
 If you want to get the estimated model coefficients (and some related summaries) instead, you can use the `tidy` function to do that: 
 
 ```{r}
-tidy(mod_a)
+tidy(tackle_model)
 ```
 
 This output includes, for each model term, the **estimated coefficient** (`estimate`), its **standard error** (`std.error`), the **test statistic** (for `lm` output, the statistic for a test with the null hypothesis that the model coefficient is zero), and the associated **p-value** for that test (`p.value`).
 
 ## Model objects and `broom`
 
-Some of the model output have a value for each original observation (e.g., fitted values, residuals). You can use the `augment` function to add those elements to the original data used to fit the model (note: at the moment, you might get a warning message if you run this-- it looks fairly benign and I imagine will be fixed in later versions of the package): 
+Some of the model output have a value for each original observation (e.g., fitted values, residuals). You can use the `augment` function to add those elements to the original data used to fit the model: 
+
+\footnotesize
 
 ```{r message = FALSE, warning = FALSE}
-augment(mod_a) %>% slice(1:2) %>% select(1:6)
+augment(tackle_model) %>% 
+  slice(1:2)  
 ```
 
 ## Model objects and `broom`
@@ -254,8 +516,8 @@ augment(mod_a) %>% slice(1:2) %>% select(1:6)
 One important use of this `augment` output is to create a plot with both the original data and a line showing the fit model (via the predictions):
 
 ```{r warning = FALSE, message = FALSE, fig.width = 4, fig.height = 2.5, out.width = "0.7\\textwidth", fig.align = "center"}
-augment(mod_a) %>%
-  ggplot(aes(x = ht, y = wt)) + 
+augment(tackle_model) %>%
+  ggplot(aes(x = Time, y = Tackles)) + 
   geom_point(size = 0.8, alpha = 0.8) + 
   geom_line(aes(y = .fitted), color = "red", size = 1.2)
 ```
@@ -270,7 +532,7 @@ If you have the package that includes an `autoplot` method for a specific object
 
 ```{r out.width = "0.8\\textwidth", fig.align = "center"}
 library(ggfortify)
-autoplot(mod_a)
+autoplot(tackle_model)
 ```
 
 ## Model objects and `autoplot`
@@ -278,61 +540,75 @@ autoplot(mod_a)
 The output from `autoplot` is a `ggplot` object, so you can add elements to it as you would with other `ggplot` objects:
 
 ```{r out.width = "0.7\\textwidth", fig.align = "center"}
-autoplot(mod_a) + 
+autoplot(tackle_model) + 
   theme_classic()
 ```
 
-## Model objects and base R "method" functions
+## Regression models
 
-Here, I've focused on a "tidy" approach to working with the output from fitting an `lm` model. However, you are certain to come across base R functions to work with this output in a similar way. Some base R functions you can use on model objects:
+In this case, these diagnostics clearly show that there are some problems with using 
+a linear regression model to fit this data. 
 
-```{r echo = FALSE}
-mod_objects <- data.frame(Function = c("`summary`", "`coef`", 
-                                   "`fitted`",
-                                   "`plot`", "`residuals`"),
-                          Description = c("Get a variety of information on the model, including coefficients and p-values for the coefficients",
-                                   "Pull out just the coefficients for a model",
-                                   "Get the fitted values from the model (for the data used to fit the model)",
-                                   "Create plots to help assess model assumptions",
-                                   "Get the model residuals"))
-pander::pander(mod_objects, split.cells = c(1,1,58),
-               justify = c("center", "left"))
+Many of these issues arise because the outcome (dependent) variable doesn't follow a
+normal distribution. 
+
+```{r message = FALSE, out.width = "0.8\\textwidth", fig.align = "center", fig.width = 6, fig.height = 3}
+ggplot(worldcup, aes(x = Tackles)) + 
+  geom_histogram()
 ```
 
-## Examples of using a model object
+## Regression models
 
-One base R function you should definitely know is the `summary` function. The `summary` function gives you a lot of information about the model: 
+A better model, therefore, might be one where we assume that `Tackles` follows 
+a Poisson distribution, rather than a normal distribution. (For variables that
+represent counts, this will often be the case.)
 
-```{r, eval = FALSE}
-summary(mod_a)
-```
-
-(see next slide)
-
-***
-
-```{r, echo = FALSE}
-summary(mod_a)
-```
+In the a little bit, we'll look at **generalized linear models**, which let us
+extend the idea of a linear model to situations where the dependent variable 
+follows a distribution other than the normal distribution.
 
 ## In-course exercise
 
-We'll take a break now to do part of the In-Course Exercise (Section 7.6.1).
+We'll take a break now to do the second part of the In-Course Exercise.
 
 ## Fitting a model with a factor
 
-You can also use binary variables or factors as independent variables in regression models:
+You can also use binary variables or factors (i.e., categorical variables) as independent variables in regression models:
 
 ```{r}
-mod_b <- lm(wt ~ sex, data = nepali)
-tidy(mod_b)
+tackles_model_2 <- lm(Tackles ~ Position, data = worldcup)
 ```
 
 This call fits the model:
 
 $$ Y_{i} = \beta_{0} + \beta_{1}X_{1,i} + \epsilon_{i} $$
 
-where $X_{1,i}$ : sex of child $i$, where 0 = male; 1 = female
+where $X_{1,i}$ : Position of player $i$
+
+## Fitting a model with a factor
+
+If there are more than one levels to the factor, then the model will fit a separate 
+value for each level of the factor above the first level (which will serve as a baseline):
+
+\footnotesize
+
+```{r}
+levels(worldcup$Position)
+tidy(tackles_model_2)
+```
+
+## Fitting a model with a factor
+
+The intercept is the expected (average) value of the outcome (`Tackles`) for the first 
+level of the factor. Each other estimate gives the expected difference between the value
+of the outcome for this first level of `Position` and one of the other levels of the factor.
+
+\footnotesize
+
+```{r}
+levels(worldcup$Position)
+tidy(tackles_model_2)
+```
 
 ## Linear models versus GLMs
 
@@ -345,9 +621,10 @@ For linear models, the only difference between `lm` and `glm` is how they're fit
 For example:
 
 ```{r}
-mod_c <- glm(wt ~ ht, data = nepali)
-tidy(mod_c)
-tidy(mod_a)
+glm(Tackles ~ Time, data = worldcup) %>% 
+  tidy()
+lm(Tackles ~ Time, data = worldcup) %>% 
+  tidy()
 ```
 
 ## GLMs
@@ -362,29 +639,33 @@ glm_types <- data.frame(type = c("Linear", "Logistic", "Poisson"),
 knitr::kable(glm_types, col.names = c("Model type", "`family` option"))
 ```
 
-## Logistic example
+## GLM example
 
-For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability that a child weighs more than 13 kg is associated with the child's height. \medskip
+For example, say we wanted to fit a GLM, but specifying a Poisson distribution for the outcome (and a log link) since we think that `Tackles` might be distributed with a Poisson distribution:
 
-First, create a binary variable for `wt_over_13`:
-
-```{r}
-nepali <- nepali %>% 
-  mutate(wt_over_13 = wt > 13)
-head(nepali)
-```
-
-## Logistic example
-
-Now you can fit a logistic regression:
+\small
 
 ```{r}
-mod_d <- glm(wt_over_13 ~ ht, data = nepali,
-             family = binomial(link = "logit"))
-tidy(mod_d)
+tackle_model_3 <- glm(Tackles ~ Time, data = worldcup,
+                      family = poisson(link = "log"))
+tackle_model_3 %>% 
+  tidy()
 ```
 
-Here, the model coefficient gives the **log odds** of having a weight higher than 13 kg associated with a unit increase in height.
+## GLM example
+
+Here are the predicted values from this model (red line): 
+
+```{r warning = FALSE, message = FALSE, out.width = "0.6\\textwidth", fig.align = "center", fig.width = 4, fig.height = 2.5}
+tackle_model_3 %>% 
+  augment() %>% 
+  mutate(.fitted = exp(.fitted)) %>% 
+  ggplot(aes(x = Time, y = Tackles)) + 
+  geom_point() + 
+  geom_line(aes(y = .fitted), color = "red", size = 1.2)
+```
+
+
 
 ## Formula structure
 
@@ -418,5 +699,5 @@ If you want all the details about fitting linear models and GLMs in R, Faraway's
 
 ## In-course exercise
 
-We'll take a break now to do part of the In-Course Exercise (Section 7.6.2).
+We'll take a break now to do the third part of the In-Course Exercise.
 
