@@ -309,6 +309,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="7.6.4" data-path="exploring-data-2.html"><a href="exploring-data-2.html#exploring-fatality-analysis-reporting-system-fars-data-1"><i class="fa fa-check"></i><b>7.6.4</b> Exploring Fatality Analysis Reporting System (FARS) data</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="8" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html"><i class="fa fa-check"></i><b>8</b> Reporting data results #2</a><ul>
+<li class="chapter" data-level="8.1" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#functions"><i class="fa fa-check"></i><b>8.1</b> Functions</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#if-else-statements"><i class="fa fa-check"></i><b>8.1.1</b> if / else statements</a></li>
+<li class="chapter" data-level="8.1.2" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#some-other-control-structures"><i class="fa fa-check"></i><b>8.1.2</b> Some other control structures</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#running-the-same-function-multiple-times"><i class="fa fa-check"></i><b>8.2</b> Running the same function multiple times</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#but-but-what-about-nested-loops-etc"><i class="fa fa-check"></i><b>8.2.1</b> But, but what about nested loops etc?</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#in-course-exercise-7"><i class="fa fa-check"></i><b>8.3</b> In-course exercise</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#using-functions-to-load-data"><i class="fa fa-check"></i><b>8.3.1</b> Using functions to load data</a></li>
+<li class="chapter" data-level="8.3.2" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#predicting-running-times"><i class="fa fa-check"></i><b>8.3.2</b> Predicting running times</a></li>
+</ul></li>
+</ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="A" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html"><i class="fa fa-check"></i><b>A</b> Appendix A: Vocabulary</a><ul>
 <li class="chapter" data-level="A.1" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-1r-preliminaries-updated-for-2018"><i class="fa fa-check"></i><b>A.1</b> Quiz 1—R Preliminaries (Updated for 2018)</a></li>
@@ -489,34 +502,34 @@ y &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="
 <p>The following examples are from <code>tidyr</code> help files and show the effects of gathering and spreading a dataset.</p>
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</code></pre></div>
-<pre><code>##         time         X          Y         Z
-## 1 2009-01-01 0.6656479 -0.1798328  4.238980
-## 2 2009-01-02 0.8798350 -0.7749657 -3.592814
-## 3 2009-01-03 0.1671061  0.6218546  5.632381</code></pre>
+<pre><code>##         time          X          Y         Z
+## 1 2009-01-01 -0.3397141 -1.6468484  4.839327
+## 2 2009-01-02  0.1952672  0.5574163  4.458083
+## 3 2009-01-03 -0.1020684 -2.1473212 -4.316965</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</code></pre></div>
-<pre><code>##         time         X          Y         Z
-## 1 2009-01-01 0.6656479 -0.1798328  4.238980
-## 2 2009-01-02 0.8798350 -0.7749657 -3.592814
-## 3 2009-01-03 0.1671061  0.6218546  5.632381</code></pre>
+<pre><code>##         time          X          Y         Z
+## 1 2009-01-01 -0.3397141 -1.6468484  4.839327
+## 2 2009-01-02  0.1952672  0.5574163  4.458083
+## 3 2009-01-03 -0.1020684 -2.1473212 -4.316965</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>gather</code> to convert wide data to long data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">long_stocks &lt;-<span class="st"> </span><span class="kw">gather</span>(wide_stocks, <span class="dt">key =</span> stock,
                       <span class="dt">value =</span> price, <span class="op">-</span>time)
 long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</code></pre></div>
-<pre><code>##         time stock       price
-## 1 2009-01-01     X  0.66564790
-## 2 2009-01-02     X  0.87983502
-## 3 2009-01-03     X  0.16710612
-## 4 2009-01-04     X -0.01578264
-## 5 2009-01-05     X  0.10201082</code></pre>
+<pre><code>##         time stock      price
+## 1 2009-01-01     X -0.3397141
+## 2 2009-01-02     X  0.1952672
+## 3 2009-01-03     X -0.1020684
+## 4 2009-01-04     X -0.5447837
+## 5 2009-01-05     X  0.7655197</code></pre>
 <p>In this “long” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</code></pre></div>
-<pre><code>##         time stock       price
-## 1 2009-01-01     X  0.66564790
-## 2 2009-01-02     X  0.87983502
-## 3 2009-01-03     X  0.16710612
-## 4 2009-01-04     X -0.01578264
-## 5 2009-01-05     X  0.10201082</code></pre>
+<pre><code>##         time stock      price
+## 1 2009-01-01     X -0.3397141
+## 2 2009-01-02     X  0.1952672
+## 3 2009-01-03     X -0.1020684
+## 4 2009-01-04     X -0.5447837
+## 5 2009-01-05     X  0.7655197</code></pre>
 <p>The format for a <code>gather</code> call is:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generic code
 new_df &lt;-<span class="st"> </span><span class="kw">gather</span>(old_df,
@@ -538,12 +551,12 @@ new_df &lt;-<span class="st"> </span><span class="kw">gather</span>(old_df,
 <p>If you have data in a “long” format and would like to spread it out, you can use <code>spread</code> to do that:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks &lt;-<span class="st"> </span><span class="kw">spread</span>(long_stocks, <span class="dt">key =</span> stock, <span class="dt">value =</span> price)
 stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</code></pre></div>
-<pre><code>##         time           X          Y         Z
-## 1 2009-01-01  0.66564790 -0.1798328  4.238980
-## 2 2009-01-02  0.87983502 -0.7749657 -3.592814
-## 3 2009-01-03  0.16710612  0.6218546  5.632381
-## 4 2009-01-04 -0.01578264 -1.2298438 -4.864038
-## 5 2009-01-05  0.10201082 -2.3285651  1.894658</code></pre>
+<pre><code>##         time          X          Y          Z
+## 1 2009-01-01 -0.3397141 -1.6468484  4.8393269
+## 2 2009-01-02  0.1952672  0.5574163  4.4580826
+## 3 2009-01-03 -0.1020684 -2.1473212 -4.3169649
+## 4 2009-01-04 -0.5447837 -1.9529459 -1.0518677
+## 5 2009-01-05  0.7655197  4.2565309 -0.1296241</code></pre>
 <p>Notice that this reverses the action of <code>gather</code>.</p>
 <p>“Spread” data is typically not tidy, so you often won’t want to use <code>spread</code> when you are preparing data for analysis. However, <code>spread</code> can be very helpful in creating clean tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>spread</code> to rearrange the final summary to create an attractive table.</p>
@@ -552,11 +565,11 @@ stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</spa
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">N =</span> <span class="kw">n</span>(), <span class="dt">mean =</span> <span class="kw">mean</span>(price), <span class="dt">sd =</span> <span class="kw">sd</span>(price))
 stock_summary</code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   stock     N   mean    sd
-##   &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10 0.0940 0.771
-## 2 Y        10 0.0657 2.17 
-## 3 Z        10 2.52   4.02</code></pre>
+##   stock     N    mean    sd
+##   &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 X        10 -0.0886 0.885
+## 2 Y        10 -0.262  2.10 
+## 3 Z        10  1.03   3.90</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stock_summary <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,
                                     <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span>
@@ -576,9 +589,9 @@ stock_summary</code></pre></div>
 <tbody>
 <tr class="odd">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">0.09 (0.77)</td>
-<td align="left">0.07 (2.17)</td>
-<td align="left">2.52 (4.02)</td>
+<td align="left">-0.09 (0.88)</td>
+<td align="left">-0.26 (2.1)</td>
+<td align="left">1.03 (3.9)</td>
 </tr>
 <tr class="even">
 <td align="left">N</td>
