@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Programming for Research</title>
+  <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Programming for Research" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Programming for Research" />
+  
+  <meta name="twitter:description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
+  
+
+<meta name="author" content="Brooke Anderson, Rachel Severson, and Nick Good">
+
+
+<meta name="date" content="2018-09-06">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="reporting-data-results-2-ng.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Programming for Research</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Online course book, ERHS 535</a></li>
+<li class="chapter" data-level="1" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html"><i class="fa fa-check"></i><b>1</b> Exploring data #2-ng</a><ul>
+<li class="chapter" data-level="1.1" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#lists"><i class="fa fa-check"></i><b>1.1</b> Lists</a></li>
+<li class="chapter" data-level="1.2" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#functions"><i class="fa fa-check"></i><b>1.2</b> Functions</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#if-else-statements"><i class="fa fa-check"></i><b>1.2.1</b> if / else statements</a></li>
+<li class="chapter" data-level="1.2.2" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#some-other-control-structures"><i class="fa fa-check"></i><b>1.2.2</b> Some other control structures</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#purrr-functions"><i class="fa fa-check"></i><b>1.3</b> <code>purrr</code> functions</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#but-but-but-what-about-nested-loops-etc."><i class="fa fa-check"></i><b>1.3.1</b> But, but, but what about nested loops etc.?</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#in-course-exercise"><i class="fa fa-check"></i><b>1.4</b> In-course exercise</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#using-regression-models-to-explore-data-1"><i class="fa fa-check"></i><b>1.4.1</b> Using regression models to explore data #1</a></li>
+<li class="chapter" data-level="1.4.2" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#using-regression-models-to-explore-data-2"><i class="fa fa-check"></i><b>1.4.2</b> Using regression models to explore data #2</a></li>
+<li class="chapter" data-level="1.4.3" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#exploring-fatality-analysis-reporting-system-fars-data"><i class="fa fa-check"></i><b>1.4.3</b> Exploring Fatality Analysis Reporting System (FARS) data</a></li>
+<li class="chapter" data-level="1.4.4" data-path="exploring-data-2-ng.html"><a href="exploring-data-2-ng.html#using-a-function-and-purrr-to-create-state-specific-plots"><i class="fa fa-check"></i><b>1.4.4</b> Using a function and <code>purrr</code> to create state-specific plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html"><i class="fa fa-check"></i><b>2</b> Reporting data results #2-ng</a><ul>
+<li class="chapter" data-level="2.1" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#matrices"><i class="fa fa-check"></i><b>2.1</b> Matrices</a></li>
+<li class="chapter" data-level="2.2" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#regular-expressions"><i class="fa fa-check"></i><b>2.2</b> Regular expressions</a></li>
+<li class="chapter" data-level="2.3" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#generic-code"><i class="fa fa-check"></i><b>2.3</b> Generic code</a></li>
+<li class="chapter" data-level="2.4" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#generic-code-1"><i class="fa fa-check"></i><b>2.4</b> Generic code</a></li>
+<li class="chapter" data-level="2.5" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#point-maps"><i class="fa fa-check"></i><b>2.5</b> Point maps</a></li>
+<li class="chapter" data-level="2.6" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#choropleth-maps"><i class="fa fa-check"></i><b>2.6</b> Choropleth maps</a></li>
+<li class="chapter" data-level="2.7" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#google-maps-api"><i class="fa fa-check"></i><b>2.7</b> Google Maps API</a></li>
+<li class="chapter" data-level="2.8" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#install.packagesggmap"><i class="fa fa-check"></i><b>2.8</b> install.packages(“ggmap”)</a></li>
+<li class="chapter" data-level="2.9" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#string-operations"><i class="fa fa-check"></i><b>2.9</b> String operations</a></li>
+<li class="chapter" data-level="2.10" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#in-course-exercise-1"><i class="fa fa-check"></i><b>2.10</b> In-course exercise</a><ul>
+<li class="chapter" data-level="2.10.1" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#using-a-function-and-purrr-to-create-state-specific-plots-1"><i class="fa fa-check"></i><b>2.10.1</b> Using a function and <code>purrr</code> to create state-specific plots</a></li>
+<li class="chapter" data-level="2.10.2" data-path="reporting-data-results-2-ng.html"><a href="reporting-data-results-2-ng.html#first-steps-in-mapping"><i class="fa fa-check"></i><b>2.10.2</b> First steps in mapping</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="exploring-data-2.html"><a href="exploring-data-2.html"><i class="fa fa-check"></i><b>3</b> Exploring data #2</a><ul>
+<li class="chapter" data-level="3.1" data-path="exploring-data-2.html"><a href="exploring-data-2.html#parentheses"><i class="fa fa-check"></i><b>3.1</b> Parentheses</a></li>
+<li class="chapter" data-level="3.2" data-path="exploring-data-2.html"><a href="exploring-data-2.html#loops"><i class="fa fa-check"></i><b>3.2</b> Loops</a></li>
+<li class="chapter" data-level="3.3" data-path="exploring-data-2.html"><a href="exploring-data-2.html#other-control-structures"><i class="fa fa-check"></i><b>3.3</b> Other control structures</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="exploring-data-2.html"><a href="exploring-data-2.html#if-else-loops"><i class="fa fa-check"></i><b>3.3.1</b> if / else loops</a></li>
+<li class="chapter" data-level="3.3.2" data-path="exploring-data-2.html"><a href="exploring-data-2.html#some-other-control-structures-1"><i class="fa fa-check"></i><b>3.3.2</b> Some other control structures</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="exploring-data-2.html"><a href="exploring-data-2.html#functions-1"><i class="fa fa-check"></i><b>3.4</b> Functions</a></li>
+<li class="chapter" data-level="3.5" data-path="exploring-data-2.html"><a href="exploring-data-2.html#note-this-code-will-not-run"><i class="fa fa-check"></i><b>3.5</b> Note: this code will not run</a></li>
+<li class="chapter" data-level="3.6" data-path="exploring-data-2.html"><a href="exploring-data-2.html#regular-expressions-1"><i class="fa fa-check"></i><b>3.6</b> Regular expressions</a></li>
+<li class="chapter" data-level="3.7" data-path="exploring-data-2.html"><a href="exploring-data-2.html#generic-code-2"><i class="fa fa-check"></i><b>3.7</b> Generic code</a></li>
+<li class="chapter" data-level="3.8" data-path="exploring-data-2.html"><a href="exploring-data-2.html#generic-code-3"><i class="fa fa-check"></i><b>3.8</b> Generic code</a></li>
+<li class="chapter" data-level="3.9" data-path="exploring-data-2.html"><a href="exploring-data-2.html#in-course-exercise-2"><i class="fa fa-check"></i><b>3.9</b> In-course exercise</a><ul>
+<li class="chapter" data-level="3.9.1" data-path="exploring-data-2.html"><a href="exploring-data-2.html#using-regression-models-to-explore-data-1-1"><i class="fa fa-check"></i><b>3.9.1</b> Using regression models to explore data #1</a></li>
+<li class="chapter" data-level="3.9.2" data-path="exploring-data-2.html"><a href="exploring-data-2.html#using-regression-models-to-explore-data-2-1"><i class="fa fa-check"></i><b>3.9.2</b> Using regression models to explore data #2</a></li>
+<li class="chapter" data-level="3.9.3" data-path="exploring-data-2.html"><a href="exploring-data-2.html#exploring-fatality-analysis-reporting-system-fars-data-1"><i class="fa fa-check"></i><b>3.9.3</b> Exploring Fatality Analysis Reporting System (FARS) data</a></li>
+<li class="chapter" data-level="3.9.4" data-path="exploring-data-2.html"><a href="exploring-data-2.html#using-a-function-and-purrr-to-create-state-specific-plots-2"><i class="fa fa-check"></i><b>3.9.4</b> Using a function and <code>purrr</code> to create state-specific plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html"><i class="fa fa-check"></i><b>4</b> Reporting data results #2</a><ul>
+<li class="chapter" data-level="4.1" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#matrices-and-lists"><i class="fa fa-check"></i><b>4.1</b> Matrices and lists</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#matrices-1"><i class="fa fa-check"></i><b>4.1.1</b> Matrices</a></li>
+<li class="chapter" data-level="4.1.2" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#lists-1"><i class="fa fa-check"></i><b>4.1.2</b> Lists</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#apply-functions"><i class="fa fa-check"></i><b>4.2</b> <code>apply</code> functions</a></li>
+<li class="chapter" data-level="4.3" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#generic-code-4"><i class="fa fa-check"></i><b>4.3</b> Generic code</a></li>
+<li class="chapter" data-level="4.4" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#point-maps-1"><i class="fa fa-check"></i><b>4.4</b> Point maps</a></li>
+<li class="chapter" data-level="4.5" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#choropleth-maps-1"><i class="fa fa-check"></i><b>4.5</b> Choropleth maps</a></li>
+<li class="chapter" data-level="4.6" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#google-maps-api-1"><i class="fa fa-check"></i><b>4.6</b> Google Maps API</a></li>
+<li class="chapter" data-level="4.7" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#install.packagesggmap-1"><i class="fa fa-check"></i><b>4.7</b> install.packages(“ggmap”)</a></li>
+<li class="chapter" data-level="4.8" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#string-operations-1"><i class="fa fa-check"></i><b>4.8</b> String operations</a></li>
+<li class="chapter" data-level="4.9" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#in-course-exercise-3"><i class="fa fa-check"></i><b>4.9</b> In-course exercise</a><ul>
+<li class="chapter" data-level="4.9.1" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#using-a-function-and-purrr-to-create-state-specific-plots-3"><i class="fa fa-check"></i><b>4.9.1</b> Using a function and <code>purrr</code> to create state-specific plots</a></li>
+<li class="chapter" data-level="4.9.2" data-path="reporting-data-results-2.html"><a href="reporting-data-results-2.html#first-steps-in-mapping-1"><i class="fa fa-check"></i><b>4.9.2</b> First steps in mapping</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Programming for Research</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="exploring-data-2-ng" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> Exploring data #2-ng</h1>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week7.pdf">Download</a> a pdf of the lecture slides covering this topic.</p>
+<hr />
+<div id="lists" class="section level2">
+<h2><span class="header-section-number">1.1</span> Lists</h2>
+<p>In this section, we’ll talk about the <code>purrr</code> package, which contains functions that allow you to map a function to all values in a vector, matrix, or list. </p>
+<p>First, you need to know about the <code>list</code> object type in R:</p>
+<p>A list has different elements, just like a data frame has different columns. However, the different elements of a list can have different lengths (unlike the columns of a data frame). The different elements can also have different classes.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bar &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">some_letters =</span> letters[<span class="dv">1</span>:<span class="dv">3</span>],
+            <span class="dt">some_numbers =</span> <span class="dv">1</span>:<span class="dv">5</span>, 
+            <span class="dt">some_logical_values =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>))
+bar</code></pre></div>
+<pre><code>## $some_letters
+## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;
+## 
+## $some_numbers
+## [1] 1 2 3 4 5
+## 
+## $some_logical_values
+## [1]  TRUE FALSE</code></pre>
+<p>To index an element from a list, use double square brackets. You can use bracket indexing either with numbers (which element in the list?) or with names. You can also index lists with the <code>$</code> operator.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bar[[<span class="dv">1</span>]]</code></pre></div>
+<pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bar[[<span class="st">&quot;some_numbers&quot;</span>]]</code></pre></div>
+<pre><code>## [1] 1 2 3 4 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bar$some_logical_values</code></pre></div>
+<pre><code>## [1]  TRUE FALSE</code></pre>
+<p>To access a specific value within a list element we can index the element e.g.:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bar[[<span class="dv">1</span>]][[<span class="dv">2</span>]]</code></pre></div>
+<pre><code>## [1] &quot;b&quot;</code></pre>
+<p>Lists can be used to contain data with an unusual structure and / or lots of different components. For example, the information from fitting a regression is often stored as a list:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_mod &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="kw">rnorm</span>(<span class="dv">10</span>) ~<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">10</span>))
+<span class="kw">is.list</span>(my_mod)</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<p>The <code>names</code> function returns the name of each element in the list:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">names</span>(my_mod), <span class="dv">3</span>)</code></pre></div>
+<pre><code>## [1] &quot;coefficients&quot;  &quot;residuals&quot;     &quot;fitted.values&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_mod[[<span class="st">&quot;coefficients&quot;</span>]]</code></pre></div>
+<pre><code>## (Intercept)     c(1:10) 
+##  0.76916763 -0.04622007</code></pre>
+<p>A list can even contain other lists! We can use the <code>str</code> function to see the structure of a list:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">list</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="kw">list</span>(<span class="dv">1</span>, <span class="dv">2</span>))
+
+<span class="kw">str</span>(a_list)</code></pre></div>
+<pre><code>## List of 2
+##  $ :List of 2
+##   ..$ : chr &quot;a&quot;
+##   ..$ : chr &quot;b&quot;
+##  $ :List of 2
+##   ..$ : num 1
+##   ..$ : num 2</code></pre>
+<hr />
+</div>
+<div id="functions" class="section level2">
+<h2><span class="header-section-number">1.2</span> Functions</h2>
+<p>As you move to larger projects, you will find yourself using the same code a lot. </p>
+<p>Examples include:</p>
+<ul>
+<li>Reading in data from a specific type of equipment (air pollution monitor, accelerometer)</li>
+<li>Running a specific type of analysis</li>
+<li>Creating a specific type of plot or map</li>
+</ul>
+<p></p>
+<p>If you find yourself cutting and pasting a lot, convert the code to a function.</p>
+<p>Advantages of writing functions include:</p>
+<ul>
+<li>Coding is more efficient</li>
+<li>Easier to change your code (if you’ve cut and paste code and you want to change something, you have to change it everywhere - this is an easy way to accidentally create bugs in your code)</li>
+<li>Easier to share code with others</li>
+</ul>
+<p>You can name a function anything you want (although try to avoid names of preexisting-existing functions). You then define any inputs (arguments; separate multiple arguments with commas) and put the code to run in braces:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Note: this code will not run
+[function name] &lt;-<span class="st"> </span>function([any arguments]){
+        [code to run]
+}</code></pre></div>
+<p>Here is an example of a very basic function. This function takes a number as input and adds 1 to that number.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">add_one &lt;-<span class="st"> </span>function(number){
+  out &lt;-<span class="st"> </span>number +<span class="st"> </span><span class="dv">1</span>
+  <span class="kw">return</span>(out)
+}
+
+<span class="kw">add_one</span>(<span class="dt">number =</span> <span class="dv">3</span>)</code></pre></div>
+<pre><code>## [1] 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">add_one</span>(<span class="dt">number =</span> -<span class="dv">1</span>)</code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<ul>
+<li>Functions can input any type of R object (for example, vectors, data frames, even other functions and ggplot objects)</li>
+<li>Similarly, functions can output any type of R object</li>
+<li>When defining a function, you can set default values for some of the parameters</li>
+<li>You can explicitly specify the value to return from the function</li>
+<li>There are ways to check for errors in the arguments a user inputs to the function</li>
+</ul>
+<p>For example, the following function inputs a data frame (<code>datafr</code>) and a one-element vector (<code>child_id</code>) and returns only rows in the data frame where it’s <code>id</code> column matches <code>child_id</code>. It includes a default value for <code>datafr</code>, but not for <code>child_id</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">subset_nepali &lt;-<span class="st"> </span>function(<span class="dt">datafr =</span> nepali, child_id){
+  datafr &lt;-<span class="st"> </span>datafr %&gt;%
+<span class="st">            </span><span class="kw">filter</span>(id ==<span class="st"> </span>child_id)
+  <span class="kw">return</span>(datafr)
+}</code></pre></div>
+<p>If an argument is not given for a parameter with a default, the function will run using the default value for that parameter. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset_nepali</span>(<span class="dt">child_id =</span> <span class="st">&quot;120011&quot;</span>)</code></pre></div>
+<pre><code>##       id sex   wt   ht mage lit died alive age
+## 1 120011   1 12.8 91.2   35   0    2     5  41
+## 2 120011   1 12.8 93.9   35   0    2     5  45
+## 3 120011   1 13.1 95.2   35   0    2     5  49
+## 4 120011   1 13.8 96.9   35   0    2     5  53
+## 5 120011   1   NA   NA   35   0    2     5  57</code></pre>
+<p>If an argument is not given for a parameter without a default, the function call will result in an error. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset_nepali</span>(<span class="dt">datafr =</span> nepali)</code></pre></div>
+<pre><code>## Error in filter_impl(.data, quo): Evaluation error: argument &quot;child_id&quot; is missing, with no default.</code></pre>
+<p>By default, the function will return the last defined object, although the choice of using <code>return</code> can affect printing behavior when you run the function. For example, I could have written the <code>subset_nepali</code> function like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">subset_nepali &lt;-<span class="st"> </span>function(<span class="dt">datafr =</span> nepali, child_id){
+  datafr &lt;-<span class="st"> </span>datafr %&gt;%
+<span class="st">            </span><span class="kw">filter</span>(id ==<span class="st"> </span>child_id)
+}</code></pre></div>
+<p>In this case, the output will not automatically print out when you call the function without assigning it to an R object:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset_nepali</span>(<span class="dt">child_id =</span> <span class="st">&quot;120011&quot;</span>)</code></pre></div>
+<p>However, the output can be assigned to an R object in the same way as when the function was defined without <code>return</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">first_childs_data &lt;-<span class="st"> </span><span class="kw">subset_nepali</span>(<span class="dt">child_id =</span> <span class="st">&quot;120011&quot;</span>)
+first_childs_data</code></pre></div>
+<pre><code>##       id sex   wt   ht mage lit died alive age
+## 1 120011   1 12.8 91.2   35   0    2     5  41
+## 2 120011   1 12.8 93.9   35   0    2     5  45
+## 3 120011   1 13.1 95.2   35   0    2     5  49
+## 4 120011   1 13.8 96.9   35   0    2     5  53
+## 5 120011   1   NA   NA   35   0    2     5  57</code></pre>
+<div class="rmdwarning">
+<p>
+R is very “good” at running functions! It will look for (scope) the variables in your function in various places (environments). So your functions may run even when you don’t expect them to, potentially, with unexpected results!
+</p>
+</div>
+<p>The <code>return</code> function can also be used to return an object other than the last defined object (although this doesn’t tend to be something you need to do very often). If you did not use <code>return</code> in the following code, it will output “Test output”:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">subset_nepali &lt;-<span class="st"> </span>function(<span class="dt">datafr =</span> nepali, child_id){
+  datafr &lt;-<span class="st"> </span>datafr %&gt;%
+<span class="st">            </span><span class="kw">filter</span>(id ==<span class="st"> </span>child_id)
+  a &lt;-<span class="st"> &quot;Test output&quot;</span>
+}
+(<span class="kw">subset_nepali</span>(<span class="dt">child_id =</span> <span class="st">&quot;120011&quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;Test output&quot;</code></pre>
+<p>Conversely, you can use <code>return</code> to output <code>datafr</code>, even though it’s not the last object defined:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">subset_nepali &lt;-<span class="st"> </span>function(<span class="dt">datafr =</span> nepali, child_id){
+  datafr &lt;-<span class="st"> </span>datafr %&gt;%
+<span class="st">            </span><span class="kw">filter</span>(id ==<span class="st"> </span>child_id)
+  a &lt;-<span class="st"> &quot;Test output&quot;</span>
+  <span class="kw">return</span>(datafr)
+}
+<span class="kw">subset_nepali</span>(<span class="dt">child_id =</span> <span class="st">&quot;120011&quot;</span>)</code></pre></div>
+<pre><code>##       id sex   wt   ht mage lit died alive age
+## 1 120011   1 12.8 91.2   35   0    2     5  41
+## 2 120011   1 12.8 93.9   35   0    2     5  45
+## 3 120011   1 13.1 95.2   35   0    2     5  49
+## 4 120011   1 13.8 96.9   35   0    2     5  53
+## 5 120011   1   NA   NA   35   0    2     5  57</code></pre>
+<p>You can use <code>stop</code> to stop execution of the function and give the user an error message. For example, the <code>subset_nepali</code> function will fail if the user inputs a data frame that does not have a column named “id”:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset_nepali</span>(<span class="dt">datafr =</span> <span class="kw">data.frame</span>(<span class="dt">wt =</span> <span class="kw">rnorm</span>(<span class="dv">10</span>)),
+              <span class="dt">child_id =</span> <span class="st">&quot;12011&quot;</span>)</code></pre></div>
+<pre><code> Error: comparison (1) is possible only for 
+ atomic and list types </code></pre>
+<p>You can rewrite the function to stop if the input <code>datafr</code> does not have a column named “id”:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">subset_nepali &lt;-<span class="st"> </span>function(<span class="dt">datafr =</span> nepali, child_id){
+  if(!(<span class="st">&quot;id&quot;</span> %in%<span class="st"> </span><span class="kw">colnames</span>(datafr))){
+    <span class="kw">stop</span>(<span class="st">&quot;`datafr` must include a column named `id`&quot;</span>)
+  }
+  datafr &lt;-<span class="st"> </span>datafr %&gt;%
+<span class="st">    </span><span class="kw">filter</span>(id ==<span class="st"> </span>child_id)
+  <span class="kw">return</span>(datafr)
+}
+<span class="kw">subset_nepali</span>(<span class="dt">datafr =</span> <span class="kw">data.frame</span>(<span class="dt">wt =</span> <span class="kw">rnorm</span>(<span class="dv">10</span>)),
+              <span class="dt">child_id =</span> <span class="st">&quot;12011&quot;</span>)</code></pre></div>
+<pre><code>Error in subset_nepali(datafr = data.frame(wt = rnorm(10)),
+child_id = &quot;12011&quot;) : 
+  `datafr` must include a column named `id`</code></pre>
+<p>The <code>stop</code> function is particularly important if the function would keep running with the wrong input, but would result in the wrong output. </p>
+<p>You can also output warnings and messages using the functions <code>warning</code> and <code>message</code>. ## Other control structures</p>
+<hr />
+<div id="if-else-statements" class="section level3">
+<h3><span class="header-section-number">1.2.1</span> if / else statements</h3>
+<p>There are other control structures you can use in your R code. Two that you will commonly use within R functions are <code>if</code> and <code>ifelse</code> statements. </p>
+<p>An <code>if</code> statement tells R that, <strong>if</strong> a certain condition is true, <strong>do</strong> run some code. For example, if you wanted to print out only odd numbers between 1 and 5, one way to do that is with an <code>if</code> statement: (Note: the <code>%%</code> operator in R returns the remainder of the first value (i) divided by the second value (2).)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for(i in <span class="dv">1</span>:<span class="dv">5</span>){
+  if(i %%<span class="st"> </span><span class="dv">2</span> ==<span class="st"> </span><span class="dv">1</span>){
+    <span class="kw">print</span>(i)
+  }
+}</code></pre></div>
+<pre><code>## [1] 1
+## [1] 3
+## [1] 5</code></pre>
+<p>The <code>if</code> statement runs some code if a condition is true, but does nothing if it is false. If you’d like different code to run depending on whether the condition is true or false, you can us an if / else or an if / else if / else statement.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for(i in <span class="dv">1</span>:<span class="dv">5</span>){
+  if(i %%<span class="st"> </span><span class="dv">2</span> ==<span class="st"> </span><span class="dv">1</span>){
+    <span class="kw">print</span>(i)
+  } else {
+    <span class="kw">print</span>(<span class="kw">paste</span>(i, <span class="st">&quot;is even&quot;</span>))
+  }
+}</code></pre></div>
+<pre><code>## [1] 1
+## [1] &quot;2 is even&quot;
+## [1] 3
+## [1] &quot;4 is even&quot;
+## [1] 5</code></pre>
+<p>What would this code do? </p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for(i in <span class="dv">1</span>:<span class="dv">100</span>){
+  if(i %%<span class="st"> </span><span class="dv">3</span> ==<span class="st"> </span><span class="dv">0</span> &amp;<span class="st"> </span>i %%<span class="st"> </span><span class="dv">5</span> ==<span class="st"> </span><span class="dv">0</span>){
+    <span class="kw">print</span>(<span class="st">&quot;FizzBuzz&quot;</span>)
+  } else if(i %%<span class="st"> </span><span class="dv">3</span> ==<span class="st"> </span><span class="dv">0</span>){
+    <span class="kw">print</span>(<span class="st">&quot;Fizz&quot;</span>)
+  } else if(i %%<span class="st"> </span><span class="dv">5</span> ==<span class="st"> </span><span class="dv">0</span>){
+    <span class="kw">print</span>(<span class="st">&quot;Buzz&quot;</span>)
+  } else {
+    <span class="kw">print</span>(i)
+  }
+}</code></pre></div>
+<p>If / else statements are extremely useful in functions. </p>
+<p>In R, the <code>if</code> statement evaluates everything in the parentheses and, if that evaluates to <code>TRUE</code>, runs everything in the braces. This means that you can trigger code in an <code>if</code> statement with a single-value logical vector:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">weekend &lt;-<span class="st"> </span><span class="ot">TRUE</span>
+if(weekend){
+  <span class="kw">print</span>(<span class="st">&quot;It&#39;s the weekend!&quot;</span>)
+}</code></pre></div>
+<pre><code>## [1] &quot;It&#39;s the weekend!&quot;</code></pre>
+<p>This functionality can be useful with parameters you choose to include when writing your own functions (e.g., <code>print = TRUE</code>).</p>
+</div>
+<div id="some-other-control-structures" class="section level3">
+<h3><span class="header-section-number">1.2.2</span> Some other control structures</h3>
+<p>The control structure you are most likely to use in data analysis with R is the “if / else” statement. However, there are a few other control structures you may occasionally find useful:</p>
+<ul>
+<li><code>next</code></li>
+<li><code>break</code></li>
+<li><code>while</code></li>
+</ul>
+<p>You can use the <code>next</code> structure to skip to the next round of a loop when a certain condition is met. For example, we could have used this code to print out odd numbers between 1 and 5:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> </span><span class="dv">0</span>
+while(i &lt;<span class="st"> </span><span class="dv">5</span>){
+  i &lt;-<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>i
+  if(i %%<span class="st"> </span><span class="dv">2</span> ==<span class="st"> </span><span class="dv">0</span>){
+    next
+  }
+  <span class="kw">print</span>(i)
+}</code></pre></div>
+<pre><code>## [1] 1
+## [1] 3
+## [1] 5</code></pre>
+<p>You can use <code>break</code> to break out of a loop if a certain condition is met. For example, the final code will break out of the loop once <code>i</code> is over 2, so it will only print the numbers 1 through 3:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> </span><span class="dv">0</span>
+while(i &lt;=<span class="st"> </span><span class="dv">5</span>){
+  if(i &gt;<span class="st"> </span><span class="dv">2</span>){
+    break
+  }
+  i &lt;-<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>i
+  <span class="kw">print</span>(i)
+}</code></pre></div>
+<pre><code>## [1] 1
+## [1] 2
+## [1] 3</code></pre>
+<hr />
+</div>
+</div>
+<div id="purrr-functions" class="section level2">
+<h2><span class="header-section-number">1.3</span> <code>purrr</code> functions</h2>
+<p>We often want to perform the same function on every element of a list (i.e. loop across every element). There is a whole family of <code>map</code> functions, within the <code>purrr</code> package designed to help us do this. For example:</p>
+<ul>
+<li><code>map</code>: Apply a function over each element of a list or column in a dataframe.</li>
+<li><code>map_df</code>: Like <code>map</code> but returns a dataframe.</li>
+<li><code>map_dbl</code>: Like <code>map</code>, but returns a numeric vector.</li>
+</ul>
+<p>Here is the syntax for <code>map</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generic code
+purrr::<span class="kw">map</span>(<span class="dt">.x =</span> [list, vector, or dataframe], <span class="dt">.f =</span> [function], ...)</code></pre></div>
+<p>I’ll use the <code>worldcup</code> data as an example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex &lt;-<span class="st"> </span>worldcup[ , <span class="kw">c</span>(<span class="st">&quot;Shots&quot;</span>, <span class="st">&quot;Passes&quot;</span>, <span class="st">&quot;Tackles&quot;</span>, <span class="st">&quot;Saves&quot;</span>)]
+<span class="kw">head</span>(ex)</code></pre></div>
+<pre><code>##            Shots Passes Tackles Saves
+## Abdoun         0      6       0     0
+## Abe            0    101      14     0
+## Abidal         0     91       6     0
+## Abou Diaby     1    111       5     0
+## Aboubakar      2     16       0     0
+## Abreu          0     15       0     0</code></pre>
+<p>Take the mean of all columns:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">purrr::<span class="kw">map</span>(ex, mean)</code></pre></div>
+<pre><code>## $Shots
+## [1] 2.304202
+## 
+## $Passes
+## [1] 84.52101
+## 
+## $Tackles
+## [1] 4.191597
+## 
+## $Saves
+## [1] 0.6672269</code></pre>
+<p>Take the sum of all columns and return a dataframe:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">purrr::<span class="kw">map_df</span>(ex, sum)</code></pre></div>
+<pre><code>## # A tibble: 1 x 4
+##   Shots Passes Tackles Saves
+##   &lt;int&gt;  &lt;int&gt;   &lt;int&gt; &lt;int&gt;
+## 1  1371  50290    2494   397</code></pre>
+<p>You can use your own function with any of the <code>map</code> functions. For example, if you wanted to calculate a value for each category that is a weighted mean, you could run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">weighted_mean &lt;-<span class="st"> </span>function(soccer_stats, <span class="dt">weight =</span> <span class="kw">runif</span>(<span class="dv">595</span>, <span class="dv">0</span>, <span class="dv">1</span>)){
+  out &lt;-<span class="st"> </span><span class="kw">mean</span>(soccer_stats *<span class="st"> </span>weight)
+  <span class="kw">return</span>(out)
+}
+
+purrr::<span class="kw">map</span>(ex, weighted_mean)</code></pre></div>
+<pre><code>## $Shots
+## [1] 1.127837
+## 
+## $Passes
+## [1] 41.14515
+## 
+## $Tackles
+## [1] 2.018641
+## 
+## $Saves
+## [1] 0.3490525</code></pre>
+<p>The <code>map()</code> function will apply a function across a list. The different elements of the list do not have to be the same length (unlike a data frame, where the columns all have to have the same length). First let’s create a list to work with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(ex &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">a =</span> <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">5</span>), <span class="dt">b =</span> <span class="kw">rnorm</span>(<span class="dv">3</span>), <span class="dt">c =</span> letters[<span class="dv">1</span>:<span class="dv">4</span>]))</code></pre></div>
+<pre><code>## $a
+## [1] 1 2 3 4 5
+## 
+## $b
+## [1]  0.2029431 -0.1398289  0.6335547
+## 
+## $c
+## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot;</code></pre>
+<p>This call will calculate the mean of each element:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">purrr::<span class="kw">map</span>(<span class="dt">.x =</span> ex, <span class="dt">.f =</span> mean)</code></pre></div>
+<pre><code>## $a
+## [1] 3
+## 
+## $b
+## [1] 0.232223
+## 
+## $c
+## [1] NA</code></pre>
+<p>You can include arguments for the function that you specify with <code>.f</code>, and they’ll be passed to that function. For example, to get the first value of each element, you can run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">purrr::<span class="kw">map</span>(ex, <span class="dt">.f =</span> head, <span class="dt">n =</span> <span class="dv">1</span>)</code></pre></div>
+<pre><code>## $a
+## [1] 1
+## 
+## $b
+## [1] 0.2029431
+## 
+## $c
+## [1] &quot;a&quot;</code></pre>
+<p>The <code>map_chr()</code> function also applies a function over a list, but it returns a character vector rather than a list:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">purrr::<span class="kw">map_chr</span>(ex, <span class="dt">.f =</span> head, <span class="dt">n =</span> <span class="dv">1</span>)</code></pre></div>
+<pre><code>##          a          b          c 
+##        &quot;1&quot; &quot;0.202943&quot;        &quot;a&quot;</code></pre>
+<div class="rmdnote">
+<p>
+You can use the <code>apply</code> functions in base R to achieve some of the same functionality as the <code>map</code> functions. However, the <code>map</code> functions work better alongside other <code>tidyverse</code> functions. The <code>apply</code> functions are useful if you are working with matrices.
+</p>
+</div>
+<div class="rmdwarning">
+<p>
+You can also use <code>for</code> loops in R, but it is much more elegant and efficient to use the <code>map</code> functions instead.
+</p>
+</div>
+<hr />
+<div id="but-but-but-what-about-nested-loops-etc." class="section level3">
+<h3><span class="header-section-number">1.3.1</span> But, but, but what about nested loops etc.?</h3>
+<p>The trick with <code>purrr</code> is to nest your dataset rather than nest multiple loops. There is no need for all this complexity:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for(i in <span class="dv">1</span>:<span class="kw">seq_along</span>(x)){
+  for(j in <span class="dv">1</span>:<span class="kw">seq_along</span>(y)){
+    for(k in <span class="dv">1</span>:<span class="kw">seq_along</span>(z)){
+      <span class="kw">f</span>(x[i],y[j],z[k],...)
+    }
+  }
+}</code></pre></div>
+<p>Instead we can use <code>nest()</code> to create a tidy easy to follow sequence of steps:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">input %&gt;%
+<span class="kw">group_by</span>(x, y, z) %&gt;%
+<span class="kw">nest</span>() %&gt;%
+<span class="kw">mutate</span>(<span class="dt">result =</span> <span class="kw">map</span>(data, .f)) %&gt;%
+<span class="kw">unnest</span>()</code></pre></div>
+<p>Sometimes you’ll want to supply more than one argument to a function in parallel. The <code>purrr</code> package provides the <code>pmap</code> function to achieve this. You can provide a list of arguments to <code>pmap</code> and it will run through them in parallel. The “conventional” <code>for</code> loop method would look something like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for(i in <span class="kw">seq</span>(<span class="dv">1</span>, <span class="kw">length</span>(x), <span class="dt">by =</span> <span class="dv">1</span>)){
+  out[[i]] &lt;-<span class="st"> </span><span class="kw">f</span>(x[[i]], y[[i]], z[[i]])
+}</code></pre></div>
+<p>With <code>purrr::pmap()</code> we can reduce the complexity of our code, limiting the potential for us to make mistake and making mistakes easier to spot. Let’s start by defining a function with multiple arugument:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fantasy_points &lt;-<span class="st"> </span>function(Position, Time, Shots, Passes, Tackles, Saves){
+    
+  if(Position ==<span class="st"> &quot;Goalkeeper&quot;</span>){
+    Points =<span class="st"> </span>Time *<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>Shots *<span class="st"> </span><span class="dv">3</span> +<span class="st"> </span>Passes *<span class="st"> </span><span class="dv">2</span> +<span class="st"> </span>Tackles *<span class="st"> </span><span class="dv">5</span> +<span class="st"> </span>Saves *<span class="st"> </span><span class="dv">10</span>
+  }else if(Position ==<span class="st"> &quot;Defender&quot;</span>){
+    Points =<span class="st"> </span>Time *<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>Shots *<span class="st"> </span><span class="dv">2</span> +<span class="st"> </span>Passes *<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>Tackles *<span class="st"> </span><span class="dv">5</span> +<span class="st"> </span>Saves *<span class="st"> </span><span class="dv">0</span>
+  }else if(Position ==<span class="st"> &quot;Midfielder&quot;</span>){
+    Points =<span class="st"> </span>Time *<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>Shots *<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>Passes *<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>Tackles *<span class="st"> </span><span class="dv">4</span> +<span class="st"> </span>Saves *<span class="st"> </span><span class="dv">0</span>
+  }else if(Position ==<span class="st"> &quot;Forward&quot;</span>){
+    Points =<span class="st"> </span>Time *<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>Shots *<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span>Passes *<span class="st"> </span><span class="dv">2</span> +<span class="st"> </span>Tackles *<span class="st"> </span><span class="dv">3</span> +<span class="st"> </span>Saves *<span class="st"> </span><span class="dv">0</span>
+  } else{
+    Points =<span class="st"> </span>-<span class="dv">999</span>
+  }
+  <span class="kw">return</span>(Points)
+}</code></pre></div>
+<p>We can select the function arguments from the dataset:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">params &lt;-<span class="st"> </span>worldcup %&gt;%
+<span class="st">          </span><span class="kw">select</span>(Position, Time, Shots, Passes, Tackles, Saves) %&gt;%
+<span class="st">          </span><span class="kw">mutate</span>(<span class="dt">Position =</span> <span class="kw">as.character</span>(Position))</code></pre></div>
+<p>And then add a column to the dataset with the function output:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">params$Points &lt;-<span class="st"> </span>params %&gt;%<span class="st"> </span>purrr::<span class="kw">pmap</span>(fantasy_points)</code></pre></div>
+<hr />
+</div>
+</div>
+<div id="in-course-exercise" class="section level2">
+<h2><span class="header-section-number">1.4</span> In-course exercise</h2>
+<hr />
+<div id="using-regression-models-to-explore-data-1" class="section level3">
+<h3><span class="header-section-number">1.4.1</span> Using regression models to explore data #1</h3>
+<p>For this exercise, you will need the following packages. If do not have them already, you will need to install them.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(ggfortify)</code></pre></div>
+<ul>
+<li>Write out (on paper, not in R) the regression equation for regressing death on dew point temperature.</li>
+<li>Try fitting a linear regression of death (<code>death</code>) regressed on dew point temperature (<code>dptp</code>).</li>
+<li>Gather the variables <code>cvd</code>, <code>resp</code>, <code>temp</code>, <code>dptp</code>, <code>rhum</code>, <code>pm10</code>, and <code>o3</code> into a longer dataframe. Give the gathered columns the names <code>var</code> and <code>val</code>. How many rows does the new dataframe contain?</li>
+<li>Write a function to regress <code>death</code> against <code>val</code>, the function should accept a dataframe as the argument.</li>
+<li>Regress death against each of the 7 <code>var</code> variables. Hint: First group the data, then use the <code>nest()</code> function to create a list of 7 dataframes one for each variable. Then use <code>mutate</code> and <code>map()</code> to create a new variable.</li>
+<li>Based on this regression, does there seem to be a relationship between death and dewpoint temperature in Chicago? (Hint: Try using <code>glance</code> and <code>tidy</code> from the <code>broom</code> package on the model object to get more information about the model you fit.) What is the coefficient and intercept for death - dew point temperature? Model? What is the p-value for the coefficient for dew point temperature?</li>
+<li>Plot dew point temperature (x-axis) versus death (y-axis) for Chicago. Add in the regression line from the model you fit by using the results from <code>augment</code>.</li>
+<li>Use <code>autoplot</code> on the model object to generate some model diagnostic plots (make sure you have the <code>ggfortify</code> package loaded and installed).</li>
+<li>Try fitting the regression as a GLM, using <code>glm()</code>. Are your coefficients different? Hint: You will need to create a new model function for the <code>glm</code></li>
+</ul>
+<hr />
+<div id="example-r-code" class="section level4">
+<h4><span class="header-section-number">1.4.1.1</span> Example R code:</h4>
+<p>The regression equation for the model you want to fit, regressing death on dew point temperature, is:</p>
+<p><span class="math display">\[
+Y_t \sim \beta_0 + \beta_1 X_t
+\]</span></p>
+<p>where <span class="math inline">\(Y_t\)</span> is death on day <span class="math inline">\(t\)</span>, <span class="math inline">\(X_t\)</span> is the dew point temperature on day <span class="math inline">\(t\)</span>, and <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are model coefficients.</p>
+<p>Install and load the <code>dlnm</code> package and then load the <code>chicagoNMMAPS</code> data. Change the name of the dataframe to <code>chic</code>, so it will be shorter to call for the rest of your work.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;dlnm&quot;)</span>
+<span class="kw">library</span>(dlnm)
+chic &lt;-<span class="st"> </span><span class="kw">data</span>(<span class="st">&quot;chicagoNMMAPS&quot;</span>)
+chic &lt;-<span class="st"> </span>chicagoNMMAPS</code></pre></div>
+<p>Gather the variables into a longer dataframe:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">chic_long &lt;-<span class="st"> </span>chic %&gt;%
+<span class="st">             </span><span class="kw">gather</span>(<span class="st">&quot;var&quot;</span>, <span class="st">&quot;val&quot;</span>, <span class="dv">8</span>:<span class="dv">14</span>)
+
+<span class="kw">nrow</span>(chic_long)</code></pre></div>
+<pre><code>## [1] 35798</code></pre>
+<p>Write the regresssion function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_lm &lt;-<span class="st"> </span>function(df) {
+  <span class="kw">lm</span>(death ~<span class="st"> </span>val, <span class="dt">data =</span> df)
+}</code></pre></div>
+<p>Fit models:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lm_models &lt;-<span class="st"> </span>chic_long %&gt;%
+<span class="st">             </span><span class="kw">group_by</span>(var) %&gt;%
+<span class="st">             </span><span class="kw">nest</span>() %&gt;%
+<span class="st">             </span><span class="kw">mutate</span>(<span class="dt">mod =</span> <span class="kw">map</span>(data, model_lm))</code></pre></div>
+<p>Check for a relationship between <code>death</code> and <code>dptp</code>:</p>
+<p>Use functions from the <code>broom</code> package to pull the same information about the model in a “tidy” format. To find out if the evidence for a linear association between temperature and dewpoint temperature, use the <code>tidy</code> function to get model coefficients in a tidy format:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lm_estimates &lt;-<span class="st"> </span>lm_models %&gt;%
+<span class="st">                </span><span class="kw">mutate</span>(<span class="dt">tidy_lm =</span> mod %&gt;%<span class="st"> </span><span class="kw">map</span>(tidy)) %&gt;%
+<span class="st">                </span><span class="kw">unnest</span>(tidy_lm) %&gt;%
+<span class="st">                </span><span class="kw">rename</span>(<span class="dt">estimate_lm =</span> <span class="st">&quot;estimate&quot;</span>) %&gt;%
+<span class="st">                </span><span class="kw">select</span>(var, term, estimate_lm) %&gt;%
+<span class="st">                </span><span class="kw">filter</span>(var ==<span class="st"> &quot;dptp&quot;</span>)</code></pre></div>
+<p>You can check overall model summaries using the <code>glance</code> function. The <code>glance</code> function can return the p-value:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">details_glance &lt;-<span class="st"> </span>lm_models %&gt;%
+<span class="st">                  </span><span class="kw">mutate</span>(<span class="dt">glance_lm =</span> mod %&gt;%<span class="st"> </span><span class="kw">map</span>(glance)) %&gt;%
+<span class="st">                  </span><span class="kw">unnest</span>(glance_lm) %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(var, p.value) %&gt;%
+<span class="st">                  </span><span class="kw">filter</span>(var ==<span class="st"> &quot;dptp&quot;</span>)</code></pre></div>
+<p>To create plots of the observations and the fit model, use the <code>augment</code> function to add model output (e.g., predictions, residuals) to the original dataframe of observed temperatures and dew point temperatures:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">details_augment &lt;-<span class="st"> </span>lm_models %&gt;%
+<span class="st">                   </span><span class="kw">mutate</span>(<span class="dt">augment_lm =</span> mod %&gt;%<span class="st"> </span><span class="kw">map</span>(augment)) %&gt;%
+<span class="st">                   </span><span class="kw">unnest</span>(augment_lm) %&gt;%
+<span class="st">                   </span><span class="kw">filter</span>(var ==<span class="st"> &quot;dptp&quot;</span>)</code></pre></div>
+<p>Plot these two variables and add in the fitted line from the model (note: I’ve used the <code>color</code> option to make the color of the points gray). Use the output from <code>augment</code> to create a plot of the original data, with the predicted values used to plot a fitted line.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  details_augment %&gt;%
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">dptp =</span> <span class="st">&quot;val&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> dptp, <span class="dt">y =</span> death)) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="fl">0.8</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">col =</span> <span class="st">&quot;gray&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> dptp, <span class="dt">y =</span> .fitted), <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">size =</span> <span class="dv">2</span>) +
+<span class="st">  </span><span class="kw">theme_classic</span>()</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-37-1.png" width="480" /></p>
+<p>Make some plots to check model assumptions for the models you fit using the <code>autoplot</code> function on your model object, e.g.:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(lm_models$mod[[<span class="kw">which</span>(lm_models$var ==<span class="st"> &quot;dptp&quot;</span>)]]) +
+<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-38-1.png" width="768" /></p>
+<p>Try fitting models using <code>glm()</code>. Call it <code>mod_glm</code>. Compare the coefficients for the two models. You can use the <code>tidy</code> function on an <code>lm</code> or <code>glm</code> object to pull out just the model coefficients and associated model results. Here, I’ve used a pipeline of code to create a tidy dataframe that merges these “tidy” coefficient outputs (from the two models) into a single dataframe):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_glm &lt;-<span class="st"> </span>function(df){
+  <span class="kw">glm</span>(death ~<span class="st"> </span>val, <span class="dt">data =</span> df)
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">compare_models &lt;-<span class="st"> </span>chic_long %&gt;%
+<span class="st">                  </span><span class="kw">group_by</span>(var) %&gt;%
+<span class="st">                  </span><span class="kw">nest</span>() %&gt;%
+<span class="st">                  </span><span class="kw">mutate</span>(<span class="dt">mod =</span> <span class="kw">map</span>(data, mod_glm),
+                         <span class="dt">tidy_lm =</span> mod %&gt;%<span class="st"> </span><span class="kw">map</span>(tidy)) %&gt;%
+<span class="st">                  </span><span class="kw">unnest</span>(tidy_lm) %&gt;%
+<span class="st">                  </span><span class="kw">rename</span>(<span class="dt">estimate_glm =</span> <span class="st">&quot;estimate&quot;</span>) %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(var, term, estimate_glm) %&gt;%
+<span class="st">                  </span><span class="kw">inner_join</span>(lm_estimates, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;var&quot;</span>, <span class="st">&quot;term&quot;</span>))</code></pre></div>
+<p>The results from the two models are identical.</p>
+</div>
+</div>
+<div id="using-regression-models-to-explore-data-2" class="section level3">
+<h3><span class="header-section-number">1.4.2</span> Using regression models to explore data #2</h3>
+<ul>
+<li>Does <span class="math inline">\(PM_{10}\)</span> vary by day of the week? (Hint: The <code>dow</code> variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable. Some of the overall model summaries will compare this model to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you’re fitting.</li>
+<li>Try using <code>glm()</code> to run a Poisson regression of respiratory deaths (<code>resp</code>) on temperature during summer days. Start by creating a subset with just summer days called <code>summer</code>. (Hint: Use the <code>month</code> function with the argument <code>label = TRUE</code> from <code>lubridate</code> to do this– just pull out the subset where the month is 6, 7, or 8, for “Jun”, “Jul”, and “Aug”.) Try to write out the regression equation for the model you’re fitting.</li>
+<li>The coefficient for the temperature variable in this model is our best estimate (based on this model) of the <strong>log relative risk</strong> for a one degree Celcius increase in temperature. What is the <strong>relative risk</strong> associated with a one degree Celsius increase?</li>
+</ul>
+<hr />
+<div id="example-r-code-1" class="section level4">
+<h4><span class="header-section-number">1.4.2.1</span> Example R code:</h4>
+<p>Fit a model of <span class="math inline">\(PM_{10}\)</span> regressed on day of week, where day of week is a factor.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_2 &lt;-<span class="st"> </span><span class="kw">lm</span>(pm10 ~<span class="st"> </span>dow, <span class="dt">data =</span> chic)
+<span class="kw">tidy</span>(mod_2)</code></pre></div>
+<pre><code>##           term  estimate std.error statistic       p.value
+## 1  (Intercept) 27.521671 0.7303211 37.684344 7.467602e-273
+## 2    dowMonday  6.132236 1.0339702  5.930767  3.224025e-09
+## 3   dowTuesday  6.795433 1.0268941  6.617462  4.048930e-11
+## 4 dowWednesday  8.476816 1.0261689  8.260644  1.850086e-16
+## 5  dowThursday  8.804654 1.0240148  8.598171  1.078208e-17
+## 6    dowFriday  9.481589 1.0261689  9.239794  3.609870e-20
+## 7  dowSaturday  3.660201 1.0268941  3.564342  3.682785e-04</code></pre>
+<p>Use <code>glance</code> to check some of the overall summaries of this model. The <code>statistic</code> column here is the F statistic from test comparing this model to an intercept-only model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">glance</span>(mod_2)</code></pre></div>
+<pre><code>##    r.squared adj.r.squared    sigma statistic      p.value df    logLik
+## 1 0.02587711     0.0246735 19.07243  21.49955 4.607646e-25  7 -21234.11
+##        AIC      BIC deviance df.residual
+## 1 42484.21 42536.13  1766407        4856</code></pre>
+<p>As a note, you may have heard in previous statistics classes that you can use the <code>anova()</code> command to compare this model to a model with only an intercept (i.e., one that only fits a global mean and uses that as the expected value for all of the observations). Note that, in this case, the F value from <code>anova</code> for this model comparison is the same as the <code>statistic</code> you got in the overall summary statistics you get with <code>glance</code> in the previous code.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(mod_2)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: pm10
+##             Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+## dow          6   46924  7820.6    21.5 &lt; 2.2e-16 ***
+## Residuals 4856 1766407   363.8                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The overall p-value from <code>anova</code> for with day-of-week coefficients versus the model that just has an intercept is &lt; 2.2e-16. This is well below 0.05, which suggests that day-of-week is associated with PM10 concentration, as a model that includes day-of-week does a much better job of explaining variation in PM10 than a model without it does.</p>
+<p>Use a boxplot to visually compare PM10 by day of week.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(chic, <span class="kw">aes</span>(<span class="dt">x =</span> dow, <span class="dt">y =</span> pm10)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>()</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-44-1.png" width="576" /></p>
+<p>Now try the same plot, but try using the <code>ylim =</code> option to change the limits on the y-axis for the graph, so you can get a better idea of the pattern by day of week (some of the extreme values are very high, which makes it hard to compare by eye when the y-axis extends to include them all).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(chic, <span class="kw">aes</span>(<span class="dt">x =</span> dow, <span class="dt">y =</span> pm10)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">100</span>))</code></pre></div>
+<pre><code>## Warning: Removed 292 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-45-1.png" width="576" /></p>
+<p>Create a subset called <code>summer</code> with just the summer days:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)</code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     date</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">summer &lt;-<span class="st"> </span>chic %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">month =</span> <span class="kw">month</span>(date, <span class="dt">label =</span> <span class="ot">TRUE</span>)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(month %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Jun&quot;</span>, <span class="st">&quot;Jul&quot;</span>, <span class="st">&quot;Aug&quot;</span>))
+summer %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span>:<span class="dv">3</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 x 14
+##         date  time  year month   doy       dow death   cvd  resp     temp
+##       &lt;date&gt; &lt;int&gt; &lt;dbl&gt; &lt;ord&gt; &lt;int&gt;    &lt;fctr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;
+## 1 1987-06-01   152  1987   Jun   152    Monday   112    60     5 23.61111
+## 2 1987-06-02   153  1987   Jun   153   Tuesday   111    57     7 22.22222
+## 3 1987-06-03   154  1987   Jun   154 Wednesday   120    59     9 20.55556
+## # ... with 4 more variables: dptp &lt;dbl&gt;, rhum &lt;dbl&gt;, pm10 &lt;dbl&gt;, o3 &lt;dbl&gt;</code></pre>
+<p>Use <code>glm()</code> to fit a Poisson model of respiratory deaths regressed on temperature. Since you want to fit a Poisson model, use the option <code>family = poisson(link = &quot;log&quot;)</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_3 &lt;-<span class="st"> </span><span class="kw">glm</span>(resp ~<span class="st"> </span>temp, <span class="dt">data =</span> summer,
+             <span class="dt">family =</span> <span class="kw">poisson</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>))
+<span class="kw">glance</span>(mod_3)</code></pre></div>
+<pre><code>##   null.deviance df.null   logLik     AIC      BIC deviance df.residual
+## 1      1499.417    1287 -3210.68 6425.36 6435.682 1493.753        1286</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(mod_3)</code></pre></div>
+<pre><code>##          term    estimate   std.error statistic       p.value
+## 1 (Intercept) 1.910316958 0.058372529 32.726301 6.600945e-235
+## 2        temp 0.006136743 0.002580526  2.378098  1.740221e-02</code></pre>
+<p>Use the fitted model coefficient to determine the relative risk for a one degree Celcius increase in temperature. First, remember that you can use the <code>tidy()</code> function to read out the model coefficients. The second of these is the value for the temperature coefficient. That means that you can use indexing (<code>[2]</code>) to get just that value. That’s the log relative risk; take the exponent to get the relative risk.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(mod_3) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(term ==<span class="st"> &quot;temp&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log_rr =</span> <span class="kw">exp</span>(estimate))</code></pre></div>
+<pre><code>##   term    estimate   std.error statistic    p.value   log_rr
+## 1 temp 0.006136743 0.002580526  2.378098 0.01740221 1.006156</code></pre>
+<p>As a note, you can use the <code>conf.int</code> parameter in <code>tidy</code> to also pull confidence intervals:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(mod_3, <span class="dt">conf.int =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>##          term    estimate   std.error statistic       p.value    conf.low
+## 1 (Intercept) 1.910316958 0.058372529 32.726301 6.600945e-235 1.795647330
+## 2        temp 0.006136743 0.002580526  2.378098  1.740221e-02 0.001082325
+##    conf.high
+## 1 2.02446414
+## 2 0.01119783</code></pre>
+<p>You could use this to get the confidence interval for relative risk (check out the <code>mutate_at</code> function if you haven’t seen it before):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(mod_3, <span class="dt">conf.int =</span> <span class="ot">TRUE</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(term, estimate, conf.low, conf.high) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(term ==<span class="st"> &quot;temp&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(estimate:conf.high), <span class="kw">funs</span>(<span class="kw">exp</span>(.)))</code></pre></div>
+<pre><code>##   term estimate conf.low conf.high
+## 1 temp 1.006156 1.001083  1.011261</code></pre>
+</div>
+</div>
+<div id="exploring-fatality-analysis-reporting-system-fars-data" class="section level3">
+<h3><span class="header-section-number">1.4.3</span> Exploring Fatality Analysis Reporting System (FARS) data</h3>
+<ul>
+<li>Visit <a href="http://metrocosm.com/10-years-of-traffic-accidents-mapped.html" class="uri">http://metrocosm.com/10-years-of-traffic-accidents-mapped.html</a> and explore the interactive visualization created by Max Galka using this public dataset on US fatal motor vehicle accidents.</li>
+<li>Go to <a href="http://www.nhtsa.gov/FARS">FARS web page</a>. We want to get the raw data on fatal accidents. Navigate this page to figure out how you can get this raw data for the whole county for 2015 (hint: you’ll need to access the raw data using FTP, and you may have more success with some web browsers that others). Save 2015 “National” data (csv format) to your computer. What is the structure of how this data is saved (e.g., directory structure, file structure)?</li>
+<li>On the <a href="http://www.nhtsa.gov/FARS">FARS web page</a>, find the documentation describing this raw data. (The relevant documentation file is called <em>Fatality Analysis Reporting System (FARS) Analytical User’s Manual 1975-2015</em>) Look through both this documentation and the raw files you downloaded to figure out what information is included in the data.</li>
+<li>Read the <code>accident.csv</code> file for 2015 into R (this is one of the files you’ll get if you download the raw data for 2015). Use the documentation to figure out what each column represents.</li>
+<li>Discuss what steps you would need to take to create the following plot. To start, don’t write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format. (Hint: Functions from the <code>lubridate</code> package will be very helpful, including <code>yday</code> and <code>wday</code>).</li>
+<li>Discuss which of the variables in this dataset could be used to merge the dataset with other appropriate data, either other datasets in the FARS raw data, or outside datasets.</li>
+<li>Try to write the code to create the plot below. This will include some code for cleaning the data and some code for plotting. There is an example answer below, but I’d like you to try to figure it out yourselves first.</li>
+</ul>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-51-1.png" width="576" style="display: block; margin: auto;" /></p>
+<div id="example-r-code-2" class="section level4">
+<h4><span class="header-section-number">1.4.3.1</span> Example R code</h4>
+<p>Here is example code for the section above:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(lubridate)
+<span class="kw">library</span>(ggthemes)
+
+accident &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/accident.csv&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(DAY:MINUTE) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(-DAY_WEEK) %&gt;%
+<span class="st">  </span><span class="kw">unite</span>(date, DAY:MINUTE, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>, <span class="dt">remove =</span> <span class="ot">FALSE</span>) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">date =</span> <span class="kw">dmy_hm</span>(date), 
+         <span class="dt">yday =</span> <span class="kw">yday</span>(date),
+         <span class="dt">weekday =</span> <span class="kw">wday</span>(date, <span class="dt">label =</span> <span class="ot">TRUE</span>, <span class="dt">abbr =</span> <span class="ot">FALSE</span>),
+         <span class="dt">weekend =</span> weekday %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Saturday&quot;</span>, <span class="st">&quot;Sunday&quot;</span>)) 
+
+accident %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(yday)) %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(yday) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">accidents =</span> <span class="kw">n</span>(),
+            <span class="dt">weekend =</span> <span class="kw">first</span>(weekend)) %&gt;%
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> yday, <span class="dt">y =</span> accidents, <span class="dt">color =</span> weekend)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Day of the year in 2015&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;# of fatal accidents&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_few</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/check12-1.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="using-a-function-and-purrr-to-create-state-specific-plots" class="section level3">
+<h3><span class="header-section-number">1.4.4</span> Using a function and <code>purrr</code> to create state-specific plots</h3>
+<p>Next, you will write a function to create state-specific plots from this data, then use it to create plots for the states of Colorado, Texas, California, and New York.</p>
+<ul>
+<li>The FARS data includes a column called <code>STATE</code>, but it gives state as a one- or two-digit code, rather than by name. These codes are the state Federal Information Processing Standard (FIPS) codes. A dataset with state names and FIPS codes is available at <a href="http://www2.census.gov/geo/docs/reference/state.txt" class="uri">http://www2.census.gov/geo/docs/reference/state.txt</a>. Read that data into an R object called <code>state_fips</code> and clean it so the first few lines look like this (hint: to change the <code>state</code> column to an integer class, you can use the function <code>as.integer</code>):</li>
+</ul>
+<pre><code>## # A tibble: 5 x 2
+##   state state_name
+##   &lt;int&gt;      &lt;chr&gt;
+## 1     1    Alabama
+## 2     2     Alaska
+## 3     4    Arizona
+## 4     5   Arkansas
+## 5     6 California</code></pre>
+<ul>
+<li>Read the 2015 FARS data into an R object named <code>accident</code>. Use all the date and time information to create a column named <code>date</code> with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new <code>date</code> variable). Filter out any values where the date-time does not render (i.e., <code>date</code> is a missing value). The first few rows of the cleaned dataframe should look like this:</li>
+</ul>
+<pre><code>## # A tibble: 5 x 5
+##   state                date drunk_dr daytime month
+##   &lt;int&gt;              &lt;dttm&gt;    &lt;lgl&gt;   &lt;lgl&gt; &lt;dbl&gt;
+## 1     1 2015-01-01 02:40:00     TRUE   FALSE     1
+## 2     1 2015-01-01 22:13:00    FALSE   FALSE     1
+## 3     1 2015-01-01 01:25:00     TRUE   FALSE     1
+## 4     1 2015-01-04 00:57:00     TRUE   FALSE     1
+## 5     1 2015-01-07 07:09:00    FALSE    TRUE     1</code></pre>
+<ul>
+<li>Join the information from <code>state_fips</code> into the <code>accident</code> dataframe. There may be a few locations in the <code>state_fips</code> dataframe that are not included in the <code>accident</code> dataframe (e.g., Virgin Islands), so when you join keep all observations in <code>accident</code> but only the observations in <code>state_fips</code> that match at least one row of <code>accident</code>. The first few rows of the joined dataset should look like this:</li>
+</ul>
+<pre><code>## # A tibble: 5 x 6
+##   state                date drunk_dr daytime month state_name
+##   &lt;int&gt;              &lt;dttm&gt;    &lt;lgl&gt;   &lt;lgl&gt; &lt;dbl&gt;      &lt;chr&gt;
+## 1     1 2015-01-01 02:40:00     TRUE   FALSE     1    Alabama
+## 2     1 2015-01-01 22:13:00    FALSE   FALSE     1    Alabama
+## 3     1 2015-01-01 01:25:00     TRUE   FALSE     1    Alabama
+## 4     1 2015-01-04 00:57:00     TRUE   FALSE     1    Alabama
+## 5     1 2015-01-07 07:09:00    FALSE    TRUE     1    Alabama</code></pre>
+<ul>
+<li>Summarize the data to get the total number of accidents in Colorado in each month, separated by (1) daytime and nighttime and (2) related or unrelated to drunk driving (in other words, in January, how many daytime accidents were there that were unrelated to drunk driving? How many nighttime accidents that were unrelated to drunk driving? etc.). The summarized data should look like this:</li>
+</ul>
+<pre><code>## # A tibble: 48 x 4
+## # Groups:   daytime, month [?]
+##    daytime month drunk_dr accidents
+##      &lt;lgl&gt; &lt;dbl&gt;    &lt;lgl&gt;     &lt;int&gt;
+##  1   FALSE     1    FALSE         9
+##  2   FALSE     1     TRUE         6
+##  3   FALSE     2    FALSE         6
+##  4   FALSE     2     TRUE         3
+##  5   FALSE     3    FALSE         5
+##  6   FALSE     3     TRUE        11
+##  7   FALSE     4    FALSE        11
+##  8   FALSE     4     TRUE        11
+##  9   FALSE     5    FALSE         9
+## 10   FALSE     5     TRUE         6
+## # ... with 38 more rows</code></pre>
+<ul>
+<li>Write a function that inputs a dataframe (<code>df</code>) and outputs this type of summary dataframe (like the one just created for Colorado) for whatever data is in the input dataframe. Below are some examples of how this function should work:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">colorado_data &lt;-<span class="st"> </span>accident %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(state_name ==<span class="st"> &quot;Colorado&quot;</span>)
+ 
+colorado_summary &lt;-<span class="st"> </span><span class="kw">summarize_fars</span>(<span class="dt">df =</span> colorado_data)
+<span class="kw">head</span>(colorado_summary)</code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   daytime, month [3]
+##   daytime month drunk_dr accidents
+##     &lt;lgl&gt; &lt;dbl&gt;    &lt;lgl&gt;     &lt;int&gt;
+## 1   FALSE     1    FALSE         9
+## 2   FALSE     1     TRUE         6
+## 3   FALSE     2    FALSE         6
+## 4   FALSE     2     TRUE         3
+## 5   FALSE     3    FALSE         5
+## 6   FALSE     3     TRUE        11</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note also that you can pipe with the new function:</span>
+accident %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(state_name ==<span class="st"> &quot;Texas&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize_fars</span>() %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">tbl_df</span>() %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span>:<span class="dv">3</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 x 4
+##   daytime month drunk_dr accidents
+##     &lt;lgl&gt; &lt;dbl&gt;    &lt;lgl&gt;     &lt;int&gt;
+## 1   FALSE     1    FALSE        77
+## 2   FALSE     1     TRUE        52
+## 3   FALSE     2    FALSE        74</code></pre>
+<ul>
+<li>Once you’ve written the function, see if you can figure out what the following code does. How does the new function fit in? (Note: We could have achieved the same thing with basic <code>dplyr</code> code, but this framework will allow you to ultimately do a lot more than you can with <code>dplyr</code>.)</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(purrr)
+
+accident %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(state_name %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Colorado&quot;</span>, <span class="st">&quot;Texas&quot;</span>, <span class="st">&quot;California&quot;</span>, <span class="st">&quot;New York&quot;</span>)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(state_name) %&gt;%
+<span class="st">  </span><span class="kw">nest</span>() %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">summary =</span> <span class="kw">map</span>(data, summarize_fars)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(-data) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">unnest</span>() </code></pre></div>
+<ul>
+<li>Write code to create boxplots for Colorado of the distribution of total accidents within each month. Create separate boxplots for daytime and nighttime accidents, and facet by whether the accident was related to drunk driving. The plot should look like the plot below.</li>
+</ul>
+<p><img src="RProgrammingForResearch_files/figure-html/check9-1.png" width="576" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Now write a function called <code>plot_fars</code> to create a plot like the one you just made for Colorado for any dataframe with the format of <code>accident</code> (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (<em>Hint</em>: To get a function to print out a plot created with ggplot, you will need to explicitly print the output from your function. See the examples of using the function below.)</li>
+</ul>
+<p>Here are some examples of what should happen when you run this function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">co_plot &lt;-<span class="st"> </span><span class="kw">plot_fars</span>(<span class="dt">df =</span> <span class="kw">filter</span>(accident, state_name ==<span class="st"> &quot;Colorado&quot;</span>))
+<span class="kw">print</span>(co_plot)</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-57-1.png" width="576" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">accident %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(state_name ==<span class="st"> &quot;Texas&quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">plot_fars</span>() %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">print</span>()</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-57-2.png" width="576" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Once you have written this function, what happens when you run the following code?</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(purrr)
+
+state_plots &lt;-<span class="st"> </span>accident %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(state_name %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Colorado&quot;</span>, <span class="st">&quot;Texas&quot;</span>, <span class="st">&quot;California&quot;</span>, <span class="st">&quot;New York&quot;</span>)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(state_name) %&gt;%
+<span class="st">  </span><span class="kw">nest</span>() %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">plots =</span> <span class="kw">map</span>(data, plot_fars)) 
+
+<span class="kw">class</span>(state_plots[[<span class="st">&quot;plots&quot;</span>]])
+<span class="kw">class</span>(state_plots[[<span class="st">&quot;plots&quot;</span>]][[<span class="dv">1</span>]])
+<span class="kw">print</span>(state_plots[[<span class="st">&quot;plots&quot;</span>]][[<span class="dv">1</span>]])$plot</code></pre></div>
+<ul>
+<li>Install the <code>cowplot</code> package (this is a <code>ggplot2</code> extension) and then try running the following code. What happens when you run this code?</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot_grid</span>(<span class="dt">plotlist =</span> state_plots[[<span class="st">&quot;plots&quot;</span>]], 
+          <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">labels =</span> <span class="st">&quot;AUTO&quot;</span>)</code></pre></div>
+<div id="example-r-code-3" class="section level4">
+<h4><span class="header-section-number">1.4.4.1</span> Example R code</h4>
+<p>Here is the code to read the dataset with state names and FIPS codes at <a href="http://www2.census.gov/geo/docs/reference/state.txt" class="uri">http://www2.census.gov/geo/docs/reference/state.txt</a> into an R object called <code>state_fips</code> and clean it so the first few lines:</p>
+<pre><code>## # A tibble: 5 x 2
+##   state state_name
+##   &lt;int&gt;      &lt;chr&gt;
+## 1     1    Alabama
+## 2     2     Alaska
+## 3     4    Arizona
+## 4     5   Arkansas
+## 5     6 California</code></pre>
+<p>Note that you can read this file directly from the website using <code>read_delim</code>.</p>
+<p>Read the 2015 FARS data into an R object named <code>accident</code>. Use all the date and time information to create a column named <code>date</code> with the date and time of the accident. Include information on whether the accident was related to drunk driving (FALSE if there were 0 drunk drivers, TRUE if there were one or more), and create columns that gives whether the accident was during the day (7 AM to 7 PM) or not as well as the month of the accident (for this last column, you can either retain it from the original data or recalculate it based on the new <code>date</code> variable). Filter out any values where the date-time does not render (i.e., <code>date</code> is a missing value). You can use the following code to do all this:</p>
+<pre><code>## # A tibble: 5 x 5
+##   state                date drunk_dr daytime month
+##   &lt;int&gt;              &lt;dttm&gt;    &lt;lgl&gt;   &lt;lgl&gt; &lt;dbl&gt;
+## 1     1 2015-01-01 02:40:00     TRUE   FALSE     1
+## 2     1 2015-01-01 22:13:00    FALSE   FALSE     1
+## 3     1 2015-01-01 01:25:00     TRUE   FALSE     1
+## 4     1 2015-01-04 00:57:00     TRUE   FALSE     1
+## 5     1 2015-01-07 07:09:00    FALSE    TRUE     1</code></pre>
+<p>A few notes:</p>
+<ul>
+<li>Notice that <code>select</code> is using the <code>:</code> operator to pick several columns in a row.</li>
+<li>Some of the column names in all caps are changed to lower case to make them easier to work with.</li>
+<li>The <code>DAY_WEEK</code> column is in the middle of other date columns, but if you remove it, you can use <code>unite</code> with <code>:</code> to join together all the date-time columns and then use <code>lubridate</code> to change this column into the right class.</li>
+<li>A logical operator is used inside a <code>mutate</code> call to create a column of whether the accident involved drunk driving (one or more drunk drivers involved)</li>
+<li>The <code>hour</code> function from <code>lubridate</code> is used to check if the time of the accident falls in “daytime” or not</li>
+<li>Some of the accidents are missing some date information. A <code>filter</code> is used to filter that out.</li>
+</ul>
+<p>Join the information from <code>state_fips</code> into the <code>accident</code> dataframe. There may be a few locations in the <code>state_fips</code> dataframe that are not included in the <code>accident</code> dataframe (e.g., Virgin Islands), so when you join keep all observations in <code>accident</code> but only the observations in <code>state_fips</code> that match at least one row of <code>accident</code>. You can use the following code for this:</p>
+<pre><code>## # A tibble: 5 x 6
+##   state                date drunk_dr daytime month state_name
+##   &lt;int&gt;              &lt;dttm&gt;    &lt;lgl&gt;   &lt;lgl&gt; &lt;dbl&gt;      &lt;chr&gt;
+## 1     1 2015-01-01 02:40:00     TRUE   FALSE     1    Alabama
+## 2     1 2015-01-01 22:13:00    FALSE   FALSE     1    Alabama
+## 3     1 2015-01-01 01:25:00     TRUE   FALSE     1    Alabama
+## 4     1 2015-01-04 00:57:00     TRUE   FALSE     1    Alabama
+## 5     1 2015-01-07 07:09:00    FALSE    TRUE     1    Alabama</code></pre>
+<p>Summarize the data to get the total number of accidents, separated by (1) daytime and nighttime and (2) related or unrelated to drunk driving, in each month (in other words, in January, how many daytime accidents were there that were unrelated to drunk driving? How many nighttime accidents that were unrelated to drunk driving? etc.). You can do that with this code:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">accident %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(state_name ==<span class="st"> &quot;Colorado&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(daytime, month, drunk_dr) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">accidents =</span> <span class="kw">n</span>())</code></pre></div>
+<pre><code>## # A tibble: 48 x 4
+## # Groups:   daytime, month [?]
+##    daytime month drunk_dr accidents
+##      &lt;lgl&gt; &lt;dbl&gt;    &lt;lgl&gt;     &lt;int&gt;
+##  1   FALSE     1    FALSE         9
+##  2   FALSE     1     TRUE         6
+##  3   FALSE     2    FALSE         6
+##  4   FALSE     2     TRUE         3
+##  5   FALSE     3    FALSE         5
+##  6   FALSE     3     TRUE        11
+##  7   FALSE     4    FALSE        11
+##  8   FALSE     4     TRUE        11
+##  9   FALSE     5    FALSE         9
+## 10   FALSE     5     TRUE         6
+## # ... with 38 more rows</code></pre>
+<p>As a note, you may want to create a table (for example, for a report) from the data at this stage. You could use <code>unite</code> then <code>spread</code> to do this pretty easily:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">accident %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(state_name ==<span class="st"> &quot;Colorado&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">daytime =</span> <span class="kw">factor</span>(daytime, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Nighttime&quot;</span>, <span class="st">&quot;Daytime&quot;</span>)),
+         <span class="dt">drunk_dr =</span> <span class="kw">factor</span>(drunk_dr, 
+                           <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Not drunk driving&quot;</span>, <span class="st">&quot;Drunk driving&quot;</span>))) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(daytime, month, drunk_dr) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">accidents =</span> <span class="kw">n</span>()) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">ungroup</span>() %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">unite</span>(category, daytime, drunk_dr, <span class="dt">sep =</span> <span class="st">&quot; / &quot;</span>) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">spread</span>(<span class="dt">key =</span> category, <span class="dt">value =</span> accidents) %&gt;%<span class="st"> </span>
+<span class="st">  </span>knitr::<span class="kw">kable</span>()</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">month</th>
+<th align="right">Daytime / Drunk driving</th>
+<th align="right">Daytime / Not drunk driving</th>
+<th align="right">Nighttime / Drunk driving</th>
+<th align="right">Nighttime / Not drunk driving</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">7</td>
+<td align="right">20</td>
+<td align="right">6</td>
+<td align="right">9</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">22</td>
+<td align="right">3</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">7</td>
+<td align="right">12</td>
+<td align="right">11</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">6</td>
+<td align="right">19</td>
+<td align="right">11</td>
+<td align="right">11</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">4</td>
+<td align="right">20</td>
+<td align="right">6</td>
+<td align="right">9</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">8</td>
+<td align="right">22</td>
+<td align="right">8</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="right">4</td>
+<td align="right">26</td>
+<td align="right">12</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">9</td>
+<td align="right">14</td>
+<td align="right">13</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">10</td>
+<td align="right">38</td>
+<td align="right">9</td>
+<td align="right">14</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">5</td>
+<td align="right">26</td>
+<td align="right">8</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="right">11</td>
+<td align="right">1</td>
+<td align="right">13</td>
+<td align="right">10</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="right">12</td>
+<td align="right">3</td>
+<td align="right">15</td>
+<td align="right">5</td>
+<td align="right">5</td>
+</tr>
+</tbody>
+</table>
+<p>Write a function that inputs a dataframe (<code>df</code>) and outputs this type of summary dataframe (like the one just created for Colorado). You can do that with the following code. Note that, because it inputs a dataframe and outputs a dataframe, you can include it in a pipeline.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">summarize_fars &lt;-<span class="st"> </span>function(df){
+  df %&gt;%
+<span class="st">    </span><span class="kw">group_by</span>(daytime, month, drunk_dr) %&gt;%
+<span class="st">    </span><span class="kw">summarize</span>(<span class="dt">accidents =</span> <span class="kw">n</span>())
+}</code></pre></div>
+<p>Once you’ve written the function, see if you can figure out what the following code does. This code limits the data to data from four states and then applies the <code>summarize_fars</code> function that you just wrote to the subset of data from each state. Finally, since we <code>nest</code> to do that, the pipeline includes some lines to <code>unnest</code> the data to get back to an unnested data frame:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(purrr)
+
+accident %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(state_name %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Colorado&quot;</span>, <span class="st">&quot;Texas&quot;</span>, <span class="st">&quot;California&quot;</span>, <span class="st">&quot;New York&quot;</span>)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(state_name) %&gt;%
+<span class="st">  </span><span class="kw">nest</span>() %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">summary =</span> <span class="kw">map</span>(data, summarize_fars)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(-data) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">unnest</span>() </code></pre></div>
+<p>Write code to create boxplots for Colorado of the distribution of total accidents within each month. Create separate boxplots for daytime and nighttime accidents, and facet by whether the accident was related to drunk driving. You can do that with this code:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">accident %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(state_name ==<span class="st"> &quot;Colorado&quot;</span>) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">drunk_dr =</span> <span class="kw">factor</span>(drunk_dr, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Unrelated to</span><span class="ch">\n</span><span class="st">drunk driving&quot;</span>,
+                                                <span class="st">&quot;Related to</span><span class="ch">\n</span><span class="st">drunk driving&quot;</span>)),
+         <span class="dt">daytime =</span> <span class="kw">factor</span>(daytime, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Nighttime&quot;</span>, <span class="st">&quot;Daytime&quot;</span>))) %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(daytime, month, drunk_dr) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">accidents =</span> <span class="kw">n</span>()) %&gt;%
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> daytime, <span class="dt">y =</span> accidents, <span class="dt">group =</span> daytime)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">facet_wrap</span>(~<span class="st"> </span>drunk_dr, <span class="dt">ncol =</span> <span class="dv">2</span>) +
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Time of day&quot;</span>) +<span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;# of monthly accidents&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">paste</span>(<span class="st">&quot;Fatal accidents in&quot;</span>, <span class="st">&quot;Colorado&quot;</span>, <span class="st">&quot;in 2015&quot;</span>))</code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/check3-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>Now write a function called <code>plot_fars</code> to create a plot like the one you just made for Colorado for any dataframe with the format of <code>accident</code> (i.e., same number, types, and names of columns). Test it on subsets of the data for several states (Colorado, Texas, California, and New York). (<em>Hint</em>: To get a function to print out a plot created with ggplot, you must explicitly print the plot object. For example, you could assign the plot to <code>fars_plot</code>, and then you would run <code>print(fars_plot)</code> within your loop as the last step.)</p>
+<p>Notice how similar this function is to the code you wrote in the previous step.</p>
+<p>Once you have written this function, what happens when you run the following code? The following code applies this function to the subset of data from each of four states. The output (<code>state_plots</code>) is a nested dataframe, where the new <code>plots</code> column is a list of <code>ggplot</code> objects. If you run <code>print</code> on this list, it will print each of these plots out separately (use the arrow buttons in the “Plots” Pane in RStudio to browse through these plots).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(purrr)
+
+state_plots &lt;-<span class="st"> </span>accident %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(state_name %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Colorado&quot;</span>, <span class="st">&quot;Texas&quot;</span>, <span class="st">&quot;California&quot;</span>, <span class="st">&quot;New York&quot;</span>)) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(state_name) %&gt;%
+<span class="st">  </span><span class="kw">nest</span>() %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">plots =</span> <span class="kw">map</span>(data, plot_fars)) 
+
+state_plots
+<span class="kw">class</span>(state_plots)
+<span class="kw">class</span>(state_plots[[<span class="st">&quot;plots&quot;</span>]])
+<span class="kw">class</span>(state_plots[[<span class="st">&quot;plots&quot;</span>]][[<span class="dv">1</span>]])
+state_plots[[<span class="st">&quot;plots&quot;</span>]][[<span class="dv">1</span>]]$plot</code></pre></div>
+<p>Install the <code>cowplot</code> package (this is a <code>ggplot2</code> extension) and then try running the following code. What happens? The <code>plot_grid</code> function, if you input a list with <code>ggplot</code> objects using the <code>plotlist</code> argument, will print all the plots out on the same page.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cowplot)
+<span class="kw">plot_grid</span>(<span class="dt">plotlist =</span> state_plots[[<span class="st">&quot;plots&quot;</span>]], 
+          <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">labels =</span> <span class="st">&quot;AUTO&quot;</span>)</code></pre></div>
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="reporting-data-results-2-ng.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/geanders/RProgrammingForResearch/edit/master/07-ng-exploringdata2.Rmd",
+"text": "Edit"
+},
+"download": ["RProgrammingForResearch.pdf", "RProgrammingForResearch.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
