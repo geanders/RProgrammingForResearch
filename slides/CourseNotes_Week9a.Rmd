@@ -532,7 +532,14 @@ ggplot(storms_by_yday, aes(x = yday,
   labs(x = "Day in year", y = "")
 ```
 
+## Odds and ends
 
+Before Wednesday's class, be sure to do the following: 
+
+- Register for GitHub: https://github.com
+- Download and install git: https://git-scm.com 
+- Install LaTeX: MikTeX for Windows, MacTeX for Macs. If you have low memory on your computer, you 
+may want to start with "TinyTex" (https://yihui.name/tinytex/) instead
 
 
 # Mapping in the tidyverse
@@ -554,14 +561,30 @@ library(sf)
 
 To show simple features, we'll pull in the Colorado county boundaries from the U.S. Census. 
 
-To do this, we'll use the `tigris` package, which accesses the Census API. We'll use the option
+To do this, we'll use the `tigris` package, which accesses the U.S. Census API. It allows you
+to pull geographic data for U.S. counties, states, tracts, voting districts, roads, rails, 
+and a number of other geographies.
+
+To learn more about the `tigris` package, check out this article: 
+https://journal.r-project.org/archive/2016/RJ-2016-043/index.html
+
+## Simple features
+
+With `tigris`, you can read in data for county boundaries using the `counties`
+function.
+
+We'll use the option
 `class = "sf"` to read these spatial dataframes in as `sf` objects.
 
 ```{r message = FALSE, warning = FALSE, results = "hide"}
 library(tigris)
 co_counties <- counties(state = "CO", cb = TRUE, class = "sf")
+```
+
+```{r}
 class(co_counties)
 ```
+
 
 ## Simple features
 
@@ -579,6 +602,26 @@ The `geometry` column has a special class (sfc):
 
 ```{r}
 class(co_counties$geometry)
+```
+## Simple features
+
+You'll notice there's some extra stuff up at the top, too:
+
+- **Geometry type**: Points, polygons, lines
+- **Dimension**: Often two-dimensional, but can go up to four (if you have, for example, time
+for each measurement and some measure of measurement error / uncertainty)
+- **Bounding box (bbox)**: The x- and y-range of the data included
+- **EPSG**: The EPSG Geodetic Parameter Dataset code for the Coordinate Reference Systems
+- **Projection (proj4string)**: How the data is currently projected, includes projection ("+proj") and datum ("+datum")
+
+## Simple features
+
+You can pull some of this information out of the `geometry` column. For example, you can pull
+out the coordinates of the bounding box: 
+
+```{r}
+st_bbox(co_counties$geometry)      # For all counties
+st_bbox(co_counties$geometry[1]) # Just for first county
 ```
 
 ## Simple features
@@ -625,6 +668,7 @@ Because simple features are a special type of dataframe, you can also use a lot 
 
 For example, you could pull out just Larimer County, CO: 
 
+\footnotesize
 ```{r}
 larimer <- co_counties %>% 
   filter(NAME == "Larimer")
@@ -635,21 +679,20 @@ larimer
 
 \footnotesize
 
-Note: You may need the development version of `ggplot2` for this to work.
+Note: You may need the development version of `ggplot2` for this to work (`devtools::install_github("tidyverse/ggplot2")`).
 
-```{r warning = FALSE, message = FALSE, fig.width = 6, fig.height = 4, out.width = "0.7\\textwidth", fig.align = "center"}
+```{r warning = FALSE, message = FALSE, fig.width = 6, fig.height = 4, out.width = "0.6\\textwidth", fig.align = "center"}
 ggplot() + 
   geom_sf(data = co_counties, color = "lightgray") + 
   geom_sf(data = larimer, fill = "darkcyan") + 
-  geom_sf_text(data = larimer, aes(label = NAME),
-               color = "white") + 
+  geom_sf_text(data = larimer, aes(label = NAME), color = "white") + 
   theme_dark() + labs(x = "", y = "")
 ```
 
 ## Simple features
 
 This operability with tidyverse functions means that you should now be able to figure out how to 
-create a map of the number o events listed in the NOAA Storm Events database (of those listed by
+create a map of the number of events listed in the NOAA Storm Events database (of those listed by
 county) for each county in Colorado: 
 
 ```{r  echo = FALSE, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 4, out.width = "0.7\\textwidth", fig.align = "center"}
@@ -677,7 +720,9 @@ the previous slide.
 
 ## In-course exercise
 
-If you have time, try this one, too:
+If you have time, try this one, too. It shows the number of three certain types of events
+by county. If a county had no events, it's shown in gray (as having a missing value when
+you count up the events that did happen).
 
 ```{r echo = FALSE, fig.width = 8, fig.height = 3, out.width = "\\textwidth"}
 co_event_counts <- storms_2017 %>% 
@@ -751,6 +796,65 @@ ggplot() +
         axis.ticks = element_blank())
 ```
 
+## State boundaries
+
+The `tigris` package allows you to pull state boundaries, as well, but on some computers
+mapping these seems to take a really long time. 
+
+Instead, for now I recommend that you pull the state boundaries using base R's `maps` 
+package and convert that to an `sf` object: 
+
+```{r}
+library(maps)
+us_states <- map("state", plot = FALSE, fill = TRUE) %>% 
+  st_as_sf()
+```
+
+## State boundaries
+
+You can see these borders include an `ID` column that you can use to join by state: 
+
+\footnotesize
+```{r}
+head(us_states)
+```
+
+## State boundaries
+
+As with other `sf` objects, you can map these state boundaries using `ggplot`: 
+\footnotesize
+```{r fig.width = 5, out.width = "0.6\\textwidth", fig.align = "center"}
+ggplot() + 
+  geom_sf(data = us_states, color = "white",
+          fill = "darkcyan", alpha = 0.5)
+```
+
+## State boundaries
+
+As a note, you can use `xlim` and `ylim` with these plots, but remember that the x-axis is longitude in degrees West, which are negative: 
+
+\footnotesize
+```{r fig.height = 3, fig.align = "center", out.width = "0.4\\textwidth"}
+ggplot() + 
+  geom_sf(data = us_states, color = "white", 
+          fill = "darkcyan", alpha = 0.5) + 
+  xlim(c(-90, -75)) + ylim(c(24, 38))
+```
+
+
+
+## Basics of creating an `sf` object
+
+You can create an `sf` object from a regular dataframe. 
+
+You just need to specify: 
+
+1. The coordinate information (which columns are longitudes and latitudes)
+2. The Coordinate Reference System (CRS) (how to translate your coordinates to places in the world)
+
+For the CRS, if you are mapping the new `sf` object with other, existing `sf` objects, 
+make sure that you use the same CRS for all `sf` objects.
+
 ## Coordinate reference system
 
 Spatial objects can have different Coordinate Reference Systems (CRSs). CRSs can be *geographic* (e.g., WGS84, for longitude-latitude data) or *projected* (e.g., UTM, NADS83). 
@@ -761,68 +865,245 @@ Here is an excellent resource on projections and maps in R from Melanie Frazier:
 
 ## Basics of creating an `sf` object
 
-You can create an `sf` object from a regular dataframe. 
-
-You just need to specify: 
-
-1. The coordinate information (which columns are longitudes and latitudes)
-2. The CRS
-
-For the CRS, if you are mapping the new `sf` object with other, existing `sf` objects, 
-make sure that you use the same CRS for all `sf` objects.
-
-
-## Basics of creating an `sf` object
-
-Let's look at tornado tracks in Colorado. First, clean up the data:
+Let's look at floods in Colorado. First, clean up the data:
 
 ```{r}
-co_tornados <- storms_2017 %>% 
+co_floods <- storms_2017 %>% 
   filter(state == "Colorado" & 
-           event_type == "Tornado") %>% 
+           event_type %in% c("Flood", "Flash Flood")) %>% 
   select(begin_date_time, event_id, begin_lat:end_lon) %>% 
-  gather(key = "key", value = "value", -begin_date_time, -event_id) %>% 
+  gather(key = "key", value = "value", 
+         -begin_date_time, -event_id) %>% 
   separate(key, c("time", "key")) %>% 
   spread(key = key, value = value)
 ```
 
 ## Basics of creating an `sf` object
 
+There are now two rows per event, one with the starting location and one with the ending location:
+
 ```{r}
-co_tornados %>% 
+co_floods %>% 
   slice(1:5)
 ```
 
 ## Basics of creating an `sf` object
 
-Change to an `sf` object:
+Change to an `sf` object by saying which columns are the coordinates and setting a CRS:
 
 \small
 
 ```{r}
-co_tornados <- st_as_sf(co_tornados, coords = c("lon", "lat"),
-                        crs = 4269)
-co_tornados %>% slice(1:3)
+co_floods <- st_as_sf(co_floods, coords = c("lon", "lat")) %>% 
+  st_set_crs(4269)
+co_floods %>% slice(1:3)
 ```
+
+
 
 ## Basics of creating an `sf` object
 
 ```{r out.width = "0.8\\textwidth", fig.width = 6}
 ggplot() + 
   geom_sf(data = co_counties, color = "lightgray") + 
-  geom_sf(data = co_tornados, aes(color = month(begin_date_time),
+  geom_sf(data = co_floods, aes(color = month(begin_date_time),
                                   shape = time)) + 
   scale_color_viridis(name = "Month") 
 ```
 
-## Basics of creating an `sf` object
+## Changing from points to lines
 
-If you want to show lines instead of points, group by the appropriate ID and then 
+If you want to show lines instead of points, group by the appropriate ID and then summarize
+within each event to get a line:
 
 ```{r}
-co_tornados <- co_tornados %>% 
+co_floods <- co_floods %>% 
   group_by(event_id) %>% 
   summarize(month = month(first(begin_date_time)),
-            do_union=FALSE) %>% 
+            do_union = FALSE) %>% 
   st_cast("LINESTRING")
 ```
+
+## Changing from points to lines
+
+```{r}
+head(co_floods)
+```
+
+
+## Changing from points to lines
+
+\footnotesize
+```{r out.width = "0.8\\textwidth", fig.width = 6, fig.align = "center"}
+ggplot() + 
+  geom_sf(data = co_counties, color = "lightgray") + 
+  geom_sf(data = co_floods, 
+          aes(color = factor(month), fill = factor(month))) + 
+  scale_fill_viridis(name = "Month", discrete = TRUE) + 
+  scale_color_viridis(name = "Month", discrete = TRUE) 
+```
+
+
+## Reading from GIS files
+
+You can also create `sf` objects by reading in data from files you would normally use for GIS. 
+
+For example, you can read in an `sf` object from a shapefile, which is a format often used for GIS in which a collection of several files jointly store geographic data. The files making up a shapefile can include:
+
+- ".shp": The coordinates defining the shape of each geographic object. For a point, this
+would be a single coordinate (e.g., latitude and longitude). For lines and polygons, there
+will be multiple coordinates per geographic object.
+- ".prf": Information on the projection of the data (how to get from the coordinates to 
+a place in the world).
+- ".dbf": Data that goes along with each geographical object. For example, earlier we looked
+at data on counties, and one thing measured for each county was its land area. Characteristics
+like that would be included in the ".dbf" file in a shapefile.
+
+
+## Reading from GIS files
+
+Often, with geographic data, you will be given the option to downloaded a compressed 
+file (e.g., a zipped file). When you unzip the folder, it will include a number of 
+files in these types of formats (".shp", "prf", ".dbf", etc.).
+
+Sometimes, that single folder will include multiple files from each extension. For
+example, it might have several files that end with ".shp". In this case, you have
+multiple **layers** of geographic information you can read in.
+
+## Reading in from GIS files
+
+We've been looking at data on storms from NOAA for 2017. As an example, let's try to 
+pair that data up with some from the National Hurricane Center for the same year. 
+
+The National Hurricane Center allows you to access a variety of GIS data through 
+the webpage https://www.nhc.noaa.gov/gis/?text. 
+
+Let's pull some data on Hurricane Harvey in 2017 and map it with information from 
+the NOAA Storm Events database. 
+
+## Reading in from GIS files
+
+On https://www.nhc.noaa.gov/gis/?text, go to the section called "Preliminary Best Track".
+Select the year 2017. Then select "Hurricane Harvey" and download "al092017_best_track.zip".
+
+Depending on your computer, you may then need to unzip this file (many computers will
+unzip it automatically). Base R has a function called `unzip` that can help with this.
+
+You'll then have a folder with a number of different files in it. Move this folder 
+somewhere that is convenient for the working directory you use for class. For example,
+I moved it into the "data" subdirectory of the working directory I use for the class.
+
+## Reading in from GIS files
+
+You can use `list.files` to see all the files in this unzipped folder:
+
+\footnotesize
+```{r}
+list.files("../data/al092017_best_track/")
+```
+
+## Reading from GIS files
+
+You can use `st_layers` to find out the available layers in a shapefile directory:
+
+```{r}
+st_layers("../data/al092017_best_track/")
+```
+
+## Reading from GIS files
+
+Once you know which layer you want, you can use `read_sf` to read it in as an `sf` object: 
+
+```{r}
+harvey_track <- read_sf("../data/al092017_best_track/",
+                        layer = "al092017_lin")
+head(harvey_track)
+```
+
+## Reading from GIS files
+
+```{r fig.width = 6, out.width = "0.8\\textwidth", fig.align = "center"}
+ggplot() + 
+  geom_sf(data = filter(us_states, ID %in% c("texas", "louisiana"))) + 
+  geom_sf(data = harvey_track, aes(color = STORMTYPE)) + 
+  xlim(c(-107, -89)) + ylim(c(25, 37)) 
+```
+
+## Reading from GIS files
+
+You can read in other layers:
+
+\footnotesize
+```{r}
+harvey_windswath <- read_sf("../data/al092017_best_track/",
+                            layer = "al092017_windswath")
+head(harvey_windswath)
+```
+
+## Reading from GIS files
+
+\footnotesize
+```{r fig.width = 6, out.width = "0.8\\textwidth", fig.align = "center"}
+ggplot() + 
+  geom_sf(data = filter(us_states, ID %in% c("texas", "louisiana"))) + 
+  geom_sf(data = harvey_windswath, 
+          aes(fill = factor(RADII)), alpha = 0.2) + 
+  xlim(c(-107, -89)) + ylim(c(25, 37)) + 
+  scale_fill_viridis(name = "Wind (kts)", discrete = TRUE, 
+                     option = "B", begin = 0.6, direction = -1)
+```
+
+## Reading from GIS files
+
+The `read_sf` function is very powerful and can read in data from lots of different 
+formats. 
+
+See Section 2 of the `sf` manual (https://cran.r-project.org/web/packages/sf/vignettes/sf2.html)
+for more on this function.
+
+## More on spatial data with R
+
+You can find (much, much) more on working with spatial data in R online: 
+
+- **R Spatial**: http://rspatial.org/index.html
+- **Geocomputation with R**: https://geocompr.robinlovelace.net
+
+## In-course exercise
+
+For the in-course exercise, see if you can put everything we've talked about together
+to create this map: 
+
+```{r echo = FALSE, message = FALSE, fig.width = 7, out.width = "0.8\\textwidth", fig.align = "center"}
+harvey_events <- storms_2017 %>% 
+  filter(state %in% c("Texas", "Louisiana") & 
+           ymd_hms("2017-08-25 00:00:00") < begin_date_time & 
+           begin_date_time < ymd_hms("2017-10-05 00:00:00")) %>% 
+  group_by(fips) %>% 
+  count() %>% 
+  ungroup()
+
+tx_la_counties <- counties(state = c("TX", "LA"), cb = TRUE, class = "sf") %>% 
+  mutate(fips = paste(STATEFP, COUNTYFP, sep = "")) %>% 
+  full_join(harvey_events, by = "fips") %>% 
+  mutate(n = ifelse(is.na(n), 0, n))
+
+ggplot() + 
+  geom_sf(data = tx_la_counties, color = NA, 
+          aes(fill = n)) +
+  geom_sf(data = filter(us_states, ID %in% c("texas", "louisiana")), 
+          fill = NA, color = "lightgray") + 
+  geom_sf(data = harvey_windswath, 
+          aes(color = factor(RADII)), alpha = 0.4) + 
+  geom_sf(data = harvey_track, color = "red", 
+          alpha = 0.1, size = 1) + 
+  xlim(c(-107, -89)) + ylim(c(25, 37)) + 
+  scale_fill_viridis(name = "# of events", option = "A", direction = -1) + 
+  scale_color_viridis(name = "Wind (kts)", discrete = TRUE, 
+                      option = "B", direction = -1) + 
+  theme_dark() + 
+  ggtitle("Number of events near Harvey's landfall",
+          subtitle = "# events starting Aug. 25 to Sept. 5, 2017")
+```
+
+
+
