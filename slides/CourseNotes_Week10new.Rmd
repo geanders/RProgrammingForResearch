@@ -16,7 +16,30 @@ library(readr)
 
 ## Groups for homework #5
 
+- Group 1: Jessy, Kyle, Alyssa, Devin
+- Group 2: Kayla, Kathleen, Amanda
+- Group 3: Grant, Aeriel, Rebecca
+- Group 4: Anastasia, Camron, Nichole
+- Group 5: Randy, Ana, Amy
+
 ## Group projects
+
+Potential ideas:
+
+- Predicting if trapped mosquitoes test positive for West Nile virus
+- Investigating temporal and spatial patterns in human West Nile cases within a state
+(and link to Census data and / or climate information)
+- Explore 'omics data for West Nile virus (https://omics-lhv.org/data/)
+- Genomic epidemiology of West Nile virus in California (https://github.com/andersen-lab/west-nile)
+- Patterns in papers about West Nile virus
+
+## "Products"
+
+Each group will need to generate: 
+
+1. The code for their piece of the project (we'll use GitHub to collaborate).
+2. A brief report (4 to 5 pages) describing how the group tackled their problem, what pieces were particularly challenging and how they tackled those, what they would do differently if they started fresh, and what interesting things they found in this set of data. Each group must submit a draft of this the last Wednesday of class and submit the final version on the day of presentations. 
+3. A presentation (12 minutes maximum) that covers the same material as the report. The groups will present these during finals week, in the time period scheduled for a final exam for our course. 
 
 # Pulling online data
 
@@ -256,4 +279,196 @@ Here are some examples of other R packages that faciliate use of an API for open
 Find out more about writing API packages with this vignette for the httr package: https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html. \bigskip
 
 This document includes advice on error handling within R code that accesses data through an open API.
+
+## In-course exercise 
+
+We'll take a break now to do the first part of the In-Course Exercise.
+
+# Cleaning very messy data
+
+## Hurricane tracking data
+
+One version of Atlantic basin hurricane tracks is available here: https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2017-050118.txt. The data is not in a classic delimited format: 
+
+```{r echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
+knitr::include_graphics("../figures/hurrtrackformat.png")
+```
+
+## Hurricane tracking data
+
+This data is formatted in the following way: 
+
+- Data for many storms are included in one file. 
+- Data for a storm starts with a shorter line, with values for the storm ID, name, and number of observations for the storm. These values are comma separated.
+- Observations for each storm are longer lines. There are multiple observations for each storm, where each observation gives values like the location and maximum winds for the storm at that time. 
+
+## Hurricane tracking data
+
+Strategy for reading in very messy data: 
+
+1. Read in all lines individually. 
+2. Use regular expressions to split each line into the elements you'd like to use to fill columns. 
+3. Write functions and / or `map` calls to process lines and use the contents to fill a data frame. 
+4. Once you have the data in a data frame, do any remaining cleaning to create a data frame that is easy to use to answer research questions.
+
+## Hurricane tracking data
+
+Because the data is not nicely formatted, you can't use `read_csv` or similar functions to read it in. 
+
+However, the `read_lines` function from `readr` allows you to read a text file in one line at a time. You can then write code and functions to parse the file one line at a time, to turn it into a dataframe you can use. 
+
+Note: Base R has `readLines`, which is very similar.
+
+## Hurricane tracking data
+
+The `read_lines` function from `readr` will read in lines from a text file directly, without trying to separate into columns. You can use the `n_max` argument to specify the number of lines to read it. \bigskip
+
+For example, to read in three lines from the hurricane tracking data, you can run: 
+
+```{r warning = FALSE, message = FALSE}
+tracks_url <- paste0("http://www.nhc.noaa.gov/data/hurdat/",
+                     "hurdat2-1851-2017-050118.txt")
+hurr_tracks <- read_lines(tracks_url, n_max = 3)
+hurr_tracks
+```
+
+## Hurricane tracking data
+
+The data has been read in as a vector, rather than a dataframe: 
+
+```{r warning = FALSE, message = FALSE}
+class(hurr_tracks)
+length(hurr_tracks)
+hurr_tracks[1]
+```
+
+## Hurricane tracking data
+
+You can use regular expressions to break each line up. For example, you can use `str_split` from the `stringr` package to break the first line of the hurricane track data into its three separate components: 
+
+```{r}
+library(stringr)
+str_split(hurr_tracks[1], pattern = ",")
+```
+
+## Hurricane tracking data
+
+You can use this to create a list where each element of the list has the split-up version of a line of the original data. First, read in all of the data:
+
+```{r warning = FALSE, message = FALSE}
+tracks_url <- paste0("http://www.nhc.noaa.gov/data/hurdat/",
+                     "hurdat2-1851-2017-050118.txt")
+hurr_tracks <- read_lines(tracks_url)
+length(hurr_tracks)
+```
+
+## Hurricane tracking data
+
+Next, use `map` with `str_split` to split each line of the data at the commas:
+
+```{r}
+library(purrr)
+hurr_tracks <- map(hurr_tracks, str_split,
+                   pattern = ",", simplify = TRUE)
+hurr_tracks[[1]]
+hurr_tracks[[2]][1:2]
+```
+
+## Hurricane tracking data
+
+Next, you want to split this list into two lists, one with the shorter "meta-data" lines and one with the longer "observation" lines. You can use `map_int` to create a vector with the length of each line. You will later use this to identify which lines are short or long. 
+
+```{r}
+hurr_lengths <- map_int(hurr_tracks, length)
+hurr_lengths[1:17]
+unique(hurr_lengths)
+```
+
+## Hurricane tracking data
+
+You can use bracket indexing to split the `hurr_tracks` into two lists: one with the shorter lines that start each observation (`hurr_meta`) and one with the storm observations (`hurr_obs`). Use bracket indexing with the `hurr_lengths` vector you just created to make that split.
+
+```{r}
+hurr_meta <- hurr_tracks[hurr_lengths == 4]
+hurr_obs <- hurr_tracks[hurr_lengths == 21]
+```
+
+## Hurricane tracking data
+
+```{r}
+hurr_meta[1:3]
+```
+
+## Hurricane tracking data
+
+```{r}
+hurr_obs[1:2]
+```
+
+## Hurricane tracking data
+
+Now, you can use `bind_rows` from `dplyr` to change the list of metadata into a dataframe. (You first need to use `as_tibble` with `map` to convert all elements of the list from matrices to dataframes.)
+
+```{r message = FALSE}
+library(dplyr); library(tibble)
+hurr_meta <- hurr_meta %>% 
+  map(as_tibble) %>% 
+  bind_rows()
+hurr_meta %>% slice(1:3)
+```
+
+
+## Hurricane tracking data
+
+You can clean up the data a bit more. 
+
+- First, the fourth column doesn't have any non-missing values, so you can get rid of it:
+
+```{r}
+unique(hurr_meta$V4)
+```
+
+- Second, the second and third columns include a lot of leading whitespace:
+
+```{r}
+hurr_meta$V2[1:2]
+```
+
+- Last, we want to name the columns. 
+
+## Hurricane tracking data
+
+```{r}
+hurr_meta <- hurr_meta %>%
+  select(-V4) %>%
+  rename(storm_id = V1, storm_name = V2, n_obs = V3) %>%
+  mutate(storm_name = str_trim(storm_name),
+         n_obs = as.numeric(n_obs))
+hurr_meta %>% slice(1:3)
+```
+
+## Hurricane tracking data
+
+Now you can do the same idea with the hurricane observations. First, we'll want to add storm identifiers to that data. The "meta" data includes storm ids and the number of observations per storm. We can take advantage of that to make a `storm_id` vector that will line up with the storm observations. 
+
+```{r}
+storm_id <- rep(hurr_meta$storm_id, times = hurr_meta$n_obs)
+head(storm_id, 3)
+length(storm_id)
+length(hurr_obs)
+```
+
+## Hurricane tracking data
+
+```{r warnings = FALSE, message = FALSE}
+hurr_obs <- hurr_obs %>% 
+  map(as_tibble) %>% 
+  bind_rows() %>% 
+  mutate(storm_id = storm_id)
+hurr_obs %>% select(V1:V2, V5:V6, storm_id) %>% slice(1:3)
+```
+
+## In-course exercise 
+
+We'll take a break now to do the next part of the In-Course Exercise.
 
