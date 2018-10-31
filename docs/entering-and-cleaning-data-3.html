@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-
-<link rel="next" href="course-information.html">
+<link rel="prev" href="reproducible-research-2.html">
+<link rel="next" href="appendix-a-vocabulary.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -448,31 +448,333 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">R Programming for Research</h1>
-<h3 class="subtitle"><em>Colorado State University, ERHS 535</em></h3>
-<h4 class="author"><em>Brooke Anderson and Rachel Severson</em></h4>
-<h4 class="date"><em>2018-10-30</em></h4>
+<div id="entering-and-cleaning-data-3" class="section level1">
+<h1><span class="header-section-number">Chapter 11</span> Entering and cleaning data #3</h1>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week10new.pdf">Download</a> a pdf of the lecture slides covering this topic.</p>
+<div id="pulling-online-data" class="section level2">
+<h2><span class="header-section-number">11.1</span> Pulling online data</h2>
+<div id="apis" class="section level3">
+<h3><span class="header-section-number">11.1.1</span> APIs</h3>
+<p><em>APIs</em> are “Application Program Interfaces”.
+An API provides the rules for software applications to interact. In the case of open data APIs, they provide the rules you need to know to write R code to request and pull data from the organization’s web server into your R session.
+Often, an API can help you avoid downloading all available data, and instead only download the subset you need.</p>
+<p>The basic strategy for using APIs from R is:</p>
+<ul>
+<li>Figure out the API rules for HTTP requests</li>
+<li>Write R code to create a request in the proper format</li>
+<li>Send the request using GET or POST HTTP methods</li>
+<li>Once you get back data from the request, parse it into an easier-to-use format if necessary</li>
+</ul>
+<p>Start by reading any documentation available for the API. This will often give information on what data is available and how to put together requests.</p>
+<p><img src="figures/NASA_API_documentation.png" width="1.1\textwidth" style="display: block; margin: auto;" /></p>
+<p>Source: <a href="https://api.nasa.gov/api.html#EONET" class="uri">https://api.nasa.gov/api.html#EONET</a></p>
+<p>Many organizations will require you to get an API key and use this key in each of your API requests. This key allows the organization to control API access, including enforcing rate limits per user. API rate limits restrict how often you can request data (e.g., an hourly limit of 1,000 requests per user for NASA APIs).</p>
+<p>You should keep this key private. In particular, make sure you do not include it in code that is posted to GitHub.</p>
+<p>The <code>riem</code> package, developed by Maelle Salmon and an ROpenSci package, is an excellent and straightforward example of how you can use R to pull open data through a web API.
+This package allows you to pull weather data from airports around the world directly from the <a href="https://mesonet.agron.iastate.edu">Iowa Environmental Mesonet</a>.</p>
+<p>To get a certain set of weather data from the Iowa Environmental Mesonet, you can send an HTTP request specifying a base URL, “<a href="https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/" class="uri">https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/</a>”, as well as some parameters describing the subset of dataset you want (e.g., date ranges, weather variables, output format). </p>
+<p>Once you know the rules for the names and possible values of these parameters (more on that below), you can submit an HTTP GET request using the <code>GET</code> function from the <code>httr</code> package.</p>
+<p><img src="figures/mesonet_example.png" width="556" style="display: block; margin: auto;" /></p>
+<p><a href="https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=DEN&amp;data=sknt&amp;year1=2016&amp;month1=6&amp;day1=1&amp;year2=2016&amp;month2=6&amp;day2=30&amp;tz=America%2FDenver&amp;format=comma&amp;latlon=no&amp;direct=no&amp;report_type=1&amp;report_type=2" class="uri">https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=DEN&amp;data=sknt&amp;year1=2016&amp;month1=6&amp;day1=1&amp;year2=2016&amp;month2=6&amp;day2=30&amp;tz=America%2FDenver&amp;format=comma&amp;latlon=no&amp;direct=no&amp;report_type=1&amp;report_type=2</a></p>
+<p>When you are making an HTTP request using the <code>GET</code> or <code>POST</code> functions from the <code>httr</code> package, you can include the key-value pairs for any query parameters as a list object in the <code>query</code> argurment of the function.</p>
+<div class="sourceCode" id="cb982"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb982-1" data-line-number="1"><span class="kw">library</span>(httr)</a>
+<a class="sourceLine" id="cb982-2" data-line-number="2">meso_url &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;https://mesonet.agron.iastate.edu/&quot;</span>,</a>
+<a class="sourceLine" id="cb982-3" data-line-number="3">                   <span class="st">&quot;cgi-bin/request/asos.py/&quot;</span>)</a>
+<a class="sourceLine" id="cb982-4" data-line-number="4">denver &lt;-<span class="st"> </span><span class="kw">GET</span>(<span class="dt">url =</span> meso_url,</a>
+<a class="sourceLine" id="cb982-5" data-line-number="5">              <span class="dt">query =</span> <span class="kw">list</span>(<span class="dt">station =</span> <span class="st">&quot;DEN&quot;</span>, <span class="dt">data =</span> <span class="st">&quot;sped&quot;</span>,</a>
+<a class="sourceLine" id="cb982-6" data-line-number="6">                           <span class="dt">year1 =</span> <span class="st">&quot;2016&quot;</span>, <span class="dt">month1 =</span> <span class="st">&quot;6&quot;</span>,</a>
+<a class="sourceLine" id="cb982-7" data-line-number="7">                           <span class="dt">day1 =</span> <span class="st">&quot;1&quot;</span>, <span class="dt">year2 =</span> <span class="st">&quot;2016&quot;</span>,</a>
+<a class="sourceLine" id="cb982-8" data-line-number="8">                           <span class="dt">month2 =</span> <span class="st">&quot;6&quot;</span>, <span class="dt">day2 =</span> <span class="st">&quot;30&quot;</span>,</a>
+<a class="sourceLine" id="cb982-9" data-line-number="9">                           <span class="dt">tz =</span> <span class="st">&quot;America/Denver&quot;</span>,</a>
+<a class="sourceLine" id="cb982-10" data-line-number="10">                           <span class="dt">format =</span> <span class="st">&quot;comma&quot;</span>))</a></code></pre></div>
+<p>The <code>GET</code> call will return a special type of list object with elements that include the url you queried and the content of the page at that url:</p>
+<div class="sourceCode" id="cb983"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb983-1" data-line-number="1"><span class="kw">str</span>(denver, <span class="dt">max.level =</span> <span class="dv">1</span>, <span class="dt">list.len =</span> <span class="dv">6</span>)</a></code></pre></div>
+<pre><code>## List of 10
+##  $ url        : chr &quot;https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/?station=DEN&amp;data=sped&amp;year1=2016&amp;month1=6&amp;day1=1&amp;yea&quot;| __truncated__
+##  $ status_code: int 200
+##  $ headers    :List of 6
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;insensitive&quot; &quot;list&quot;
+##  $ all_headers:List of 1
+##  $ cookies    :&#39;data.frame&#39;: 0 obs. of  7 variables:
+##  $ content    : raw [1:230652] 23 44 45 42 ...
+##   [list output truncated]
+##  - attr(*, &quot;class&quot;)= chr &quot;response&quot;</code></pre>
+<p>The <code>httr</code> package includes functions to pull out elements of this list object, including:</p>
+<ul>
+<li><code>headers</code>: Pull out the header information</li>
+<li><code>content</code>: Pull out the content returned from the page</li>
+<li><code>status_code</code>: Pull out the status code from the <code>GET</code> request (e.g., 200: okay; 404: not found)</li>
+</ul>
+<p><em>Note:</em> For some fun examples of 404 pages, see <a href="https://www.creativebloq.com/web-design/best-404-pages-812505" class="uri">https://www.creativebloq.com/web-design/best-404-pages-812505</a></p>
+<p>You can use <code>content</code> from <code>httr</code> to retrieve the contents of the HTTP request we made. For this particular web data, the requested data is a comma-separated file, so you can convert it to a dataframe with <code>read_csv</code>:</p>
+<div class="sourceCode" id="cb985"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb985-1" data-line-number="1">denver <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">content</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb985-2" data-line-number="2"><span class="st">  </span><span class="kw">read_csv</span>(<span class="dt">skip =</span> <span class="dv">5</span>, <span class="dt">na =</span> <span class="st">&quot;M&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb985-3" data-line-number="3"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a></code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   station valid                sped
+##   &lt;chr&gt;   &lt;dttm&gt;              &lt;dbl&gt;
+## 1 DEN     2016-06-01 00:00:00   9.2
+## 2 DEN     2016-06-01 00:05:00   9.2
+## 3 DEN     2016-06-01 00:10:00   6.9</code></pre>
+<p>The <code>riem</code> package wraps up this whole process, so you can call a single function to get in
+the data you want from the API:</p>
+<div class="sourceCode" id="cb987"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb987-1" data-line-number="1"><span class="kw">library</span>(riem)</a>
+<a class="sourceLine" id="cb987-2" data-line-number="2">denver_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">riem_measures</span>(<span class="dt">station =</span> <span class="st">&quot;DEN&quot;</span>, </a>
+<a class="sourceLine" id="cb987-3" data-line-number="3">                          <span class="dt">date_start =</span> <span class="st">&quot;2016-06-01&quot;</span>,</a>
+<a class="sourceLine" id="cb987-4" data-line-number="4">                          <span class="dt">date_end =</span> <span class="st">&quot;2016-06-30&quot;</span>)</a>
+<a class="sourceLine" id="cb987-5" data-line-number="5">denver_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) </a></code></pre></div>
+<pre><code>## # A tibble: 3 x 24
+##   station valid                 lon   lat  tmpf  dwpf  relh  drct  sknt
+##   &lt;chr&gt;   &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 DEN     2016-06-01 00:00:00 -105.  39.8    NA    NA    NA    70     7
+## 2 DEN     2016-06-01 00:05:00 -105.  39.8    NA    NA    NA    80     8
+## 3 DEN     2016-06-01 00:10:00 -105.  39.8    NA    NA    NA    80     9
+## # ... with 15 more variables: p01i &lt;dbl&gt;, alti &lt;dbl&gt;, mslp &lt;dbl&gt;,
+## #   vsby &lt;dbl&gt;, gust &lt;dbl&gt;, skyc1 &lt;chr&gt;, skyc2 &lt;chr&gt;, skyc3 &lt;chr&gt;,
+## #   skyc4 &lt;chr&gt;, skyl1 &lt;dbl&gt;, skyl2 &lt;dbl&gt;, skyl3 &lt;dbl&gt;, skyl4 &lt;dbl&gt;,
+## #   wxcodes &lt;chr&gt;, metar &lt;chr&gt;</code></pre>
 </div>
-<div id="online-course-book-erhs-535" class="section level1 unnumbered">
-<h1>Online course book, ERHS 535</h1>
-<p>This is the online book for Colorado State University’s ERHS 535 <em>R Programming for Research</em> course. This book includes course information, course notes, links to download pdfs of lecture slides, in-course exercises, homework assignments, and vocabulary lists for quizzes for this course.</p>
+</div>
+<div id="example-r-api-wrapper-packages" class="section level2">
+<h2><span class="header-section-number">11.2</span> Example R API wrapper packages</h2>
+<p>The <code>tigris</code> package is a very useful example of an API wrapper. It retrieves geographic
+boundary data from the U.S. Census for a number of different geographies:</p>
+<ul>
+<li>Location boundaries
+<ul>
+<li>States</li>
+<li>Counties</li>
+<li>Blocks</li>
+<li>Tracks</li>
+<li>School districts</li>
+<li>Congressional districts</li>
+</ul></li>
+<li>Roads
+<ul>
+<li>Primary roads</li>
+<li>Primary and secondary roads</li>
+</ul></li>
+<li>Water
+<ul>
+<li>Area-water</li>
+<li>Linear-water</li>
+<li>Coastline</li>
+</ul></li>
+<li>Other
+<ul>
+<li>Landmarks</li>
+<li>Military</li>
+</ul></li>
+</ul>
+</div>
+<div id="tigris-package" class="section level2">
+<h2><span class="header-section-number">11.3</span> <code>tigris</code> package</h2>
+<p>The following plot is an example of the kinds of maps you can create using the <code>tigris</code>
+package. This map comes from: <em>Kyle Walker. 2016. “tigris: An R Package to Access and Work
+with Geographic Data from the US
+Census Bureau”. The R Journal.</em> This is a great article to read to find out more about
+<code>tigris</code>.</p>
+<p><img src="figures/tigris_example.png" width="300" style="display: block; margin: auto;" /></p>
+<p>A number of other R packages also help you access and use data from the U.S. Census:</p>
+<ul>
+<li><code>acs</code>: Download, manipulate, and present American Community Survey and Decennial data from the US Census (see “Working with the American Community Survey in R: A Guide to Using the
+acs Package”, a book available free online through the CSU library)</li>
+<li><code>USABoundaries</code>: Historical and contemporary boundaries of the United States of America</li>
+<li><code>idbr</code>: R interface to the US Census Bureau International Data Base API (e.g., populations of other countries)</li>
+</ul>
+<p>The organization rOpenSci (<a href="https://ropensci.org" class="uri">https://ropensci.org</a>) has the following mission:</p>
 <blockquote>
-<p>““Give someone a program, you frustrate them for a day; teach them how to program, you frustrate them for a lifetime.”—David Leinweber&quot;</p>
+<p>“At rOpenSci we are creating packages that allow access to data repositories through the R statistical programming environment that is already a familiar part of the workflow of many scientists. Our tools not only facilitate drawing data into an environment where it can readily be manipulated, but also one in which those analyses and methods can be easily shared, replicated, and extended by other researchers.”</p>
 </blockquote>
-<p>This work is licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.</p>
-<iframe src="https://brookeanderson.shinyapps.io/attendance/?showcase=0" width="672" height="600px">
-</iframe>
-
+<p>rOpenSci collects a number of packages for tapping into open data for research. These are
+listed at <a href="https://ropensci.org/packages" class="uri">https://ropensci.org/packages</a>. Many of these packages are wrappers for APIs with
+data useful for scientific research</p>
+<p>Some examples (all descriptions from rOpenSci):</p>
+<ul>
+<li><code>AntWeb</code>: Access data from the world’s largest ant database</li>
+<li><code>chromer</code>: Interact with the chromosome counts database (CCDB)</li>
+<li><code>gender</code>: Encodes gender based on names and dates of birth</li>
+<li><code>musemeta</code>: R Client for Scraping Museum Metadata, including The Metropolitan Museum of Art, the Canadian Science &amp; Technology Museum Corporation, the National Gallery of Art, and the Getty Museum, and more to come.</li>
+<li><code>rusda</code>: Interface to some USDA databases</li>
+<li><code>webchem</code>: Retrieve chemical information from many sources. Currently includes: Chemical Identifier Resolver, ChemSpider, PubChem, and Chemical Translation Service.</li>
+</ul>
+<p>As an example, one ROpenSci package, <code>rnoaa</code>, allows you to:</p>
+<blockquote>
+<p>“Access climate data from NOAA, including temperature and precipitation, as well as sea ice cover data, and extreme weather events”</p>
+</blockquote>
+<p>It includes access to:</p>
+<ul>
+<li>Buoy data from the National Buoy Data Center</li>
+<li>Historical Observing Metadata Repository (HOMR))— climate station metadata</li>
+<li>National Climatic Data Center weather station data</li>
+<li>Sea ice data</li>
+<li>International Best Track Archive for Climate Stewardship (IBTrACS)— tropical cyclone tracking data</li>
+<li>Severe Weather Data Inventory (SWDI)</li>
+</ul>
+</div>
+<div id="countyweather" class="section level2">
+<h2><span class="header-section-number">11.4</span> <code>countyweather</code></h2>
+<p>The <code>countyweather</code> package, developed by a student here at CSU, wraps the <code>rnoaa</code> package to
+let you pull and aggregate weather at the county level in the U.S. For example, you can pull
+all data from Miami during Hurricane Andrew:</p>
+<p><img src="figures/countyweather2.png" width="336" /></p>
+<p>When you pull the data for a county, the package also maps the contributing weather stations:</p>
+<p><img src="figures/countyweather1.png" width="336" /></p>
+<p>The USGS also has a very nice collection of R packages that wrap USGS open data APIs, which
+can be accessed through: <a href="https://owi.usgs.gov/R/" class="uri">https://owi.usgs.gov/R/</a></p>
+<blockquote>
+<p>“USGS-R is a community of support for users of the R scientific programming language. USGS-R resources include R training materials, R tools for the retrieval and analysis of USGS data, and support for a growing group of USGS-R developers.”</p>
+</blockquote>
+<p>USGS R packages include:</p>
+<ul>
+<li><code>dataRetrieval</code>: Obtain water quality sample data, streamflow data, and metadata directly from either the USGS or EPA</li>
+<li><code>EGRET</code>: Analysis of long-term changes in water quality and streamflow, including the water-quality method Weighted Regressions on Time, Discharge, and Season (WRTDS)</li>
+<li><code>laketemps</code>: Lake temperature data package for Global Lake Temperature Collaboration Project</li>
+<li><code>lakeattributes</code>: Common useful lake attribute data</li>
+<li><code>soilmoisturetools</code>: Tools for soil moisture data retrieval and visualization</li>
+</ul>
+<p>Here are some examples of other R packages that faciliate use of an API for open data:</p>
+<ul>
+<li><code>twitteR</code>: Twitter</li>
+<li><code>Quandl</code>: Quandl (financial data)</li>
+<li><code>RGoogleAnalytics</code>: Google Analytics</li>
+<li><code>WDI</code>, <code>wbstats</code>: World Bank</li>
+<li><code>GuardianR</code>, <code>rdian</code>: The Guardian Media Group</li>
+<li><code>blsAPI</code>: Bureau of Labor Statistics</li>
+<li><code>rtimes</code>: New York Times</li>
+</ul>
+<p>Find out more about writing API packages with this vignette for the httr package: <a href="https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html" class="uri">https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html</a>. 
+This document includes advice on error handling within R code that accesses data through an open API.</p>
+</div>
+<div id="in-course-exercise-10" class="section level2">
+<h2><span class="header-section-number">11.5</span> In-course exercise</h2>
+<p>The <code>rplos</code> package provides a wrapper to the Public Library of Science (PLoS)’s API. PLOS
+has a collection of academic journals spanning a variety of topics.</p>
+<ul>
+<li>Check out this page of documentation for this API: <a href="http://api.plos.org/solr/search-fields/" class="uri">http://api.plos.org/solr/search-fields/</a>
+Look through the potential search terms.</li>
+<li>Use the <code>searchplos</code> function to search articles in the PLoS collection for the term
+“West Nile”. Pull the publication date, title, abstract, article type, subject,
+and journal of each
+matching article
+and save the result to an R object called <code>wn_papers</code>. You may find it helpful to look at the
+examples in the helpfile for <code>searchplos</code> or the tutorial available at:
+<a href="https://ropensci.org/tutorials/rplos_tutorial/" class="uri">https://ropensci.org/tutorials/rplos_tutorial/</a></li>
+<li>The object returned by <code>searchplos</code> will be a list with two top levels, <code>meta</code> and <code>data</code>.
+Confirm that this is true for the <code>wn_papers</code> object you created. Look at the <code>meta</code>
+part of the list (you can use <code>$</code> indexing to pull this out). How many articles were found
+with “West Nile” in them? Does the query seem case-sensitive (i.e., do you get the same
+number of papers when you query “west nile” rather than “West Nile”)?</li>
+<li>Re-run your query (save the results to <code>wn_papers_titles</code>) looking only for papers with
+“West Nile” in the title of the paper. How many papers are returned by this query?</li>
+<li>By default the limit of the number of papers returned by a query will be 10. You
+can change this (to a certain degree) by using the <code>limit</code> option.
+For the call you ran to create <code>wn_papers_titles</code>, set the limit to
+the number of articles that match this query, as identified in the <code>meta</code> element of the
+first run of the call. Check the number of rows in the <code>data</code> element that was returned to
+make sure it has the same number of rows as the number of articles that match the query.</li>
+<li>Create a plot of the number of articles published per year. Use color to show which
+articles are Research Articles versus other types of articles.</li>
+<li>Determine which journals have published these articles and the number of articles published
+in each journal. You may notice that sometimes “PLoS” is used and sometimes “PLOS”. See if you
+can fix this in R to get the count of articles per journal without this capitalization
+difference causing problems.</li>
+</ul>
+<div class="sourceCode" id="cb989"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb989-1" data-line-number="1"><span class="kw">library</span>(rplos)</a>
+<a class="sourceLine" id="cb989-2" data-line-number="2">wn_papers &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;West Nile&quot;</span>, </a>
+<a class="sourceLine" id="cb989-3" data-line-number="3">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
+<a class="sourceLine" id="cb989-4" data-line-number="4">                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</a></code></pre></div>
+<p>Confirm the structure of the returned object:</p>
+<div class="sourceCode" id="cb990"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb990-1" data-line-number="1"><span class="kw">str</span>(wn_papers)</a></code></pre></div>
+<pre><code>## List of 2
+##  $ meta:Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    1 obs. of  2 variables:
+##   ..$ numFound: int 2868
+##   ..$ start   : int 0
+##  $ data:Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    10 obs. of  6 variables:
+##   ..$ subject         : chr [1:10] &quot;/Earth sciences/Geography/Regional geography/Geographical regions/Mediterranean Basin,/Medicine and health scie&quot;| __truncated__ &quot;/Biology and life sciences/Genetics/Genomics/Animal genomics/Mammalian genomics,/Biology and life sciences/Micr&quot;| __truncated__ &quot;/Social sciences/Economics/Health economics,/Medicine and health sciences/Health care/Health economics,/Biology&quot;| __truncated__ &quot;/Earth sciences/Geography/Human geography/Land use,/Earth sciences/Atmospheric science/Meteorology,/People and &quot;| __truncated__ ...
+##   ..$ journal         : chr [1:10] &quot;PLOS ONE&quot; &quot;PLOS Neglected Tropical Diseases&quot; &quot;PLoS ONE&quot; &quot;PLOS ONE&quot; ...
+##   ..$ publication_date: chr [1:10] &quot;2015-12-30T00:00:00Z&quot; &quot;2017-11-08T00:00:00Z&quot; &quot;2010-11-12T00:00:00Z&quot; &quot;2015-03-24T00:00:00Z&quot; ...
+##   ..$ article_type    : chr [1:10] &quot;Research Article&quot; &quot;Research Article&quot; &quot;Research Article&quot; &quot;Research Article&quot; ...
+##   ..$ abstract        : chr [1:10] &quot;\nWest Nile virus (WNV) is a mosquito-transmitted Flavivirus belonging to the Japanese encephalitis antigenic c&quot;| __truncated__ &quot;\nThe West Nile virus (WNV), isolated in 1937, is an arbovirus (arthropod-borne virus) that infects thousands o&quot;| __truncated__ &quot;\n        Understanding the conditions underlying the proliferation of infectious diseases is crucial for mitig&quot;| __truncated__ &quot;\nWest Nile Virus (WNV) is a globally important mosquito borne virus, with significant implications for human a&quot;| __truncated__ ...
+##   ..$ title           : chr [1:10] &quot;Spatio-Temporal Identification of Areas Suitable for West Nile Disease in the Mediterranean Basin and Central Europe&quot; &quot;Biological and phylogenetic characteristics of West African lineages of West Nile virus&quot; &quot;Economic Conditions Predict Prevalence of West Nile Virus&quot; &quot;Identifying the Environmental Conditions Favouring West Nile Virus Outbreaks in Europe&quot; ...
+##   ..- attr(*, &quot;numFound&quot;)= int 2868
+##   ..- attr(*, &quot;start&quot;)= int 0</code></pre>
+<p>Look at the meta data:</p>
+<div class="sourceCode" id="cb992"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb992-1" data-line-number="1">wn_papers<span class="op">$</span>meta</a></code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##   numFound start
+##      &lt;int&gt; &lt;int&gt;
+## 1     2868     0</code></pre>
+<p>Query for just articles with “West Nile” in the title:</p>
+<div class="sourceCode" id="cb994"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb994-1" data-line-number="1">wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </a>
+<a class="sourceLine" id="cb994-2" data-line-number="2">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
+<a class="sourceLine" id="cb994-3" data-line-number="3">                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</a></code></pre></div>
+<p>Look at the metadata:</p>
+<div class="sourceCode" id="cb995"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb995-1" data-line-number="1">wn_papers_titles<span class="op">$</span>meta</a></code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##   numFound start
+##      &lt;int&gt; &lt;int&gt;
+## 1      190     0</code></pre>
+<p>Re-run the query using an appropriate limit to get all the matching articles:</p>
+<div class="sourceCode" id="cb997"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb997-1" data-line-number="1">wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </a>
+<a class="sourceLine" id="cb997-2" data-line-number="2">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
+<a class="sourceLine" id="cb997-3" data-line-number="3">                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>),</a>
+<a class="sourceLine" id="cb997-4" data-line-number="4">                        <span class="dt">limit =</span> <span class="dv">190</span>)</a></code></pre></div>
+<p>Check the number of rows:</p>
+<div class="sourceCode" id="cb998"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb998-1" data-line-number="1"><span class="kw">nrow</span>(wn_papers_titles<span class="op">$</span>data)</a></code></pre></div>
+<pre><code>## [1] 190</code></pre>
+<p>Create a plot of the number of articles in the PLoS journals with “West Nile” in the title
+by year:</p>
+<div class="sourceCode" id="cb1000"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1000-1" data-line-number="1"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb1000-2" data-line-number="2"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb1000-3" data-line-number="3"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb1000-4" data-line-number="4">wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1000-5" data-line-number="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">publication_date =</span> <span class="kw">ymd_hms</span>(publication_date),</a>
+<a class="sourceLine" id="cb1000-6" data-line-number="6">         <span class="dt">pub_year =</span> <span class="kw">year</span>(publication_date),</a>
+<a class="sourceLine" id="cb1000-7" data-line-number="7">         <span class="dt">research_article =</span> article_type <span class="op">==</span><span class="st"> &quot;Research Article&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1000-8" data-line-number="8"><span class="st">  </span><span class="kw">group_by</span>(pub_year, research_article) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1000-9" data-line-number="9"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1000-10" data-line-number="10"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pub_year, <span class="dt">y =</span> n, <span class="dt">fill =</span> research_article)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1000-11" data-line-number="11"><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1000-12" data-line-number="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year of publication&quot;</span>, </a>
+<a class="sourceLine" id="cb1000-13" data-line-number="13">       <span class="dt">y =</span> <span class="st">&quot;Number of articles published&quot;</span>,</a>
+<a class="sourceLine" id="cb1000-14" data-line-number="14">       <span class="dt">fill =</span> <span class="st">&quot;Research article&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1000-15" data-line-number="15"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;West Nile articles published in PLoS journals&quot;</span>,</a>
+<a class="sourceLine" id="cb1000-16" data-line-number="16">          <span class="dt">subtitle =</span> <span class="st">&quot;Based on articles with &#39;West Nile&#39; in the title&quot;</span>)</a></code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-573-1.png" width="672" /></p>
+<p>Determine which journals have published these articles and the number of articles published
+in each journal:</p>
+<div class="sourceCode" id="cb1001"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1001-1" data-line-number="1"><span class="kw">library</span>(forcats)</a>
+<a class="sourceLine" id="cb1001-2" data-line-number="2"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb1001-3" data-line-number="3">wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1001-4" data-line-number="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">journal =</span> <span class="kw">str_replace</span>(journal, <span class="st">&quot;PLOS&quot;</span>, <span class="st">&quot;PLoS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1001-5" data-line-number="5"><span class="st">  </span><span class="kw">group_by</span>(journal) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1001-6" data-line-number="6"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1001-7" data-line-number="7"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1001-8" data-line-number="8"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(journal)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1001-9" data-line-number="9"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n))</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 2
+##   journal                              n
+##   &lt;chr&gt;                            &lt;int&gt;
+## 1 PLoS ONE                           109
+## 2 PLoS Neglected Tropical Diseases    39
+## 3 PLoS Pathogens                      27
+## 4 PLoS Medicine                        3
+## 5 PLoS Biology                         2
+## 6 PLoS Computational Biology           2</code></pre>
 
 </div>
+</div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="course-information.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="reproducible-research-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-a-vocabulary.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -502,7 +804,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/geanders/RProgrammingForResearch/edit/master/index.Rmd",
+"link": "https://github.com/geanders/RProgrammingForResearch/edit/master/10-gettingcleaningdata3.Rmd",
 "text": "Edit"
 },
 "download": ["RProgrammingForResearch.pdf", "RProgrammingForResearch.epub"],

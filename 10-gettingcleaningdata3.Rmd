@@ -2,531 +2,24 @@
 
 # Entering and cleaning data #3
 
-[Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week10.pdf) a pdf of the lecture slides covering this topic.
+[Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week10new.pdf) a pdf of the lecture slides covering this topic.
 
-```{r ch10chunk1, echo = FALSE, message = FALSE}
-library(tidyverse)
+```{r results = "hide", echo = FALSE, message = FALSE, warning = FALSE}
 library(knitr)
-```
-
-## Cleaning very messy data
-
-### Example of messy data
-
-One version of Atlantic basin hurricane tracks is available here: http://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2015-070616.txt. The data is not in a classic delimited format: 
-
-```{r ch10chunk2, echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
-knitr::include_graphics("figures/hurrtrackformat.png")
-```
-
-This data is formatted in the following way: 
-
-- Data for many storms are included in one file. 
-- Data for a storm starts with a shorter line, with values for the storm ID, name, and number of observations for the storm. These values are comma separated.
-- Observations for each storm are longer lines. There are multiple observations for each storm, where each observation gives values like the location and maximum winds for the storm at that time. 
-
-### Strategy for messy data
-
-Because the hurricane tracking data is not nicely formatted, you can't use `read_csv` or similar functions to read it in. Here is a strategy for reading in very messy data: 
-
-1. Read in all lines individually. 
-2. Use regular expressions to split each line into the elements you'd like to use to fill columns. 
-3. Write functions, loops, or `apply` calls to process lines and use the contents to fill a data frame. 
-4. Once you have the data in a data frame, do any remaining cleaning to create a data frame that is easy to use to answer research questions.
-
-### `readLines` function
-
-The `readLines` function allows you to read a text file in one line at a time. You can then write code and functions to parse the file one line at a time, to turn it into a dataframe you can use. 
-
-The `readLines` function will read in lines from a text file directly, without trying to separate into columns. You can use the `n` argument to specify the number of lines to read it. 
-
-For example, to read in three lines from the hurricane tracking data, you can run: 
-
-```{r ch10chunk3}
-tracks_url <- paste0("http://www.nhc.noaa.gov/data/hurdat/",
-                     "hurdat2-1851-2016-041117.txt")
-hurr_tracks <- readLines(tracks_url, n = 3)
-hurr_tracks
-```
-
-The data has been read in as a vector, rather than a dataframe: 
-
-```{r ch10chunk4}
-class(hurr_tracks)
-length(hurr_tracks)
-hurr_tracks[1]
-```
-
-### Regular expressions for cleaning
-
-You can use regular expressions to break each line up. For example, you can use `str_split` from the `stringr` package to break the first line of the hurricane track data into its three separate components: 
-
-```{r ch10chunk5}
-library(stringr)
-str_split(hurr_tracks[1], pattern = ",")
-```
-
-You can use this to create a list where each element of the list has the split-up version of a line of the original data. First, read in all of the data:
-
-```{r ch10chunk6}
-tracks_url <- paste0("http://www.nhc.noaa.gov/data/hurdat/",
-                     "hurdat2-1851-2016-041117.txt")
-hurr_tracks <- readLines(tracks_url)
-length(hurr_tracks)
-```
-
-### Working with lists
-
-Next, use `lapply` with `str_split` to split each line of the data at the commas:
-
-```{r ch10chunk7}
-hurr_tracks <- lapply(hurr_tracks, str_split,
-                      pattern = ",",
-                      simplify = TRUE)
-hurr_tracks[[1]]
-hurr_tracks[[2]][1:2]
-```
-
-Next, you want to split this list into two lists, one with the shorter "meta-data" lines and one with the longer "observation" lines. You can use `sapply` to create a vector with the length of each line. You will later use this to identify which lines are short or long. 
-
-```{r ch10chunk8}
-hurr_lengths <- sapply(hurr_tracks, length)
-hurr_lengths[1:17]
-unique(hurr_lengths)
-```
-
-You can use bracket indexing to split the `hurr_tracks` into two lists: one with the shorter lines that start each observation (`hurr_meta`) and one with the storm observations (`hurr_obs`). Use bracket indexing with the `hurr_lengths` vector you just created to make that split.
-
-```{r ch10chunk9}
-hurr_meta <- hurr_tracks[hurr_lengths == 4]
-hurr_obs <- hurr_tracks[hurr_lengths == 21]
-```
-
-```{r ch10chunk10}
-hurr_meta[1:3]
-```
-
-```{r ch10chunk11}
-hurr_obs[1:2]
-```
-
-### Converting to dataframes
-
-Now, you can use `bind_rows` from `dplyr` to change the list of metadata into a dataframe. (You first need to use `as_tibble` with `lapply` to convert all elements of the list from matrices to dataframes.)
-
-```{r ch10chunk12, message = FALSE}
 library(dplyr)
-hurr_meta <- lapply(hurr_meta, tibble::as_tibble)
-hurr_meta <- bind_rows(hurr_meta)
-hurr_meta %>%
-  slice(1:3)
+library(readr)
 ```
-
-You can clean up the data a bit more. 
-
-- First, the fourth column doesn't have any non-missing values, so you can get rid of it:
-
-```{r ch10chunk13}
-unique(hurr_meta$V4)
-```
-
-- Second, the second and third columns include a lot of leading whitespace:
-
-```{r ch10chunk14}
-hurr_meta$V2[1:2]
-```
-
-- Last, we want to name the columns. 
-
-```{r ch10chunk15}
-hurr_meta <- hurr_meta %>%
-  dplyr::select(-V4) %>%
-  dplyr::rename(storm_id = V1, storm_name = V2, n_obs = V3) %>%
-  dplyr::mutate(storm_name = str_trim(storm_name),
-                n_obs = as.numeric(n_obs))
-hurr_meta %>% slice(1:3)
-```
-
-Now you can apply the same idea to the hurricane observations. First, we'll want to add storm identifiers to that data. The "meta" data includes storm ids and the number of observations per storm. We can take advantage of that to make a `storm_id` vector that will line up with the storm observations. 
-
-```{r ch10chunk16}
-storm_id <- rep(hurr_meta$storm_id, times = hurr_meta$n_obs)
-head(storm_id, 3)
-length(storm_id)
-length(hurr_obs)
-```
-
-```{r ch10chunk17}
-hurr_obs <- lapply(hurr_obs, tibble::as_tibble)
-hurr_obs <- dplyr::bind_rows(hurr_obs) %>%
-  dplyr::mutate(storm_id = storm_id)
-hurr_obs %>% dplyr::select(V1, V2, V5, V6, storm_id) %>% slice(1:3)
-```
-
-To finish, you just need to clean up the data. Now that the data is in a dataframe, this process is inline with what you've been doing with `dplyr` and related packages. 
-
-The "README" file for the hurricane tracking data is useful at this point: 
-
-http://www.nhc.noaa.gov/data/hurdat/hurdat2-format-atlantic.pdf
-
-First, say you only want some of the columns for a study you are doing. You can use `select` to clean up the dataframe by limiting it to columns you need. 
-
-If you only need date, time, storm status, location (latitude and longitude), maximum sustained winds, and minimum pressure, then you can run: 
-
-```{r ch10chunk18}
-hurr_obs <- hurr_obs %>%
-  dplyr::select(V1, V2, V4:V8, storm_id) %>%
-  dplyr::rename(date = V1, time = V2, status = V4, latitude = V5, 
-                longitude = V6, wind = V7, pressure = V8)
-hurr_obs %>% slice(1:3) %>% 
-  dplyr::select(date, time, status, latitude, longitude)
-```
-
-Next, the first two columns give the date and time. You can `unite` these and then convert them to a Date-time class. 
-
-```{r ch10chunk19, message = FALSE}
-library(tidyr)
-library(lubridate)
-hurr_obs <- hurr_obs %>%
-  tidyr::unite(date_time, date, time) %>% 
-  dplyr::mutate(date_time = ymd_hm(date_time))
-hurr_obs %>% slice(1:3) %>% 
-  dplyr::select(date_time, status, latitude, longitude)
-```
-
-Next, you can change `status` to a factor and give the levels more meaningful names: 
-
-```{r ch10chunk20}
-unique(hurr_obs$status)
-storm_levels <- c("TD", "TS", "HU", "EX", 
-                  "SD", "SS", "LO", "WV", "DB")
-storm_labels <- c("Tropical depression", "Tropical storm",
-                  "Hurricane", "Extratropical cyclone",
-                  "Subtropical depression",
-                  "Subtropical storm", "Other low",
-                  "Tropical wave", "Disturbance")
-hurr_obs <- hurr_obs %>%
-  dplyr::mutate(status = factor(str_trim(status), 
-                                levels = storm_levels, 
-                                labels = storm_labels))
-```
-
-Now, you can clean up the latitude and longitude. Ultimately, we'll want numeric values for those so we can use them for mapping. You can use regular expressions to separate the numeric and non-numeric parts of these columns. For example:
-
-```{r ch10chunk21}
-head(str_extract(hurr_obs$latitude, "[A-Z]"))
-head(str_extract(hurr_obs$latitude, "[^A-Z]+"))
-```
-
-Use this idea to split the numeric latitude from the direction of that latitude:
-
-```{r ch10chunk22}
-hurr_obs <- hurr_obs %>%
-  dplyr::mutate(lat_dir = str_extract(latitude, "[A-Z]"),
-                latitude = as.numeric(str_extract(latitude, "[^A-Z]+")),
-                lon_dir = str_extract(longitude, "[A-Z]"),
-                longitude = as.numeric(str_extract(longitude, "[^A-Z]+")))
-```
-
-Now these elements are in separate columns:
-
-```{r ch10chunk23}
-hurr_obs %>%
-  dplyr::select(latitude, lat_dir, longitude, lon_dir) %>%
-  dplyr::slice(1:2)
-unique(hurr_obs$lat_dir)
-unique(hurr_obs$lon_dir)
-```
-
-If we're looking at US impacts, we probably only need observations from the western hemisphere, so let's filter out other values:
-
-```{r ch10chunk24}
-hurr_obs <- hurr_obs %>%
-  dplyr::filter(lon_dir == "W")
-```
-
-Next, clean up the wind column:
-
-```{r ch10chunk25}
-unique(hurr_obs$wind)[1:5]
-hurr_obs <- hurr_obs %>% 
-  dplyr::mutate(wind = ifelse(wind == " -99", NA, as.numeric(wind)))
-```
-
-Check the cleaned measurements:
-
-```{r ch10chunk26, warning = FALSE, out.width = "0.8\\textwidth", fig.width = 5, fig.height = 3, message = FALSE, fig.align = "center"}
-library(ggplot2)
-ggplot(hurr_obs, aes(x = wind)) + 
-  geom_histogram(binwidth = 10)
-```
-
-Clean and check air pressure measurements in the same way: 
-
-```{r ch10chunk27}
-head(unique(hurr_obs$pressure))
-hurr_obs <- hurr_obs %>% 
-  dplyr::mutate(pressure = ifelse(pressure == " -999", NA,
-                                  as.numeric(pressure)))
-```
-
-```{r  ch10chunk28, out.width = "0.8\\textwidth", fig.width = 5, fig.height = 3, message = FALSE, fig.align = "center", warning = FALSE}
-ggplot(hurr_obs, aes(x = pressure)) + 
-  geom_histogram(binwidth = 5)
-```
-
-Check some of the very low pressure measurements:
-
-```{r ch10chunk29}
-hurr_obs %>% dplyr::arrange(pressure) %>% 
-  dplyr::select(date_time, wind, pressure) %>% slice(1:5)
-```
-
-### Exploring the hurricane tracking data
-
-Explore pressure versus wind speed, by storm status:
-
-```{r ch10chunk30, warning = FALSE,  out.width = "0.9\\textwidth", fig.width = 6.5, fig.height = 3, message = FALSE, fig.align = "center"}
-ggplot(hurr_obs, aes(x = pressure, y = wind,
-                     color = status)) + 
-  geom_point(size = 0.2, alpha = 0.4) 
-```
-
-Next, we want to map storms by decade. Add hurricane decade:
-
-```{r ch10chunk31}
-hurr_obs <- hurr_obs %>%
-  dplyr::mutate(decade = substring(year(date_time), 1, 3),
-                decade = paste0(decade, "0s"))
-unique(hurr_obs$decade)
-```
-
-Add logical for whether the storm was ever category 5:
-
-```{r ch10chunk32}
-hurr_obs <- hurr_obs %>%
-  dplyr::group_by(storm_id) %>%
-  dplyr::mutate(cat_5 = max(wind) >= 137) %>%
-  dplyr::ungroup()
-```
-
-To map the hurricane tracks, you need a base map to add the tracks to. Pull data to map hurricane-prone states:
-
-```{r ch10chunk33, message = FALSE}
-east_states <- c("florida", "georgia", "south carolina", 
-                 "north carolina", "virginia", "maryland",
-                 "delaware", "new jersey", "new york", 
-                 "connecticut", "massachusetts", 
-                 "rhode island", "vermont", "new hampshire",
-                 "maine", "pennsylvania", "west virginia",
-                 "tennessee", "kentucky", "alabama",
-                 "arkansas", "texas", "mississippi",
-                 "louisiana")
-east_us <- map_data("state", region = east_states)
-```
-
-Plot tracks over a map of hurricane-prone states. Add thicker lines for storms that were category 5 at least once in their history. 
-
-```{r ch10chunk34, eval = FALSE}
-ggplot(east_us, aes(x = long, y = lat, group = group)) + 
-  geom_polygon(fill = "cornsilk", color = "cornsilk") + 
-  theme_void() + 
-  xlim(c(-108, -65)) + ylim(c(23, 48)) + 
-  geom_path(data = hurr_obs, 
-            aes(x = -longitude, y = latitude,
-                group = storm_id),
-            color = "red", alpha = 0.2, size = 0.2) + 
-  geom_path(data = filter(hurr_obs, cat_5), 
-            aes(x = -longitude, y = latitude,
-                group = storm_id),
-            color = "red") + 
-  facet_wrap(~ decade)
-```
-
-
-Check trends in maximum wind recorded in any observation each year: 
-
-```{r ch10chunk35, echo = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, out.width = "\\textwidth", fig.align = "center"}
-ggplot(east_us, aes(x = long, y = lat, group = group)) + 
-  geom_polygon(fill = "cornsilk", color = "cornsilk") + 
-  theme_void() + 
-  xlim(c(-108, -65)) + ylim(c(23, 48)) + 
-  geom_path(data = hurr_obs, 
-            aes(x = -longitude, y = latitude, group = storm_id),
-            color = "red", alpha = 0.2, size = 0.2) + 
-  geom_path(data = filter(hurr_obs, cat_5), 
-            aes(x = -longitude, y = latitude, group = storm_id),
-            color = "red") + 
-  facet_wrap(~ decade)
-```
-
-
-Maximum wind observed each year:
-
-```{r ch10chunk36, warning = FALSE,  out.width = "0.8\\textwidth", fig.width = 6.5, fig.height = 3, message = FALSE, fig.align = "center"}
-hurr_obs %>%
-  dplyr::mutate(storm_year = year(date_time)) %>%
-  dplyr::group_by(storm_year) %>%
-  dplyr::summarize(highest_wind = max(wind, na.rm = TRUE)) %>%
-  ggplot(aes(x = storm_year, y = highest_wind)) + 
-  geom_line() + geom_smooth(se = FALSE, span = 0.5)
-```
-
-There is an R package named `gender` that predicts whether a name is male or female based on historical data: 
-
-[Vignette for `gender` package](https://cran.r-project.org/web/packages/gender/vignettes/predicting-gender.html) 
-
-This package uses one of several databases of names (here, we'll use Social Security Administration data), inputs a year or range of years, and outputs whether a name in that year was more likely female or male. 
-
-We can apply a function from this package across all the named storms to see how male / female proportions changed over time.
-
-
-First, install the package (as well as `genderdata`, which is required to use the package). Once you do, you can use `gender` to determine the most common gender associated with a name in a given year or range of years:
-
-```{r ch10chunk37, eval = FALSE}
-# install.packages("gender")
-# install.packages("genderdata", type = "source",
-#                 repos = "http://packages.ropensci.org")
-library(gender)
-gender("KATRINA", years = 2005)[ , c("name", "gender")]
-```
-
-
-To apply this function across all our storms, it helps if we write a small function that "wraps" the `gender` function and outputs exactly (and only) what we want, in the format we want:
-
-```{r ch10chunk38, eval = FALSE}
-get_gender <- function(storm_name, storm_year){
-  storm_gender <- gender(names = storm_name,
-                         years = storm_year,
-                         method = "ssa")$gender
-  if(length(storm_gender) == 0) storm_gender <- NA
-  return(storm_gender)
-}
-```
-
-
-Now we can use `mapply` with this wrapper function to apply it across all our named storms:
-
-```{r ch10chunk39, eval = FALSE}
-hurr_genders <- hurr_meta %>%
-  dplyr::filter(storm_name != "UNNAMED") %>%
-  dplyr::mutate(storm_year = substring(storm_id, 5, 8),
-                storm_year = as.numeric(storm_year)) %>%
-  dplyr::filter(1880 <= storm_year & storm_year <= 2012) %>%
-  dplyr::select(storm_name, storm_year, storm_id) %>%
-  dplyr::mutate(storm_gender = mapply(get_gender, 
-                                      storm_name = storm_name,
-                                      storm_year = as.numeric(storm_year)))
-```
-
-
-Now, plot a bar chart with the number of male, female, and unclear storms each year:
-
-```{r ch10chunk40, eval = FALSE}
-hurr_genders %>%
-  dplyr::group_by(storm_year, storm_gender) %>%
-  dplyr::summarize(n = n()) %>%
-  ggplot(aes(x = storm_year, y = n, fill = storm_gender)) + 
-  geom_bar(stat = "identity") + 
-  coord_flip() + 
-  scale_x_reverse() + 
-  theme_bw() + 
-  xlab("") + ylab("# of storms")
-```
-
-
-```{r ch10chunk41, echo = FALSE, eval = FALSE}
-hurr_genders %>%
-  dplyr::group_by(storm_year, storm_gender) %>%
-  dplyr::summarize(n = n()) %>%
-  ggplot(aes(x = storm_year, y = n, fill = storm_gender)) + 
-  geom_bar(stat = "identity") + 
-  coord_flip() + 
-  scale_x_reverse() + 
-  theme_bw() + 
-  xlab("") + ylab("# of storms")
-```
-
-
-Next, you can write a function to plot the track for a specific storm. You'll want to be able to call the function by storm name and year, so join in the storm names from the `hurr_meta` dataset. We'll exclude any "UNNAMED" storms.
-
-```{r ch10chunk42}
-hurr_obs <- hurr_obs %>%
-  dplyr::left_join(hurr_meta, by = "storm_id") %>%
-  dplyr::filter(storm_name != "UNNAMED") %>%
-  dplyr::mutate(storm_year = year(date_time))
-```
-
-Next, write a function to plot the track for a single storm. Use color to show storm status and size to show wind speed. 
-
-
-```{r ch10chunk43}
-map_track <- function(storm, year, map_data = east_us,
-                      hurr_data = hurr_obs){
-  to_plot <- hurr_obs %>%
-    dplyr::filter(storm_name == toupper(storm) & storm_year == year)
-  out <- ggplot(east_us, aes(x = long, y = lat,
-                             group = group)) + 
-    geom_polygon(fill = "cornsilk") + 
-    theme_void() + 
-    xlim(c(-108, -65)) + ylim(c(23, 48)) + 
-    geom_path(data = to_plot,
-              aes(x = -longitude, y = latitude,
-                  group = NULL)) + 
-    geom_point(data = to_plot,
-              aes(x = -longitude, y = latitude,
-                  group = NULL, color = status,
-                  size = wind), alpha = 0.5)
-  return(out)
-}
-```
-
-
-```{r ch10chunk44, fig.align = "center", fig.width = 7, fig.height = 4, out.width = "\\textwidth", warning = FALSE}
-map_track(storm = "Katrina", year = "2005")
-```
-
-
-```{r ch10chunk45, fig.align = "center", fig.width = 7, fig.height = 4, out.width = "\\textwidth", warning = FALSE}
-map_track(storm = "Camille", year = "1969")
-```
-
-
-```{r ch10chunk46, fig.align = "center", fig.width = 7, fig.height = 4, out.width = "\\textwidth", warning = FALSE}
-map_track(storm = "Hazel", year = "1954")
-```
-
-
-You can also write code with `readLines` that will read, check, and clean each line, one line at a time. 
-
-```{r ch10chunk47, eval = FALSE}
-con  <- file("~/my_file.txt", open = "r")
-while (length(single_line <- 
-              readLines(con, n = 1,
-                        warn = FALSE)) > 0) {
-    
-  ## Code to check and clean each line and 
-  ## then add it to "cleaned" data frame.
-  ## Run operations on `single_line`.
-
-  } 
-close(con)
-```
-
-This can be particularly useful if you're cleaning a very big file, especially if there are many lines you don't want to keep. 
 
 
 ## Pulling online data
 
 ### APIs
 
-API: "Application Program Interface" 
-
+*APIs* are "Application Program Interfaces".
 An API provides the rules for software applications to interact. In the case of open data APIs, they provide the rules you need to know to write R code to request and pull data from the organization's web server into your R session. 
-
 Often, an API can help you avoid downloading all available data, and instead only download the subset you need.
 
-Strategy for using APIs from R: 
+The basic strategy for using APIs from R is: 
 
 - Figure out the API rules for HTTP requests
 - Write R code to create a request in the proper format 
@@ -535,7 +28,7 @@ Strategy for using APIs from R:
 
 Start by reading any documentation available for the API. This will often give information on what data is available and how to put together requests. 
 
-```{r ch10chunk48, echo = FALSE, out.width = "1.1\\textwidth", fig.align = "center"}
+```{r echo = FALSE, out.width = "1.1\\textwidth", fig.align = "center"}
 knitr::include_graphics("figures/NASA_API_documentation.png")
 ```
 
@@ -545,17 +38,14 @@ Many organizations will require you to get an API key and use this key in each o
 
 You should keep this key private. In particular, make sure you do not include it in code that is posted to GitHub. 
 
-### Example-- `riem` package
-
 The `riem` package, developed by Maelle Salmon and an ROpenSci package, is an excellent and straightforward example of how you can use R to pull open data through a web API. 
-
 This package allows you to pull weather data from airports around the world directly from the [Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu).
 
-To get a certain set of weather data from the Iowa Environmental Mesonet, you can send an HTTP request specifying a base URL, "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/", as well as some parameters describing the subset of dataset you want (e.g., date ranges, weather variables, output format). 
+To get a certain set of weather data from the Iowa Environmental Mesonet, you can send an HTTP request specifying a base URL, "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/", as well as some parameters describing the subset of dataset you want (e.g., date ranges, weather variables, output format). \bigskip
 
 Once you know the rules for the names and possible values of these parameters (more on that below), you can submit an HTTP GET request using the `GET` function from the `httr` package. 
 
-```{r ch10chunk49, echo = FALSE, fig.align = "center", out.width = "\\textwidth"}
+```{r echo = FALSE, fig.align = "center"}
 knitr::include_graphics("figures/mesonet_example.png")
 ```
 
@@ -563,7 +53,7 @@ https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=DEN&data=sknt&
 
 When you are making an HTTP request using the `GET` or `POST` functions from the `httr` package, you can include the key-value pairs for any query parameters as a list object in the `query` argurment of the function.
 
-```{r ch10chunk50}
+```{r}
 library(httr)
 meso_url <- paste0("https://mesonet.agron.iastate.edu/",
                    "cgi-bin/request/asos.py/")
@@ -576,82 +66,43 @@ denver <- GET(url = meso_url,
                            format = "comma"))
 ```
 
-You can then use `content` from `httr` to retrieve the contents of the HTTP request. For this particular web data, the requested data is a comma-separated file, so you can convert it to a dataframe with `read_csv`:
+The `GET` call will return a special type of list object with elements that include the url you queried and the content of the page at that url:
 
-```{r ch10chunk51}
+```{r}
+str(denver, max.level = 1, list.len = 6)
+```
+
+The `httr` package includes functions to pull out elements of this list object, including: 
+
+- `headers`: Pull out the header information
+- `content`: Pull out the content returned from the page
+- `status_code`: Pull out the status code from the `GET` request (e.g., 200: okay; 404: not found)
+
+*Note:* For some fun examples of 404 pages, see https://www.creativebloq.com/web-design/best-404-pages-812505
+
+You can use `content` from `httr` to retrieve the contents of the HTTP request we made. For this particular web data, the requested data is a comma-separated file, so you can convert it to a dataframe with `read_csv`:
+
+```{r}
 denver %>% content() %>% 
-  readr::read_csv(skip = 5, na = "M") %>%
+  read_csv(skip = 5, na = "M") %>%
   slice(1:3)
 ```
 
-## Example R API wrappers
+The `riem` package wraps up this whole process, so you can call a single function to get in 
+the data you want from the API:
 
-### rOpenSci
-
-rOpenSci (https://ropensci.org): 
-
-> "At rOpenSci we are creating packages that allow access to data repositories through the R statistical programming environment that is already a familiar part of the workflow of many scientists. Our tools not only facilitate drawing data into an environment where it can readily be manipulated, but also one in which those analyses and methods can be easily shared, replicated, and extended by other researchers."
-
-rOpenSci collects a number of packages for tapping into open data for research: https://ropensci.org/packages
-
-Some examples (all descriptions from rOpenSci): 
-
-- `AntWeb`: Access data from the world's largest ant database
-- `chromer`: Interact with the chromosome counts database (CCDB)
-- `gender`: Encodes gender based on names and dates of birth
-- `musemeta`: R Client for Scraping Museum Metadata, including The Metropolitan Museum of Art, the Canadian Science & Technology Museum Corporation, the National Gallery of Art, and the Getty Museum, and more to come.
-- `rusda`: Interface to some USDA databases
-- `webchem`: Retrieve chemical information from many sources. Currently includes: Chemical Identifier Resolver, ChemSpider, PubChem, and Chemical Translation Service.
-
-For example, here is the description for the `rnoaa` package:
-
-> "Access climate data from NOAA, including temperature and precipitation, as well as sea ice cover data, and extreme weather events"
-
-- Buoy data from the National Buoy Data Center
-- Historical Observing Metadata Repository (HOMR))--- climate station metadata
-- National Climatic Data Center weather station data
-- Sea ice data
-- International Best Track Archive for Climate Stewardship (IBTrACS)--- tropical cyclone tracking data
-- Severe Weather Data Inventory (SWDI)
-
-### `countyweather`
-
-The `countyweather` package wraps the `rnoaa` package to let you pull and aggregate weather at the county level in the U.S. For example, you can pull all data from Miami during Hurricane Andrew: 
-
-```{r ch10chunk52, echo = FALSE, out.width = "\\textwidth"}
-knitr::include_graphics("figures/countyweather2.png")
+```{r}
+library(riem)
+denver_2 <- riem_measures(station = "DEN", 
+                          date_start = "2016-06-01",
+                          date_end = "2016-06-30")
+denver_2 %>% slice(1:3) 
 ```
 
-When you pull the data for a county, the package also maps the contributing weather stations:
+## Example R API wrapper packages
 
-```{r ch10chunk53, echo = FALSE, out.width = "\\textwidth"}
-knitr::include_graphics("figures/countyweather1.png")
-```
-
-### USGS-R Packages
-
-USGS has a very nice collection of R packages that wrap USGS open data APIs: https://owi.usgs.gov/R/
-
-> "USGS-R is a community of support for users of the R scientific programming language. USGS-R resources include R training materials, R tools for the retrieval and analysis of USGS data, and support for a growing group of USGS-R developers. "
-
-USGS R packages include: 
-
-- `dataRetrieval`: Obtain water quality sample data, streamflow data, and metadata directly from either the USGS or EPA
-- `EGRET`: Analysis of long-term changes in water quality and streamflow, including the water-quality method Weighted Regressions on Time, Discharge, and Season (WRTDS)
-- `laketemps`: Lake temperature data package for Global Lake Temperature Collaboration Project
-- `lakeattributes`: Common useful lake attribute data
-- `soilmoisturetools`: Tools for soil moisture data retrieval and visualization
-
-### U.S. Census packages
-
-A number of R packages help you access and use data from the U.S. Census: 
-
-- `tigris`: Download and use Census TIGER/Line shapefiles in R
-- `acs`: Download, manipulate, and present American Community Survey and Decennial data from the US Census
-- `USABoundaries`: Historical and contemporary boundaries of the United States of America
-- `idbr`: R interface to the US Census Bureau International Data Base API
-
-For example, the `tigris` package allows you to pull spatial data for:
+The `tigris` package is a very useful example of an API wrapper. It retrieves geographic
+boundary data from the U.S. Census for a number of different geographies: 
 
 - Location boundaries 
     + States
@@ -671,15 +122,83 @@ For example, the `tigris` package allows you to pull spatial data for:
     + Landmarks
     + Military
 
-Example from: Kyle Walker. 2016. "tigris: An R Package to Access and Work
-with Geographic Data from the US
-Census Bureau". The R Journal.
+## `tigris` package
 
-```{r ch10chunk54, echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
+The following plot is an example of the kinds of maps you can create using the `tigris`
+package. This map comes from: *Kyle Walker. 2016. "tigris: An R Package to Access and Work
+with Geographic Data from the US
+Census Bureau". The R Journal.* This is a great article to read to find out more about 
+`tigris`.
+
+```{r echo = FALSE, fig.align = "center"}
 knitr::include_graphics("figures/tigris_example.png")
 ```
 
-### Other R API wrappers
+A number of other R packages also help you access and use data from the U.S. Census: 
+
+- `acs`: Download, manipulate, and present American Community Survey and Decennial data from the US Census (see "Working with the American Community Survey in R: A Guide to Using the
+acs Package", a book available free online through the CSU library)
+- `USABoundaries`: Historical and contemporary boundaries of the United States of America
+- `idbr`: R interface to the US Census Bureau International Data Base API (e.g., populations of other countries)
+
+The organization rOpenSci (https://ropensci.org) has the following mission:
+
+> "At rOpenSci we are creating packages that allow access to data repositories through the R statistical programming environment that is already a familiar part of the workflow of many scientists. Our tools not only facilitate drawing data into an environment where it can readily be manipulated, but also one in which those analyses and methods can be easily shared, replicated, and extended by other researchers."
+
+rOpenSci collects a number of packages for tapping into open data for research. These are 
+listed at https://ropensci.org/packages. Many of these packages are wrappers for APIs with 
+data useful for scientific research
+
+Some examples (all descriptions from rOpenSci): 
+
+- `AntWeb`: Access data from the world's largest ant database
+- `chromer`: Interact with the chromosome counts database (CCDB)
+- `gender`: Encodes gender based on names and dates of birth
+- `musemeta`: R Client for Scraping Museum Metadata, including The Metropolitan Museum of Art, the Canadian Science & Technology Museum Corporation, the National Gallery of Art, and the Getty Museum, and more to come.
+- `rusda`: Interface to some USDA databases
+- `webchem`: Retrieve chemical information from many sources. Currently includes: Chemical Identifier Resolver, ChemSpider, PubChem, and Chemical Translation Service.
+
+As an example, one ROpenSci package, `rnoaa`, allows you to:
+
+> "Access climate data from NOAA, including temperature and precipitation, as well as sea ice cover data, and extreme weather events"
+
+It includes access to:
+
+- Buoy data from the National Buoy Data Center
+- Historical Observing Metadata Repository (HOMR))--- climate station metadata
+- National Climatic Data Center weather station data
+- Sea ice data
+- International Best Track Archive for Climate Stewardship (IBTrACS)--- tropical cyclone tracking data
+- Severe Weather Data Inventory (SWDI)
+
+## `countyweather`
+
+The `countyweather` package, developed by a student here at CSU, wraps the `rnoaa` package to
+let you pull and aggregate weather at the county level in the U.S. For example, you can pull
+all data from Miami during Hurricane Andrew: 
+
+```{r echo = FALSE}
+knitr::include_graphics("figures/countyweather2.png")
+```
+
+When you pull the data for a county, the package also maps the contributing weather stations:
+
+```{r echo = FALSE}
+knitr::include_graphics("figures/countyweather1.png")
+```
+
+The USGS also has a very nice collection of R packages that wrap USGS open data APIs, which
+can be accessed through: https://owi.usgs.gov/R/
+
+> "USGS-R is a community of support for users of the R scientific programming language. USGS-R resources include R training materials, R tools for the retrieval and analysis of USGS data, and support for a growing group of USGS-R developers. "
+
+USGS R packages include: 
+
+- `dataRetrieval`: Obtain water quality sample data, streamflow data, and metadata directly from either the USGS or EPA
+- `EGRET`: Analysis of long-term changes in water quality and streamflow, including the water-quality method Weighted Regressions on Time, Discharge, and Season (WRTDS)
+- `laketemps`: Lake temperature data package for Global Lake Temperature Collaboration Project
+- `lakeattributes`: Common useful lake attribute data
+- `soilmoisturetools`: Tools for soil moisture data retrieval and visualization
 
 Here are some examples of other R packages that faciliate use of an API for open data:
 
@@ -691,108 +210,126 @@ Here are some examples of other R packages that faciliate use of an API for open
 - `blsAPI`: Bureau of Labor Statistics
 - `rtimes`: New York Times
 
-### R and APIs
-
-Find out more about writing API packages with this vignette for the httr package: https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html. 
-
+Find out more about writing API packages with this vignette for the httr package: https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html. \bigskip
 This document includes advice on error handling within R code that accesses data through an open API.
 
-## Parsing webpages
+## In-course exercise
 
-You can also use R to pull and clean web-based data that is not accessible through a web API or as an online flat file. 
+The `rplos` package provides a wrapper to the Public Library of Science (PLoS)'s API. PLOS
+has a collection of academic journals spanning a variety of topics. 
 
-In this case, the strategy is: 
+- Check out this page of documentation for this API: http://api.plos.org/solr/search-fields/
+Look through the potential search terms. 
+- Use the `searchplos` function to search articles in the PLoS collection for the term 
+"West Nile". Pull the publication date, title, abstract, article type, subject, 
+and journal of each
+matching article
+and save the result to an R object called `wn_papers`. You may find it helpful to look at the 
+examples in the helpfile for `searchplos` or the tutorial available at: 
+https://ropensci.org/tutorials/rplos_tutorial/
+- The object returned by `searchplos` will be a list with two top levels, `meta` and `data`. 
+Confirm that this is true for the `wn_papers` object you created. Look at the `meta`
+part of the list (you can use `$` indexing to pull this out). How many articles were found
+with "West Nile" in them? Does the query seem case-sensitive (i.e., do you get the same
+number of papers when you query "west nile" rather than "West Nile")? 
+- Re-run your query (save the results to `wn_papers_titles`) looking only for papers with 
+"West Nile" in the title of the paper. How many papers are returned by this query? 
+- By default the limit of the number of papers returned by a query will be 10. You 
+can change this (to a certain degree) by using the `limit` option. 
+For the call you ran to create `wn_papers_titles`, set the limit to 
+the number of articles that match this query, as identified in the `meta` element of the
+first run of the call. Check the number of rows in the `data` element that was returned to
+make sure it has the same number of rows as the number of articles that match the query.
+- Create a plot of the number of articles published per year. Use color to show which 
+articles are Research Articles versus other types of articles.
+- Determine which journals have published these articles and the number of articles published 
+in each journal. You may notice that sometimes "PLoS" is used and sometimes "PLOS". See if you
+can fix this in R to get the count of articles per journal without this capitalization
+difference causing problems.
 
-- Pull in the full web page file (often in HTML or XML) 
-- Parse or clean the file within R (e.g., with regular expressions)
-
-### `rvest`
-
-The `rvest` package should be the first thing you try if you need to pull and parse data from a webpage that is not a flat file. 
-
-This package allows you to read an HTML or XML file and pull out a certain element. Here is a very simple example of this parsing (this and later examples are from `rvest` documentation):
-
-```{r ch10chunk55, message = FALSE}
-library(rvest)
-read_html("<html><title>Hi<title></html>")
+```{r}
+library(rplos)
+wn_papers <- searchplos(q = "West Nile", 
+                        fl = c("publication_date", "title", "journal", "subject",
+                               "abstract", "article_type"))
 ```
 
-If you have an HTML or XML page you want to pull data from, you'll first need to read the page:
+Confirm the structure of the returned object: 
 
-```{r ch10chunk56, echo = FALSE, out.width = "\\textwidth"}
-knitr::include_graphics("figures/moviereviewpage.png")
+```{r}
+str(wn_papers)
 ```
 
-```{r ch10chunk57}
-library(rvest)
-lego_movie <- read_html("http://www.imdb.com/title/tt1490017/")
-lego_movie
+Look at the meta data: 
+
+```{r}
+wn_papers$meta
 ```
 
-Then you can use `html_nodes` and `html_text` to pull and parse just the elements you want: 
+Query for just articles with "West Nile" in the title:
 
-```{r ch10chunk58}
-rating_node <- lego_movie %>% html_nodes("strong span") 
-rating_node
+```{r}
+wn_papers_titles <- searchplos(q = "title:West Nile", 
+                        fl = c("publication_date", "title", "journal", "subject",
+                               "abstract", "article_type"))
 ```
 
-```{r ch10chunk59}
-rating <- rating_node %>% 
-    html_text() %>% as.numeric()
-rating
+Look at the metadata: 
+
+```{r}
+wn_papers_titles$meta
 ```
 
-You can pull and parse tables:
+Re-run the query using an appropriate limit to get all the matching articles: 
 
-```{r ch10chunk60}
-lego_movie %>%
-  html_nodes("table") %>% `[[`(1) %>%
-  html_table() %>% select(X2) %>% slice(2:8) 
+```{r}
+wn_papers_titles <- searchplos(q = "title:West Nile", 
+                        fl = c("publication_date", "title", "journal", "subject",
+                               "abstract", "article_type"),
+                        limit = 190)
 ```
 
-The only tricky part of this is figuring out which CSS selector you can use to pull a specific element of a webpage. 
+Check the number of rows: 
 
-You can use "Selectorgadget" to help with this. Read the vignette for that tool here: 
-ftp://cran.r-project.org/pub/R/web/packages/rvest/vignettes/selectorgadget.html
-
-### Scraping multiple pages
-
-[Need to update this-- Kitchen has changed their website]
-
-```{r ch10chunk61, message = FALSE, eval = FALSE}
-cities <- c("denver", "boulder", "fort-collins")
-
-kitchen_addresses <- c()
-for(i in 1:length(cities)){
-  restaurant_url <- paste0("http://thekitchenbistros.com/the-kitchen-",
-                           cities[i])
-  restaurant_page <- read_html(restaurant_url)
-  address <- restaurant_page %>%
-    html_nodes("p:nth-child(2)") %>% html_text()
-  kitchen_addresses[i] <- address[1]
-}
-kitchen_addresses
+```{r}
+nrow(wn_papers_titles$data)
 ```
 
-```{r ch10chunk62, message = FALSE, eval = FALSE}
-library(ggmap)
+Create a plot of the number of articles in the PLoS journals with "West Nile" in the title
+by year:
+
+```{r message = FALSE, warning = FALSE}
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+wn_papers_titles$data %>% 
+  mutate(publication_date = ymd_hms(publication_date),
+         pub_year = year(publication_date),
+         research_article = article_type == "Research Article") %>% 
+  group_by(pub_year, research_article) %>% 
+  count() %>% 
+  ggplot(aes(x = pub_year, y = n, fill = research_article)) + 
+  geom_col() + 
+  labs(x = "Year of publication", 
+       y = "Number of articles published",
+       fill = "Research article") + 
+  ggtitle("West Nile articles published in PLoS journals",
+          subtitle = "Based on articles with 'West Nile' in the title")
+  
+```
+
+Determine which journals have published these articles and the number of articles published 
+in each journal:
+
+```{r}
+library(forcats)
 library(stringr)
-kitchen_latlons <- geocode(kitchen_addresses)
+wn_papers_titles$data %>% 
+  mutate(journal = str_replace(journal, "PLOS", "PLoS")) %>% 
+  group_by(journal) %>% 
+  count() %>% 
+  ungroup() %>% 
+  filter(!is.na(journal)) %>% 
+  arrange(desc(n))
 ```
 
-```{r ch10chunk63, message = FALSE, eval = FALSE}
-for(i in 1:length(cities)){
-  city_map <- get_map(paste(gsub("-", " ", cities[i]),
-                            "colorado"),
-                      zoom = 14, 
-                      maptype = "roadmap")
-  city_map <- ggmap(city_map) + 
-    geom_point(data = kitchen_latlons[i, ],
-               aes(x = lon, y = lat),
-               color = "red", size = 4, alpha = 0.4) + 
-    theme_void() + 
-    ggtitle(paste("The Kitchen in",
-                  str_to_title(gsub("-", " ", cities[i]))))
-  print(city_map)
-}
-```
