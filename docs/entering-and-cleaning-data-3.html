@@ -25,7 +25,7 @@
 <meta name="author" content="Brooke Anderson and Rachel Severson">
 
 
-<meta name="date" content="2018-10-30">
+<meta name="date" content="2018-11-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -443,6 +443,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.6" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#in-course-exercise-10"><i class="fa fa-check"></i><b>11.6</b> In-course exercise</a><ul>
 <li class="chapter" data-level="11.6.1" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#working-with-an-api-wrapper-package"><i class="fa fa-check"></i><b>11.6.1</b> Working with an API wrapper package</a></li>
 <li class="chapter" data-level="11.6.2" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#cleaning-very-messy-data-1"><i class="fa fa-check"></i><b>11.6.2</b> Cleaning very messy data</a></li>
+<li class="chapter" data-level="11.6.3" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#exploring-network-data"><i class="fa fa-check"></i><b>11.6.3</b> Exploring network data</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
@@ -538,7 +539,7 @@ This package allows you to pull weather data from airports around the world dire
 ##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;insensitive&quot; &quot;list&quot;
 ##  $ all_headers:List of 1
 ##  $ cookies    :&#39;data.frame&#39;: 0 obs. of  7 variables:
-##  $ content    : raw [1:230652] 23 44 45 42 ...
+##  $ content    : raw [1:230654] 23 44 45 42 ...
 ##   [list output truncated]
 ##  - attr(*, &quot;class&quot;)= chr &quot;response&quot;</code></pre>
 <p>The <code>httr</code> package includes functions to pull out elements of this list object, including:</p>
@@ -555,9 +556,9 @@ This package allows you to pull weather data from airports around the world dire
 <pre><code>## # A tibble: 3 x 3
 ##   station valid                sped
 ##   &lt;chr&gt;   &lt;dttm&gt;              &lt;dbl&gt;
-## 1 DEN     2016-06-01 00:00:00   9.2
-## 2 DEN     2016-06-01 00:05:00   9.2
-## 3 DEN     2016-06-01 00:10:00   6.9</code></pre>
+## 1 DEN     2016-06-01 01:00:00   6.9
+## 2 DEN     2016-06-01 01:05:00   6.9
+## 3 DEN     2016-06-01 01:10:00   6.9</code></pre>
 <p>The <code>riem</code> package wraps up this whole process, so you can call a single function to get in
 the data you want from the API:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">library</span>(riem)</a>
@@ -889,7 +890,7 @@ data relevant to West Nile virus.</li>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="kw">str</span>(wn_papers)</a></code></pre></div>
 <pre><code>## List of 2
 ##  $ meta:Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    1 obs. of  2 variables:
-##   ..$ numFound: int 2868
+##   ..$ numFound: int 2873
 ##   ..$ start   : int 0
 ##  $ data:Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    10 obs. of  6 variables:
 ##   ..$ subject         : chr [1:10] &quot;/Earth sciences/Geography/Regional geography/Geographical regions/Mediterranean Basin,/Medicine and health scie&quot;| __truncated__ &quot;/Biology and life sciences/Genetics/Genomics/Animal genomics/Mammalian genomics,/Biology and life sciences/Micr&quot;| __truncated__ &quot;/Social sciences/Economics/Health economics,/Medicine and health sciences/Health care/Health economics,/Biology&quot;| __truncated__ &quot;/Earth sciences/Geography/Human geography/Land use,/Earth sciences/Atmospheric science/Meteorology,/People and &quot;| __truncated__ ...
@@ -898,14 +899,14 @@ data relevant to West Nile virus.</li>
 ##   ..$ article_type    : chr [1:10] &quot;Research Article&quot; &quot;Research Article&quot; &quot;Research Article&quot; &quot;Research Article&quot; ...
 ##   ..$ abstract        : chr [1:10] &quot;\nWest Nile virus (WNV) is a mosquito-transmitted Flavivirus belonging to the Japanese encephalitis antigenic c&quot;| __truncated__ &quot;\nThe West Nile virus (WNV), isolated in 1937, is an arbovirus (arthropod-borne virus) that infects thousands o&quot;| __truncated__ &quot;\n        Understanding the conditions underlying the proliferation of infectious diseases is crucial for mitig&quot;| __truncated__ &quot;\nWest Nile Virus (WNV) is a globally important mosquito borne virus, with significant implications for human a&quot;| __truncated__ ...
 ##   ..$ title           : chr [1:10] &quot;Spatio-Temporal Identification of Areas Suitable for West Nile Disease in the Mediterranean Basin and Central Europe&quot; &quot;Biological and phylogenetic characteristics of West African lineages of West Nile virus&quot; &quot;Economic Conditions Predict Prevalence of West Nile Virus&quot; &quot;Identifying the Environmental Conditions Favouring West Nile Virus Outbreaks in Europe&quot; ...
-##   ..- attr(*, &quot;numFound&quot;)= int 2868
+##   ..- attr(*, &quot;numFound&quot;)= int 2873
 ##   ..- attr(*, &quot;start&quot;)= int 0</code></pre>
 <p>Look at the meta data:</p>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1">wn_papers<span class="op">$</span>meta</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1     2868     0</code></pre>
+## 1     2873     0</code></pre>
 <p>Query for just articles with “West Nile” in the title:</p>
 <div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1">wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </a>
 <a class="sourceLine" id="cb54-2" data-line-number="2">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
@@ -915,7 +916,7 @@ data relevant to West Nile virus.</li>
 <pre><code>## # A tibble: 1 x 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1      190     0</code></pre>
+## 1      191     0</code></pre>
 <p>Re-run the query using an appropriate limit to get all the matching articles:</p>
 <div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1">wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </a>
 <a class="sourceLine" id="cb57-2" data-line-number="2">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
@@ -957,8 +958,8 @@ in each journal:</p>
 <pre><code>## # A tibble: 6 x 2
 ##   journal                              n
 ##   &lt;chr&gt;                            &lt;int&gt;
-## 1 PLoS ONE                           109
-## 2 PLoS Neglected Tropical Diseases    39
+## 1 PLoS ONE                           110
+## 2 PLoS Neglected Tropical Diseases    38
 ## 3 PLoS Pathogens                      27
 ## 4 PLoS Medicine                        3
 ## 5 PLoS Biology                         2
@@ -977,6 +978,121 @@ messy hurricane tracks data from online and clean it.</p>
 <li>Clean up the wind column, so it gives wind speed as a number and <code>NA</code> in cases where wind speed is missing</li>
 <li>If you have time, try to figure out what the <code>status</code> abbreviations stand for. Create a new factor column named <code>status_long</code> with the status spelled out.</li>
 </ul>
+</div>
+<div id="exploring-network-data" class="section level3">
+<h3><span class="header-section-number">11.6.3</span> Exploring network data</h3>
+<p>The following code offers some examples of exploring the PLoS data using a network
+framework.</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb63-2" data-line-number="2"><span class="kw">library</span>(tidyr)</a>
+<a class="sourceLine" id="cb63-3" data-line-number="3">paper_subject &lt;-<span class="st"> </span>wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-4" data-line-number="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">id =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-5" data-line-number="5"><span class="st">  </span><span class="kw">select</span>(id, subject) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-6" data-line-number="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">subjects =</span> <span class="kw">str_split</span>(subject, <span class="st">&quot;/&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-7" data-line-number="7"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>subject) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-8" data-line-number="8"><span class="st">  </span><span class="kw">unnest</span>(subjects) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-9" data-line-number="9"><span class="st">  </span><span class="kw">filter</span>(subjects <span class="op">!=</span><span class="st"> &quot;&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-10" data-line-number="10"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">subjects =</span> <span class="kw">str_replace</span>(subjects, <span class="st">&quot;,&quot;</span>, <span class="st">&quot;&quot;</span>))</a>
+<a class="sourceLine" id="cb63-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb63-12" data-line-number="12"><span class="kw">head</span>(paper_subject)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 2
+##      id subjects                 
+##   &lt;int&gt; &lt;chr&gt;                    
+## 1     1 Biology and life sciences
+## 2     1 Genetics                 
+## 3     1 Genomics                 
+## 4     1 Animal genomics          
+## 5     1 Mammalian genomics       
+## 6     1 Biology and life sciences</code></pre>
+<p>Here are the top ten listed subjects:</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1">paper_subject <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb65-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(subjects) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb65-3" data-line-number="3"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb65-4" data-line-number="4"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb65-5" data-line-number="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb65-6" data-line-number="6"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a></code></pre></div>
+<pre><code>## # A tibble: 10 x 2
+##    subjects                         n
+##    &lt;chr&gt;                        &lt;int&gt;
+##  1 Biology and life sciences     1946
+##  2 Medicine and health sciences   899
+##  3 Flaviviruses                   796
+##  4 West Nile virus                672
+##  5 Viral pathogens                636
+##  6 Organisms                      630
+##  7 Viruses                        434
+##  8 Microbial pathogens            426
+##  9 Immunology                     342
+## 10 Microbiology                   294</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" data-line-number="1"><span class="kw">library</span>(widyr)</a>
+<a class="sourceLine" id="cb67-2" data-line-number="2">subject_pairs &lt;-<span class="st"> </span>paper_subject <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-3" data-line-number="3"><span class="st">  </span><span class="kw">pairwise_count</span>(<span class="dt">item =</span> subjects, <span class="dt">feature =</span> id) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-4" data-line-number="4"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">from =</span> item1, <span class="dt">to =</span> item2, <span class="dt">weight =</span> n)</a>
+<a class="sourceLine" id="cb67-5" data-line-number="5"><span class="kw">head</span>(subject_pairs)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   from               to                        weight
+##   &lt;chr&gt;              &lt;chr&gt;                      &lt;dbl&gt;
+## 1 Genetics           Biology and life sciences     44
+## 2 Genomics           Biology and life sciences     13
+## 3 Animal genomics    Biology and life sciences      7
+## 4 Mammalian genomics Biology and life sciences      2
+## 5 Microbiology       Biology and life sciences    175
+## 6 Virology           Biology and life sciences     57</code></pre>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" data-line-number="1"><span class="kw">library</span>(tidygraph)</a>
+<a class="sourceLine" id="cb69-2" data-line-number="2">subject_network &lt;-<span class="st"> </span>subject_pairs <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb69-3" data-line-number="3"><span class="st">  </span><span class="kw">filter</span>(weight <span class="op">&gt;</span><span class="st"> </span><span class="dv">50</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb69-4" data-line-number="4"><span class="st">  </span><span class="kw">as_tbl_graph</span>(<span class="dt">directed =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb69-5" data-line-number="5">subject_network</a></code></pre></div>
+<pre><code>## # A tbl_graph: 34 nodes and 774 edges
+## #
+## # An undirected multigraph with 1 component
+## #
+## # Node Data: 34 x 1 (active)
+##   name           
+##   &lt;chr&gt;          
+## 1 Microbiology   
+## 2 Virology       
+## 3 Organisms      
+## 4 Viruses        
+## 5 Viral pathogens
+## 6 Flaviviruses   
+## # ... with 28 more rows
+## #
+## # Edge Data: 774 x 3
+##    from    to weight
+##   &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;
+## 1     1    34    175
+## 2     2    34     57
+## 3     3    34    182
+## # ... with 771 more rows</code></pre>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1"><span class="kw">library</span>(ggraph)</a>
+<a class="sourceLine" id="cb71-2" data-line-number="2"><span class="kw">library</span>(viridis)</a></code></pre></div>
+<pre><code>## Loading required package: viridisLite</code></pre>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" data-line-number="1">subject_network <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb73-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">centrality =</span> <span class="kw">centrality_authority</span>(),</a>
+<a class="sourceLine" id="cb73-3" data-line-number="3">         <span class="dt">subject_group =</span> <span class="kw">as.factor</span>(<span class="kw">group_infomap</span>())) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb73-4" data-line-number="4"><span class="st">  </span><span class="kw">ggraph</span>(<span class="dt">layout =</span> <span class="st">&#39;kk&#39;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb73-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_edge_link</span>(<span class="kw">aes</span>(<span class="dt">edge_alpha =</span> weight), <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb73-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_node_label</span>(<span class="kw">aes</span>(<span class="dt">label =</span> name, <span class="dt">fill =</span> subject_group, <span class="dt">size =</span> centrality), </a>
+<a class="sourceLine" id="cb73-7" data-line-number="7">                  <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">show.legend =</span> <span class="ot">FALSE</span>, </a>
+<a class="sourceLine" id="cb73-8" data-line-number="8">                  <span class="dt">repel =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb73-9" data-line-number="9"><span class="st">  </span><span class="kw">scale_fill_viridis</span>(<span class="dt">discrete =</span> <span class="ot">TRUE</span>, <span class="dt">option =</span> <span class="st">&quot;B&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb73-10" data-line-number="10"><span class="st">  </span><span class="kw">theme_graph</span>() </a></code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-40-1.png" width="960" /></p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" data-line-number="1">subject_cors &lt;-<span class="st"> </span>paper_subject <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb74-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(subjects) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-3" data-line-number="3"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">n</span>() <span class="op">&gt;=</span><span class="st"> </span><span class="dv">40</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-4" data-line-number="4"><span class="st">  </span><span class="kw">pairwise_cor</span>(<span class="dt">item =</span> subjects, <span class="dt">feature =</span> id)  <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb74-5" data-line-number="5"><span class="st">  </span><span class="kw">filter</span>(correlation <span class="op">&gt;</span><span class="st"> </span><span class="fl">.4</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-6" data-line-number="6"><span class="st">  </span><span class="kw">as_tbl_graph</span>(<span class="dt">directed =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" data-line-number="1">subject_cors <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb75-2" data-line-number="2"><span class="st">  </span><span class="kw">ggraph</span>(<span class="dt">layout =</span> <span class="st">&quot;fr&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_edge_link</span>(<span class="kw">aes</span>(<span class="dt">edge_alpha =</span> correlation, <span class="dt">edge_width =</span> correlation), <span class="dt">edge_colour =</span> <span class="st">&quot;royalblue&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-4" data-line-number="4"><span class="st">  </span><span class="kw">geom_node_point</span>(<span class="dt">size =</span> <span class="dv">5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_node_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> name), <span class="dt">repel =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb75-6" data-line-number="6">                 <span class="dt">point.padding =</span> <span class="kw">unit</span>(<span class="fl">0.2</span>, <span class="st">&quot;lines&quot;</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-7" data-line-number="7"><span class="st">  </span><span class="kw">theme_void</span>()</a></code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-42-1.png" width="768" /></p>
 
 </div>
 </div>

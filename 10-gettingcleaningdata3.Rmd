@@ -361,6 +361,7 @@ hurr_obs %>% select(V1:V2, V5:V6, storm_id) %>% slice(1:3)
 ```
 
 
+
 ## In-course exercise
 
 ### Working with an API wrapper package
@@ -500,3 +501,85 @@ Then try the following further cleaning steps:
 - Clean up the latitude and longitude so that you have separate columns for the numeric values and for the direction indicator (e.g., N, S, E, W)
 - Clean up the wind column, so it gives wind speed as a number and `NA` in cases where wind speed is missing
 - If you have time, try to figure out what the `status` abbreviations stand for. Create a new factor column named `status_long` with the status spelled out.
+
+### Exploring network data
+
+The following code offers some examples of exploring the PLoS data using a network
+framework.
+
+```{r warning = FALSE, message = FALSE}
+library(stringr)
+library(tidyr)
+paper_subject <- wn_papers_titles$data %>% 
+  mutate(id = 1:n()) %>% 
+  select(id, subject) %>% 
+  mutate(subjects = str_split(subject, "/")) %>% 
+  select(-subject) %>% 
+  unnest(subjects) %>% 
+  filter(subjects != "") %>% 
+  mutate(subjects = str_replace(subjects, ",", ""))
+
+head(paper_subject)
+```
+
+Here are the top ten listed subjects: 
+
+```{r}
+paper_subject %>% 
+  group_by(subjects) %>% 
+  count() %>% 
+  ungroup() %>% 
+  arrange(desc(n)) %>% 
+  slice(1:10)
+```
+
+```{r warning = FALSE}
+library(widyr)
+subject_pairs <- paper_subject %>% 
+  pairwise_count(item = subjects, feature = id) %>% 
+  rename(from = item1, to = item2, weight = n)
+head(subject_pairs)
+```
+
+```{r message = FALSE, warning = FALSE}
+library(tidygraph)
+subject_network <- subject_pairs %>% 
+  filter(weight > 50) %>% 
+  as_tbl_graph(directed = FALSE)
+subject_network
+```
+
+```{r fig.width = 10, fig.height = 8}
+library(ggraph)
+library(viridis)
+subject_network %>% 
+  mutate(centrality = centrality_authority(),
+         subject_group = as.factor(group_infomap())) %>% 
+  ggraph(layout = 'kk') + 
+  geom_edge_link(aes(edge_alpha = weight), show.legend = FALSE) + 
+  geom_node_label(aes(label = name, fill = subject_group, size = centrality), 
+                  color = "white", show.legend = FALSE, 
+                  repel = TRUE) +
+  scale_fill_viridis(discrete = TRUE, option = "B") + 
+  theme_graph() 
+```
+
+```{r}
+subject_cors <- paper_subject %>% 
+  group_by(subjects) %>%
+  filter(n() >= 40) %>%
+  pairwise_cor(item = subjects, feature = id)  %>% 
+  filter(correlation > .4) %>%
+  as_tbl_graph(directed = FALSE)
+```
+
+```{r fig.width = 8, fig.height = 5}
+subject_cors %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "royalblue") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE,
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+```
+
