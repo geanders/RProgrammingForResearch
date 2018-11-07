@@ -25,7 +25,7 @@
 <meta name="author" content="Brooke Anderson and Rachel Severson">
 
 
-<meta name="date" content="2018-10-30">
+<meta name="date" content="2018-11-07">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -393,15 +393,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.4.4" data-path="reproducible-research-2.html"><a href="reproducible-research-2.html#linking-your-project-with-a-github-repository"><i class="fa fa-check"></i><b>10.4.4</b> Linking your project with a GitHub repository</a></li>
 </ul></li>
 </ul></li>
-<li class="part"><span><b>IV Part IV: Advanced</b></span></li>
-<li class="chapter" data-level="11" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html"><i class="fa fa-check"></i><b>11</b> Entering and cleaning data #3</a><ul>
-<li class="chapter" data-level="11.1" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#pulling-online-data"><i class="fa fa-check"></i><b>11.1</b> Pulling online data</a><ul>
-<li class="chapter" data-level="11.1.1" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#apis"><i class="fa fa-check"></i><b>11.1.1</b> APIs</a></li>
+<li class="chapter" data-level="11" data-path="exploring-data-3.html"><a href="exploring-data-3.html"><i class="fa fa-check"></i><b>11</b> Exploring data #3</a><ul>
+<li class="chapter" data-level="11.1" data-path="exploring-data-3.html"><a href="exploring-data-3.html#simulations"><i class="fa fa-check"></i><b>11.1</b> Simulations</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="exploring-data-3.html"><a href="exploring-data-3.html#the-lady-tasting-tea"><i class="fa fa-check"></i><b>11.1.1</b> The lady tasting tea</a></li>
+<li class="chapter" data-level="11.1.2" data-path="exploring-data-3.html"><a href="exploring-data-3.html#playing-darts"><i class="fa fa-check"></i><b>11.1.2</b> Playing darts</a></li>
+<li class="chapter" data-level="11.1.3" data-path="exploring-data-3.html"><a href="exploring-data-3.html#simulations-in-research"><i class="fa fa-check"></i><b>11.1.3</b> Simulations in research</a></li>
 </ul></li>
-<li class="chapter" data-level="11.2" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#example-r-api-wrapper-packages"><i class="fa fa-check"></i><b>11.2</b> Example R API wrapper packages</a></li>
-<li class="chapter" data-level="11.3" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#tigris-package"><i class="fa fa-check"></i><b>11.3</b> <code>tigris</code> package</a></li>
-<li class="chapter" data-level="11.4" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#countyweather"><i class="fa fa-check"></i><b>11.4</b> <code>countyweather</code></a></li>
-<li class="chapter" data-level="11.5" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#in-course-exercise-10"><i class="fa fa-check"></i><b>11.5</b> In-course exercise</a></li>
+<li class="chapter" data-level="11.2" data-path="exploring-data-3.html"><a href="exploring-data-3.html#other-computationally-intensive-approaches"><i class="fa fa-check"></i><b>11.2</b> Other computationally-intensive approaches</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="exploring-data-3.html"><a href="exploring-data-3.html#bootstrap-and-friends"><i class="fa fa-check"></i><b>11.2.1</b> Bootstrap and friends</a></li>
+<li class="chapter" data-level="11.2.2" data-path="exploring-data-3.html"><a href="exploring-data-3.html#bayesian-analysis"><i class="fa fa-check"></i><b>11.2.2</b> Bayesian analysis</a></li>
+<li class="chapter" data-level="11.2.3" data-path="exploring-data-3.html"><a href="exploring-data-3.html#ensemble-models-and-friends"><i class="fa fa-check"></i><b>11.2.3</b> Ensemble models and friends</a></li>
+</ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="A" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html"><i class="fa fa-check"></i><b>A</b> Appendix A: Vocabulary</a><ul>
@@ -702,23 +704,23 @@ child_id = &quot;12011&quot;) :
 <a class="sourceLine" id="cb861-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb861-6" data-line-number="6">purrr<span class="op">::</span><span class="kw">map</span>(ex, weighted_mean)</a></code></pre></div>
 <pre><code>## $Shots
-## [1] 1.109937
+## [1] 1.193578
 ## 
 ## $Passes
-## [1] 40.60734
+## [1] 38.88421
 ## 
 ## $Tackles
-## [1] 2.107173
+## [1] 2.135406
 ## 
 ## $Saves
-## [1] 0.3466245</code></pre>
+## [1] 0.3191551</code></pre>
 <p>The <code>map()</code> function will apply a function across a list. The different elements of the list do not have to be the same length (unlike a data frame, where the columns all have to have the same length). First let’s create a list to work with:</p>
 <div class="sourceCode" id="cb863"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb863-1" data-line-number="1">(ex &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">a =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>), <span class="dt">b =</span> <span class="kw">rnorm</span>(<span class="dv">3</span>), <span class="dt">c =</span> letters[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]))</a></code></pre></div>
 <pre><code>## $a
 ## [1] 1 2 3 4 5
 ## 
 ## $b
-## [1] -0.06082818  0.46922480  0.34438218
+## [1] -0.4349749 -0.5905221 -0.1816406
 ## 
 ## $c
 ## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot;</code></pre>
@@ -728,7 +730,7 @@ child_id = &quot;12011&quot;) :
 ## [1] 3
 ## 
 ## $b
-## [1] 0.2509263
+## [1] -0.4023792
 ## 
 ## $c
 ## [1] NA</code></pre>
@@ -738,14 +740,14 @@ child_id = &quot;12011&quot;) :
 ## [1] 1
 ## 
 ## $b
-## [1] -0.06082818
+## [1] -0.4349749
 ## 
 ## $c
 ## [1] &quot;a&quot;</code></pre>
 <p>The <code>map_chr()</code> function also applies a function over a list, but it returns a character vector rather than a list:</p>
 <div class="sourceCode" id="cb869"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb869-1" data-line-number="1">purrr<span class="op">::</span><span class="kw">map_chr</span>(ex, <span class="dt">.f =</span> head, <span class="dt">n =</span> <span class="dv">1</span>)</a></code></pre></div>
 <pre><code>##           a           b           c 
-##         &quot;1&quot; &quot;-0.060828&quot;         &quot;a&quot;</code></pre>
+##         &quot;1&quot; &quot;-0.434975&quot;         &quot;a&quot;</code></pre>
 <div class="rmdnote">
 <p>
 You can use the <code>apply</code> functions in base R to achieve some of the same functionality as the <code>map</code> functions. However, the <code>map</code> functions work better alongside other <code>tidyverse</code> functions. The <code>apply</code> functions are useful if you are working with matrices.

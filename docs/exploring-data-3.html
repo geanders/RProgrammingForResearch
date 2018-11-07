@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="reporting-results-2a.html">
-<link rel="next" href="exploring-data-3.html">
+<link rel="prev" href="reproducible-research-2.html">
+<link rel="next" href="appendix-a-vocabulary.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -450,333 +450,378 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="reproducible-research-2" class="section level1">
-<h1><span class="header-section-number">Chapter 10</span> Reproducible research #2</h1>
-<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week9.pdf">Download</a> a pdf of the lecture slides covering this topic.</p>
-<!-- ## R Notebooks  -->
-<!-- From RStudio's [article on R Notebooks](http://rmarkdown.rstudio.com/r_notebooks.html): -->
-<!-- > "An R Notebook is an R Markdown document with chunks that can be executed independently and interactively, with output visible immediately beneath the input." -->
-<!-- R Notebooks are a new feature. Right now, if you want to use them, you need to update to RStudio's Preview version. You can get that [here](https://www.rstudio.com/products/rstudio/download/preview/). -->
-<!-- You can render an R Notebook document to a final, static version (e.g., pdf, Word, HTML) just like an R Markdown file.   -->
-<!-- Therefore, you can use R Notebooks as an alternative to R Markdown, with the ability to try out and change chunks interactively as you write the document.  -->
-<!-- You can open a new R Notebook file by going in RStudio to "File" -> "New File". In the Preview version of RStudio, there's an option there for "R Notebook".   -->
-<!-- As with R Markdown files, when you choose to create a new R Notebook file, RStudio opens a skeleton file with some example text and formatting already in the file.   -->
-<!-- The syntax is very similar to an R Markdown file, but the YAML now specifies:  -->
-<!-- ``` -->
-<!-- output: html_notebook -->
-<!-- ``` -->
-<div id="templates" class="section level2">
-<h2><span class="header-section-number">10.1</span> Templates</h2>
-<p>R Markdown <strong>templates</strong> can be used to change multiple elements of the style of a rendered document. You can think of these as being the document-level analog to the themes we’ve used with <code>ggplot</code> objects.</p>
-<p>To do this, some kind of style file is applied when rendering document. For HTML documents, Cascading Style Sheets (CSS) (<code>.css</code>) can be used to change the style of different elements. For pdf files, LaTeX package (style) files (<code>.sty</code>) are used.</p>
-<p>To open a new R Markdown file that uses a template, in RStudio, go to “File” -&gt; “New File” -&gt; “R Markdown” -&gt; “From Template”.</p>
-<p>Different templates come with different R packages. A couple of templates come with the <code>rmarkdown</code> package, which you likely already have.</p>
-<p>Many of these templates will only render to pdf.</p>
-<p>To render a pdf from R Markdown, you need to have a version of TeX installed on your computer. Like R, TeX is open source software. RStudio recommends the following installations by system:</p>
+<div id="exploring-data-3" class="section level1">
+<h1><span class="header-section-number">Chapter 11</span> Exploring data #3</h1>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week11.pdf">Download</a> a pdf of the lecture slides covering this topic.</p>
+<div id="simulations" class="section level2">
+<h2><span class="header-section-number">11.1</span> Simulations</h2>
+<div id="the-lady-tasting-tea" class="section level3">
+<h3><span class="header-section-number">11.1.1</span> The lady tasting tea</h3>
+<p><img src="figures/Ronald_Fisher.jpg" width="0.4\textwidth" style="display: block; margin: auto;" /></p>
+<p>Source: Flikr commons, <a href="https://www.flickr.com/photos/internetarchivebookimages/20150531109/" class="uri">https://www.flickr.com/photos/internetarchivebookimages/20150531109/</a></p>
+<blockquote>
+<p>“Dr. Muriel Bristol, a colleague of Fisher’s, claimed that when drinking tea she could distinguish whether milk or tea was added to the cup first (she preferred milk first). To test her claim, Fisher asked her to taste eight cups of tea, four of which had milk added first and four of which had tea added first.” — Agresti, <em>Categorical Data Analysis</em>, p.91</p>
+</blockquote>
+<p><strong>Research questions:</strong></p>
 <ul>
-<li>For Macs: MacTeX</li>
-<li>For PCs: MiKTeX</li>
+<li>If she just guesses, what is the probability she will get all cups right?</li>
+<li>What if more or fewer cups are used in the experiment?</li>
 </ul>
-<p>Links for installing both can be found at <a href="http://www.latex-project.org/ftp.html" class="uri">http://www.latex-project.org/ftp.html</a></p>
-<p>Current version of TeX: 3.14159265.</p>
-<p>The <code>tufte</code> package has templates for creating handouts typeset like Edward Tufte’s books.</p>
-<p>This package includes templates for creating both pdf and HTML documents in this style.</p>
-<p>The package includes special functions like <code>newthought</code>, special chunk options like <code>fig.fullwidth</code>, and special knitr engines like <code>marginfigure</code>. Special features available in the tufte template include:</p>
+<p>One way to figure this out is to run a <em>simulation</em>.</p>
+<p>In R, <code>sample</code> can be a very helpful function for simulations. It lets you randomly draw values from a vector, with or without replacement.</p>
+<div class="sourceCode" id="cb982"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb982-1" data-line-number="1"><span class="co">## Generic code</span></a>
+<a class="sourceLine" id="cb982-2" data-line-number="2"><span class="kw">sample</span>(<span class="dt">x =</span> [vector to sample from], </a>
+<a class="sourceLine" id="cb982-3" data-line-number="3">       <span class="dt">size =</span> [number of samples to take],</a>
+<a class="sourceLine" id="cb982-4" data-line-number="4">       <span class="dt">replace =</span> [logical<span class="op">--</span><span class="st"> </span>should values <span class="cf">in</span> the </a>
+<a class="sourceLine" id="cb982-5" data-line-number="5">                  vector be replaced?],</a>
+<a class="sourceLine" id="cb982-6" data-line-number="6">       <span class="dt">prob =</span> [vector of probability weights])</a></code></pre></div>
+<p>Create vectors of the true and guessed values, in order, for the cups of tea:</p>
+<div class="sourceCode" id="cb983"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb983-1" data-line-number="1">n_cups &lt;-<span class="st"> </span><span class="dv">8</span></a>
+<a class="sourceLine" id="cb983-2" data-line-number="2">cups &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="dt">each =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb983-3" data-line-number="3">cups</a></code></pre></div>
+<pre><code>## [1] &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot; &quot;tea&quot;  &quot;milk&quot; &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;</code></pre>
+<div class="sourceCode" id="cb985"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb985-1" data-line-number="1">guesses &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="dt">each =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb985-2" data-line-number="2">guesses</a></code></pre></div>
+<pre><code>## [1] &quot;tea&quot;  &quot;milk&quot; &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;  &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot;</code></pre>
+<p>For this simulation, determine how many cups she got right (i.e., guess equals the true value):</p>
+<div class="sourceCode" id="cb987"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb987-1" data-line-number="1">cup_results &lt;-<span class="st"> </span>cups <span class="op">==</span><span class="st"> </span>guesses</a>
+<a class="sourceLine" id="cb987-2" data-line-number="2">cup_results</a></code></pre></div>
+<pre><code>## [1]  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE</code></pre>
+<div class="sourceCode" id="cb989"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb989-1" data-line-number="1">n_right &lt;-<span class="st"> </span><span class="kw">sum</span>(cup_results)</a>
+<a class="sourceLine" id="cb989-2" data-line-number="2">n_right</a></code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<p>Write a function that will run one simulation. It takes the argument <code>n_cups</code>— in real life, they used eight cups (<code>n_cups = 8</code>). Note that this function just wraps the code we just walked through.</p>
+<div class="sourceCode" id="cb991"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb991-1" data-line-number="1">sim_null_tea &lt;-<span class="st"> </span><span class="cf">function</span>(n_cups){</a>
+<a class="sourceLine" id="cb991-2" data-line-number="2">  cups &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="dt">each =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb991-3" data-line-number="3">  guesses &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="dt">each =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb991-4" data-line-number="4">  cup_results &lt;-<span class="st"> </span>cups <span class="op">==</span><span class="st"> </span>guesses</a>
+<a class="sourceLine" id="cb991-5" data-line-number="5">  n_right &lt;-<span class="st"> </span><span class="kw">sum</span>(cup_results)</a>
+<a class="sourceLine" id="cb991-6" data-line-number="6">  <span class="kw">return</span>(n_right)</a>
+<a class="sourceLine" id="cb991-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb991-8" data-line-number="8"><span class="kw">sim_null_tea</span>(<span class="dt">n_cups =</span> <span class="dv">8</span>)</a></code></pre></div>
+<pre><code>## [1] 6</code></pre>
+<p>Now, we need to run a lot of simulations, to see what happens on average if she guesses. You can use the <code>replicate</code> function to do that.</p>
+<div class="sourceCode" id="cb993"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb993-1" data-line-number="1"><span class="co">## Generic code</span></a>
+<a class="sourceLine" id="cb993-2" data-line-number="2"><span class="kw">replicate</span>(<span class="dt">n =</span> [number of replications to run],</a>
+<a class="sourceLine" id="cb993-3" data-line-number="3">          <span class="dt">eval =</span> [code to replicate each time])</a></code></pre></div>
+<div class="sourceCode" id="cb994"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb994-1" data-line-number="1">tea_sims &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">5</span>, <span class="kw">sim_null_tea</span>(<span class="dt">n_cups =</span> <span class="dv">8</span>))</a>
+<a class="sourceLine" id="cb994-2" data-line-number="2">tea_sims</a></code></pre></div>
+<pre><code>## [1] 4 6 6 6 2</code></pre>
+<p>This call gives a vector with the number of cups she got right for each simulation. You can replicate the simulation many times to get a better idea of what to expect if she just guesses, including what percent of the time she gets all cups right.</p>
+<div class="sourceCode" id="cb996"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb996-1" data-line-number="1">tea_sims &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">1000</span>, <span class="kw">sim_null_tea</span>(<span class="dt">n_cups =</span> <span class="dv">8</span>))</a>
+<a class="sourceLine" id="cb996-2" data-line-number="2"><span class="kw">mean</span>(tea_sims)</a></code></pre></div>
+<pre><code>## [1] 3.93</code></pre>
+<div class="sourceCode" id="cb998"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb998-1" data-line-number="1"><span class="kw">quantile</span>(tea_sims, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</a></code></pre></div>
+<pre><code>##  2.5% 97.5% 
+##     2     6</code></pre>
+<div class="sourceCode" id="cb1000"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1000-1" data-line-number="1"><span class="kw">mean</span>(tea_sims <span class="op">==</span><span class="st"> </span><span class="dv">8</span>)</a></code></pre></div>
+<pre><code>## [1] 0.019</code></pre>
+<p>Now we’d like to know, for different numbers of cups of tea, what is the probability that the lady will get all cups right?</p>
+<p>For this, we can apply the replication code across different values of <code>n_cups</code>:</p>
+<div class="sourceCode" id="cb1002"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1002-1" data-line-number="1">n_cups &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">2</span>, <span class="dt">to =</span> <span class="dv">14</span>, <span class="dt">by =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb1002-2" data-line-number="2">perc_all_right &lt;-<span class="st"> </span><span class="kw">sapply</span>(n_cups, <span class="dt">FUN =</span> <span class="cf">function</span>(n_cups){</a>
+<a class="sourceLine" id="cb1002-3" data-line-number="3">  cups_right &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">1000</span>, <span class="kw">sim_null_tea</span>(n_cups))</a>
+<a class="sourceLine" id="cb1002-4" data-line-number="4">  out &lt;-<span class="st"> </span><span class="kw">mean</span>(cups_right <span class="op">==</span><span class="st"> </span>n_cups)</a>
+<a class="sourceLine" id="cb1002-5" data-line-number="5">  <span class="kw">return</span>(out)</a>
+<a class="sourceLine" id="cb1002-6" data-line-number="6">})</a>
+<a class="sourceLine" id="cb1002-7" data-line-number="7">perc_all_right</a></code></pre></div>
+<pre><code>## [1] 0.516 0.176 0.042 0.015 0.002 0.004 0.000</code></pre>
+<div class="sourceCode" id="cb1004"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1004-1" data-line-number="1">tea_sims &lt;-<span class="st"> </span><span class="kw">data_frame</span>(n_cups, perc_all_right)</a>
+<a class="sourceLine" id="cb1004-2" data-line-number="2"><span class="kw">ggplot</span>(tea_sims, <span class="kw">aes</span>(<span class="dt">x =</span> n_cups, <span class="dt">y =</span> perc_all_right)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1004-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;# of cups tested&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1004-4" data-line-number="4"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Probability of getting</span><span class="ch">\n</span><span class="st">all cups right if guessing&quot;</span>)</a></code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/q-1.png" width="0.6\textwidth" style="display: block; margin: auto;" /></p>
+<p>You can answer this question analytically using the hypergeometric distribution:</p>
+<p><span class="math display">\[
+P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n_{+1}}}
+\]</span></p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="center">Guessed milk</th>
+<th align="center">Guessed tea</th>
+<th align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Really milk</td>
+<td align="center"><span class="math inline">\(n_{11}\)</span></td>
+<td align="center"><span class="math inline">\(n_{12}\)</span></td>
+<td align="center"><span class="math inline">\(n_{1+} = 4\)</span></td>
+</tr>
+<tr class="even">
+<td>Really tea</td>
+<td align="center"><span class="math inline">\(n_{21}\)</span></td>
+<td align="center"><span class="math inline">\(n_{22}\)</span></td>
+<td align="center"><span class="math inline">\(n_{2+} = 4\)</span></td>
+</tr>
+<tr class="odd">
+<td>Total</td>
+<td align="center"><span class="math inline">\(n_{+1} = 4\)</span></td>
+<td align="center"><span class="math inline">\(n_{+2} = 4\)</span></td>
+<td align="center"><span class="math inline">\(n = 8\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>In R, you can use <code>dhyper</code> to get the density of the hypergeometric function:</p>
+<div class="sourceCode" id="cb1005"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1005-1" data-line-number="1"><span class="kw">dhyper</span>(<span class="dt">x =</span> [<span class="co"># of cups she guesses have milk first that do],</span></a>
+<a class="sourceLine" id="cb1005-2" data-line-number="2">       <span class="dt">m =</span> [<span class="co"># of cups with milk first],</span></a>
+<a class="sourceLine" id="cb1005-3" data-line-number="3">       <span class="dt">n =</span> [<span class="co"># of cups with tea first],</span></a>
+<a class="sourceLine" id="cb1005-4" data-line-number="4">       <span class="dt">k =</span> [<span class="co"># of cups she guesses have milk first])</span></a></code></pre></div>
+<p>Probability she gets three “milk” cups right if she’s just guessing and there are eight cups, four with milk first and four with tea first:</p>
+<div class="sourceCode" id="cb1006"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1006-1" data-line-number="1"><span class="kw">dhyper</span>(<span class="dt">x =</span> <span class="dv">3</span>, <span class="dt">m =</span> <span class="dv">4</span>, <span class="dt">n =</span> <span class="dv">4</span>, <span class="dt">k =</span> <span class="dv">4</span>)</a></code></pre></div>
+<pre><code>## [1] 0.2285714</code></pre>
+<p>Probability she gets three or more “milk” cups right if she’s just guessing:</p>
+<div class="sourceCode" id="cb1008"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1008-1" data-line-number="1"><span class="kw">dhyper</span>(<span class="dt">x =</span> <span class="dv">3</span>, <span class="dt">m =</span> <span class="dv">4</span>, <span class="dt">n =</span> <span class="dv">4</span>, <span class="dt">k =</span> <span class="dv">4</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1008-2" data-line-number="2"><span class="st">  </span><span class="kw">dhyper</span>(<span class="dt">x =</span> <span class="dv">4</span>, <span class="dt">m =</span> <span class="dv">4</span>, <span class="dt">n =</span> <span class="dv">4</span>, <span class="dt">k =</span> <span class="dv">4</span>)</a></code></pre></div>
+<pre><code>## [1] 0.2428571</code></pre>
+<p>Other density functions:</p>
 <ul>
-<li>Margin references</li>
-<li>Margin figures</li>
-<li>Side notes</li>
-<li>Full width figures</li>
+<li><code>dnorm</code>: Normal</li>
+<li><code>dpois</code>: Poisson</li>
+<li><code>dbinom</code>: Binomial</li>
+<li><code>dchisq</code>: Chi-squared</li>
+<li><code>dt</code>: Student’s t</li>
+<li><code>dunif</code>: Uniform</li>
 </ul>
-<p>The <code>rticles</code> package has templates for several journals:</p>
+<p>You can get the analytical result for each of the number of cups we simulated and compare those values to our simulations:</p>
+<div class="sourceCode" id="cb1010"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1010-1" data-line-number="1">analytical_results &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">n_cups =</span> <span class="kw">seq</span>(<span class="dv">2</span>, <span class="dv">14</span>, <span class="dv">2</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1010-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">perc_all_right =</span> <span class="kw">dhyper</span>(<span class="dt">x =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb1010-3" data-line-number="3">                                 <span class="dt">m =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb1010-4" data-line-number="4">                                 <span class="dt">n =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb1010-5" data-line-number="5">                                 <span class="dt">k =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb1011"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1011-1" data-line-number="1"><span class="kw">ggplot</span>(analytical_results, <span class="kw">aes</span>(<span class="dt">x =</span> n_cups, <span class="dt">y =</span> perc_all_right)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1011-2" data-line-number="2"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">color =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1011-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> tea_sims) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;# of cups tested&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1011-4" data-line-number="4"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Probability of getting</span><span class="ch">\n</span><span class="st">all cups right if guessing&quot;</span>)</a></code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/w-1.png" width="0.6\textwidth" style="display: block; margin: auto;" /></p>
+<p>For more on this story (and R.A. Fisher), see:</p>
 <ul>
-<li><em>Journal of Statistical Software</em></li>
-<li><em>The R Journal</em></li>
-<li><em>Association for Computing Machinery</em></li>
-<li>ACS publications (<em>Journal of the American Chemical Society</em>, <em>Environmental Science &amp; Technology</em>)</li>
-<li>Elsevier publications</li>
-</ul>
-<p>Some of these templates create a whole directory, with several files besides the .Rmd file. For example, the template for <em>The R Journal</em> includes:</p>
-<ul>
-<li>The R Markdown file in which you write your article</li>
-<li>“RJournal.sty”: A LaTeX package (style) file specific to <em>The R Journal</em>. This file tells LaTeX how to render all the elements in your article in the style desired by this journal.</li>
-<li>“RJreferences.bib”: A BibTeX file, where you can save citation information for all references in your article.</li>
-<li>“Rlogo.png”: An example figure (the R logo).</li>
-</ul>
-<p>Once you render the R Markdown document from this template, you’ll end up with some new files in the directory:</p>
-<ul>
-<li>“[your file name].tex”: A TeX file with the content from your R Markdown file. This will be “wrapped” with some additional formatting input to create “RJwrapper.tex”.</li>
-<li>“RJwrapper.tex”: A TeX file that includes both the content from your R Markdown file and additional formatting input. Typically, you will submit this file (along with the BibTeX, any figure and image files, and possibly the style file) to the journal.</li>
-<li>“RJwrapper.pdf”: The rendered pdf file (what the published article would look like)</li>
-</ul>
-<p>This template files will often require some syntax that looks more like LaTeX than Markdown.</p>
-<p>For example, for the template for <em>The R Journal</em>, you need to use <code>\citep{}</code> and <code>\citet{}</code> to include citations. These details will depend on the style file of the template.</p>
-<p>As a note, you can always use raw LaTeX in R Markdown documents, not just in documents you’re creating with a template. You just need to be careful not to mix the two. For example, if you use a LaTeX environment to begin an itemized list (e.g., with <code>begin{itemize}</code>), you must start each item with <code>item</code>, not <code>-</code>.</p>
-<p>You can create your own template. You create it as part of a custom R package, and then will have access to the template once you’ve installed the package. This can be useful if you often write documents in a certain style, or if you ever work somewhere with certain formatting requirements for reports.</p>
-<p>RStudio has full instructions for creating your own template: <a href="http://rmarkdown.rstudio.com/developer_document_templates.html" class="uri">http://rmarkdown.rstudio.com/developer_document_templates.html</a></p>
-</div>
-<div id="r-projects" class="section level2">
-<h2><span class="header-section-number">10.2</span> R Projects</h2>
-<div id="organization" class="section level3">
-<h3><span class="header-section-number">10.2.1</span> Organization</h3>
-<p>So far, you have run much of your analysis within a single R script or R Markdown file. Often, any associated data are within the same working directory as your script or R Markdown file, but the files for one project are not separated from files for other projects.</p>
-<p>As you move to larger projects, this kind of set-up won’t work as well. Instead, you’ll want to start keeping all materials for a project in a single and exclusive directory.</p>
-<p>Often, it helps to organize the files in a project directory into subdirectories. Common subdirectories include:</p>
-<ul>
-<li><code>data-raw</code>: Raw data and R scripts to clean the raw data.</li>
-<li><code>data</code>: Cleaned data, often saved as <code>.RData</code> after being generated by a script in <code>data-raw</code>.</li>
-<li><code>R</code>: Code for any functions used in analysis.</li>
-<li><code>reports</code>: Any final products rendered from R Markdown and their original R Markdown files (e.g., paper drafts, reports, presentations).</li>
-</ul>
-</div>
-<div id="creating-r-projects" class="section level3">
-<h3><span class="header-section-number">10.2.2</span> Creating R Projects</h3>
-<p>RStudio allows you to create “Projects” to organize code, data, and results within a directory. When you create a project, RStudio adds a file with the extension “.Rproj” to the directory.</p>
-<p>There are some advantages to setting a directory to be an R Project. The project:</p>
-<ul>
-<li>Automatically uses the directory as your current working directory when you open the project.</li>
-<li>Coordinates well with git version control and GitHub repository system.</li>
-<li>Opens a “Files” window for navigating project files in an RStudio pane when you open the project.</li>
-</ul>
-<p>You can create a new project from scratch or from an existing directory.</p>
-<p>To create an R project from a working directory, in RStudio go to “File” -&gt; “New Project” -&gt; “New Directory”. You can then choose where you want to save the new project directory.</p>
-</div>
-</div>
-<div id="git" class="section level2">
-<h2><span class="header-section-number">10.3</span> git</h2>
-<p>Git is a version control system.</p>
-<p>It saves information about all changes you make on all files in a repository. This allows you to revert back to previous versions and search through the history for all files in the repository.</p>
-<p>Git is open source. You can download it for different operating systems here:</p>
-<p><a href="https://git-scm.com/downloads" class="uri">https://git-scm.com/downloads</a></p>
-<p>You will need git on your computer to use git with RStudio and create local git repositories you can sync with GitHub repositories.</p>
-<p>Before you use git, you should configure it. For example, you should make sure it has your name and email address.</p>
-<p>You can configure git with commands at the shell. For example, I would run the following code at a shell to configure git to have my proper user name and email:</p>
-<pre><code>git config --global user.name &quot;Brooke Anderson&quot;
-git config --global user.email &quot;brooke.anderson@colostate.edu&quot;</code></pre>
-<p>Sometimes, RStudio will automatically find git (once you’ve installed git) when you start RStudio.</p>
-<p>However, in some cases, you may need to take some more steps to activate git in RStudio. To do this, go to “RStudio” -&gt; “Preferences” -&gt; “Git/SVN”. Choose “Enable version control”. If RStudio doesn’t find your version of git in the “Git executable” box, browse for it.</p>
-<div id="initializing-a-git-repository" class="section level3">
-<h3><span class="header-section-number">10.3.1</span> Initializing a git repository</h3>
-<p>You can initialize a git repository using commands from the shell. To do that, take the following steps (first check that it is not already a git repository):</p>
-<ol style="list-style-type: decimal">
-<li>Use a shell (“Terminal” on Macs) to navigate to to that directory. You can use <code>cd</code> to do that (similar to <code>setwd</code> in R).</li>
-<li>Once you are in the directory, run <code>git status</code>. If you get the message <code>fatal: Not a git repository (or any of the parent directories): .git</code>, it is not yet a git repository.</li>
-<li>If you do not get an error from <code>git status</code>, the directory is already a repository. If you do get an error, run <code>git init</code> to initialize it as a repository.</li>
-</ol>
-<p>For example, if I wanted to make the “fars_analysis” directory, which is a direct subdirectory of my home directory, a git repository, I could open a shell and run:</p>
-<pre><code>cd ~/fars_analysis
-git init</code></pre>
-<p>You can also initialize a git repository for a directory that is an R Project directory through R Studio.</p>
-<ol style="list-style-type: decimal">
-<li>Open the Project.</li>
-<li>Go to “Tools” -&gt; “Version Control” -&gt; “Project Setup”.</li>
-<li>In the box for “Version control system”, choose “Git”.</li>
-</ol>
-<p><strong>Note:</strong> If you have just installed git, and have not restarted RStudio, you’ll need to do that before RStudio will recognize git. If you do not see “Git” in the box for “Version control system”, it means either that you do not have git installed on your computer or that RStudio was unable to find it.</p>
-<p>Once you initialize the project as a git repository, you should have a “Git” window in one of your RStudio panes (top right pane by default).</p>
-<p>As you make and save changes to files, they will show up in this window for you to commit. For example, this is what the Git window for our coursebook looks like when I have changes to the slides for week 9 that I need to commit:</p>
-<p><img src="_book/figures/ExampleGitWindow.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
-</div>
-<div id="committing" class="section level3">
-<h3><span class="header-section-number">10.3.2</span> Committing</h3>
-<p>When you want git to record changes, you <em>commit</em> the files with the changes. Each time you commit, you have to include a short commit message with some information about the changes.</p>
-<p>You can make commits from a shell. However, in this course we’ll just make commits from the RStudio environment.</p>
-<p>To make a commit from RStudio, click on the “Commit” button in the Git window. That will open a separate commit window that looks like this:</p>
-<p><img src="_book/figures/ExampleCommitWindow.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
-<p>In this window, to commit changes:</p>
-<ol style="list-style-type: decimal">
-<li>Click on the files you want to commit to select them.</li>
-<li>If you’d like, you can use the bottom part of the window to look through the changes you are committing in each file.</li>
-<li>Write a message in the “Commit message” box. Keep the message to one line in this box if you can. If you need to explain more, write a short one-line message, skip a line, and then write a longer explanation.</li>
-<li>Click on the “Commit” button on the right.</li>
-</ol>
-<p>Once you commit changes to files, they will disappear from the Git window until you make and save more changes in them.</p>
-</div>
-<div id="browsing-history" class="section level3">
-<h3><span class="header-section-number">10.3.3</span> Browsing history</h3>
-<p>On the top left of the Commit window, you can toggle to “History”. This window allows you to explore the history of commits for the repository.</p>
-<p><img src="_book/figures/ExampleHistoryWindow.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
-<p>GitHub allows you to host git repositories online. This allows you to:</p>
-<ul>
-<li>Work collaboratively on a shared repository</li>
-<li>Fork someone else’s repository to create your own copy that you can use and change as you want</li>
-<li>Suggest changes to other people’s repositories through pull requests</li>
-</ul>
-<p>To push local repositories to GitHub and fork other people’s repositories, you will need a GitHub account.</p>
-<p>You can sign up at <a href="https://github.com" class="uri">https://github.com</a>. A free account is fine.</p>
-<p>The basic unit for working in GitHub is the repository. You can think of a repository as very similar to an R Project— it’s a directory of files with some supplemental files saving some additional information about the directory.</p>
-<p>While R Projects have this additional information saved as an “.RProj” file, git repositories have this information in a directory called “.git”. Because this pathname starts with a dot, it won’t show up in many of the ways you list files in a directory. From a shell, you can see files that start with <code>.</code> by running <code>ls -a</code> from within that directory.</p>
-</div>
-<div id="linking-local-repo-to-github-repo" class="section level3">
-<h3><span class="header-section-number">10.3.4</span> Linking local repo to GitHub repo</h3>
-<p>If you have a local directory that you would like to push to GitHub, these are the steps to do it.</p>
-<p>First, you need to make sure that the directory is under git version control. See the notes on initializing a repository.</p>
-<p>Next, you need to create an empty repository on GitHub to sync with your local repository. Do that by:</p>
-<ol style="list-style-type: decimal">
-<li>In GitHub, click on the “+” in the upper right corner (“Create new”).</li>
-<li>Choose “Create new repository”.</li>
-<li>Give your repository the same name as the local directory you’d like to connect it to. For example, if you want to connect it to a directory called “fars_analysis” on your computer, name the repository “fars_analysis”.</li>
-<li>Leave everything else as-is (unless you’d like to add a short description in the “Description” box). Click on “Create repository” at the bottom of the page.</li>
-</ol>
-<p>Now you are ready to connect the two repositories.</p>
-<p>First, you’ll want to change some settings in RStudio so GitHub will recognize that your local repository belongs to you, rather than asking for you password every time.</p>
-<ul>
-<li>In RStudio, go to “RStudio” -&gt; “Preferences” -&gt; “Git / svn”. Choose to “Create RSA key”.</li>
-<li>Click on “View public key”. Copy what shows up.</li>
-<li>Go to your GitHub account and navigate to “Settings”. Click on “SSH and GPG keys”.</li>
-<li>Click on “New SSH key”. Name the key something like “RStudio” (you might want to include the device name if you’ll have SSH keys from RStudio on several computers). Past in your public key in the “Key box”.</li>
+<li><em>The Lady Tasting Tea: How Statistics Revolutionized Science in the Twentieth Century.</em> David Salsburg.</li>
+<li><em>The Design of Experiments.</em> Ronald Fisher.</li>
+<li><a href="https://priceonomics.com/why-the-father-of-modern-statistics-didnt-believe/" class="uri">https://priceonomics.com/why-the-father-of-modern-statistics-didnt-believe/</a></li>
 </ul>
 </div>
-<div id="syncing-rstudio-and-github" class="section level3">
-<h3><span class="header-section-number">10.3.5</span> Syncing RStudio and GitHub</h3>
-<p>Now you’re ready to push your local repository to the empty GitHub repository you created.</p>
-<ol style="list-style-type: decimal">
-<li>Open a shell and navigate to the directory you want to push. (You can open a shell from RStudio using the gear button in the Git window.)</li>
-<li>Add the GitHub repository as a remote branch with the following command (this gives an example for adding a GitHub repository named “ex_repo” in my GitHub account, “geanders”):</li>
-</ol>
-<pre><code>git remote add origin git@github.com:geanders/ex_repo.git</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>Push the contents of the local repository to the GitHub repository.</li>
-</ol>
-<pre><code>git push -u origin master</code></pre>
-<p>To pull a repository that already exists on GitHub and to which you have access (or that you’ve forked), first use <code>cd</code> to change a shell into the directory where you want to put the repository then run <code>git clone</code> to clone the repository locally. For example, if I wanted to clone a GitHub repository called “ex_repo” in my GitHub account, I would run:</p>
-<pre><code>git clone git@github.com:geanders/ex_repo.git</code></pre>
-<p>Once you have linked a local R project with a GitHub repository, you can push and pull commits using the blue down arrow (pull from GitHub) and green up arrow (push to GitHub) in the Git window in RStudio.</p>
-<p><img src="_book/figures/ExampleGitWindow.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
-<p>GitHub helps you work with others on code. There are two main ways you can do this:</p>
+<div id="playing-darts" class="section level3">
+<h3><span class="header-section-number">11.1.2</span> Playing darts</h3>
+<p><strong>Research question: Is a person skilled at playing darts?</strong></p>
+<p>Here’s our dart board– the numbers are the number of points you win for a hit in each area.</p>
+<pre><code>## 
+## Attaching package: &#39;plotrix&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:scales&#39;:
+## 
+##     rescale</code></pre>
+<p><img src="RProgrammingForResearch_files/figure-html/x-1.png" width="384" style="display: block; margin: auto;" /></p>
+<p>First, what would we expect to see if the person we test has no skill at playing darts?</p>
+<p><em>Questions to consider:</em></p>
 <ul>
-<li><strong>Collaborating:</strong> Different people have the ability to push and pull directly to and from the same repository. When one person pushes a change to the repository, other collaborators can immediately get the changes by pulling the latest GitHub commits to their local repository.</li>
-<li><strong>Forking:</strong> Different people have their own GitHub repositories, with each linked to their own local repository. When a person pushes changes to GitHub, it only makes changes to his own repository. The person must issue a pull request to another person’s fork of the repository to share the changes.</li>
+<li><em>What would the dart board look like under the null (say the person throws 20 darts for the experiment)?</em></li>
+<li><em>About what do you think the person’s mean score would be if they had no skill at darts?</em></li>
+<li><em>What are some ways to estimate or calculate the expected mean score under the null?</em></li>
+</ul>
+<p>Let’s use R to answer the first question: what would the null look like?</p>
+<p>First, create some random throws (the square goes from -1 to 1 on both sides):</p>
+<div class="sourceCode" id="cb1014"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1014-1" data-line-number="1">n.throws &lt;-<span class="st"> </span><span class="dv">20</span></a>
+<a class="sourceLine" id="cb1014-2" data-line-number="2">throw.x &lt;-<span class="st"> </span><span class="kw">runif</span>(n.throws, <span class="dt">min =</span> <span class="dv">-1</span>, <span class="dt">max =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1014-3" data-line-number="3">throw.y &lt;-<span class="st"> </span><span class="kw">runif</span>(n.throws, <span class="dt">min =</span> <span class="dv">-1</span>, <span class="dt">max =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1014-4" data-line-number="4"><span class="kw">head</span>(<span class="kw">cbind</span>(throw.x, throw.y))</a></code></pre></div>
+<pre><code>##          throw.x    throw.y
+## [1,]  0.58227850  0.5416554
+## [2,]  0.16512053 -0.4744652
+## [3,]  0.08649855  0.1119116
+## [4,]  0.03565456 -0.9796880
+## [5,]  0.59653822  0.1431635
+## [6,] -0.88114251  0.6442851</code></pre>
+<div class="sourceCode" id="cb1016"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1016-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">type =</span> <span class="st">&quot;n&quot;</span>, <span class="dt">asp=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1016-2" data-line-number="2">     <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1016-3" data-line-number="3"><span class="kw">rect</span>( <span class="dv">-1</span>, <span class="dv">-1</span>, <span class="dv">1</span>, <span class="dv">1</span>) </a>
+<a class="sourceLine" id="cb1016-4" data-line-number="4"><span class="kw">draw.circle</span>( <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">.75</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb1016-5" data-line-number="5"><span class="kw">draw.circle</span>( <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">.5</span>, <span class="dt">col =</span> <span class="st">&quot;white&quot;</span>)</a>
+<a class="sourceLine" id="cb1016-6" data-line-number="6"><span class="kw">draw.circle</span>( <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">.25</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb1016-7" data-line-number="7"><span class="kw">points</span>(throw.x, throw.y, <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">pch =</span> <span class="dv">19</span>)</a></code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/z-1.png" width="336" style="display: block; margin: auto;" /></p>
+<p>Next, let’s tally up the score for this simulation of what would happen under the null.</p>
+<p>To score each throw, we calculate how far the point is from (0, 0), and then use the following rules:</p>
+<ul>
+<li><strong>20 points</strong>: <span class="math inline">\(0.00 \le \sqrt{x^2 + y^2} \le .25\)</span></li>
+<li><strong>15 points</strong>: <span class="math inline">\(0.25 &lt; \sqrt{x^2 + y^2} \le .50\)</span></li>
+<li><strong>10 points</strong>: <span class="math inline">\(0.50 &lt; \sqrt{x^2 + y^2} \le .75\)</span></li>
+<li><strong>0 points</strong>: <span class="math inline">\(0.75 &lt; \sqrt{x^2 + y^2} \le 1.41\)</span></li>
+</ul>
+<p>Use these rules to “score” each random throw:</p>
+<div class="sourceCode" id="cb1017"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1017-1" data-line-number="1">throw.dist &lt;-<span class="st"> </span><span class="kw">sqrt</span>(throw.x<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>throw.y<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb1017-2" data-line-number="2"><span class="kw">head</span>(throw.dist)</a></code></pre></div>
+<pre><code>## [1] 0.7952602 0.5023764 0.1414433 0.9803366 0.6134767 1.0915656</code></pre>
+<div class="sourceCode" id="cb1019"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1019-1" data-line-number="1">throw.score &lt;-<span class="st"> </span><span class="kw">cut</span>(throw.dist,</a>
+<a class="sourceLine" id="cb1019-2" data-line-number="2">                   <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">.25</span>, <span class="fl">.5</span>, <span class="fl">.75</span>, <span class="fl">1.5</span>),</a>
+<a class="sourceLine" id="cb1019-3" data-line-number="3">                   <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;20&quot;</span>, <span class="st">&quot;15&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;0&quot;</span>),</a>
+<a class="sourceLine" id="cb1019-4" data-line-number="4">                   <span class="dt">right =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1019-5" data-line-number="5"><span class="kw">head</span>(throw.score)</a></code></pre></div>
+<pre><code>## [1] 0  10 20 0  10 0 
+## Levels: 20 15 10 0</code></pre>
+<p>Now that we’ve scored each throw, let’s tally up the total:</p>
+<div class="sourceCode" id="cb1021"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1021-1" data-line-number="1"><span class="kw">table</span>(throw.score)</a></code></pre></div>
+<pre><code>## throw.score
+## 20 15 10  0 
+##  1  2  5 12</code></pre>
+<div class="sourceCode" id="cb1023"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1023-1" data-line-number="1"><span class="kw">mean</span>(<span class="kw">as.numeric</span>(<span class="kw">as.character</span>(throw.score)))</a></code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<p>So, this just showed <em>one</em> example of what might happen under the null. If we had a lot of examples like this (someone with no skill throwing 20 darts), what would we expect the mean scores to be?</p>
+<p><em>Questions to consider:</em></p>
+<ul>
+<li><em>How can you figure out the expected value of the mean scores under the null (that the person has no skill)?</em></li>
+<li><em>Do you think that 20 throws will be enough to figure out if a person’s mean score is different from this value, if he or she is pretty good at darts?</em></li>
+<li><em>What steps do you think you could take to figure out the last question?</em></li>
+<li><em>What could you change about the experiment to make it easier to tell if someone’s skilled at darts?</em></li>
+</ul>
+<p>How can we figure this out?</p>
+<ul>
+<li><strong>Theory.</strong> Calculate the expected mean value using the expectation formula.</li>
+<li><strong>Simulation.</strong> Simulate a lot of examples using R and calculate the mean of the mean score from these.</li>
+</ul>
+<p>The expected value of the mean, <span class="math inline">\(E[\bar{X}]\)</span>, is the expected value of <span class="math inline">\(X\)</span>, <span class="math inline">\(E[X]\)</span>. To calculate the expected value of <span class="math inline">\(X\)</span>, use the formula:</p>
+<p><span class="math display">\[ 
+E[X] = \sum_x xp(x)
+\]</span></p>
+<p><span class="math display">\[ 
+E[X] = 20 * p(X = 20) + 15 * p(X = 15) + 10 * p(X = 10) + 0 * p(X = 0)
+\]</span>
+So we just need to figure out <span class="math inline">\(p(X = x)\)</span> for <span class="math inline">\(x = 20, 15, 10\)</span>.</p>
+<p>(In all cases, we’re dividing by 4 because that’s the area of the full square, <span class="math inline">\(2^2\)</span>.)</p>
+<ul>
+<li><span class="math inline">\(p(X = 20)\)</span>: Proportional to area of the smallest circle, <span class="math inline">\((\pi * 0.25^2) / 4 = 0.049\)</span></li>
+<li><span class="math inline">\(p(X = 15)\)</span>: Proportional to area of the middle circle minus area of the smallest circle, <span class="math inline">\(\pi(0.50^2 - 0.25^2) / 4 = 0.147\)</span></li>
+<li><span class="math inline">\(p(X = 10)\)</span>: Proportional to area of the largest circle minus area of the middle circle, <span class="math inline">\(\pi(0.75^2 - 0.50^2) / 4 = 0.245\)</span></li>
+<li><span class="math inline">\(p(X = 0)\)</span>: Proportional to area of the square minus area of the largest circle, <span class="math inline">\((2^2 - \pi * 0.75^2) / 4 = 0.558\)</span></li>
+</ul>
+<p>As a double check, if we’ve done this right, the probabilities should sum to 1:</p>
+<p><span class="math display">\[0.049 + 0.147 + 0.245 + 0.558 = 0.999\]</span></p>
+<p><span class="math display">\[ E[X] = \sum_x xp(x)\]</span>
+<span class="math display">\[ E[X] = 20 * 0.049 + 15 * 0.147 + 10 * 0.245 + 0 * 0.558\]</span>
+<span class="math display">\[ E[X] = 5.635 \]</span></p>
+<p>Remember, this also gives us <span class="math inline">\(E[\bar{X}]\)</span>.</p>
+<p>Now it’s pretty easy to also calculate <span class="math inline">\(var(X)\)</span> and <span class="math inline">\(var(\bar{X})\)</span>:</p>
+<p><span class="math display">\[
+Var(X) = E[(X - \mu)^2] = E[X^2] - E[X]^2
+\]</span></p>
+<p><span class="math display">\[
+E[X^2] = 20^2 * 0.049 + 15^2 * 0.147 + 10^2 * 0.245 + 0^2 * 0.558 = 77.18
+\]</span></p>
+<p><span class="math display">\[
+Var(X) = 77.175 - (5.635)^2 = 45.42
+\]</span></p>
+<p><span class="math display">\[
+Var(\bar X) = \sigma^2 / n = 45.42 / 20 = 2.27
+\]</span></p>
+<p>Note that we can use the Central Limit Theorem to calculate a 95% confidence interval for the mean score when someone with no skill (null hypothesis) throws 20 darts:</p>
+<div class="sourceCode" id="cb1025"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1025-1" data-line-number="1"><span class="fl">5.635</span> <span class="op">+</span><span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="kw">qnorm</span>(.<span class="dv">975</span>) <span class="op">*</span><span class="st"> </span><span class="kw">sqrt</span>(<span class="fl">2.27</span>)</a></code></pre></div>
+<pre><code>## [1] 2.682017 8.587983</code></pre>
+<p>We can check our math by running simulations– we should get the same values of <span class="math inline">\(E[\bar{X}]\)</span> and <span class="math inline">\(Var(\bar{X})\)</span> (which we can calculate directly from the simulations using R).</p>
+<div class="sourceCode" id="cb1027"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1027-1" data-line-number="1">n.throws &lt;-<span class="st"> </span><span class="dv">20</span></a>
+<a class="sourceLine" id="cb1027-2" data-line-number="2">n.sims &lt;-<span class="st"> </span><span class="dv">10000</span></a>
+<a class="sourceLine" id="cb1027-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb1027-4" data-line-number="4">x.throws &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(n.throws <span class="op">*</span><span class="st"> </span>n.sims, <span class="dv">-1</span>, <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb1027-5" data-line-number="5">                   <span class="dt">ncol =</span> n.throws, <span class="dt">nrow =</span> n.sims)</a>
+<a class="sourceLine" id="cb1027-6" data-line-number="6">y.throws &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(n.throws <span class="op">*</span><span class="st"> </span>n.sims, <span class="dv">-1</span>, <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb1027-7" data-line-number="7">                   <span class="dt">ncol =</span> n.throws, <span class="dt">nrow =</span> n.sims)</a>
+<a class="sourceLine" id="cb1027-8" data-line-number="8">dist.throws &lt;-<span class="st"> </span><span class="kw">sqrt</span>(x.throws<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>y.throws<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb1027-9" data-line-number="9">score.throws &lt;-<span class="st"> </span><span class="kw">apply</span>(dist.throws, <span class="dv">2</span>, cut,</a>
+<a class="sourceLine" id="cb1027-10" data-line-number="10">                   <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">.25</span>, <span class="fl">.5</span>, <span class="fl">.75</span>, <span class="fl">1.5</span>),</a>
+<a class="sourceLine" id="cb1027-11" data-line-number="11">                   <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;20&quot;</span>, <span class="st">&quot;15&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;0&quot;</span>),</a>
+<a class="sourceLine" id="cb1027-12" data-line-number="12">                   <span class="dt">right =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1028"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1028-1" data-line-number="1">dist.throws[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<pre><code>##           [,1]      [,2]      [,3]      [,4]      [,5]
+## [1,] 0.8347125 0.6013200 0.5422289 0.9948730 0.2978861
+## [2,] 0.4320522 0.9800077 0.8972760 0.2238766 0.6816118
+## [3,] 0.7457978 0.6088185 1.2625121 0.3117819 0.1542003</code></pre>
+<div class="sourceCode" id="cb1030"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1030-1" data-line-number="1">score.throws[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5]
+## [1,] &quot;0&quot;  &quot;10&quot; &quot;10&quot; &quot;0&quot;  &quot;15&quot;
+## [2,] &quot;15&quot; &quot;0&quot;  &quot;0&quot;  &quot;20&quot; &quot;10&quot;
+## [3,] &quot;10&quot; &quot;10&quot; &quot;0&quot;  &quot;15&quot; &quot;20&quot;</code></pre>
+<div class="sourceCode" id="cb1032"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1032-1" data-line-number="1">mean.scores &lt;-<span class="st"> </span><span class="kw">apply</span>(score.throws, <span class="dt">MARGIN =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1032-2" data-line-number="2">                     <span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb1032-3" data-line-number="3">                             out &lt;-<span class="st"> </span><span class="kw">mean</span>(<span class="kw">as.numeric</span>(</a>
+<a class="sourceLine" id="cb1032-4" data-line-number="4">                                     <span class="kw">as.character</span>(x)))</a>
+<a class="sourceLine" id="cb1032-5" data-line-number="5">                             <span class="kw">return</span>(out)</a>
+<a class="sourceLine" id="cb1032-6" data-line-number="6">                     })</a>
+<a class="sourceLine" id="cb1032-7" data-line-number="7"><span class="kw">head</span>(mean.scores)</a></code></pre></div>
+<pre><code>## [1] 5.00 7.25 8.50 9.25 8.50 7.25</code></pre>
+<p><img src="RProgrammingForResearch_files/figure-html/gg-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
+<p>Let’s check the simulated mean and variance against the theoretical values:</p>
+<div class="sourceCode" id="cb1034"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1034-1" data-line-number="1"><span class="kw">mean</span>(mean.scores) <span class="co">## Theoretical: 5.635</span></a></code></pre></div>
+<pre><code>## [1] 5.6495</code></pre>
+<div class="sourceCode" id="cb1036"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1036-1" data-line-number="1"><span class="kw">var</span>(mean.scores) <span class="co">## Theoretical: 2.27</span></a></code></pre></div>
+<pre><code>## [1] 2.298317</code></pre>
+</div>
+<div id="simulations-in-research" class="section level3">
+<h3><span class="header-section-number">11.1.3</span> Simulations in research</h3>
+<p>Simulations in the wild (just a few examples):</p>
+<ul>
+<li>The Manhattan Project</li>
+<li>US Coast Guard search and rescue</li>
+<li>Infectious disease modeling</li>
 </ul>
 </div>
-<div id="issues" class="section level3">
-<h3><span class="header-section-number">10.3.6</span> Issues</h3>
-<p>Each original GitHub repository (i.e., not a fork of another repository) has a tab for “Issues”. This page works like a Discussion Forum.</p>
-<p>You can create new “Issue” threads to describe and discuss things that you want to change about the repository.</p>
-<p>Issues can be closed once the problem has been resolved. You can close issues on the “Issue” page with the “Close issue” button.</p>
-<p>If a commit you make in RStudio closes an issue, you can automatically close the issue on GitHub by including “Close #[issue number]” in your commit message and then pushing to GitHub.</p>
-<p>For example, if issue #5 is “Fix typo in section 3”, and you make a change to fix that typo, you could make and save the change locally, commit that change with the commit message “Close #5”, and then push to GitHub, and issue #5 in “Issues” for that GitHub repository will automatically be closed, with a link to the commit that fixed the issue.</p>
 </div>
-<div id="pull-request" class="section level3">
-<h3><span class="header-section-number">10.3.7</span> Pull request</h3>
-<p>You can use a <em>pull request</em> to suggest changes to a repository that you do not own or otherwise have the permission to directly change.</p>
-<p>You can also use pull requests within your own repositories. Some people will create a pull request every time they have a big issue they want to fix in one of their repositories.</p>
-<p>In GitHub, each repository has a “Pull requests” tab where you can manage pull requests (submit a pull request to another fork or merge in someone else’s pull request for your fork).</p>
-<p>Take the following steps to suggest changes to someone else’s repository:</p>
-<ol style="list-style-type: decimal">
-<li>Fork the repository</li>
-<li>Make changes (locally or on GitHub)</li>
-<li>Save your changes and commit them</li>
-<li>Submit a pull request to the original repository</li>
-<li>If there are not any conflicts and the owner of the original repository likes your changes, he or she can merge them directly into the original repository. If there are conflicts, these need to be resolved before the pull request can be merged.</li>
-</ol>
-</div>
-<div id="merge-conflicts" class="section level3">
-<h3><span class="header-section-number">10.3.8</span> Merge conflicts</h3>
-<p>At some point, you will get <em>merge conflicts</em>. These happen when two people have changed the same piece of code in two different ways at the same time.</p>
-<p>For example, say Rachel and are both working on local versions of the same repository, and I change a line to <code>mtcars[1, ]</code> while Rachel changes the same line to <code>head(mtcars, 1)</code>. Rachel pushes to the GitHub version of the repository before I do.</p>
-<p>When I pull the latest commits to the GitHub repository, I will have a merge conflict for this line. To be able to commit a final version, I’ll need to decide which version of the code to use and commit a version of the file with that code.</p>
-<p>Merge conflicts can come up in a few situations:</p>
+<div id="other-computationally-intensive-approaches" class="section level2">
+<h2><span class="header-section-number">11.2</span> Other computationally-intensive approaches</h2>
+<div id="bootstrap-and-friends" class="section level3">
+<h3><span class="header-section-number">11.2.1</span> Bootstrap and friends</h3>
 <ul>
-<li>You pull in commits from the GitHub branch of a repository you’ve been working on locally.</li>
-<li>Someone sends a pull request for one of your repositories.</li>
-</ul>
-<p>If there are merge conflicts, they’ll show up like this in the file:</p>
-<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-mtcars[1, ]
-=======
-head(mtcars, 1)
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; remote-branch</code></pre>
-<p>To fix them, search for all these spots in files with conflicts, pick the code you want to use, and delete everything else.</p>
-<p>For the example conflict, I might change the file from this:</p>
-<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-mtcars[1, ]
-=======
-head(mtcars, 1)
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; remote-branch</code></pre>
-<p>To this:</p>
-<pre><code>head(mtcars, 1)</code></pre>
-<p>Then you can save and commit the file.</p>
-</div>
-<div id="find-out-more" class="section level3">
-<h3><span class="header-section-number">10.3.9</span> Find out more</h3>
-<p>If you’d like to find out more, Hadley Wickham has a great chapter on using git and GitHub with RStudio in his <em>R Packages</em> book:</p>
-<p><a href="http://r-pkgs.had.co.nz/git.html" class="uri">http://r-pkgs.had.co.nz/git.html</a></p>
-</div>
-</div>
-<div id="in-course-exercise-9" class="section level2">
-<h2><span class="header-section-number">10.4</span> In-course exercise</h2>
-<div id="trying-out-templates" class="section level3">
-<h3><span class="header-section-number">10.4.1</span> Trying out templates</h3>
-<ul>
-<li>Open a “Tufte” template document. To open a new document from a template, in RStudio go to “File” -&gt; “New File” -&gt; “R Markdown” -&gt; “From Template”. If “Tufte Handout” does not show up as a choice, install and load the <code>tufte</code> package, restart R, and try again.</li>
-<li>Render the document to an HTML and open it in a browser. Explore the rendered document. What elements does it include that are not typical for R Markdown documents?</li>
-<li>Now go and look at the .Rmd file. Find the spots where these new elements are specified in the R Markdown file. How are elements like margin plots and all caps at the starts of some paragraphs included in the document?</li>
-<li>Download and install the <code>rticles</code> package. Create a new document using the template for <em>The R Journal</em>. When you do that, a whole directory will be copied to your current working directory. Check out the files in that directory. If you have a version of TeX installed on your computer, try compiling the example file.</li>
-<li>Select three or four key journals in your field. Go to the journal’s website and see if you can figure out:
-<ul>
-<li>Do they allow authors to submit “.tex” files?</li>
-<li>If so, do they provide a LaTeX style file for their journal?</li>
-</ul></li>
+<li><strong>Bootstraping:</strong> Sample the dataset with replacement and reestimate the statistical parameter(s) each time.</li>
+<li><strong>Jackknifing:</strong> Rake out one observation at a time and reestimate the statistical parameter(s) with the rest of the data.</li>
+<li><strong>Permutation tests:</strong> See how unusual the result from the data is compared to if you shuffle your data (and so remove any relationship in observed data between variables).</li>
+<li><strong>Cross-validation:</strong> See how well your model performs if you pick a subset of the data, build the model just on that subset, and then test how well it predicts for the rest of the data, and repeat that many times.</li>
 </ul>
 </div>
-<div id="organizing-a-project" class="section level3">
-<h3><span class="header-section-number">10.4.2</span> Organizing a project</h3>
-<p>In this part of the group exercise, you will set up an R Project to use for the next homework assignment. You will want to set up a similar project for your final group project.</p>
+<div id="bayesian-analysis" class="section level3">
+<h3><span class="header-section-number">11.2.2</span> Bayesian analysis</h3>
+<p>Suggested books for learning more about Bayesian analysis in R:</p>
 <ul>
-<li>First, you need to create a new project. In RStudio, go to “File” -&gt; “New Project” -&gt; “New Directory”. Choose where you want to save this directory and what you want to name it.</li>
-<li>Once you open the project, one of the RStudio panes should have a tab called “Files”. This shows the files in this project directory and allows you to navigate through them. Currently, you won’t have any files other than the R project file (“.Rproj”). As a next step, create several subdirectories. We’ll use these to structure the data and R Markdown files for your homework. Create the following subdirectories (you can use the “New Folder” button in the RStudio “Files” pane):
+<li><em>Doing Bayesian Data Analysis, Second Edition: A Tutorial with R, JAGS, and Stan.</em> John Kruschke.</li>
+<li><em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan.</em> Richard McElreath.</li>
+<li><em>Bayesian Data Analysis, Third Edition.</em> Andrew Gelman et al.</li>
+</ul>
+<p>R can tap into software for Bayesian analysis:</p>
 <ul>
-<li><code>data</code></li>
-<li><code>writing</code></li>
-</ul></li>
-<li>Download the data for the homework from the <em>Washington Post’s</em> GitHub page: <a href="https://github.com/washingtonpost/data-homicides" class="uri">https://github.com/washingtonpost/data-homicides</a>. Save this data inside your R project in the <code>data</code>
-subdirectory</li>
+<li>BUGS</li>
+<li>JAGS</li>
+<li>STAN</li>
 </ul>
 </div>
-<div id="initializing-git-for-an-r-project" class="section level3">
-<h3><span class="header-section-number">10.4.3</span> Initializing git for an R Project</h3>
+<div id="ensemble-models-and-friends" class="section level3">
+<h3><span class="header-section-number">11.2.3</span> Ensemble models and friends</h3>
 <ul>
-<li>If you do not already have one, sign up for a GitHub account. The free option is fine.</li>
-<li>If you do not already have git installed on your computer, install it: <a href="https://git-scm.com/downloads" class="uri">https://git-scm.com/downloads</a></li>
-<li>Restart RStudio. go to “RStudio” -&gt; “Preferences” -&gt;“Git/SVN”. Choose “Enable version control”. If RStudio doesn’t find yourversion of git in the “Git executable” box, browse for it.</li>
-<li>Open your homework project in RStudio. Change your Project settings to initialize git for this project (see the course notes for tips on how to do that).</li>
-<li>Open a shell from R using the gear symbol in the “Git” pane you should now see in RStudio. Configure git
-from this shell. For example, I would open a shell and run:</li>
+<li><strong>Bagging:</strong> Sample data with replacement and build a tree model. Repeat many times. To predict, predict from all models and take the majority vote.</li>
+<li><strong>Random forest:</strong> Same as bagging, for picking each node of a tree, only consider a random subset of variables.</li>
+<li><strong>Boosting:</strong> Same as bagging, but “learn” from previous models as you build new models.</li>
+<li><strong>Stacked models:</strong> Build many different models (e.g., generalized linear regression, Naive Bayes, k-nearest neighbors, random forest, …), determine weights for each, and predict using weighted predictions combined from all models.</li>
 </ul>
-<pre><code>git config --global user.name &quot;Brooke Anderson&quot;
-git config --global user.email &quot;brooke.anderson@colostate.edu&quot;</code></pre>
-<p>Note that you only need to do this once (until you get a new computer or, maybe, update git).
-- Go to the “Commit” window. Click on all of the files you see there, and then make an initial commit
-using “Initial commit” as your commit message.
-- The <code>writing</code> subdirectory will have your R Markdown file and its output. Create a new R Markdown file (“File” -&gt; “New File” -&gt; “R Markdown”) and save it to this subdirectory. You can change the name and date for the file if you’d like. Delete all the text that comes as a default. Write a piece of code that lists the files you saved in the <code>data</code> subdirectory. Remember that the working directory for an R Markdown file is the directory in which it’s saved, so you may need to use a relative pathname that goes up one directory (<code>..</code>) and then goes into <code>data</code> subdirectory.
-- Commit this change using the “Commit” window. After you commit the changes, look at the “History” window to see the history of your commits.</p>
-</div>
-<div id="linking-your-project-with-a-github-repository" class="section level3">
-<h3><span class="header-section-number">10.4.4</span> Linking your project with a GitHub repository</h3>
-<p>(See course notes for more on these steps.)</p>
+<p>For more on these and other machine learning topics, see:</p>
 <ul>
-<li>Login to your GitHub account online. Create an empty GitHub repository for the project.
-Give it the same name as the name of your R project directory.</li>
-<li>If you do not already have an RSA kay, create one in RStudio and add it as an SSH key in your
-GitHub settings. If you already have a key (you almost certainly know if you do), see if you can copy it and
-submit it in GitHub.</li>
-<li>Set this empty online GitHub repository as the remote branch of your local git repository for the project.</li>
-<li>Push your local repository to this GitHub repository.</li>
-<li>Go to your GitHub account and make sure the repository was pushed.</li>
-<li>Try making some more changes to your local repository. Commit the changes, then use the green up arrow in the Git window to push the changes to your GitHub repository.</li>
+<li><em>An Introduction to Statistical Learning.</em> Gareth James, Robert Tibshirani, and Trevor Hastie.<br />
+</li>
+<li>The <code>caret</code> package: <a href="http://topepo.github.io/caret/index.html" class="uri">http://topepo.github.io/caret/index.html</a><br />
+</li>
+<li>For many examples of predictive models like this built with R (and Python): <a href="https://www.kaggle.com" class="uri">https://www.kaggle.com</a></li>
 </ul>
 
 </div>
 </div>
 </div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="reporting-results-2a.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="exploring-data-3.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="reproducible-research-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-a-vocabulary.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -806,7 +851,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/geanders/RProgrammingForResearch/edit/master/09-reproducibleresearch2.Rmd",
+"link": "https://github.com/geanders/RProgrammingForResearch/edit/master/11-exploringdata3.Rmd",
 "text": "Edit"
 },
 "download": ["RProgrammingForResearch.pdf", "RProgrammingForResearch.epub"],
