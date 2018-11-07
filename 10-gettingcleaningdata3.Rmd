@@ -279,7 +279,7 @@ Next, use `map` with `str_split` to split each line of the data at the commas:
 
 ```{r}
 library(purrr)
-hurr_tracks <- map(hurr_tracks, str_split,
+hurr_tracks <- purrr::map(hurr_tracks, str_split,
                    pattern = ",", simplify = TRUE)
 hurr_tracks[[1]]
 hurr_tracks[[2]][1:2]
@@ -313,7 +313,7 @@ Now, you can use `bind_rows` from `dplyr` to change the list of metadata into a 
 ```{r message = FALSE}
 library(dplyr); library(tibble)
 hurr_meta <- hurr_meta %>% 
-  map(as_tibble) %>% 
+  purrr::map(as_tibble) %>% 
   bind_rows()
 hurr_meta %>% slice(1:3)
 ```
@@ -354,7 +354,7 @@ length(hurr_obs)
 
 ```{r warnings = FALSE, message = FALSE}
 hurr_obs <- hurr_obs %>% 
-  map(as_tibble) %>% 
+  purrr::map(as_tibble) %>% 
   bind_rows() %>% 
   mutate(storm_id = storm_id)
 hurr_obs %>% select(V1:V2, V5:V6, storm_id) %>% slice(1:3)
