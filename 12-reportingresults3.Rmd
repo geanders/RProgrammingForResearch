@@ -310,7 +310,7 @@ knitr::kable(tweet_sum[1:5, ],
 
 For the Tweets that are geolocated, it's possible to map the tweet locations using the following code:
 
-```{r aad, message = FALSE, warning = FALSE}
+```{r aad, message = FALSE, warning = FALSE, eval = FALSE}
 paris_map <- get_map("paris", zoom = 12, color = "bw")
 
 paris_locations <- c("Stade de France", "18 Rue Alibert",
@@ -364,7 +364,7 @@ plot_map <- function(tag = "all", df = paris_twitter){
 }
 ```
 
-```{r aae, fig.height = 3.5, fig.width = 3.5, fig.align = "center", echo = FALSE, message = FALSE}
+```{r aae, fig.height = 3.5, fig.width = 3.5, fig.align = "center", echo = FALSE, message = FALSE, eval = FALSE}
 plot_map()
 ```
 
@@ -467,45 +467,6 @@ This app is saved in the directory `App-1` in this week's directory if you'd lik
 
 I've also created a (much) fancier version of a Shiny App looking at this Twitter data that you can check out [here](https://brookeanderson.shinyapps.io/TweetsParisAttacks). All the code for that is [here](https://github.com/geanders/RProgrammingForResearch/tree/master/data/App-2).
 
-## Viridis color map
-
-There is a package called `viridisLite` with some good color maps that are gaining population in visualization. From the package's GitHub repository: 
-
-> "These four color maps are designed in such a way that they will analytically be perfectly perceptually-uniform, both in regular form and also when converted to black-and-white. They are also designed to be perceived by readers with the most common form of color blindness."
-
-- Viridis is now the default color map for `Matplotlib`, a key Python plotting library. 
-- The `viridisLite` package is a simpler version of the `viridis` package (and requires fewer dependencies).
-- Several of the packages we'll look at today use Viridis as the default color map. 
-
-Here is an example of a hexbin graph of random values that uses the Viridis color map:
-
-```{r fig.width = 3.5, fig.height = 3.5, fig.align = "center"}
-library(viridisLite)
-library(hexbin)
-dat <- data.frame(x = rnorm(10000), y = rnorm(10000))
-ggplot(dat, aes(x = x, y = y)) + geom_hex() + coord_fixed() +
-  scale_fill_gradientn(colours = viridis(256, option = "D"))
-```
-
-The `option` argument allows you to pick between four color maps: Magma, Inferno, Plasma, and Viridis. Here is the code to visualize each of those:
-
-```{r}
-library(gridExtra)
-ex_plot <- ggplot(dat, aes(x = x, y = y)) + geom_hex() + coord_fixed()
-magma_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "A")) + 
-  ggtitle("magma")
-inferno_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "B")) + 
-  ggtitle("inferno")
-plasma_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "C")) + 
-  ggtitle("plasma")
-viridis_plot <- ex_plot + 
-  scale_fill_gradientn(colours = viridis(256, option = "D")) + 
-  ggtitle("viridis")
-grid.arrange(magma_plot, inferno_plot, plasma_plot, viridis_plot, ncol = 2)
-```
 
 ## htmlWidgets
 
