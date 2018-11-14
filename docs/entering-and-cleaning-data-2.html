@@ -25,7 +25,7 @@
 <meta name="author" content="Brooke Anderson and Rachel Severson">
 
 
-<meta name="date" content="2018-11-12">
+<meta name="date" content="2018-11-14">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -647,34 +647,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The following examples are from <code>tidyr</code> help files and show the effects of gathering and spreading a dataset.</p>
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb515-1" data-line-number="1">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</a></code></pre></div>
-<pre><code>##         time          X          Y          Z
-## 1 2009-01-01  0.8750691  0.6704806 -0.9419224
-## 2 2009-01-02  0.7130556  5.2032861  3.2046034
-## 3 2009-01-03 -1.0076875 -3.7899887 -0.3881669</code></pre>
+<pre><code>##         time          X          Y         Z
+## 1 2009-01-01  0.6409516 -0.6764938  4.130212
+## 2 2009-01-02  1.7987909  0.3222540 -2.075547
+## 3 2009-01-03 -0.8861160  0.1949487  8.380850</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb517-1" data-line-number="1">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</a></code></pre></div>
-<pre><code>##         time          X          Y          Z
-## 1 2009-01-01  0.8750691  0.6704806 -0.9419224
-## 2 2009-01-02  0.7130556  5.2032861  3.2046034
-## 3 2009-01-03 -1.0076875 -3.7899887 -0.3881669</code></pre>
+<pre><code>##         time          X          Y         Z
+## 1 2009-01-01  0.6409516 -0.6764938  4.130212
+## 2 2009-01-02  1.7987909  0.3222540 -2.075547
+## 3 2009-01-03 -0.8861160  0.1949487  8.380850</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>gather</code> to convert wide data to long data:</p>
 <div class="sourceCode" id="cb519"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb519-1" data-line-number="1">long_stocks &lt;-<span class="st"> </span><span class="kw">gather</span>(wide_stocks, <span class="dt">key =</span> stock,</a>
 <a class="sourceLine" id="cb519-2" data-line-number="2">                      <span class="dt">value =</span> price, <span class="op">-</span>time)</a>
 <a class="sourceLine" id="cb519-3" data-line-number="3">long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>##         time stock      price
-## 1 2009-01-01     X  0.8750691
-## 2 2009-01-02     X  0.7130556
-## 3 2009-01-03     X -1.0076875
-## 4 2009-01-04     X  1.0281441
-## 5 2009-01-05     X  0.1520719</code></pre>
+## 1 2009-01-01     X  0.6409516
+## 2 2009-01-02     X  1.7987909
+## 3 2009-01-03     X -0.8861160
+## 4 2009-01-04     X  0.6000604
+## 5 2009-01-05     X -0.4069923</code></pre>
 <p>In this “long” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode" id="cb521"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb521-1" data-line-number="1">long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>##         time stock      price
-## 1 2009-01-01     X  0.8750691
-## 2 2009-01-02     X  0.7130556
-## 3 2009-01-03     X -1.0076875
-## 4 2009-01-04     X  1.0281441
-## 5 2009-01-05     X  0.1520719</code></pre>
+## 1 2009-01-01     X  0.6409516
+## 2 2009-01-02     X  1.7987909
+## 3 2009-01-03     X -0.8861160
+## 4 2009-01-04     X  0.6000604
+## 5 2009-01-05     X -0.4069923</code></pre>
 <p>The format for a <code>gather</code> call is:</p>
 <div class="sourceCode" id="cb523"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb523-1" data-line-number="1"><span class="co">## Generic code</span></a>
 <a class="sourceLine" id="cb523-2" data-line-number="2">new_df &lt;-<span class="st"> </span><span class="kw">gather</span>(old_df,</a>
@@ -696,12 +696,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>If you have data in a “long” format and would like to spread it out, you can use <code>spread</code> to do that:</p>
 <div class="sourceCode" id="cb525"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb525-1" data-line-number="1">stocks &lt;-<span class="st"> </span><span class="kw">spread</span>(long_stocks, <span class="dt">key =</span> stock, <span class="dt">value =</span> price)</a>
 <a class="sourceLine" id="cb525-2" data-line-number="2">stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
-<pre><code>##         time          X          Y           Z
-## 1 2009-01-01  0.8750691  0.6704806  -0.9419224
-## 2 2009-01-02  0.7130556  5.2032861   3.2046034
-## 3 2009-01-03 -1.0076875 -3.7899887  -0.3881669
-## 4 2009-01-04  1.0281441 -0.4829091  -4.6150071
-## 5 2009-01-05  0.1520719 -0.1511478 -10.0063412</code></pre>
+<pre><code>##         time          X          Y         Z
+## 1 2009-01-01  0.6409516 -0.6764938  4.130212
+## 2 2009-01-02  1.7987909  0.3222540 -2.075547
+## 3 2009-01-03 -0.8861160  0.1949487  8.380850
+## 4 2009-01-04  0.6000604  0.1105043 -3.883561
+## 5 2009-01-05 -0.4069923 -1.6426083  2.407936</code></pre>
 <p>Notice that this reverses the action of <code>gather</code>.</p>
 <p>“Spread” data is typically not tidy, so you often won’t want to use <code>spread</code> when you are preparing data for analysis. However, <code>spread</code> can be very helpful in creating clean tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>spread</code> to rearrange the final summary to create an attractive table.</p>
@@ -710,11 +710,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb527-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">N =</span> <span class="kw">n</span>(), <span class="dt">mean =</span> <span class="kw">mean</span>(price), <span class="dt">sd =</span> <span class="kw">sd</span>(price))</a>
 <a class="sourceLine" id="cb527-4" data-line-number="4">stock_summary</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   stock     N   mean    sd
-##   &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10  0.414 0.834
-## 2 Y        10 -0.269 2.46 
-## 3 Z        10 -0.967 3.91</code></pre>
+##   stock     N  mean    sd
+##   &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 X        10 0.505 0.829
+## 2 Y        10 0.367 1.80 
+## 3 Z        10 0.967 5.52</code></pre>
 <div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb529-1" data-line-number="1">stock_summary <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb529-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</a>
 <a class="sourceLine" id="cb529-3" data-line-number="3">                                    <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span></a>
@@ -734,9 +734,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
 <tr class="odd">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">0.41 (0.83)</td>
-<td align="left">-0.27 (2.46)</td>
-<td align="left">-0.97 (3.91)</td>
+<td align="left">0.5 (0.83)</td>
+<td align="left">0.37 (1.8)</td>
+<td align="left">0.97 (5.52)</td>
 </tr>
 <tr class="even">
 <td align="left">N</td>
