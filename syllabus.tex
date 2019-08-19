@@ -1,0 +1,259 @@
+\documentclass[11pt, a4paper]{article}
+%\usepackage{geometry}
+\usepackage[inner=1.5cm,outer=1.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\pagestyle{empty}
+\usepackage{graphicx}
+\usepackage{fancyhdr, lastpage, bbding, pmboxdraw}
+\usepackage[usenames,dvipsnames]{color}
+\definecolor{darkblue}{rgb}{0,0,.6}
+\definecolor{darkred}{rgb}{.7,0,0}
+\definecolor{darkgreen}{rgb}{0,.6,0}
+\definecolor{red}{rgb}{.98,0,0}
+\usepackage[colorlinks,pagebackref,pdfusetitle,urlcolor=darkblue,citecolor=darkblue,linkcolor=darkred,bookmarksnumbered,plainpages=false]{hyperref}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\usepackage{longtable}
+
+\pagestyle{fancyplain}
+\fancyhf{}
+\lhead{ \fancyplain{}{R Programming for Research} }
+%\chead{ \fancyplain{}{} }
+\rhead{ \fancyplain{}{August 20, 2018} }
+%\rfoot{\fancyplain{}{page \thepage\ of \pageref{LastPage}}}
+\fancyfoot[RO, LE] {page \thepage\ of \pageref{LastPage} }
+\thispagestyle{plain}
+
+%%%%%%%%%%%% LISTING %%%
+\usepackage{listings}
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\usepackage{verbatim} % used to display code
+\usepackage{fancyvrb}
+\usepackage{acronym}
+\usepackage{amsthm}
+\VerbatimFootnotes % Required, otherwise verbatim does not work in footnotes!
+
+
+
+\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
+\definecolor{lightlightgray}{gray}{0.93}
+
+
+
+\lstset{
+%language=bash,                          % Code langugage
+basicstyle=\ttfamily,                   % Code font, Examples: \footnotesize, \ttfamily
+keywordstyle=\color{OliveGreen},        % Keywords font ('*' = uppercase)
+commentstyle=\color{gray},              % Comments font
+numbers=left,                           % Line nums position
+numberstyle=\tiny,                      % Line-numbers fonts
+stepnumber=1,                           % Step between two line-numbers
+numbersep=5pt,                          % How far are line-numbers from code
+backgroundcolor=\color{lightlightgray}, % Choose background color
+frame=none,                             % A frame around the code
+tabsize=2,                              % Default tab size
+captionpos=t,                           % Caption-position = bottom
+breaklines=true,                        % Automatic line breaking?
+breakatwhitespace=false,                % Automatic breaks only at whitespace?
+showspaces=false,                       % Dont make spaces visible
+showtabs=false,                         % Dont make tabls visible
+columns=flexible,                       % Column format
+morekeywords={__global__, __device__},  % CUDA specific keywords
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}
+{\Large \textsc{ERHS 535: R Programming for Research}}
+\end{center}
+\begin{center}
+Fall 2018
+\end{center}
+
+\begin{center}
+\rule{7in}{0.4pt}
+\begin{minipage}[t]{.75\textwidth}
+\begin{tabular}{lcccll}
+\textbf{Instructor:} Brooke Anderson & & &  & \textbf{Time:} & M/W 10:00 am -- 12:00 pm \\
+\textbf{Email:}  \href{mailto:brooke.anderson@colostate.edu}{brooke.anderson@colostate.edu} & & & & \textbf{Place:} & 120 Environmental Health
+\end{tabular}
+\end{minipage}
+\rule{7in}{0.4pt}
+\end{center}
+\vspace{.5cm}
+\setlength{\unitlength}{1in}
+\renewcommand{\arraystretch}{2}
+
+\noindent\textbf{Online Coursebook:}  \url{https://geanders.github.io/RProgrammingForResearch/} \\
+\textit{Note:} This syllabus is a copy of the information available in the first chapter of the online
+coursebook. The coursebook will always provide the most up-to-date information, so if there 
+is a conflict, the online syllabus should be considered correct.
+
+\vskip.15in
+\noindent\textbf{Office Hours:} Fridays, 10:00--11:00 am, Room 120 of the Environmental Health Building.
+
+\vskip.15in
+\noindent\textbf{Time and place:}  This course meets in Room 120 of the Environmental Health Building on Mondays and Wednesdays, 10:00 am--12:00 pm. Exceptions to these meeting times are: 
+
+\begin{itemize}
+\item There will be no meeting on Labor Day (Monday, Sept. 3).
+\item There are no course meetings the week of Thanksgiving (week of Nov. 19).
+\item I will be away from Fort Collins for two course dates (Aug. 27 and 29). I will videotape the lectures for these two class dates and post them online. I will offer a (voluntary) session on Aug. 31, 10:00-11:00 am, for anyone who would like to join to work on the in-course group exercises with classmates and with my feedback. 
+\item Office hours for Fall 2018 will be 10:00--11:00 AM on Fridays in EH 120.
+\end{itemize}
+
+\vskip.15in
+\noindent\textbf{Detailed Schedule:}
+Here is a more detailed view of the schedule for this course for Fall 2018:
+
+\small
+\begin{longtable}{llll}
+\hline
+Dates & Level & Lecture content & Graded items\\
+\hline
+Aug. 20, 22 & Preliminary & R Preliminaries & \\
+\hline
+Aug. 27, 29 & Basic & Entering and cleaning data & \\
+\hline
+Sept. 5 & Basic & Exploring data & Quiz (W)\\
+\hline
+Sept. 10, 12 & Basic & Reporting data results & Quiz (M), HW \#1 (W)\\
+\hline
+Sept. 17, 19 & Basic & Reproducible Research & Quiz (M)\\
+\hline
+Sept. 24, 26 & Intermediate & Entering and cleaning data & Quiz (M), HW \#2 (F)\\
+\hline
+Oct. 1, 3 & Intermediate & Exploring data & Quiz (M)\\
+\hline
+Oct. 8, 10 & Intermediate & Reporting data results & Quiz (M), HW \#3 (W)\\
+\hline
+Oct. 15, 17 & Intermediate & Reproducible Research & Quiz (M), Group choices (M)\\
+\hline
+Oct. 22, 24 & Advanced & Entering and cleaning data & Quiz (M), Project proposal (M), HW \#4 (W)\\
+\hline
+Oct. 29, 31 & Advanced & Exploring data & \\
+\hline
+Nov. 5, 7 & Advanced & Reporting data results & HW \#5 (W)\\
+\hline
+Nov. 12, 14 & Advanced & Mapping in R & \\
+\hline
+Nov. 26, 28 & Advanced & Package development 1 & HW \#6 (W)\\
+\hline
+Dec. 3, 5 & Advanced & Package development 2 & Project draft (M)\\
+\hline
+Week of Dec. 10 &  & Group presentations & Final project (M)\\
+\hline
+\end{longtable}
+
+\vspace*{.15in}
+
+\vskip.15in
+\noindent\textbf{Grading:} Course grades will be determined by the following five components: \\[5pt]
+
+\small
+\begin{tabular}{lr}
+\hline
+Assessment component & Percent of grade\\
+\hline
+Final group project & 30\\
+Weekly in-class quizzes, weeks 3-10 & 25\\
+Homework & 25\\
+Attendance and class participation & 10\\
+Weekly in-course group exercises & 10\\
+\hline
+\end{tabular}
+
+\vskip.15in
+\noindent\textbf{Attendance and class participation:} Because so much of the learning for this class is through interactive work in class, it is critical that you come to class. Out of a possible 10 points for class attendance, you will get:
+
+\begin{itemize}
+\item \textbf{10 points} if you attend all classes
+\item \textbf{8 points} if you miss one class
+\item \textbf{6 points} if you miss two classes
+\item \textbf{4 points} if you miss three classes
+\item \textbf{2 points} if you miss four classes
+\item \textbf{0 points} if you miss five or more classes
+\end{itemize}
+
+Exceptions: 
+
+\begin{itemize}
+\item Attendance on the first day of class (Aug. 20) will not be counted.
+\item If you miss classes for "University-sanctioned"" activities. These can include attending a conference, travel to collect data for your dissertation), For these absences, you must inform prior to the date that you will be absence. No points will be lost for attendance if you provide a signed letter from your research advisor by Dec. 11, 2017 (start of finals week), and you can make arrangements with me to make up any missed work. For more details, see CSU's Academic Policies on Course Attendance (\url{http://catalog.colostate.edu/general-catalog/academic-standards/academic-policies/}).
+\item If you have to miss class for a serious medical issue (e.g., operation, sickness severe enough to require a doctor's visit), the absence will be excused if you bring in a note from a doctor of other medical professional giving the date you missed and that it was for a serious medical issue.
+\end{itemize}
+
+\vskip.15in
+\noindent\textbf{Weekly in-course group exercises:} Part of each class will be spent doing in-course group exercises. Ten points of your final grade will be based on your participation in these exercises. As long as you are in class and participate in these exercises, you will get full credit for this component. If you miss a class, to get credit towards this component of your grade, you will need to turn in a one-page document describing what you learned from doing the in-course exercise on your own time. All in-class exercises are included in the online course book at the end of the chapter on the associated material.
+
+\vskip.15in
+\noindent\textbf{In-class quizzes:} You will have eight total in-class quizzes. You will have one for each of the Week 3--10 class meetings. There will be \textit{at least} 10 questions per quiz. You will get 1/3 point for each correct answer. If you do the math, you can get full credit for this if you get at least 75\% of your answers right. You can not get more than the maximum of 25 points for this component---once you reach 25 points on quizzes, you will have achieved full credit for the quiz component of the course grade.
+
+All quiz questions will be multiple choice, matching, or some other form of ``close-answered'' question (i.e., no open-response-style questions). You can not make up a quiz for a class period you missed. You can still get full credit on your total possible quiz points if you miss a class, but it means you will have to work harder and get more questions right for days you are in class. 
+
+Because grading format for these quizzes allows for you to miss some questions and still get the full quiz credit for the course, I will not ever re-consider the score you got on a previous quiz, give points back for a wrong answer on a poorly-worded question, etc. However, if a lot of people got a particular question wrong, I will be sure to cover it in the next class period. Also, especially if a question was poorly worded and caused confusion, I will work a similar question into a future quiz-- in addition to the 10 guaranteed questions for that quiz---so every student will have the chance to get an extra 1/3 point of credit for the question.
+
+The ``Vocabulary'' appendix of our online book has the list of material for which you will be responsible for this quiz. Most of the functions and concepts will have been covered in class, but some may not. You are responsible for going through the list and, if there are things you don't know or remember from class, learning them. To do this, you can use help functions in R, Google, StackOverflow, books on R, ask a friend, and any other resource you can find. The final version of the Vocabulary list you will be responsible will be posted by the Wednesday evening before each quiz.
+
+In general, using R frequently in your research or other coursework will help you to prepare and do well on these quizzes.
+
+\vskip.15in
+\noindent\textbf{Homework:} There will be six homework assignments, starting a few weeks into the course and then due approximately every two weeks (see the detailed schedule in the online course book for exact due dates).
+
+The first homework (HW \#1) should be done individually. For some other homeworks, you may be given the option to work in small groups of approximately three students. 
+
+For later homeworks, a subset of the full set of questions will be selected for which I will do a detailed grading of the code itself, with substantial feedback on coding. All other questions in the homework will be graded for completeness and based on the final answer produced. For homeworks with a heavy coding component, I will provide solution code for all questions. 
+
+Homework is due by the start of class on the due date. Your grade will be reduced by 10 points for each day it is late, and will receive no credit if it is late by over a week. 
+
+\vskip.15in
+\noindent\textbf{Final Group Project:} For the final project, you will work in small groups (3--4 people) on an R programming challenge. The final grade will be based on the resulting R software, as well as on a short group presentation and written report describing your work. You will be given a lot of in-class time during the last third of the semester to work with your group on this project, and you will also need to spend some time working outside of class to complete the project. More details on this project will be provided later in the semester.
+
+\vskip.15in
+\noindent\textbf{Course set-up:} Please be sure you have the latest version of R and RStudio (Desktop version, Open Source edition) installed. Both are free for anyone to download. Also, be sure to sign up for a free GitHub account.
+
+Here are useful links for this set-up: 
+
+\begin{itemize}
+\item R: \url{https://cran.r-project.org}
+\item RStudio: \url{https://www.rstudio.com/products/rstudio/#Desktop}
+\item Sign-up for a GitHub account: \url{https://github.com}
+\end{itemize}
+
+\vskip.15in
+\noindent\textbf{Online Coursebook:} This coursebook will serve as the only required textbook for this course. I am still in the process of editing and adding to this book, so content may change somewhat over the semester (particularly for the second half of the book, which is currently in a rawer draft than the beginning of the book). We typically cover about a chapter of the book each week of the course. 
+
+This coursebook includes: 
+
+\begin{itemize}
+\item Links to the slides presented in class for each topic
+\item In-course exercises, typically including links to the data used in the exercise
+\item An appendix with homework assignments
+\item A list of vocabulary and concepts that should be mastered for each quiz
+\end{itemize}
+
+If you find any typos or bugs, or if you have any suggestions for how the book can be improved, feel free to post it on the book's GitHub Issues page (\url{https://github.com/geanders/RProgrammingForResearch/issues}).
+
+This book was developed using Yihui Xie's phenomenal bookdown (\url{https://bookdown.org}) framework. The book is built using code that combines R code, data, and text to create a book for which R code and examples can be re-executed every time the book is re-built, which helps identify bugs and broken code examples quickly. The online book is hosted using GitHub's free GitHub Pages (\url{https://pages.github.com}). All material for this book is available and can be explored at the book's GitHub repository (\url{https://github.com/geanders/RProgrammingForResearch}).
+
+
+\vskip.15in
+\noindent\textbf{Other helpful books (not required):} The best book to supplement the coursebook and lectures for this course is \textit{R for Data Science} (\url{http://r4ds.had.co.nz}), by Garrett Grolemund and Hadley Wickham. The entire book is freely available online through the same format at the coursebook. You can also purchase a paper version of the book (published by O'Reilly) through Amazon, Barnes \& Noble, etc., for around \$40. This book is an excellent and up-to-date reference by some of the best R programmers in the world. 
+
+There are a number of other useful books available on general R programming, including:
+
+\begin{itemize}
+\item R for Dummies (\url{https://colostate-primo.hosted.exlibrisgroup.com/primo-explore/fulldisplay?docid=01COLSU_ALMA51267598310003361&context=L&vid=01COLSU&lang=en_US&search_scope=Everything&adaptor=Local%20Search%20Engine&tab=default_tab&query=any,contains,r%20for%20dummies&sortby=rank&offset=0})
+-  R Cookbook (\url{https://colostate-primo.hosted.exlibrisgroup.com/primo-explore/fulldisplay?docid=01COLSU_ALMA21203304500003361&context=L&vid=01COLSU&lang=en_US&search_scope=Everything&adaptor=Local%20Search%20Engine&tab=default_tab&query=any,contains,r%20cookbook&sortby=rank&offset=0})
+- R Graphics Cookbook (\url{http://www.amazon.com/R-Graphics-Cookbook-Winston-Chang/dp/1449316956/ref=sr_1_1?ie=UTF8&qid=1440997472&sr=8-1&keywords=r+graphics+cookbook})
+- Roger Peng's Leanpub books (\url{https://leanpub.com/u/rdpeng})
+- Various books on bookdown.org (\url{www.bookdown.org})
+\end{itemize}
+
+The R programming language is used extensively within certain fields, including statistics and bioinformatics. If you are using R for a specific type of analysis, you will be able to find many books with advice on using R for both general and specific statistical analysis, including many available in print or online through the CSU library. 
+
+
+%%%%%% THE END 
+\end{document} 
