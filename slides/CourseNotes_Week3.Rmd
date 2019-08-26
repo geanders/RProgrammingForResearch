@@ -10,17 +10,6 @@ fontsize: 10pt
 options(width = 50)
 ```
 
-# Odds and ends
-
-## Next graded materials
-
-The next graded materials are: 
-
-- Homework #1: Due Sept. 12 (next Wednesday)
-- Quiz on Chapter 2: Sept. 10 (next Monday)
-
-As a reminder, the material for Quiz 2 is covered through the online lectures. 
-
 # Data from R packages
 
 ## Data from R packages
@@ -34,16 +23,19 @@ Many R packages come with their own data, which is very easy to load and use.
 
 ## Data from R packages
 
-For example, the `faraway` package has a dataset called `worldcup` that you'll use today. To load it, use the `data()` function once you've loaded the package with the name of the dataset as its argument:
+For example, the `faraway` package has a dataset called `worldcup` that you'll
+use today. To load it, use the `data()` function once you've loaded the package
+with the name of the dataset as its argument:
 
 ```{r}
-library(faraway)
+library("faraway")
 data("worldcup")
 ```
 
 ## Data from R packages
 
-Unlike most data objects you'll work with, the data that comes with an R package will often have its own help file. You can access this using the `?` operator:
+Unlike most data objects you'll work with, the data that comes with an R package
+will often have its own help file. You can access this using the `?` operator:
 
 ```{r, eval = FALSE}
 ?worldcup
@@ -51,20 +43,24 @@ Unlike most data objects you'll work with, the data that comes with an R package
 
 ## Data from R packages
 
-To find out all the datasets that are available in the packages you currently have loaded, run `data()` without an option inside the parentheses:
+To find out all the datasets that are available in the packages you currently
+have loaded, run `data()` without an option inside the parentheses:
 
 ```{r, eval = FALSE}
 data()
 ```
 
-To find out all of the datasets available within a certain package, run `data` with the argument `package`:
+To find out all of the datasets available within a certain package, run `data`
+with the argument `package`:
 
 ```{r eval = FALSE}
 data(package = "faraway")
 ```
 
 
-As a note, you can similarly use `library()`, without the name of a package, to list all of the packages you have installed that you could call with `library()`:
+As a note, you can similarly use `library()`, without the name of a package, to
+list all of the packages you have installed that you could call with
+`library()`:
 
 ```{r, eval = FALSE}
 library()
@@ -72,18 +68,22 @@ library()
 
 ## `nepali` example data
 
-For the example plots, I'll use a dataset in the `faraway` package called `nepali`. This gives data from a study of the health of a group of Nepalese children. 
+For the example plots, I'll use a dataset in the `faraway` package called
+`nepali`. This gives data from a study of the health of a group of Nepalese
+children.
 
 ```{r}
-library(faraway)
-data(nepali)
+library("faraway")
+data("nepali")
 ```
 
-I'll be using functions from `dplyr` and `ggplot2` during the course, so I'll load those:
+I'll be using functions from the `dplyr`, `forcats`, and `ggplot2` packages
+during the course, so I'll load those:
 
 ```{r message = FALSE, warning = FALSE}
-library(dplyr)
-library(ggplot2)
+library("dplyr")
+library("forcats")
+library("ggplot2")
 ```
 
 ## `nepali` example data
@@ -93,41 +93,55 @@ For the `nepali` dataset, each observation is a single measurement for a child; 
 I'll limit it to the columns with the child's id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
 
 ```{r message = FALSE}
-nepali <- nepali %>%
+
+distinct_nepali <- nepali %>%
   # Limit to certain columns
-  select(id, sex, wt, ht, age) %>%
+  select(id:ht, age) %>%
   # Convert id and sex to factors
-  mutate(id = factor(id),
-         sex = factor(sex, levels = c(1, 2),
-                      labels = c("Male", "Female"))) %>%
+  mutate(id = as_factor(id),
+         sex = as_factor(sex),
+         sex = fct_recode(sex, 
+                          Male = "1",
+                          Female = "2")) %>%
   # Limit to first obs. per child
   distinct(id, .keep_all = TRUE)
 ```
 
-## `nepali` example data
+## `distinct_nepali` example data
 
 The first few rows of the data now looks like:
 
 ```{r}
-nepali %>% 
+distinct_nepali %>% 
   slice(1:4)
 ```
 
-# Logical vectors
+# Logical operators, vectors, and expressions
 
-## Logical statements
+## Logical operators, vectors, and expressions
 
-Last week, you learned some about logical statements and how to use them with the `filter` function. \medskip
+**Logical operators** are operators that conduct a logical test based on 
+one or more vectors, while logical expressions are the full R expressions 
+that use these operators to conduct the test. The output is a  
 
-You can use *logical vectors*, created with these statements, for a lot of things. We'll review them and add some more details this week.
+[graphic]
+
+## Logical expressions
+
+Last week, you learned some about logical expressions and how to use them with
+the `filter` function. \medskip
+
+You can use *logical vectors*, created with these expressions, for a lot data exploration 
+tasks. We'll review them and add some more details this week.
 
 ## Logical vectors
 
-A logical statement outputs a *logical vector*. This logical vector will be the same length as the original vector tested by the logical statement:
+A logical expression outputs a *logical vector*. This logical vector will be the
+same length as the original vector tested by the logical statement:
 
 ```{r}
-length(nepali$sex)
-length(nepali$sex == "Male")
+length(distinct_nepali$sex)
+length(distinct_nepali$sex == "Male")
 ```
 
 ## Logical vectors
@@ -135,8 +149,8 @@ length(nepali$sex == "Male")
 Each element of the logical vector can only have one of three values (`TRUE`, `FALSE`, `NA`). The logical vector will have the value `TRUE` at any position where the original vector met the logical condition you tested, and `FALSE` anywhere else:
 
 ```{r}
-head(nepali$sex)
-head(nepali$sex == "Male")
+head(distinct_nepali$sex)
+head(distinct_nepali$sex == "Male")
 ```
 
 ## Logical vectors
@@ -144,18 +158,19 @@ head(nepali$sex == "Male")
 Because the logical vector is the same length as the vector it's testing, you can add logical vectors to dataframes with `mutate`:
 
 ```{r}
-nepali <- nepali %>% 
+distinct_nepali <- distinct_nepali %>% 
   mutate(is_male = sex == "Male") # Add column. Is obs. male?
-nepali %>% 
+distinct_nepali %>% 
   slice(1:3)
 ```
 
 ## Logical vectors
 
-As another example, you could add a column that is a logical vector of whether each child's first-measured height is over 100 centimeters:
+As another example, you could add a column that is a logical vector of whether
+each child's first-measured height is over 100 centimeters:
 
 ```{r}
-nepali %>% 
+distinct_nepali %>% 
   mutate(very_tall = ht > 100) %>% # Is height over 100 cm?
   select(id, ht, very_tall) %>% 
   slice(1:3)
@@ -163,10 +178,11 @@ nepali %>%
 
 ## Logical vectors
 
-You can "flip" a logical vector (i.e., change every `TRUE` to `FALSE` and vice-versa) using the bang operator (`!`):
+You can "flip" a logical vector (i.e., change every `TRUE` to `FALSE` and
+vice-versa) using the bang operator (`!`):
 
 ```{r}
-nepali %>% 
+distinct_nepali %>% 
   mutate(very_tall = ht > 100,
          not_tall = !very_tall) %>% 
   select(id, ht, very_tall, not_tall) %>% 
@@ -175,10 +191,11 @@ nepali %>%
 
 ## Logical vectors
 
-You can do a few cool things now with this vector. For example, you can use it with the `filter` function to pull out just the rows where `is_male` is `TRUE`:
+You can do a few cool things now with this vector. For example, you can use it
+with the `filter` function to pull out just the rows where `is_male` is `TRUE`:
 
 ```{r}
-nepali %>% 
+distinct_nepali %>% 
   filter(is_male) %>% 
   select(id, ht, wt, sex) %>% 
   slice(1:5)
@@ -189,7 +206,7 @@ nepali %>%
 Or, with `!`, just the rows where `is_male` is `FALSE`:
 
 ```{r}
-nepali %>% 
+distinct_nepali %>% 
   filter(!is_male) %>% 
   select(id, ht, wt, sex) %>% 
   slice(1:5)
@@ -197,35 +214,41 @@ nepali %>%
 
 ## Logical vectors
 
-All of the values in a logical vector are saved, at a deeper level, with a number. Values of `TRUE` are saved as 1 and values of `FALSE` are saved as 0. 
+All of the values in a logical vector are saved, at a deeper level, with a
+number. Values of `TRUE` are saved as 1 and values of `FALSE` are saved as 0.
 
 ```{r}
-head(nepali$is_male)
+head(distinct_nepali$is_male)
 ```
 
 ```{r}
-head(as.numeric(nepali$is_male))
+head(as.numeric(distinct_nepali$is_male))
 ```
 
 
 ## Logical vectors
 
-Therefore, you can use `sum()` to get the sum of all values in a vector. Because logical vector values are linked with numerical values of 0 or 1, you can use `sum()` to find out how many males and females are in the dataset:
+Therefore, you can use `sum()` to get the sum of all values in a vector. Because
+logical vector values are linked with numerical values of 0 or 1, you can use
+`sum()` to find out how many males and females are in the dataset:
 
 ```{r}
-sum(nepali$is_male)
-sum(!nepali$is_male)
+sum(distinct_nepali$is_male)
+sum(!distinct_nepali$is_male)
 ```
 
 ## In-course exercise
 
-We'll take a break now to start the in-course exercise for this week (Sections 3.5.1 and 3.5.2).
+We'll take a break now to start the in-course exercise for this week (Sections
+3.5.1 and 3.5.2).
 
 # Tidyverse and cheatsheets
 
 ## The "tidyverse"
 
-So far, we have used a number of packages that are part of the *tidyverse*. The tidyverse is a collection of recent and developing packages for R, many written by Hadley Wickham. \medskip
+So far, we have used a number of packages that are part of the *tidyverse*. The
+tidyverse is a collection of recent and developing packages for R, many written
+by Hadley Wickham. \medskip
 
 ```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
 knitr::include_graphics("../figures/tidyverse_hexbin.jpeg")
@@ -247,11 +270,15 @@ knitr::include_graphics("../figures/HadleyObama.png")
 
 ## Cheatsheets
 
-RStudio has several very helpful **cheatsheets**. These are one-page sheets (front and back) that cover many of the main functions for a certain topic or task in R. These cheatsheets cover a lot of the main "tidyverse" functions.
+RStudio has several very helpful **cheatsheets**. These are one-page sheets
+(front and back) that cover many of the main functions for a certain topic or
+task in R. These cheatsheets cover a lot of the main "tidyverse" functions.
 
-You can access these directly from RStudio. Go to "Help" -> "Cheatsheets" and select the cheatsheet on the topic of interest. 
+You can access these directly from RStudio. Go to "Help" -> "Cheatsheets" and
+select the cheatsheet on the topic of interest.
 
-You can find even more of these cheatsheets at https://www.rstudio.com/resources/cheatsheets/.
+You can find even more of these cheatsheets at
+https://www.rstudio.com/resources/cheatsheets/.
 
 ## Cheatsheets
 
@@ -259,14 +286,16 @@ You can find even more of these cheatsheets at https://www.rstudio.com/resources
 knitr::include_graphics("../figures/rstudio_cheatsheet.png")
 ```
 
-
 # Simple statistics
 
 ## Simple statistics functions
 
-We've looked at how to subset, filter, arrange, and add to a dataframe. Next we'll look at how to summarize a dataframe. 
+We've looked at how to subset, filter, arrange, and add to a dataframe. Next
+we'll look at how to summarize a dataframe.
 
-We'll start by looking at some simple statistics functions from base R, and then we'll look at how some of those functions can be used with the `summarize` function from the `dplyr` package to quickly get interesting summaries of data.
+We'll start by looking at some simple statistics functions from base R, and then
+we'll look at how some of those functions can be used with the `summarize`
+function from the `dplyr` package to quickly get interesting summaries of data.
 
 ## Simple statistics functions
 
@@ -281,11 +310,31 @@ Function  | Description
 
 ## Simple statistic examples
 
-All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`---see help files).
+All of these take, as the main argument, the vector(s) for which you want the
+statistic. If there are missing values in the vector, you'll need to add an
+option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`---see
+help files).
 
 ```{r}
-mean(nepali$wt, na.rm = TRUE)
-min(nepali$wt, na.rm = TRUE)
+mean(distinct_nepali$wt, na.rm = TRUE)
+min(distinct_nepali$wt, na.rm = TRUE)
+```
+
+## Simple statistic examples
+
+These functions require a **numeric vector** as input. 
+
+Remember that you can pull a column from a dataframe as a vector using
+either `$` or the `pluck` function from `purrr`. Therefore, you can use 
+either of these calls to get the mean weight of the children in the
+dataset: 
+
+```{r}
+library("purrr")
+mean(distinct_nepali$wt, na.rm = TRUE)
+distinct_nepali %>% 
+  pluck("wt") %>% 
+  mean(na.rm = TRUE)
 ```
 
 ## Simple statistics functions
@@ -305,8 +354,11 @@ For example, the `range()` function inputs a vector and then outputs two values-
 The `cor` function can take two or more vectors. If you give it multiple values, it will give the correlation matrix for all the vectors.
 
 ```{r}
-cor(nepali$wt, nepali$ht, use = "complete.obs")
-cor(nepali[ , c("wt", "ht", "age")], use = "complete.obs")
+cor(distinct_nepali$wt, 
+    distinct_nepali$ht, 
+    use = "complete.obs")
+cor(distinct_nepali[ , c("wt", "ht", "age")], 
+    use = "complete.obs")
 ```
 
 ## `summary()`: A bit of OOP
@@ -314,9 +366,18 @@ cor(nepali[ , c("wt", "ht", "age")], use = "complete.obs")
 R supports object-oriented programming. This shows up with `summary()`. R looks to see what type of object it's dealing with, and then uses a method specific to that object type. 
 
 ```{r}
-summary(nepali$wt)
-summary(nepali$sex)
+summary(distinct_nepali$wt)
+summary(distinct_nepali$sex)
 ```
+
+## `summary()`: A bit of OOP
+
+```{r}
+distinct_nepali %>% summary()
+distinct_nepali %>% pluck("ht") %>% summary()
+distinct_nepali %>% pluck("sex") %>% summary()
+```
+
 
 ## The `summarize` function
 
@@ -343,7 +404,7 @@ The output from `summarize` will be a dataframe with:
 As an example, to summarize the `nepali` dataset to get the mean weight, median height, and minimum and maximum ages of children, you could run: 
 
 ```{r}
-summarize(nepali,
+summarize(distinct_nepali,
           mean_wt = mean(wt, na.rm = TRUE),
           median_ht = median(ht, na.rm = TRUE),
           youngest = min(age, na.rm = TRUE),
@@ -382,7 +443,7 @@ Function | Description
 For example, the following call would give you the total number of observations in the dataset, the number of distinct values of age measured across all children, the ID of the first child included in the dataset, and the weight of the last child included in the dataset:  
 
 ```{r}
-nepali %>%
+distinct_nepali %>%
   summarize(n_children = n(), 
             n_distinct_ages = n_distinct(age),
             first_id = first(id),
@@ -434,7 +495,7 @@ For example, in the Nepali dataset, say you want to get summaries by sex. You wa
 You can run:
 
 ```{r}
-nepali %>%
+distinct_nepali %>%
   group_by(sex) %>%
   summarize(n_children = n(), 
             mean_wt = mean(wt, na.rm = TRUE),
@@ -444,7 +505,7 @@ nepali %>%
 ## Grouping and summarizing
 
 ```{r}
-nepali %>%
+distinct_nepali %>%
   group_by(sex) %>%
   summarize(n_children = n(), 
             mean_wt = mean(wt, na.rm = TRUE),
@@ -460,7 +521,7 @@ You can group by more than one variable. For example, to get summaries within gr
 \small
 
 ```{r}
-nepali %>%
+distinct_nepali %>%
   mutate(tall = ht > 100) %>%
   filter(!is.na(tall)) %>% 
   group_by(sex, tall) %>%
@@ -495,7 +556,7 @@ Next lecture, we will talk more about customization, to help you make more attra
 Here, we'll be using functions from the `ggplot2` library, so you'll need to install that package:
 
 ```{r}
-library(ggplot2)
+library("ggplot2")
 ```
 
 The basic steps behind creating a plot with `ggplot2` are:
@@ -511,7 +572,7 @@ The basic steps behind creating a plot with `ggplot2` are:
 The `ggplot` function requires you to input a dataframe with the data you will plot. All the columns in that dataframe can be mapped to specific aesthetics within the plot. 
 
 ```{r}
-nepali %>% 
+distinct_nepali %>% 
   slice(1:3)
 ```
 
@@ -524,7 +585,7 @@ For example, if we input the `nepali` dataframe, we would be able to create a sc
 For example, you may want to create a scatterplot where color shows gender, x-position shows height, and y-position shows weight. \medskip
 
 ```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-nepali %>%
+distinct_nepali %>%
   ggplot(aes(x = ht, y = wt, color = sex)) + 
   geom_point() + 
   xlab("Height (cm)") + ylab("Weight (kg)")
@@ -606,7 +667,7 @@ Notice that:
 Let's put these ideas together to write the code to create a scatterplot for our example data: 
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-  ggplot(data = nepali) + 
+  ggplot(data = distinct_nepali) + 
   geom_point(mapping = aes(x = ht, y = wt, color = sex)) 
 ```
 
@@ -630,7 +691,7 @@ Geom(s)                     | Description
 You can add several geoms to the same plot as layers:
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-  ggplot(data = nepali) + 
+  ggplot(data = distinct_nepali) + 
   geom_point(mapping = aes(x = ht, y = wt, color = sex)) + 
   geom_line(mapping = aes(x = ht, y = wt, color = sex)) + 
   geom_rug(mapping = aes(x = ht, y = wt, color = sex)) 
@@ -641,7 +702,7 @@ You can add several geoms to the same plot as layers:
 You may have noticed that all of these geoms use the same aesthetic mappings (height to x-axis position, weight to y-axis position, and sex to color). To save time, you can specify the aesthetic mappings in the first `ggplot` call. These mappings will then be the default for any of the added geoms. 
 
 ```{r eval = FALSE}
-ggplot(data = nepali,
+ggplot(data = distinct_nepali,
        mapping = aes(x = ht, y = wt, color = sex)) + 
   geom_point() + 
   geom_line() + 
@@ -653,7 +714,7 @@ ggplot(data = nepali,
 Because the first argument of the `ggplot` call is a dataframe, you can also "pipe into" a `ggplot` call:
 
 ```{r eval = FALSE}
-nepali %>% 
+distinct_nepali %>% 
   ggplot(aes(x = ht, y = wt, color = sex)) + 
   geom_point() + 
   geom_line() + 
@@ -677,7 +738,7 @@ Required aesthetics are in bold in this section of the help file and optional on
 Instead of mapping an aesthetic to an element of your data, you can use a constant value for the aesthetic. For example, you may want to make all the points blue, rather than having color map to gender: 
 
 ```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-nepali %>%
+distinct_nepali %>%
   ggplot(aes(x = ht, y = wt)) + 
   geom_point(color = "blue")
 ```
@@ -708,7 +769,7 @@ ggplot(to_plot, aes(x = x, y = y)) +
 Here is an example of mapping point shape to a constant value other than the default:
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
+ggplot(data = distinct_nepali) + 
   geom_point(mapping = aes(x = ht, y = wt, color = sex),
              shape = 9)
 ```
@@ -738,7 +799,7 @@ Google "R colors" and search the images to find links to listings of different R
 Here is an example of mapping point shape and color to constant values other than the defaults:
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
+ggplot(data = distinct_nepali) + 
   geom_point(mapping = aes(x = ht, y = wt),
              shape = 9, 
              color = "darkorchid")
@@ -763,7 +824,7 @@ knitr::kable(plot_adds, col.names = c("Element", "Description"))
 ## Useful plot additions
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
+ggplot(data = distinct_nepali) + 
   geom_point(mapping = aes(x = ht, y = wt)) + 
   labs(x = "Height", y = "Weight") + 
   ggtitle("Height vs. weight for Nepali children",
@@ -798,7 +859,7 @@ For example, the geom for a hexagonal 2-D heatmap (`geom_hex`) divides the data 
 ## Adding geoms
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
+ggplot(data = distinct_nepali) + 
   geom_hex(aes(x = ht, y = wt))
 ```
 
@@ -807,7 +868,7 @@ ggplot(data = nepali) +
 A histogram geom is a similar idea, but only gives the distribution across one variable: 
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
+ggplot(data = distinct_nepali) + 
   geom_histogram(aes(x = ht))
 ```
 
@@ -817,7 +878,7 @@ ggplot(data = nepali) +
 You can add some elements to the histogram, like `ggtitle`, `labs`, and `xlim`:
 
 ```{r, fig.width = 4, fig.height = 2.5, out.width="0.6\\textwidth", fig.align = "center", message = FALSE, warning = FALSE}
-ggplot(nepali, aes(x = ht)) + 
+ggplot(distinct_nepali, aes(x = ht)) + 
   geom_histogram(fill = "lightblue", color = "black") + 
   ggtitle("Height of children") + 
   labs(x = "Height (cm)", y = "Weight (kg)") + 
@@ -829,7 +890,7 @@ ggplot(nepali, aes(x = ht)) +
 `geom_histogram` also has its own special argument, `bins`. You can use this to change the number of bins that are used to make the histogram:
 
 ```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", warning = FALSE, message = FALSE}
-ggplot(nepali, aes(x = ht)) + 
+ggplot(distinct_nepali, aes(x = ht)) + 
   geom_histogram(bins = 40) 
 ```
 
@@ -838,7 +899,7 @@ ggplot(nepali, aes(x = ht)) +
 You can use the `geom_bar` geom to create a barchart:
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(nepali, aes(x = sex, fill = ht > 100)) + 
+ggplot(distinct_nepali, aes(x = sex, fill = ht > 100)) + 
   geom_bar()
 ```
 
@@ -847,7 +908,7 @@ ggplot(nepali, aes(x = sex, fill = ht > 100)) +
 With the `geom_bar` geom, you can use the `position` argument to change how the bars for different groups are shown (`"stack"`, `"dodge"`, `"fill"`):
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(nepali, aes(x = sex, fill = ht > 100)) + 
+ggplot(distinct_nepali, aes(x = sex, fill = ht > 100)) + 
   geom_bar(position = "dodge")
 ```
 
@@ -856,7 +917,7 @@ ggplot(nepali, aes(x = sex, fill = ht > 100)) +
 To create a boxplot, you can use `geom_boxplot`: 
 
 ```{r, fig.height = 2, fig.width = 2, warning = FALSE, fig.align="center"}
-ggplot(nepali, aes(x = 1, y = ht)) + 
+ggplot(distinct_nepali, aes(x = 1, y = ht)) + 
   geom_boxplot() + 
   labs(x = "", y = "Height (cm)")
 ```
@@ -866,7 +927,7 @@ ggplot(nepali, aes(x = 1, y = ht)) +
 You can also do separate boxplots by a factor. In this case, you'll need to include two aesthetics (`x` and `y`) when you initialize the ggplot object. 
 
 ```{r, fig.height = 2, fig.width = 2.5, fig.align = "center", warning = FALSE}
-ggplot(nepali, aes(x = sex, y = ht, group = sex)) + 
+ggplot(distinct_nepali, aes(x = sex, y = ht, group = sex)) + 
   geom_boxplot() + 
   labs(x = "Sex", y = "Height (cm)")
 ```

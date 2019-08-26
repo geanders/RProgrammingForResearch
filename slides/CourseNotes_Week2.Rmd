@@ -14,16 +14,6 @@ fontsize: 10pt
 options(width = 50)
 ```
 
-## Odds and ends
-
-- Next week, we will not meet for either class session (Aug. 27 and 29). Instead, videos of the lectures will be available through the online coursebook. You will be responsible for watching these sometime during next week on your own time.
-- Office hours will be in EH 120, 10:00--11:00 AM Fridays. For the office hours on Aug. 31, we will go through the group exercises for Week 1 ("Entering and Cleaning Data #1"). Attendance is voluntary, but you are responsible for trying the exercises whether you attend this in-person session or not. 
-
-## Odds and ends
-
-- The first quiz will be on Wednesday, Sept. 5 (next in-person class meeting). It will cover the content in Chapter 1 of the online book ("R Preliminaries"). The vocabulary list is up in the "Vocabulary" appendix of the online book.
-- The first homework is due Sept. 12. The updated assignment for 2018 is available now in the online coursebook.
-
 # Getting data into R
 
 ## Basics of getting data into R
@@ -43,10 +33,10 @@ The sky is the limit...
 
 - **Flat files**
 - Files from other statistical packages (SAS, Excel, Stata, SPSS)
-- [Tables on webpages](http://yihui.name/en/2010/10/grabbing-tables-in-webpages-using-the-xml-package/) (e.g., the table near the end of [this page](http://en.wikipedia.org/wiki/Ebola_virus_epidemic_in_West_Africa))
+- [Tables on webpages](http://yihui.name/en/2010/10/grabbing-tables-in-webpages-using-the-xml-package/) 
 - Data in a database (e.g., SQL)
 - Data stored in XML and JSON
-- Really crazy data formats used in other disciplines (e.g., [netCDF files from climate folks](https://www.image.ucar.edu/GSP/Software/Netcdf/), [MRI data stored in Analyze, NIfTI, and DICOM formats](http://www.tractor-mri.org.uk))
+- Complex data formats (e.g., [netCDF files from climate folks](https://www.image.ucar.edu/GSP/Software/Netcdf/), [MRI data stored in Analyze, NIfTI, and DICOM formats](http://www.tractor-mri.org.uk))
 - Data through APIs (e.g., [GoogleMaps](http://www.r-bloggers.com/heatmap-of-toronto-traffic-signals-using-rgooglemaps/), [Twitter](http://davetang.org/muse/2013/04/06/using-the-r_twitter-package/), many government agencies)
 - Incredibly messy data using `scan` and `readLines`
 
@@ -137,18 +127,19 @@ You can download this file by going to [this link](https://github.com/geanders/R
 If save this file in your working directory, to read it in and assign it the name `shipwrecks`, you can run: 
 
 ```{r eval = FALSE}
-library(readr)
+library("readr")
 shipwrecks <- read_delim("AWOIS_Wrecks_KnownYear.tab", 
                         delim = "\t")
 ```
 ```{r echo = FALSE, message = FALSE}
-library(readr)
+library("readr")
 shipwrecks <- read_delim("../data/AWOIS_Wrecks_KnownYear.tab", 
                         delim = "\t")
 ```
-```{r}
+```{r message = FALSE}
 # Check out a subset of the data
-shipwrecks[c(1:4), c(2, 4, 5, 9)]
+library("dplyr")
+slice(.data = select(.data = shipwrecks, c(2, 4, 5, 9)), 1:4)
 ```
 
 ## `readr` family of functions
@@ -190,7 +181,7 @@ read_delim("../data/daily_show_guests.csv", delim = ",", skip = 4)
 
 ## `readr` family of functions
 
-Many members of the `readr` package that read delimited files are doing the same basic thing. The only difference is what defaults they have for the separator (`delim`). \medskip
+Many members of the `readr` package that read delimited files are doing the same basic thing. The only difference is what defaults they have for the delimiter (`delim`). \medskip
 
 Some key members of the `readr` family for delimited data:
 
@@ -377,6 +368,9 @@ dirpath_shortcuts <- data.frame(abbr = c("`.`", "`..`", "`../..`", "`../data`"),
 knitr::kable(dirpath_shortcuts, col.names = c("Shorthand", "Meaning"))
 ```
 
+One other useful abbreviation is `~`, which is shorthand for your **home directory**. 
+On Windows, this will take you to your "Documents" folder. 
+
 ## Relative versus absolute pathnames
 
 Here are some examples of relative pathnames that use these abbreviations: \medskip
@@ -501,7 +495,7 @@ head(daily_show, 3)
 A first step is often re-naming columns. It can be hard to work with a column name that is: 
 
 - long
-- includes spaces
+- doesn't following the naming rules for R objects
 - includes upper case
 
 Several of the column names in `daily_show` have some of these issues: 
@@ -564,18 +558,23 @@ daily_show <- rename(daily_show,
 
 ## Selecting columns
 
-Next, you may want to select only some columns of the dataframe. You can use `select` for this. The basic structure of this command is: 
+Next, you may want to select only some columns of the dataframe. You can use the
+`select` function for this.
+
+In this case, the basic structure of this command is: 
 
 ```{r eval = FALSE}
 ## Generic code
 select(dataframe, column_name_1, column_name_2, ...)
 ```
 
-Where `column_name_1`, `column_name_2`, etc., are the names of the columns you want to keep. 
+Where `column_name_1`, `column_name_2`, etc., are the names of the columns you
+want to keep.
 
 ## Selecting columns
 
-For example, to select all columns except `year` (since that information is already included in `date`), run: 
+For example, to select all columns except `year` (since that information is
+already included in `date`), run:
 
 ```{r}
 select(daily_show, job, date, category, guest_name)
@@ -583,13 +582,13 @@ select(daily_show, job, date, category, guest_name)
 
 ## Selecting columns
 
-As a reminder, we could have selected these columns using square bracket indexing, too:
+As a reminder, we could have selected these columns using position, too:
 
 ```{r eval = FALSE}
-daily_show[ , 2:5]
+select(.data = daily_show, 2:5)
 ```
 
-However, the `select` function will fit in nicely with other data-cleaning functions from "tidyverse" packages, plus the `select` function has some cool extra options, including:
+The `select` function has some cool extra options, including:
 
 - Selecting all columns that start with a certain pattern
 - Selecting all columns that end with a certain pattern
@@ -597,7 +596,9 @@ However, the `select` function will fit in nicely with other data-cleaning funct
 
 ## Selecting columns
 
-The `select` function also provides some time-saving tools. For example, in the last example, we wanted all the columns except one. Instead of writing out all the columns we want, we can use `-` with the columns we don't want to save time: 
+The `select` function also provides some time-saving tools. For example, in the
+last example, we wanted all the columns except one. Instead of writing out all
+the columns we want, we can use `-` with the columns we don't want to save time:
 
 ```{r}
 daily_show <- select(daily_show, -year)
@@ -606,17 +607,21 @@ head(daily_show, 3)
 
 ## Selecting columns
 
-Another cool trick with `select` is that, if you want to keep several columns in a row, you can use a colon (`:`) with column names (rather than column position numbers) to select those columns: 
+Another cool trick with `select` is that, if you want to keep several columns in
+a row, you can use a colon (`:`) with column names (rather than column position
+numbers) to select those columns:
 
 ```{r eval = FALSE}
 daily_show <- select(daily_show, job:guest_name)
 ```
 
-This call says that we want to select all columns from the one named "job" to the one named "guest_name".
+This call says that we want to select all columns from the one named "job" to
+the one named "guest_name".
 
 ## Add or change columns
 
-You can change a column or add a new column using the `mutate` function. That function has the syntax: 
+You can change a column or add a new column using the `mutate` function. That
+function has the syntax:
 
 ```{r eval = FALSE}
 # Generic code
@@ -625,8 +630,11 @@ mutate(dataframe,
        new_column = function(other arguments))
 ```
 
-- If you want to just **change** a column (in place), use its original name on the left of the equation. 
-- If you want to **add** a new column, use a new name on the left of the equation (this will be the name of the new column).
+- If you want to just **change** a column (in place), use its original name on
+the left of the equation.
+- If you want to **add** a new column, use a new column name (you pick what that
+name will be) on the left of the equation (this will be the name of the new
+column).
 
 ## Add or change columns
 
@@ -638,13 +646,20 @@ head(unique(daily_show$job), 10)
 
 ## Add or change columns
 
-We could use the `tolower` function to make all listings lowercase: 
+There is a package called `stringr` for working with character strings.
+
+We could use the `str_tolower` function from the `stringr` package to make all
+listings lowercase:
 
 ```{r}
 library("stringr")
 daily_show <- mutate(daily_show, job = str_to_lower(job))
 head(daily_show, 3)
 ```
+
+## Vectorized operations in R
+
+[Vectorized operations]
 
 ## In-course exercise
 
@@ -654,7 +669,9 @@ We'll take a break now and do section 2.6.4 of the In-Course Exercise.
 
 ## `Date` class
 
-A common task when changing or adding columns is to change the class of some of the columns. This is especially common for dates, which will often be read in as a character vector when reading data into R.
+A common task when changing or adding columns is to change the class of some of
+the columns. This is especially common for dates, which will often be read in as
+a character vector when reading data into R.
 
 ## Vector classes
 
@@ -666,7 +683,7 @@ Class        | Example
 `numeric`    | 10, 20, 30, 40
 `factor`     | Male [underlying number: 1], Female [2]
 `Date`       | "2010-01-01" [underlying number: 14,610]
-`logical`    | TRUE, FALSE
+`logical`    | TRUE, FALSE [underlying numbers: 1, 0]
 
 ## Vector classes
 
@@ -676,23 +693,47 @@ To find out the class of a vector, you can use `class()`:
 class(daily_show$date)
 ```
 
-Note: You can use `str` to get information on the classes of all columns in a dataframe. It's also printed at the top of output from `dplyr` functions.
+Note: You can use `str` to get information on the classes of all columns in a
+dataframe. It's also printed at the top of output when you print a tibble.
+
+## Vector classes
+
+For some of these vector classes, there are specific packages for working with 
+vectors in that class:
+
+Class        | Package
+------------ | -------------
+`character`  | `stringr`
+`factor`     | `forcats`
+`Date`       | `lubridate`
+
+## `forcats` package
+
+[Factors and forcats package]
+
+## `forcats` package
+
+[Factors and forcats package]
+
+## `forcats` package
+
+[Factors and forcats package]
+
+## `lubridate` package 
+
+The `lubridate` package is helpful for working with vectors of dates or date-times.
+
+You will see dates represented in many different ways. For example, October
+might be included in data as "October", "Oct", or "10". Further, the way the
+elements are separated can vary.
+
+Computers are very literal, so this ambiguity can be confusing for them.
 
 ## `lubridate` package
 
-In many cases you can use functions from the `lubridate` package to parse dates pretty easily. \medskip
-
-For example, if you have a character string with the date in the order of *year-month-day*, you can use the `ymd` function from `lubridate` to convert the character string to the `Date` class. For example:
-
-```{r message = FALSE}
-library("lubridate")
-my_date <- ymd("2008-10-13")
-class(my_date)
-```
-
-## `lubridate` package
-
-The `lubridate` package has a number of functions for converting character strings into dates (or date-times). To decide which one to use, you just need to know the order of the elements of the date in the character string. 
+The `lubridate` package has a number of functions for converting character
+strings into dates (or date-times). To decide which one to use, you just need to
+know the order of the elements of the date in the character string.
 
 For example, here are some commonly-used `lubridate` functions:
 
@@ -703,13 +744,28 @@ For example, here are some commonly-used `lubridate` functions:
 `mdy_hm`             | month-day-year-hour-minute
 `ymd_hms`            | year-month-day-hour-minute-second
 
-(Remember, you can use `vignette("lubridate")` and `?lubridate` to get help with the `lubridate` package.)
+(Remember, you can use `vignette("lubridate")` and `?lubridate` to get help with
+the `lubridate` package.)
 
 ## `lubridate` package
 
-You will see dates represented in many different ways. For example, October might be included in data as "October", "Oct", or "10". Further, the way the elements are separated can vary. 
+In many cases you can use functions from the `lubridate` package to parse dates
+pretty easily. \medskip
 
-The functions in `lubridate` are pretty good at working with these different options intelligently: 
+For example, if you have a character string with the date in the order of
+*year-month-day*, you can use the `ymd` function from `lubridate` to convert the
+character string to the `Date` class. For example:
+
+```{r message = FALSE}
+library("lubridate")
+my_date <- ymd("2008-10-13")
+class(my_date)
+```
+
+## `lubridate` package
+
+The functions in `lubridate` are pretty good at working with different ways of
+expressing date and time elements intelligently:
 
 ```{r}
 mdy("10-31-2017")
@@ -718,7 +774,7 @@ dmy("31 October 2017")
 
 ## `lubridate` package
 
-Some more examples: 
+There are lubridate functions that can parse date-times, too:
 
 ```{r}
 ymd_hms("2017/10/31--17:33:10")
@@ -728,7 +784,8 @@ mdy_hm("Oct. 31, 2017 5:33PM", tz = "MST")
 
 ## Converting to `Date` class
 
-We can use the `mdy` function from `lubridate` to convert the `date` column in the `daily_show` dataset to a Date class:
+We can use the `mdy` function from `lubridate` to convert the `date` column in
+the `daily_show` dataset to a Date class:
 
 ```{r}
 daily_show <- mutate(daily_show, date = mdy(date))
@@ -738,7 +795,9 @@ class(daily_show$date)
 
 ## Converting to `Date` class
 
-Once you have an object in the `Date` class, you can do things like plot by date, calculate the range of dates, and calculate the total number of days the dataset covers:
+Once you have an object in the `Date` class, you can do things like plot by
+date, calculate the range of dates, and calculate the total number of days the
+dataset covers:
 
 ```{r}
 range(daily_show$date)
@@ -747,7 +806,9 @@ diff(range(daily_show$date))
 
 ## `lubridate` package
 
-The `lubridate` package also includes functions to pull out certain elements of a date. For example, we could use `wday` to create a new column with the weekday of each show: 
+The `lubridate` package also includes functions to pull out certain elements of
+a date. For example, we could use `wday` to create a new column with the weekday
+of each show:
 
 ```{r}
 daily_show <- mutate(daily_show, 
@@ -766,47 +827,94 @@ Other functions in `lubridate` for pulling elements from a date include:
 - `quarter`: Fiscal quarter
 - `year`: Year
 
-# Filtering and logical operators
+# Extracting rows of a dataframe
 
 ## Slicing to certain rows
 
-Last week, you learned how to use square bracket indexing to limit a dataframe to certain rows by row number:
+Last week, you learned how to use the `slice` function from the `dplyr` package
+to limit a dataframe to certain rows by row position:
 
 ```{r eval = FALSE}
-daily_show[1:3, ]
+library("dplyr")
+slice(.data = daily_show, 1:3)
 ```
 
-The `dplyr` package has a function you can use to do this, called `slice`. That function has the syntax: 
-
-```{r eval = FALSE}
-# Generic code
-slice(dataframe, starting_row:ending_row)
-```
-
-where `starting_row` is the row number of the first row you want to keep and `ending_row` is the row number of the last line you want to keep.
 
 ## Slicing to certain rows
 
-For example, to print the first three rows of the `daily_show` data, you can run:
+For example, to print the first three rows of the `daily_show` data, you can
+run:
 
 ```{r}
 slice(daily_show, 1:3)
 ```
 
+## Randomly sampling rows
+
+There are some other functions you can use to extract rows from a tibble dataframe, 
+all from the "dplyr" package. 
+
+For example, if you'd like to extract a random subset of *n* rows, you can use the 
+`sample_n` function, with the `size` argument set to *n*. 
+
+To extract two random rows from the `daily_show` dataframe, run: 
+
+```{r}
+sample_n(tbl = daily_show, size = 2)
+```
+
+## Extracting distinct rows
+
+If you have a dataset where some observations are exactly the same, you can reduce
+the data to only unique observations using the `distinct` function. 
+
+For example, there seem to be two listings for the show that featured 
+Hootie & the Blowfish:
+
+```{r}
+select(slice(.data = daily_show, 64:65), date, guest_name)
+```
+
+## Extracting distinct rows
+
+If we run the `distinct` function on these rows, we can limit them to a single, 
+unduplicated row:
+
+```{r}
+hootie_shows <- select(slice(.data = daily_show, 64:65), date, guest_name)
+distinct(.data = hootie_shows)
+```
+
+## Extracting distinct rows
+
+You can also use the `distinct` function to extract the first distinct row based on 
+values in some, but not all, of the columns: 
+
+```{r}
+hootie_shows <- select(slice(.data = daily_show, 64:65), date, category, guest_name)
+hootie_shows
+distinct(.data = hootie_shows, guest_name, .keep_all = TRUE)
+```
+
 ## Arranging rows
 
-There is also a function, `arrange`, you can use to re-order the rows in a dataframe. The syntax for this function is: 
+There is also a function, `arrange`, you can use to re-order the rows in a
+dataframe based on the values in one of its columns. The syntax for this
+function is:
 
 ```{r eval = FALSE}
 # Generic code
 arrange(dataframe, column_to_order_by)
 ```
 
-If you run this function to use a character vector to order, it will order the rows alphabetically by the values in that column. If you specify a numeric vector, it will order the rows by the numeric value. 
+If you run this function to use a character vector to order, it will order the
+rows alphabetically by the values in that column. If you specify a numeric
+vector, it will order the rows by the numeric value.
 
 ## Arranging rows
 
-For example, we could reorder the `daily_show` data alphabetically by the values in the `category` column with the following call:
+For example, we could reorder the `daily_show` data alphabetically by the values
+in the `category` column with the following call:
 
 ```{r}
 daily_show <- arrange(daily_show, category)
@@ -826,14 +934,16 @@ head(daily_show, 3)
 
 ## Filtering to certain rows
 
-Next, you might want to filter the dataset down so that it only includes certain rows. You can use `filter` to do that. The syntax is: 
+Next, you might want to filter the dataset down so that it only includes certain
+rows. You can use `filter` to do that. The syntax is:
 
 ```{r eval = FALSE}
 ## Generic code
-filter(dataframe, logical statement)
+filter(dataframe, logical expression)
 ```
 
-The `logical statement` gives the condition that a row must meet to be included in the output data frame. For example, you might want to pull: 
+The **logical expression** gives the condition that a row must meet to be
+included in the output data frame. For example, you might want to pull:
 
 - Rows from 2015
 - Rows where the guest was an academic
@@ -841,7 +951,9 @@ The `logical statement` gives the condition that a row must meet to be included 
 
 ## Filtering to certain rows
 
-For example, if you want to create a data frame that only includes guests who were scientists, you can run:
+For example, the `==` logical operator tests if two values are equal. So if you
+want to create a data frame that only includes guests who were scientists, you
+can run:
 
 ```{r}
 scientists <- filter(daily_show, category == "Science")
@@ -849,9 +961,12 @@ head(scientists)
 ```
 
 
-## Common logical operators in R
+## Common logical and relational operators in R
 
-To build a logical statement to use in `filter`, you'll need to know some of R's logical operators: 
+To build a logical statement to use in `filter`, you'll need to know some of R's
+logical and relational operators:
+
+\small
 
 Operator  | Meaning | Example
 --------- | ------- | ---------------------------------
@@ -859,9 +974,52 @@ Operator  | Meaning | Example
 `!=`      | does not equal | `category != "Comedy`
 `%in%`    | is in | `category %in% c("Academic", "Science")`
 `is.na()` | is NA | `is.na(job)`
-`!is.na()`| is not NA | `!is.na(job)`
-`&`       | and | `year == 2015 & category == "Academic"`
-`|`       | or | `year == 2015 | category == "Academic"`
+`&`       | and | `(year == 2015) & (category == "Academic")`
+`|`       | or | `(year == 2015) | (category == "Academic")`
+
+## Common logical and relational operators in R
+
+The `==` operator will check each element of a vector against
+each corresponding element of another vector to see if it's 
+equal. 
+
+The result will be a vector: 
+
+```{r}
+c(1, 2, 3) == c(1, 2, 4)
+```
+
+## Common logical and relational operators in R
+
+By contrast, the `%in%` operator will check each element of a 
+vector to see if it's a value that is included in a second 
+vector. 
+
+In this case, the two vectors don't have to have 
+the same length: 
+
+```{r}
+c(1, 2, 3) %in% c(1, 5)
+```
+
+This logical expressions is asking *Is the first element of the first vector, 1,
+in the set given by the second vector, 1 and 5? Is the second element of the
+first vector, 2, in the set given by the second vector? Etc.*
+
+## Common logical and relational operators in R
+
+The **bang operator** (`!`) negates a logical expression:
+
+```{r}
+c(1, 2, 3) == c(1, 2, 5)
+!(c(1, 2, 3) == c(1, 2, 5))
+```
+
+```{r}
+is.na(c(1, 2,  NA))
+!is.na(c(1, 2, NA))
+```
+
 
 ## `dplyr` versus base R
 
@@ -874,10 +1032,10 @@ dplyr_vs_base <- data.frame(dplyr = c("`rename`",
                                       "`filter`",
                                       "`mutate`"),
                             base = c("Reassign `colnames`",
-                                     "Square bracket indexing",
-                                     "Square bracket indexing",
+                                     "Square bracket indexing (`[`, `]`)",
+                                     "Square bracket indexing (`[`, `]`)",
                                      "`subset`",
-                                     "Use `$` to change / create columns"))
+                                     "Replacement assignment expression"))
 knitr::kable(dplyr_vs_base, col.names = c("`dplyr`", 
                                           "Base R equivalent"))
 ```
@@ -993,3 +1151,22 @@ Command-Shift-m
 ## In-course exercise
 
 We'll take a break now and do section 2.6.6 of the In-Course Exercise.
+
+# Odds and ends
+
+## Being lazy
+
+[Argument matching by position]
+
+## Being lazy
+
+[Leaving quotation marks off package names]
+
+## Being lazy
+
+[Non-standard evaluation inside tidyverse calls]
+
+## Infix operators
+
+[In-fix operators are just functions in disguise]
+
