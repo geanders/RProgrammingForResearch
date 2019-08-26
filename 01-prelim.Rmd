@@ -15,44 +15,75 @@ After this chapter, you should:
 - Know what free and open source software is and some of its advantages over proprietary software
 - Understand the difference between R and RStudio
 - Be able to download both R and RStudio to your own computer
-- Understand that R has a basic core of code that you initially download, and that this "base R" can be expanded by installing a variety of packages
+- Understand that R has a basic core of code that you initially download, and
+that this "base R" can be expanded by installing a variety of packages
 - Be able to install a package from CRAN to your computer
 - Be able to load a package that you have installed to use its functions within an R session
 - Be able to access help documentation (vignettes, helpfiles) for a package and its functions
+- Be able to submit R expressions at the console prompt to communicate with R
+- Understand the structure for calling a function and specifying options for that function
 - Know what an R object is and how to assign an R object a name to reference it in later code
 - Be able to create vector objects of numeric and character classes
 - Be able to explore and extract elements from vector objects
 - Be able to create dataframe objects
 - Be able to explore and extract elements from dataframe objects
-- Understand the structure for calling a function and specifying options for that function
-- Be able to describe the difference between running R code from the console versus writing and running R code in an R script
+- Be able to describe the difference between running R code from the console
+versus writing and running R code in an R script
 
 ## R and R Studio
 
 ### What is R?
 
-R in an open-source programming language that evolved from the S language. The S language was developed at Bell Labs in the 1970s, which is the same place (and about the same time) that the C programming language was developed. 
+R in an open-source programming language that evolved from the S language. The S
+language was developed at Bell Labs in the 1970s, which is the same place (and
+about the same time) that the C programming language was developed.
 
-R itself was developed in the 1990s--2000s at the University of Auckland. It is open-source software, freely and openly distributed under the GNU General Public License (GPL). The base version of R that you download when you install R on your computer includes the critical code for running R, but you can also install and run "packages" that people all over the world have developed to extend R. 
+R itself was developed in the 1990s--2000s at the University of Auckland. It is
+open-source software, freely and openly distributed under the GNU General Public
+License (GPL). The base version of R that you download when you install R on
+your computer includes the critical code for running R, but you can also install
+and run "packages" that people all over the world have developed to extend R.
 
-With new developments, R is becoming more and more useful for a variety of programming tasks. However, where it really shines is in working with data and doing statistical analysis. R is currently popular in a number of fields, including:
+With new developments, R is becoming more and more useful for a variety of
+programming tasks. However, where it really shines is in working with data and
+doing statistical analysis. R is currently popular in a number of fields,
+including:
 
 - Statistics
 - Machine learning
-- Data journalism / data analysis
+- Data analysis
 
-R has some of the same strengths (quick and easy to code, interfaces well with other languages, easy to work interactively) and weaknesses (slower than compiled languages) as Python. For data-related tasks, R and Python are fairly neck-and-neck (with Julia an up-and-coming option). However, R is still the first choice of statisticians in most fields, so I would argue that R has a an advantage if you want to have access to cutting-edge statistical methods.
+R is an **interpreted language**. That means that you can communicate with it 
+interactively, from a command line. Other common interpreted languages include
+Python and Perl.
+
+```{r interpreted-language, echo = FALSE, out.width = "600pt", fig.align = "center", fig.cap = "Broad types of software programs. R is an interpreted language. 'Point-and-click' programs, like Excel and Word, are often easiest for a new user to get started with, but are slower for the computer and are restricted in the functionality they offer. By contrast, compiled languages (like C and Java), assembly languages, and machine code are faster for the computer and allow you to create a wider range of things, but can take longer to code and take longer for a new user to learn to work with."}
+knitr::include_graphics("figures/program_types2.jpg")
+```
+
+R has some of the same strengths (quick and easy to code, interfaces well with
+other languages, easy to work interactively) and weaknesses (slower than
+compiled languages) as Python. For data-related tasks, R and Python are fairly
+neck-and-neck (with Julia an up-and-coming option). However, R is still the
+first choice of statisticians in most fields, so I would argue that R has a an
+advantage if you want to have access to cutting-edge statistical methods.
 
 > "The best thing about R is that it was developed by statisticians. The worst thing about R is that... it was developed by statisticians."
 > -Bo Cowgill, Google, at the Bay Area R Users Group
 
-### Open-source software
+### Free and open-source software
 
 > "Life is too short to run proprietary software." -- Bdale Garbee
 
-R is open-source software. Many other popular statistical programming languages, conversely, are proprietary. It's useful to know what it means for software to be "open-source", both conceptually and in terms of how you will be able to use and add to R in your own work. 
+R is **free and open-source software**. Many other popular statistical
+programming languages, conversely, are proprietary (for example, SAS and SPSS).
+It's useful to know what it means for software to be "open-source", both
+conceptually and in terms of how you will be able to use and add to R in your
+own work.
 
-R is free, and it's tempting to think of open-source software just as "free software". Things, however, are a little more subtle than that. It helps to consider some different meanings of the word "free". "Free" can mean:
+R is free, and it's tempting to think of open-source software just as "free
+software". Things, however, are a little more subtle than that. It helps to
+consider some different meanings of the word "free". "Free" can mean:
 
 - *Gratis*: Free as in beer
 - *Libre*: Free as in speech
@@ -61,24 +92,45 @@ R is free, and it's tempting to think of open-source software just as "free soft
 knitr::include_graphics("figures/OpenSourceOverview.png")
 ```
 
-Open-source software software is the *libre* type of free (Figure \@ref(fig:open-source-overview)). This means that, with software that is open-source, you can:
+Open-source software software is the *libre* type of free (Figure
+\@ref(fig:open-source-overview)). This means that, with software that is
+open-source, you can:
 
 - Access all of the code that makes up the software
 - Change the code as you'd like for your own applications
 - Build on the code with your own extensions
 - Share the software and its code, as well as your extensions, with others
 
+Often, open-source software is also free, making it "free and open-source software", 
+or "FOSS".
+
 Popular open source licenses for R and R packages include the GPL and MIT licenses.
 
 > “Making Linux GPL'd was definitely the best thing I ever did.” -- Linus Torvalds
 
-In practice, this means that, once you are familiar with the software, you can dig deeply into the code to figure out exactly how it's performing certain tasks. This can be useful for finding bugs and eliminating bugs, and also can help researchers figure out if there are any limitations in how the code works for their specific research. 
+In practice, this means that, once you are familiar with the software, you can
+dig deeply into the code to figure out exactly how it's performing certain
+tasks. This can be useful for finding bugs and eliminating bugs, and also can
+help researchers figure out if there are any limitations in how the code works
+for their specific research.
 
-It also means that you can build your own software on top of existing R software and its extensions. I explain a bit more about R packages a bit later, but this open-source nature of R (and other languages, including Python) has created a large community of people worldwide who develop and share extensions to R. As a result, you can pull in packages that let you do all kinds of things in R, like visualizing Tweets, cleaning up accelerometer data, analyzing complex surveys, fitting maching learning models, and a wealth of other cool things. 
+It also means that you can build your own software on top of existing R software
+and its extensions. I explain a bit more about R packages a bit later, but this
+open-source nature of R (and other languages, including Python) has created a
+large community of people worldwide who develop and share extensions to R. As a
+result, you can pull in packages that let you do all kinds of things in R, like
+visualizing Tweets, cleaning up accelerometer data, analyzing complex surveys,
+fitting maching learning models, and a wealth of other cool things.
 
 > "Despite its name, open-source software is less vulnerable to hacking than the secret, black box systems like those being used in polling places now. That’s because anyone can see how open-source systems operate. Bugs can be spotted and remedied, deterring those who would attempt attacks. This makes them much more secure than closed-source models like Microsoft’s, which only Microsoft employees can get into to fix." -- [Woolsey and Fox. *To Protect Voting, Use Open-Source Software.* New York Times. August 3, 2017.](https://www.nytimes.com/2017/08/03/opinion/open-source-software-hacker-voting.html?mcubz=3)
 
-You can download the latest version of R from [CRAN](https://cran.r-project.org). Be sure to select the distribution for your type of computer system. R is updated occasionally; you should plan to re-install R at least once a year, to make sure you're working with one of the newer versions. Check your current R version (one way is by running `sessionInfo()` at the R console) to make sure you're not using an outdated version of R. Defaults should be fine for everything.
+You can download the latest version of R from
+[CRAN](https://cran.r-project.org). Be sure to select the distribution for your
+type of computer system. R is updated occasionally; you should plan to
+re-install R at least once a year, to make sure you're working with one of the
+newer versions. Check your current R version (one way is by running
+`sessionInfo()` at the R console) to make sure you're not using an outdated
+version of R. Defaults should be fine for everything.
 
 > "The R engine ... is pretty well uniformly excellent code but you
 have to take my word for that. Actually, you don't. The whole engine is open source so, if you wish, you can check every line of it. If people were out to push dodgy software, this is not the way they'd go about it."
@@ -88,23 +140,498 @@ have to take my word for that. Actually, you don't. The whole engine is open sou
 
 ### What is RStudio?
 
-To get the R software, you'll [download R](https://www.r-project.org) from the R Project for Statistical Computing. This is enough for you to use R on your own computer. However, I would suggest one additional, free piece of software to improve your experience while working with R, RStudio.
+To get the R software, you'll [download R](https://www.r-project.org) from the R
+Project for Statistical Computing. This is enough for you to use R on your own
+computer. However, I would suggest one additional, free piece of software to
+improve your experience while working with R, RStudio.
 
-RStudio is an integrated development environment (IDE) for R. This basically means that it provides you an interface for running R and coding in R, with a lot of nice extras that will make your life easier. 
+RStudio is an integrated development environment (IDE) for R. This basically
+means that it provides you an interface for running R and coding in R, with a
+lot of nice extras that will make your life easier.
 
-You download RStudio separately from R---you'll want to download and install R itself first, and then you can [download RStudio](https://www.rstudio.com/products/rstudio/download2/). You want the Desktop version with the free license. Defaults should be fine for everything. 
-
-The company that develops this IDE is a fantastic contributer to the global R community. RStudio currently:
+You download RStudio separately from R---you'll want to download and install R
+itself first, and then you can [download
+RStudio](https://www.rstudio.com/products/rstudio/download2/). You want the
+Desktop version with the free license. Defaults should be fine for everything.
 
 RStudio (the company) is a leader in the R community. Currently, the company:
 
 - Develops and freely provides the RStudio IDE
-- Provides excellent resources for learning and using R (e.g., cheatsheets, free online books)
+- Provides excellent resources for learning and using R (e.g., cheatsheets, free
+online books)
 - Is producing some of the most-used R packages
 - Employs some of the top people in R development
 - Is a key member of The R Consortium (others include Microsoft, IBM, and Google)
 
-R has been advancing by leaps in bounds in terms of what it can do and the elegance with which it does it, in large part because of the enormous contributions of people involved with RStudio.
+R has been advancing by leaps in bounds in terms of what it can do and the
+elegance with which it does it, in large part because of the enormous
+contributions of people involved with RStudio.
+
+## Communicating with R
+
+Because R is an interpreted language, you can communicate with it interactively. You do
+this using the following general steps: 
+
+1. Open an **R session**
+2. At the **prompt** in the **console**, enter an **R expression**
+3. Read R's "response" (the **output**)
+4. Repeat 2 and 3
+5. Close the R session
+
+### R sessions, the console, and the command prompt
+
+An **R session** is an instance of you using R. To open an R session,
+double-click on the icon for "RStudio" on you computer. When RStudio opens, you
+will be in a "fresh" R session, unless you restore a saved session (which I
+strongly recommend against). This means that, once you open RStudio, you will
+need to "set up" your session, including loading any packages you need (which
+we'll talk about later) and reading in any data (which we'll also talk about).
+
+In RStudio, there screen is divided into several "panes". We'll start with the
+pane called "Console". The **console** lets you "talk" to R. This is where you
+can "talk" to R by typing an **expression** at the **prompt** (the caret symbol,
+">"). You press the "Return" key to send this message to R.
+
+```{r r-console, echo = FALSE, out.width = "500pt", fig.align = "center", fig.cap = "Finding the 'Console' pane and the command prompt in RStudio."}
+knitr::include_graphics("figures/r_console.jpg")
+```
+
+Once you press "Return", R will respond in one of three ways:
+
+1. R does whatever you asked it to do with the expression and prints the output
+(if any) of doing that, as well as a new prompt so you can ask it something new
+2. R doesn't think you've finished asking you something, and instead of giving you
+a new prompt (">") it gives you a "+". This means that R is still listening, waiting 
+for you to finish asking it something. 
+3. R tries to do what you asked it to, but it can't. It gives you an **error message**, 
+as well as a new prompt so you can try again or ask it something new. 
+
+### R expressions, function calls, and objects
+
+To "talk" with R, you need to know how to give it a complete **expression**. 
+Most expressions you'll want to give R will be some combination of two elements: 
+
+1. **Function calls**
+2. **Object assignments**
+
+We'll go through both these pieces and also look at how you can combine them 
+together for some expressions.
+
+According to John Chambers, one of the creators of R's precursor S:
+
+1. Everything that exists in R is an **object**
+2. Everything that happens in R is a **call to a function**
+
+In general, function calls in R take the following structure: 
+
+```{r eval = FALSE}
+## Generic code (this won't run)
+function_name(formal_argument_1 = named_argument_1, 
+              formal_argument_2 = named_argument_2,
+              [etc.])
+```
+
+```{block, type = "rmdwarning"}
+Sometimes, we'll show "generic" code in a code block, that doesn't actually work if you put it in R, but instead shows the generic structure of an R call. We'll try to always include a comment with any generic code, so you'll know not to try to run it in R.
+```
+
+A function call forms a complete R expression, and the output will 
+be the result of running `print` or `show` on the object that is output
+by the function call. Here is an example of this structure: 
+
+```{r}
+print(x = "Hello world")
+```
+
+Figure \@ref(fig:function-call) shows an example of the typical elements of a
+function call. In this example, we're **calling** a function with the **name**
+`print`. It has one **argument**, with a **formal argument** of `x`, which in
+this call we've provided the **named argument** "Hello world".
+
+```{r function-call, echo = FALSE, out.width = "500pt", fig.align = "center", fig.cap = "Main parts of a function call. This example is calling a function with the name 'print'. The function call has one argument, with a formal argument of 'x', which in this call is provided the named argument 'Hello world'."}
+knitr::include_graphics("figures/function_call.jpg")
+```
+
+The **arguments** are how you customize the call to an R function. For example,
+you can use change the named argument value to print different messages with the
+`print` function:
+
+```{r}
+print(x = "Hello world")
+print(x = "Hi Fort Collins")
+```
+
+Some functions do not require any arguments. For example, the `getRversion` function will 
+print out the version of R you are using.
+
+```{r}
+getRversion()
+```
+
+Some functions will accept multiple arguments. For example, the `print` function allows you 
+to specify whether the output should include quotation marks, using the `quote`
+formal argument: 
+
+```{r}
+print(x = "Hello world", quote = TRUE)
+print(x = "Hello world", quote = FALSE)
+```
+
+Arguments can be **required** or **optional**. 
+
+For a required argument, if you don't provide a value for the argument when you
+call the function, R will respond with an error. For example, `x` is a **required argument**
+for the `print` function, so if you try to call the function without it, you'll get an 
+error: 
+
+```{r eval = FALSE}
+print()
+```
+
+```
+Error in print.default() : argument "x" is 
+  missing, with no default
+```
+
+For an **optional argument** on the other hand, R knows a **default value** for that 
+argument, so if you don't give it a value for that argument, it will just use the 
+default value for that argument. 
+
+For example, for the `print` function, the `quote` argument has the default value 
+`TRUE`. So if you don't specify a value for that argument, R will assume it should 
+use `quote = TRUE`. That's why the following two calls give the same result: 
+
+```{r}
+print(x = "Hello world", quote = TRUE)
+print(x = "Hello world")
+```
+
+Often, you'll want to find out more about a function, including:
+
+- Examples of how to use the function
+- Which arguments you can include for the function
+- Which  arguments are required versus optional
+- What the default values are for optional arguments. 
+
+You can find out all this information in the function's **helpfile**, which 
+you can access using the function `?`. For example, the `mean` function will let you calculate the mean (average) of a 
+group of numbers. To find out more about this function, at the console type:
+
+```{r eval = FALSE}
+?mean
+```
+
+This will open a helpfile in the "Help" pane in RStudio. Figure
+\@ref(fig:helpfile) shows some of the key elements of an example helpfile, the
+helpfile for the `mean` function. In particular, the "Usage" section helps you
+figure out which arguments are **required** and which are **optional** in the
+Usage section of the helpfile.
+
+```{r helpfile, echo = FALSE, out.width = "500pt", fig.align = "center", fig.cap = "Navigating a helpfile. This example shows some key parts of the helpfile for the 'mean' function."}
+knitr::include_graphics("figures/helpfile_arguments.jpg")
+```
+
+There's one class of functions that looks a bit different from others. These are
+the infix **operator** functions. Instead using parentheses after the function
+name, they usually go *between* two arguments. One common example is the `+`
+operator:
+
+```{r}
+2 + 3
+```
+
+There are operators for several mathematical functions: `+`, `-`, `*`, `/`.
+There are also other operators, including **logical operators** and **assignment
+operators**, which we'll cover later.
+
+In R, a variety of different types and structures of data can be saved in what's
+called **objects**. For right now, you can just think of an R object as a discrete
+container of data in R.
+
+Function calls will produce an object. If you just
+call a function, as we've been doing, then R will respond by printing out that
+object. However, we'll often want to use that object some more. For example, we
+might want to use it as an argument later in our "conversation" with R, when we
+call another function later. If you want to re-use the results of a function
+call later, you can **assign** that **object** to an **object name**. This kind
+of expression is called an **assignment expression**.
+
+Once you do this, you can use that *object name* to refer to the object. This
+means that you don't need to re-create the object each time you need
+it---instead you can create it once and then just reference it by name each time
+you need it after that. For example, you can read in data from an external file
+as a dataframe object and assign it an object name. Then, when you need that
+data later, you won't need to read it in again from the external file.
+
+The **gets arrow**, `<-`, is R's assignment operator. It takes whatever you've
+created on the right hand side of the `<-` and saves it as an object with the
+name you put on the left hand side of the `<-` :
+
+```{r eval = FALSE}
+## Note: Generic code-- this will not work
+[object name] <- [object]
+```
+
+For example, if I just type `"Hello world"`, R will print it back to me, but
+won't save it anywhere for me to use later:
+
+```{r}
+"Hello world"
+```
+
+However, if I assign it to an object, I can "refer" to that object in a later expression. 
+For example, the code below assigns the **object** `"Hello world"` the **object name** `message`. 
+Later, I can just refer to this object using the name `message`, for example in a function
+call to the `print` function:
+
+```{r}
+message <- "Hello world"
+print(x = message)
+```
+
+When you enter an **assignment expression** like this at the R console, if everything
+goes right, then R will "respond" by giving you a new prompt, without any kind of 
+message. 
+
+However, there are three ways you can check to make sure that the object was 
+assigned to the object name: 
+
+1. Enter the object's name at the prompt and press return. The default if you do this
+is for R to "respond" by calling the `print` function with that object as the `x`
+argument. 
+2. Call the `ls` function (which doesn't require any arguments). This will list all the
+object names that have been assigned in the current R session. 
+3. Look in the "Environment" pane in RStudio. This also lists all the object names that
+have been assigned in the current R session.
+
+Here's are examples of these strategies:
+
+1. Enter the object's name at the prompt and press return:
+
+```{r}
+message
+```
+
+2. Call the `ls` function:
+
+```{r}
+ls()
+```
+
+3. Look in the "Environment" pane in RStudio (see Figure \@ref(fig:environment)).
+
+```{r environment, echo = FALSE, out.width = "500pt", fig.align = "center", fig.cap = "'Environment' pane in RStudio. This shows the names and first few values of all objects that have been assigned to object names in the global environment."}
+knitr::include_graphics("figures/environment_pane.jpg")
+```
+
+You can make assignments in R using either the gets arrow (`<-`) or `=`. When
+you read other people's code, you'll see both. R gurus advise using `<-` rather
+than `=` when coding in R, and as you move to doing more complex things, some
+subtle problems might crop up if you use `=`. I have heard from someone in the
+know that you can tell the age of a programmer by whether he or she uses the
+gets arrow or `=`, with `=` more common among the young and hip. For this
+course, however, I am asking you to code according to [Hadley Wickham's R style
+guide](http://adv-r.had.co.nz/Style.html), which specifies using the gets arrow
+for assignment.
+
+While you will be coding with the gets arrow exclusively in this course, it will
+be helpful for you to know that the two assignment arrows do pretty much the
+same thing:
+
+```{r}
+one_to_ten <- 1:10
+one_to_ten
+
+one_to_ten = 1:10
+one_to_ten
+```
+
+While the gets arrow takes two key strokes instead of one (like the equals
+sign), you can somewhat get around this limitation by using RStudio's keyboard
+shortcut for the gets arrow. This shortcut is Alt + - on Windows and Option + -
+on Macs. To see a full list of RStudio keyboard shortcuts, go to the "Help" tab
+in RStudio and select "Keyboard Shortcuts".
+
+There are some absolute **rules** for the names you can use for an object name:
+
+- Use only letters, numbers, and underscores 
+- Don't start with anything but a letter
+
+If you try to assign an object to a name that doesn't follow the "hard" rules,
+you'll get an error. For example, all of these expressions will give you an
+error:
+
+```{r eval = FALSE}
+1message <- "Hello world"
+_message <- "Hello world"
+message! <- "Hello world"
+```
+
+In addition to these fixed rules, there are also some guidelines for naming
+objects that you should adopt now, since they will make your life easier as you
+advance to writing more complex code in R. The following three guidelines for
+naming objects are from [Hadley Wickham's R style
+guide](http://adv-r.had.co.nz/Style.html):
+
+- Use lower case for variable names (`message`, not `Message`)
+- Use an underscore as a separator (`message_one`, not `messageOne`)
+- Avoid using names that are already defined in R (e.g., don't name an object
+`mean`, because a `mean` function exists)
+
+> "Don't call your matrix 'matrix'. Would you call your dog 'dog'? Anyway, it
+might clash with the function 'matrix'." - Barry Rowlingson, R-help (October 2004)
+
+Another good practice is to name objects after nouns (e.g., `message`) and later, when you start writing functions, name those after verbs (e.g., `print_message`). You'll want your object names to be short enough that they don't take forever to type as you're coding, but not so short that you can't remember what they stand for. 
+
+```{block, type = "rmdtip"}
+Sometimes, you'll want to create an object that you won't want to keep for very
+long. For example, you might want to create a small object to test some code,
+but you plan to not need the object again once you've done that. You may want to
+come up with some short, generic object names that you use for these kinds of
+objects, so that you'll know that you can delete them without problems when you
+want to clean up your R session.
+
+There are all kinds of traditions for these placeholder variable names in
+computer science. `foo` and `bar` are two popular choices, as are, evidently,
+`xyzzy`, `spam`, `ham`, and `norf`. There are different placeholder names in
+different languages: for example, `toto`, `truc`, and `azerty` (French); and
+`pippo`, `pluto`, `paperino` (Disney character names; Italian). See the
+Wikipedia page on [metasyntactic
+variables](https://en.wikipedia.org/wiki/Metasyntactic_variable) to find out
+more.
+```
+
+What if you want to "compose" a call from more than one function call? One way
+to do it is to assign the output from the first function call to a name and then
+use that name for the next call. For example:
+
+```{r}
+message <- paste("Hello", "world")
+print(x = message)
+```
+
+If you give two objects the same name, the most recent definition will be used (i.e., objects can be overwritten by assigning new content to the same object name). For example: 
+
+```{r}
+a <- 1:10
+b <- LETTERS [1:3]
+
+a
+b
+
+a <- b
+a
+```
+
+To create an R expression you can "nest" one function call inside another
+function call. For example:
+
+```{r}
+print(x = paste("Hello", "world"))
+```
+
+Just like with math, the order that the functions are evaluated moves from the
+inner set of parentheses to the outer one (Figure
+\@ref(fig:composing-functions)). There's one more way we'll look at later called
+"piping".
+
+```{r composing-functions, echo = FALSE, out.width = "500pt", fig.align = "center", fig.cap = "'Environment' pane in RStudio. This shows the names and first few values of all objects that have been assigned to object names in the global environment."}
+knitr::include_graphics("figures/composing_function_calls.jpg")
+```
+
+## R scripts
+
+This is a good point in learning R for you to start putting your code in R
+scripts, rather than entering commands at the console.
+
+An R script is a plain text file where you can save a series of R commands. You
+can save the script and open it up later to see (or re-do) what you did earlier,
+just like you could with something like a Word document when you're writing a
+paper.
+To open a new R script in RStudio, go to the menu bar and select "File" -> "New
+File" -> "R Script". Alternatively, you can use the keyboard shortcut
+Command-Shift-N. Figure \@ref(fig:rscript) gives an example of an R script file
+opened in RStudio and points out some interesting elements.
+
+```{r rscript, echo = FALSE, fig.align="center", fig.cap = "Example of an R script in RStudio.", out.width= "600pt"}
+knitr::include_graphics("figures/ExampleOfRScript.jpg")
+```
+
+To save a script you're working on, you can click on the "Save" button (which
+looks like a floppy disk) at the top of your R script window in RStudio or use
+the keyboard shortcut Command-S. You should save R scripts using a ".R" file
+extension.
+
+Within the R script, you'll usually want to type your code so there's one
+command per line. If your command runs long, you can write a single call over
+multiple lines. It's unusual to put more than one command on a single line of a
+script file, but you can if you separate the commands with semicolons (`;`).
+These rules all correspond to how you can enter commands at the console.
+
+Running R code from a script file is very easy in RStudio. You can use either
+the "Run" button or Command-Return, and any code that is selected (i.e., that
+you've highlighted with your cursor) will run at the console. You can use this
+functionality to run a single line of code, multiple lines of code, or even just
+part of a specific line of code. If no code is highlighted, then R will instead
+run all the code on the line with the cursor and then move the cursor down to
+the next line in the script.
+
+You can also run all of the code in a script. To do this, use the "Source"
+button at the top of the script window. You can also run the entire script
+either from the console or from within another script by using the `source()`
+function, with the filename of the script you want to run as the argument. For
+example, to run all of the code in a file named "MyFile.R" that is saved in your
+current working directory, run:
+
+```{r, eval = FALSE}
+source("MyFile.R")
+```
+
+You can add comments into an R script to let others know (and remind yourself)
+what you're doing and why. To do this, use R's comment character, `#`. Any line
+on a script line that starts with `#` will not be read by R. You can also take
+advantage of commenting to comment out certain parts of code that you don't want
+to run at the moment.
+
+While it's generally best to write your R code in a script and run it from there
+rather than entering it interactively at the R console, there are some
+exceptions. A main example is when you're initially checking out a dataset, to
+make sure you've read it in correctly. It often makes more sense to run commands
+for this task, like `str()`, `head()`, `tail()`, and `summary()`, at the
+console. These are all examples of commands where you're trying to look at
+something about your data **right now**, rather than code that builds toward
+your analysis, or helps you read in or clean up your data.
+
+### Commenting code
+
+Sometimes, you'll want to include notes in your code. You can do this in all
+programming languages by using a *comment character* to start the line with your
+comment. In R, the comment character is the hash symbol, `#`. R will skip any
+line that starts with `#` in a script. For example, if you run the following
+code:
+
+```{r}
+# Don't print this.
+"But print this"
+```
+
+R will only print the second, uncommented line. 
+
+You can also use a comment in the middle of a line, to add a note on what you're
+doing in that line of the code. R will skip any part of the code from the hash
+symbol on. For example:
+
+```{r}
+"Print this" ## But not this, it's a comment.
+```
+
+There's typically no reason to use code comments when running commands at the R
+console. However, it's very important to get in the practice of including
+meaningful comments in R scripts. This helps you remember what you did when you
+revisit your code later.
+
+> “You know you're brilliant, but maybe you'd like to understand what you did 2 weeks from now.” -- Linus Torvalds
+
 
 ## The "package" system
 
@@ -205,126 +732,6 @@ To access the helpfile for any function within a package you've loaded, you can 
 
 
 
-## Basic code conventions of R
-
-### R objects
-
-In R, a variety of different types and structures of data can be saved in what's called *objects*. For right now, you can just think of an R object as a discrete container of data in R. 
-
-You can assign any R object you create its own name. Once you do this, you can use that *object name* to refer to the object. This means that you don't need to re-create the object each time you need it---instead you can create it once and then just reference it by name each time you need it after that. For example, you can read in data from an external file as a dataframe object and assign it an object name. Then, when you need that data later, you won't need to read it in again from the external file. 
-
-You can think of object names as a bit like acronyms, in terms of being able to define something early in a document and then being able to use that short and simple name as a convenient way to refer to something complex every time you need to later in the document. 
-
-### R's MVP: The *gets arrow*
-
-The *gets arrow*, `<-`, is R's assignment operator. It takes whatever you've created on the right hand side of the `<-` and saves that object with the object name you put on the left hand side of the `<-`. The basic structure of a call with a gets arrow looks like this: 
-
-```{r eval = FALSE}
-## Note: Generic code
-[name of object] <- [thing I want to save]
-```
-
-```{block, type = "rmdwarning"}
-Sometimes, we'll show "generic" code in a code block, that doesn't actually work if you put it in R, but instead shows the generic structure of an R call. We'll try to always include a comment with any generic code, so you'll know not to try to run it in R.
-```
-
-In R, objects are the way to save something to use again later in your code. If you do not assign something to an object with the gets arrow, R will just print it back out to you at the console. For example, if I just type `"GoFedEx"` at the R console, R will print that string back to me, but won't save it anywhere for me to use later:
-
-```{r}
-"GoFedEx"
-```
-
-However, if I assign `"GoFedEx"` to an object using a gets arrow, I can print it out or use it later by typing ("referencing") that object name:
-
-```{r}
-fedex_number <- "GoFedEx"
-fedex_number
-letterToNumber(fedex_number)
-```
-
-You can assign the output of a function call directly to an object. For example, if you wanted to save the output of the `letterToNumber` call in the above code to its own object, you could do that with the call:
-
-```{r}
-fedex_actual_number <- letterToNumber(fedex_number)
-fedex_actual_number
-```
-
-If you give two objects the same name, the most recent definition will be used (i.e., objects can be overwritten by assigning new content to the same object name). For example: 
-
-```{r}
-a <- 1:10
-b <- LETTERS [1:3]
-
-a
-b
-
-a <- b
-a
-```
-
-If you would like to see all the R objects that are currently defined (i.e., have their own object names) in your R session, you can do that with the `ls` command: 
-
-```{r}
-ls()
-```
-
-If you want to see the contents of an object, just print its name. For example, to see what we have stored in the `fedex_number` object, you can run: 
-
-```{r}
-fedex_number
-```
-
-In R, at heart everything is an object, so this printing even works for things like functions. For example, to see the source code with which the `letterToNumber` function is defined, you can run (notice the lack of parentheses): 
-
-```{r}
-letterToNumber
-```
-
-### Assignment operator wars: `<-` vs. `=`
-
-You can make assignments in R using either the gets arrow (`<-`) or `=`. When you read other people's code, you'll see both. R gurus advise using `<-` rather than `=` when coding in R, and as you move to doing more complex things, some subtle problems might crop up if you use `=`. I have heard from someone in the know that you can tell the age of a programmer by whether he or she uses the gets arrow or `=`, with `=` more common among the young and hip. For this course, however, I am asking you to code according to [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html), which specifies using the gets arrow for assignment.
-
-While you will be coding with the gets arrow exclusively in this course, it will be helpful for you to know that the two assignment arrows do pretty much the same thing:
-
-```{r}
-one_to_ten <- 1:10
-one_to_ten
-
-one_to_ten = 1:10
-one_to_ten
-```
-
-While the gets arrow takes two key strokes instead of one (like the equals sign), you can somewhat get around this limitation by using RStudio's keyboard shortcut for the gets arrow. This shortcut is Alt + - on Windows and Option + - on Macs. To see a full list of RStudio keyboard shortcuts, go to the "Help" tab in RStudio and select "Keyboard Shortcuts".
-
-### Naming objects
-
-When you assign objects, you will need to choose names for them. This object name is what you will type later in your code to reference the object and use it in functions, figures, etc. For example, with the following code, I am assigning the character string "GoFedEx" to an object that I am naming `fedex_number`:
-
-```{r}
-fedex_number <- "GoFedEx"
-```
-
-There are only two fixed rules for naming objects in R:
-
-- Use only letters, numbers, and underscores
-- Don't start with anything but a letter
-
-In addition to these fixed rules, there are also some guidelines for naming objects that you should adopt now, since they will make your life easier as you advance to writing more complex code in R. The following three guidelines for naming objects are from [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html):
-
-- Use lower case for variable names (`fedex_number`, not `FedExNumber`)
-- Use an underscore as a separator (`fedex_number`, not `fedex.number` or `fedexNumber`)
-- Avoid using names that are already defined in R (e.g., don't name an object `mean`, because a function named `mean` already exists)
-
-> "Don't call your matrix 'matrix'. Would you call your dog 'dog'? Anyway, it
-might clash with the function 'matrix'." - Barry Rowlingson, R-help (October 2004)
-
-Another good practice is to name objects after nouns (e.g., `fedex_number`) and later, when you start writing functions, name those after verbs (e.g., `call_fedex`). You'll want your object names to be short enough that they don't take forever to type as you're coding, but not so short that you can't remember what they stand for. 
-
-```{block, type = "rmdtip"}
-Sometimes, you'll want to create an object that you won't want to keep for very long. For example, you might want to create a small object to test some code, but you plan to not need the object again once you've done that. You may want to come up with some short, generic object names that you use for these kinds of objects, so that you'll know that you can delete them without problems when you want to clean up your R session. 
-
-There are all kinds of traditions for these placeholder variable names in computer science. `foo` and `bar` are two popular choices, as are, evidently, `xyzzy`, `spam`, `ham`, and `norf`. There are different placeholder names in different languages: for example, `toto`, `truc`, and `azerty` (French); and `pippo`, `pluto`, `paperino` (Disney character names; Italian). See the Wikipedia page on [metasyntactic variables](https://en.wikipedia.org/wiki/Metasyntactic_variable) to find out more.
-```
 
 ## R's most basic object types
 
@@ -481,157 +888,109 @@ nrow(daily_show)
 ncol(daily_show)
 ```
 
-## Using R functions
+<!-- ## Using R functions -->
 
-### Function structure
+<!-- ### Function structure -->
 
-In general, functions in R take the following structure:
+<!-- In general, functions in R take the following structure: -->
 
-```{r, eval = FALSE}
-## Generic code
-function.name(parameter 1 = argument 1, parameter 2 = argument 2,
-              parameter 3 = argument 3)  
-```
+<!-- ```{r, eval = FALSE} -->
+<!-- ## Generic code -->
+<!-- function.name(parameter 1 = argument 1, parameter 2 = argument 2, -->
+<!--               parameter 3 = argument 3)   -->
+<!-- ``` -->
 
-The result of the function will be output to your R session, unless you choose to save the output in an object:
+<!-- The result of the function will be output to your R session, unless you choose to save the output in an object: -->
 
-```{r, eval = FALSE}
-## Generic code
-new_object <- function.name(parameter 1 = argument 1,
-                            parameter 2 = argument 2,
-                            parameter 3 = argument 3)  
-```
+<!-- ```{r, eval = FALSE} -->
+<!-- ## Generic code -->
+<!-- new_object <- function.name(parameter 1 = argument 1, -->
+<!--                             parameter 2 = argument 2, -->
+<!--                             parameter 3 = argument 3)   -->
+<!-- ``` -->
 
-Here are some example function calls, to give you examples of this structure:
+<!-- Here are some example function calls, to give you examples of this structure: -->
 
-- The `head` function prints out the first few rows of a dataframe. By default, it prints out six rows. With the `n` option, you can change the number of rows it prints out:
+<!-- - The `head` function prints out the first few rows of a dataframe. By default, it prints out six rows. With the `n` option, you can change the number of rows it prints out: -->
 
-```{r}
-head(daily_show)
-head(daily_show, n = 3)
-```
+<!-- ```{r} -->
+<!-- head(daily_show) -->
+<!-- head(daily_show, n = 3) -->
+<!-- ``` -->
 
-The `read_csv` function (from the `readr` package) reads data from a comma-separated flat file into R. The `skip` option allows you to skip some of the first few lines of the file, in case the data starts a few lines into the file.
+<!-- The `read_csv` function (from the `readr` package) reads data from a comma-separated flat file into R. The `skip` option allows you to skip some of the first few lines of the file, in case the data starts a few lines into the file. -->
 
-```{r eval = FALSE}
-daily_show <- read_csv("daily_show_guests.csv", skip = 4)
-```
+<!-- ```{r eval = FALSE} -->
+<!-- daily_show <- read_csv("daily_show_guests.csv", skip = 4) -->
+<!-- ``` -->
 
-```{r echo = FALSE, message = FALSE}
-daily_show <- read_csv("data/daily_show_guests.csv", skip = 4)
+<!-- ```{r echo = FALSE, message = FALSE} -->
+<!-- daily_show <- read_csv("data/daily_show_guests.csv", skip = 4) -->
 
-```
+<!-- ``` -->
 
 
-Within the function call, *parameters* allow you to customize the function to run in a certain way (e.g., use a certain dataframe as an input, change the number of lines printed out from the default value, skip some lines when reading in data). Some function parameters will have *default arguments*, which means that you don't have to put a value for that parameter for the function to run, but you can if you want the function to do something other than the default. 
+<!-- Within the function call, *parameters* allow you to customize the function to run in a certain way (e.g., use a certain dataframe as an input, change the number of lines printed out from the default value, skip some lines when reading in data). Some function parameters will have *default arguments*, which means that you don't have to put a value for that parameter for the function to run, but you can if you want the function to do something other than the default.  -->
 
-### Function help files
+<!-- ### Function help files -->
 
-You can find out more about a function, include what parameters it has and what the default values, if any, are by using `?` before the function name in the R console. For example, to find out more about the `read_csv` command, run: 
+<!-- You can find out more about a function, include what parameters it has and what the default values, if any, are by using `?` before the function name in the R console. For example, to find out more about the `read_csv` command, run:  -->
 
-```{r eval = FALSE}
-?read_csv
-```
+<!-- ```{r eval = FALSE} -->
+<!-- ?read_csv -->
+<!-- ``` -->
 
-From the "Usage" section of the help file, you can figure out that the only required parameter is `file`, the pathname of the file that you want to read in, since this is the only argument in the "Usage" example without an argument value:
+<!-- From the "Usage" section of the help file, you can figure out that the only required parameter is `file`, the pathname of the file that you want to read in, since this is the only argument in the "Usage" example without an argument value: -->
 
-```
-read_csv(file, col_names = TRUE, col_types = NULL,
-  locale = default_locale(), na = c("", "NA"), quoted_na = TRUE,
-  quote = "\"", comment = "", trim_ws = TRUE, skip = 0, n_max = Inf,
-  guess_max = min(1000, n_max), progress = show_progress())
-```
+<!-- ``` -->
+<!-- read_csv(file, col_names = TRUE, col_types = NULL, -->
+<!--   locale = default_locale(), na = c("", "NA"), quoted_na = TRUE, -->
+<!--   quote = "\"", comment = "", trim_ws = TRUE, skip = 0, n_max = Inf, -->
+<!--   guess_max = min(1000, n_max), progress = show_progress()) -->
+<!-- ``` -->
 
-You can also see from this "Usage" section that the default value of `col_names` is `TRUE` (use the first row of the data as the column names), the default value of `skip` is 0 (don't skip any lines), etc.
+<!-- You can also see from this "Usage" section that the default value of `col_names` is `TRUE` (use the first row of the data as the column names), the default value of `skip` is 0 (don't skip any lines), etc. -->
 
-The "Arguments" section explains each of the parameters, and possible arguments that each can take. For example, here is the explanation of the `n_max` parameter in the `read_csv` function: 
+<!-- The "Arguments" section explains each of the parameters, and possible arguments that each can take. For example, here is the explanation of the `n_max` parameter in the `read_csv` function:  -->
 
-```
-n_max:	Maximum number of records to read.
-```
+<!-- ``` -->
+<!-- n_max:	Maximum number of records to read. -->
+<!-- ``` -->
 
-From this, you can determine that you should put in a whole number, 0 or higher, and the function will skip that many line of the file before it starts reading in a dataframe when you run `read_csv`.
+<!-- From this, you can determine that you should put in a whole number, 0 or higher, and the function will skip that many line of the file before it starts reading in a dataframe when you run `read_csv`. -->
 
-### Function parameters
+<!-- ### Function parameters -->
 
-Each function parameter has a name (e.g., `n_max`, `col_names`, `file`). The safest way to call a function in R is to use the structure `parameter name = argument value` for every parameter, like this: 
+<!-- Each function parameter has a name (e.g., `n_max`, `col_names`, `file`). The safest way to call a function in R is to use the structure `parameter name = argument value` for every parameter, like this:  -->
 
-```{r eval = FALSE}
-head(x = daily_show, n = 3)
-```
+<!-- ```{r eval = FALSE} -->
+<!-- head(x = daily_show, n = 3) -->
+<!-- ``` -->
 
-However, you can also give argument values by position. For example, in the `head` function, the first parameter is `x`, the object you want to look at, and the second is `n`, the number of elements you want to include when you look at the object. If you know this, you can call `head` using the shorter call: 
+<!-- However, you can also give argument values by position. For example, in the `head` function, the first parameter is `x`, the object you want to look at, and the second is `n`, the number of elements you want to include when you look at the object. If you know this, you can call `head` using the shorter call:  -->
 
-```{r eval = FALSE}
-head(daily_show, 3)
-```
+<!-- ```{r eval = FALSE} -->
+<!-- head(daily_show, 3) -->
+<!-- ``` -->
 
-If you use position alone, you will have problems if you don't include arguments in exactly the right order. However, if you use parameter names to set each argument, it doesn't matter what order you include arguments when calling a function: 
+<!-- If you use position alone, you will have problems if you don't include arguments in exactly the right order. However, if you use parameter names to set each argument, it doesn't matter what order you include arguments when calling a function:  -->
 
-```{r eval = FALSE}
-# These two calls return the exact same object
-head(x = daily_show, n = 3)
-head(n = 3, x = daily_show)
-```
+<!-- ```{r eval = FALSE} -->
+<!-- # These two calls return the exact same object -->
+<!-- head(x = daily_show, n = 3) -->
+<!-- head(n = 3, x = daily_show) -->
+<!-- ``` -->
 
-Because code tends to be more robust to errors when you use parameter names to set arguments, we recommend against using position, rather than name, to give arguments when calling functions, at least while you're learning R. It's too easy to forget the exact order and get errors in your code. However, there is one exception-- the first argument to a function is almost always required (i.e., there's not a default value), and you very quickly learn what the first parameter of most functions are as soon as you start using the function regularly. Therefore, it's fine to use position alone to specify the first argument in a function, but for now always use the parameter name to set any later arguments:
+<!-- Because code tends to be more robust to errors when you use parameter names to set arguments, we recommend against using position, rather than name, to give arguments when calling functions, at least while you're learning R. It's too easy to forget the exact order and get errors in your code. However, there is one exception-- the first argument to a function is almost always required (i.e., there's not a default value), and you very quickly learn what the first parameter of most functions are as soon as you start using the function regularly. Therefore, it's fine to use position alone to specify the first argument in a function, but for now always use the parameter name to set any later arguments: -->
 
-```{r eval = FALSE}
-head(daily_show, n = 3)
-```
+<!-- ```{r eval = FALSE} -->
+<!-- head(daily_show, n = 3) -->
+<!-- ``` -->
 
-```{block, type='rmdtip'}
-Using the full parameter names for arguments can take a bit more time, since it requires more typing. However, RStudio helps you out with that by offering *code completion* or *tab completion*. Once you start typing the first few letters of a parameter name within a function call, try pressing the tab key. All possible arguments that start with those letters should show up, and you can scroll through to pick the right one, or keep typing until the argument you want is atnthe top of the list of choices, and then press the tab key again.
-```
+<!-- ```{block, type='rmdtip'} -->
+<!-- Using the full parameter names for arguments can take a bit more time, since it requires more typing. However, RStudio helps you out with that by offering *code completion* or *tab completion*. Once you start typing the first few letters of a parameter name within a function call, try pressing the tab key. All possible arguments that start with those letters should show up, and you can scroll through to pick the right one, or keep typing until the argument you want is atnthe top of the list of choices, and then press the tab key again. -->
+<!-- ``` -->
 
-## R scripts
-
-This is a good point in learning R for you to start putting your code in R scripts, rather than entering commands at the console. 
-
-An R script is a plain text file where you can save a series of R commands. You can save the script and open it up later to see (or re-do) what you did earlier, just like you could with something like a Word document when you're writing a paper. 
-
-To open a new R script in RStudio, go to the menu bar and select "File" -> "New File" -> "R Script". Alternatively, you can use the keyboard shortcut Command-Shift-N. Figure \@ref(fig:rscript) gives an example of an R script file opened in RStudio and points out some interesting elements.
-
-```{r rscript, echo = FALSE, fig.align="center", fig.cap = "Example of an R script in RStudio.", out.width= "600pt"}
-knitr::include_graphics("figures/ExampleOfRScript.jpg")
-```
-
-To save a script you're working on, you can click on the "Save" button (which looks like a floppy disk) at the top of your R script window in RStudio or use the keyboard shortcut Command-S. You should save R scripts using a ".R" file extension.
-
-Within the R script, you'll usually want to type your code so there's one command per line. If your command runs long, you can write a single call over multiple lines. It's unusual to put more than one command on a single line of a script file, but you can if you separate the commands with semicolons (`;`). These rules all correspond to how you can enter commands at the console. 
-
-Running R code from a script file is very easy in RStudio. You can use either the "Run" button or Command-Return, and any code that is selected (i.e., that you've highlighted with your cursor) will run at the console. You can use this functionality to run a single line of code, multiple lines of code, or even just part of a specific line of code. If no code is highlighted, then R will instead run all the code on the line with the cursor and then move the cursor down to the next line in the script. 
-
-You can also run all of the code in a script. To do this, use the "Source" button at the top of the script window. You can also run the entire script either from the console or from within another script by using the `source()` function, with the filename of the script you want to run as the argument. For example, to run all of the code in a file named "MyFile.R" that is saved in your current working directory, run:
-
-```{r, eval = FALSE}
-source("MyFile.R")
-```
-
-You can add comments into an R script to let others know (and remind yourself) what you're doing and why. To do this, use R's comment character, `#`. Any line on a script line that starts with `#` will not be read by R. You can also take advantage of commenting to comment out certain parts of code that you don't want to run at the moment.
-
-While it's generally best to write your R code in a script and run it from there rather than entering it interactively at the R console, there are some exceptions. A main example is when you're initially checking out a dataset, to make sure you've read it in correctly. It often makes more sense to run commands for this task, like `str()`, `head()`, `tail()`, and `summary()`, at the console. These are all examples of commands where you're trying to look at something about your data **right now**, rather than code that builds toward your analysis, or helps you read in or clean up your data.  
-
-### Commenting code
-
-Sometimes, you'll want to include notes in your code. You can do this in all programming languages by using a *comment character* to start the line with your comment. In R, the comment character is the hash symbol, `#`. R will skip any line that starts with `#` in a script. For example, if you run the following code: 
-
-```{r}
-# Don't print this.
-"But print this"
-```
-
-R will only print the second, uncommented line. 
-
-You can also use a comment in the middle of a line, to add a note on what you're doing in that line of the code. R will skip any part of the code from the hash symbol on. For example: 
-
-```{r}
-"Print this" ## But not this, it's a comment.
-```
-
-There's typically no reason to use code comments when running commands at the R console. However, it's very important to get in the practice of including meaningful comments in R scripts. This helps you remember what you did when you revisit your code later. 
-
-> “You know you're brilliant, but maybe you'd like to understand what you did 2 weeks from now.” -- Linus Torvalds
 
 ## In-course Exercise
 
