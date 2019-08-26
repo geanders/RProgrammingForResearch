@@ -46,16 +46,16 @@ Other programming languages popular for statistical computing include:
 - Julia
 - Python
 
-## Free and open-source software
+<!-- ## Free and open-source software -->
 
-```{r echo = FALSE, out.width = "150pt", fig.align='center'}
-knitr::include_graphics("../figures/stallman")
-```
+<!-- ```{r echo = FALSE, out.width = "150pt", fig.align='center'} -->
+<!-- knitr::include_graphics("../figures/stallman") -->
+<!-- ``` -->
 
-\footnotesize Source: Ruben Rodriguez. 
-licensed under the [Creative Commons Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/deed.en).
+<!-- \footnotesize Source: Ruben Rodriguez.  -->
+<!-- licensed under the [Creative Commons Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/deed.en). -->
 
-[Stallman story]
+<!-- [Stallman story] -->
 
 ## Free and open-source software
 
@@ -116,15 +116,21 @@ NIH RFA-RM-17-012: "Metabolomics Data Analysis and Interpretation Tools (U01)"
 
 ## Scripting languages
 
-- Point-and-click software
-- Scripting language
-- Compiled language
-- Assembly language
-- Machine code
+```{r fig.align = "center", out.width = "325pt", echo = FALSE}
+knitr::include_graphics("../figures/program_types.jpg")
+```
 
 ## Scripting languages
 
+```{r fig.align = "center", out.width = "325pt", echo = FALSE}
+knitr::include_graphics("../figures/program_types2.jpg")
+```
+
 ## Scripting languages
+
+```{r fig.align = "center", out.width = "325pt", echo = FALSE}
+knitr::include_graphics("../figures/program_types3.jpg")
+```
 
 ## RStudio vs. R
 
@@ -136,21 +142,17 @@ while using that engine (the leather interior, say).
 
 ## RStudio vs. R
 
-```{r fig.align = "center", out.width = "250pt", echo = FALSE}
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
 knitr::include_graphics("../figures/r_vs_rstudio.jpg")
 ```
 
 ## RStudio vs. R
 
-[Engine versus interior]
-
-## RStudio vs. R
-
-```{r fig.align = "center", out.width = "250pt", echo = FALSE}
+```{r fig.align = "center", out.width = "200pt", echo = FALSE}
 knitr::include_graphics("../figures/plain_delorean.jpg")
 ```
 
-When you open **R**, it does have a user interface, it's just not 
+**Note:** When you open **R**, it does have a user interface, it's just not 
 as nice as RStudio's.
 
 ## RStudio vs. R
@@ -185,7 +187,7 @@ online books)
 If do not already have them, you will need to download and install both R and RStudio. 
 
 - Go to https://cran.r-project.org and download the latest version of R for your system. Install.
-- Go to the [RStudio download page](https://www.rstudio.com/products/rstudio/download/) and download the latest version of RStudio for your system. Install. 
+- Go to the [RStudio download page](https://www.rstudio.com/products/rstudio/download/) and download the latest version of RStudio Desktop for your system. Install. 
 - Defaults should be fine for everything.
 
 # How to "talk" to R
@@ -202,7 +204,7 @@ If do not already have them, you will need to download and install both R and RS
 
 An **R session** is an instance of you using R. 
 
-Double-click on the icon for "RStudio" on you computer.
+To open an R session, double-click on the icon for "RStudio" on you computer.
 When RStudio opens, you will be in a "fresh" R session, unless you restore a saved
 session (which I strongly recommend against).
 
@@ -215,10 +217,15 @@ reading in any data (which we'll also talk about).
 In RStudio, there screen is divided into several "panes". We'll start with the pane 
 called "Console".
 
-The **console** lets you "talk" to R. This is where you type an **expression** at the
-**prompt** (the caret symbol, ">"). You press the "Return" key to submit this message to R.
+The **console** lets you "talk" to R. This is where you can "talk" to R by
+typing an **expression** at the **prompt** (the caret symbol, ">"). You press
+the "Return" key to send this message to R.
 
-This is called ...
+## The prompt in the console
+
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/r_console.jpg")
+```
 
 ## How R might respond
 
@@ -232,7 +239,7 @@ for you to finish asking it something.
 3. R tries to do what you asked it to, but it can't. It gives you an **error message**, 
 as well as a new prompt so you can try again or ask it something new. 
 
-## R expressions and function calls
+## R expressions, function calls, and objects
 
 To "talk" with R, you need to know how to give it a complete **expression**. 
 
@@ -244,16 +251,27 @@ Most expressions you'll want to give R will be some combination of two elements:
 We'll go through both these pieces and also look at how you can combine them 
 together for some expressions.
 
+## R expressions, function calls, and objects
+
+According to John Chambers, one of the creators of R's precursor S:
+
+1. Everything that exists in R is an **object**
+2. Everything that happens in R is a **call to a function**
+
 ## Function calls
 
 In general, function calls in R take the following structure: 
 
 ```{r eval = FALSE}
-## Generic code
+## Generic code (this won't run)
 function_name(formal_argument_1 = named_argument_1, 
               formal_argument_2 = named_argument_2,
               [etc.])
 ```
+
+A function call forms a complete R expression, and the output will 
+be the result of running `print` or `show` on the object that is output
+by the function call.
 
 ## Function calls
 
@@ -334,7 +352,7 @@ For example, for the `print` function, the `quote` argument has the default valu
 use `quote = TRUE`. That's why the following two calls give the same result: 
 
 ```{r}
-print(x = "Hello world", print = TRUE)
+print(x = "Hello world", quote = TRUE)
 print(x = "Hello world")
 ```
 
@@ -379,7 +397,28 @@ knitr::include_graphics("../figures/helpfile_arguments.jpg")
 You can figure out which arguments are **required** and which are
 **optional** in the Usage section of the helpfile.
 
-## Objects, object names, and assignments
+## Operators
+
+There's one class of functions that looks a bit different from others. These are the 
+infix **operator** functions. 
+
+Instead using parentheses after the function name, they usually go *between* two 
+arguments. 
+
+One common example is the `+` operator: 
+
+```{r}
+2 + 3
+```
+
+## Operators
+
+There are operators for several mathematical functions: `+`, `-`, `*`, `/`.
+
+There are also other operators, including **logical operators** and 
+**assignment operators**, which we'll cover later.
+
+## Objects, object names, and assignment expressions
 
 Function calls will usually produce something called an **object**. 
 
@@ -393,9 +432,11 @@ later.
 If you want to re-use the results of a function call later, you can **assign** that
 **object** to an **object name**.
 
-## R's MVP: The *gets arrow*
+This kind of expression is called an **assignment expression**.
 
-The *gets arrow*, `<-`, is R's assignment operator. It takes whatever you've
+## Assignment expressions
+
+The **gets arrow**, `<-`, is R's assignment operator. It takes whatever you've
 created on the right hand side of the `<-` and saves it as an object with the
 name you put on the left hand side of the `<-` :
 
@@ -404,7 +445,7 @@ name you put on the left hand side of the `<-` :
 [object name] <- [object]
 ```
 
-## R's MVP: The *gets arrow*
+## Assignment expressions
 
 For example, if I just type `"Hello world"`, R will print it back to me, but
 won't save it anywhere for me to use later:
@@ -413,10 +454,9 @@ won't save it anywhere for me to use later:
 "Hello world"
 ```
 
-## R's MVP: The *gets arrow*
+## Assignment expressions
 
-However, if I assign it to an object, I can "refer" to that object in a later function 
-call. 
+However, if I assign it to an object, I can "refer" to that object in a later expression. 
 
 For example, the code below assigns the **object** `"Hello world"` the **object name** `message`. 
 Later, I can just refer to this object using the name `message`, for example in a function
@@ -433,10 +473,10 @@ print(x = message)
 knitr::include_graphics("../figures/teletype.jpg")
 ```
 
-\small Photo by Marcin Wichary, User:AlanM1 - Derived (cropped) from, CC BY 2.0, https://commons.wikimedia.org/w/index.php?curid=20744606
+<!-- \small Photo by Marcin Wichary, User:AlanM1 - Derived (cropped) from, CC BY 2.0, https://commons.wikimedia.org/w/index.php?curid=20744606 -->
 
 
-## R's MVP: The *gets arrow*
+## Assignment expressions
 
 When you enter an **assignment expression** like this at the R console, if everything
 goes right, then R will "respond" by giving you a new prompt, without any kind of 
@@ -471,22 +511,18 @@ ls()
 
 ## "Environment" pane
 
+Here's an example of the third method:
+
 ```{r fig.align = "center", out.width = "250pt", echo = FALSE}
 knitr::include_graphics("../figures/environment_pane.jpg")
 ```
 
 ## Object names
 
-There are some rules for the names you can use for an object name:
+There are some absolute **rules** for the names you can use for an object name:
 
-- Use only letters, numbers, and underscores [and dots?]
+- Use only letters, numbers, and underscores 
 - Don't start with anything but a letter
-
-*From [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html)* [link still current?]
-
-- Use lower case for variable names (`fedex_number`, not `FedExNumber`)
-- Use an underscore as a separator (`fedex_number`, not `fedex.number` or `fedexNumber`)
-- Avoid using names that are already defined in R (e.g., don't name an object `mean`, because a `mean` function exists)
 
 ## Assigning objects to object names
 
@@ -501,6 +537,15 @@ _message <- "Hello world"
 message! <- "Hello world"
 ```
 
+## Object names
+
+There are also some **guidelines** for picking *good* object names:
+
+*From [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html)* 
+
+- Use lower case for variable names (`message`, not `Message`)
+- Use an underscore as a separator (`message_one`, not `messageOne`)
+- Avoid using names that are already defined in R (e.g., don't name an object `mean`, because a `mean` function exists)
 
 ## "Composing" to combine function calls
 
@@ -527,22 +572,33 @@ print(x = paste("Hello", "world"))
 Just like with math, the order that the functions are evaluated moves from the
 inner set of parentheses to the outer one.
 
+There's one more way we'll look at later...
+
+## "Composing" to combine function calls
+
+```{r echo = FALSE, fig.align="center", out.width= "300pt"}
+knitr::include_graphics("../figures/composing_function_calls.jpg")
+```
 
 ## Using R scripts
 
-The console can be great for quick functions to explore the data. However, for
-most data analysis work you'll want to use a script, so you can save all the
-code you used for the analysis. This improves the *reproducibility* of your
-analysis.
+The console can be great for quick functions to explore the data. 
+
+However, for most data analysis work you'll want to use a script, so you can
+save all the expressions you used for the analysis.
+
+This improves the *reproducibility* of your analysis.
 
 ## R scripts
 
-An **R script** is a file where you can write down and save R code. 
+An **R script** is a plain text file where you can write down and save R code. 
 
 When you write, run, and save your R code in a script rather than running it one
 line at a time in the console, you can easily go back and re-do exactly what you
-did again later. You can also share the script for someone else to use, or run
-it on a different computer.
+did again later. 
+
+You can also share the script for someone else to use, or run it on a different
+computer.
 
 ## R scripts
 
@@ -550,8 +606,8 @@ RStudio has one pane that shows any R scripts you have open. If you'd like to
 create new R scripts, you can do that in RStudio with the following steps:
 
 - Open a new script file in RStudio: `File` -> `New File` -> `R Script`.
-- I recommend that you make an "R" folder in all of the R projects that you
-create and save all your script files in that folder.
+- I recommend that you make an "R" folder in all of the R project directories
+that you create and save all your script files in that folder.
 - Save scripts using the extension `.R`
 
 ## R scripts
@@ -591,17 +647,50 @@ starts with `#` in a script.
 ## Closing an R session
 
 Do **not** save the history of your R session when you close RStudio. Instead,
-get in the habit of writing your R code in reproducible formarts (R scripts,
+get in the habit of writing your R code in reproducible formats (R scripts,
 RMarkdown documents)
 
 ## In-Course Exercises
 
-We'll take a break now to finish this week's in-course exercise. You can find
-all the instructions on the online coursebook
-(https://geanders.github.io/RProgrammingForResearch/r-preliminaries.html).
+We'll take a break now to start on this week's in-course exercise.
 
-Get together with your group members and do Sections 1.8.4 through 1.8.8 of the
-In-Course Exercise for Week #1 ("R Preliminaries").
+You can find
+all the instructions on the [online coursebook](https://geanders.github.io/RProgrammingForResearch/r-preliminaries.html).
+
+We'll form groups of 2--3 students. In your group, do Sections 1.8.1--3 
+of the In-Course Exercise for Week # 1 ("R Preliminaries").
+
+## In-Course Exercises
+
+Here are a few tips for doing these in-course exercises: 
+
+- Sometimes, I will ask you to try out things that we haven't covered yet in
+class. In this case, I'll give you detailed instructions. You can also use
+Google, R help files, and any other resources you want to help you figure out
+how to do something for an in-course exercises. If you're really stumped, I'm
+happy to help.
+- For each section of the exercise, I've included some example R code to show
+one possible solution. Try to not look at this until you've tried the exerise
+yourself without it. If you move quickly to this example R code, you will not
+learn R very quickly.
+- Some groups tend to move more quickly then others. I often include "If you
+have extra time" sections for groups who are moving more quickly.
+- Use Google!
+
+## Nate Silver / FiveThirtyEight
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/is-nate-silver-a-witch.png")
+```
+
+## Nate Silver / FiveThirtyEight
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/obama-nate-silver-turkey.jpg")
+```
+
+For the story, see
+http://www.politico.com/blogs/media/2012/11/obama-cracks-nate-silver-joke-at-turkey-pardoning-150132.
 
 # The "package" system
 
@@ -619,6 +708,12 @@ To take full advantage of R, you'll want to add on packages:
 
 ```{r echo = FALSE, out.width = "200pt", fig.align='center'}
 knitr::include_graphics("../figures/TrainComplex.JPG")
+```
+
+## What's in a package?
+
+```{r echo = FALSE, out.width = "200pt", fig.align='center'}
+knitr::include_graphics("../figures/package_contents.jpg")
 ```
 
 ## R packages
@@ -670,7 +765,16 @@ from an online repository.
 Once you install a package, you do not need to install it again. It's on your
 computer. (At least, until the package maintainer creates a new version.)
 
-## What's in a package?
+## Installing versus loading
+
+```{r echo = FALSE, out.width = "275pt", fig.align='center'}
+knitr::include_graphics("../figures/install_vs_library.jpg")
+```
+
+**Install** a package (with `install.packages`) to get it onto your computer. **Load** it (with `library`) to get it into
+your R session.
+
+
 
 ## How to use a package you've installed
 
@@ -696,14 +800,7 @@ message <- "HelloWorld"
 letterToNumber(message)
 ```
 
-## Installing versus loading
 
-```{r echo = FALSE, out.width = "275pt", fig.align='center'}
-knitr::include_graphics("../figures/install_vs_library.jpg")
-```
-
-**Install** a package (with `install.packages`) to get it onto your computer. **Load** it (with `library`) to get it into
-your R session.
 
 ## Package vignettes
 
@@ -751,108 +848,78 @@ name. For example, to get the helpfile for `letterToNumber`, you can run:
 
 ## What are object classes?
 
-...
+Objects can be structured in different ways, in terms of how they "hold" data.
 
-One class of objects can be a subtype of a more general object class. We'll 
-see an example of this today.
+These difference structures are called **object classes**.
 
-Today, we'll look at two key object classes for working with data: 
+One class of objects can be a subtype of a more general object class.
+
+## What are object classes?
+
+Today, we'll look at two key object classes for working with data in R: 
 
 1. Vectors
-2. Dataframes
+2. Dataframes (tibbles)
 
 ## What are object classes?
 
 For these two object classes (vectors and dataframes), we'll look at: 
 
-1. How to make a new object with that class
-2. How to extract values from objects with that class
+1. How that class is structured
+2. How to make a new object with that class
+3. How to extract values from objects with that class
 
 In later classes, we'll spend a lot of time learning how to do other things
-with objects from these two classes.
+with objects from these two classes, plus learn some other classes.
 
-## Vectors
-
-## Dataframes
-
-## Creating vector objects
-
-## Creating dataframe objects
-
-## Extracting values from a vector
-
-## Extracting values from a dataframe
-
-## R's most basic object classes
-
-The two most common types of objects for data in R that we will use in this
-class are **vectors** (1D) and **dataframes** (2D).
-
-## Vectors
+## Structure of vector class
 
 ```{r fig.align = "center", out.width = "300pt", echo = FALSE}
 knitr::include_graphics("../figures/example_vector.jpg")
 ```
 
 A **vector** is an object class where the object is made of a string of values.
-All those values must be of the same **class** (i.e., all numbers, all
-characters, all dates)
 
-## Vectors
+## Structure of vector class
 
-To create a vector, you can use the concatenate function, `c`:
+```{r fig.align = "center", out.width = "275pt", echo = FALSE}
+knitr::include_graphics("../figures/vector_class_examples.jpg")
+```
+
+All the values in a vector must be of the same **type** (e.g., all numbers, all
+characters). There are different **classes** of vectors depending on the type
+of data they store.
+
+## Creating vectors
+
+To create a vector object, you can use the **concatenate** function, `c`.
+
+For example, to create a vector with the names of the three main characters 
+in *Harry Potter*, use the R expression:
 
 ```{r}
 c("Harry", "Ron", "Hermione")
 ```
 
-## Vectors
+## Creating vectors
 
-If you want to use that object later, you can assign it to a name: 
+If you want to use that object later, you can assign it an object name in the expression: 
 
 ```{r}
 main_characters <- c("Harry", "Ron", "Hermione")
 print(x = main_characters)
 ```
 
-## Vectors
+## Creating vectors
 
 ```{r fig.align = "center", out.width = "300pt", echo = FALSE}
 knitr::include_graphics("../figures/assign_vector.jpg")
 ```
 
 This **assignment expression** follows the structure we covered earlier for
-function calls and expressions.
+function calls and assignment expressions.
 
-## Vectors
-
-The *length* of the vector is how many values it has in it. The 
-`main_characters` vector includes three values ("Harry", "Ron", and "Hermione"),
-so it has a length of 3.
-
-You can use the `length` function to figure out how long a vector is:
-
-```{r}
-length(x = main_characters)
-```
-
-## Vectors
-
-```{r fig.align = "center", out.width = "300pt", echo = FALSE}
-knitr::include_graphics("../figures/vector_classes.jpg")
-```
-
-Vectors can have several different **classes**, including numeric, character,
-factor, date, and logical. Some of these classes are further divided into more
-specific classes.
-
-## Vectors
-
-```{r fig.align = "center", out.width = "300pt", echo = FALSE}
-knitr::include_graphics("../figures/vector_class_examples.jpg")
-```
-
-## Vectors
+## Creating vectors
 
 Typically, when you use the `c` function, you'll be creating a numeric,
 character, or logical vector. More complex classes (like factors and dates)
@@ -869,7 +936,6 @@ main_characters <- c("Harry", "Ron", "Hermione")
 ```{r}
 n_kids <- c(1, 7, 1)
 ```
-
 
 ## Vectors
 
@@ -890,25 +956,58 @@ mixed_classes <- c(1, 3, "five")
 mixed_classes
 ```
 
-[Order of generic]
+## Vectors
+
+The *length* of the vector is how many values it has. The 
+`main_characters` vector includes three values ("Harry", "Ron", and "Hermione"),
+so it has a length of 3.
+
+You can use the `length` function to figure out how long a vector is:
+
+```{r}
+length(x = main_characters)
+```
 
 ## Extracting values from vectors
 
-[Tidyverse alternative to indexing?]
-
-## Vectors
-
 You can pull out certain values by using indexing (`[...]`) to identify the
-locations you want to get:
+locations you want to get. For example, to get the second value from the `main_characters` 
+vector, you can call:
 
 ```{r}
 main_characters[2] # Get the second value
+```
+
+## Extracting values from vectors
+
+You can also extract more than one value from a vector, by giving a vector
+of positions as the input in the square brackets. 
+
+For example, to get the first and third values from the `main_characters` 
+vector, you can call:
+
+```{r}
 main_characters[c(1, 3)] # Get first and third values
 main_characters[1:3] # Get the first three values
 ```
 
+## Extracting values from vectors
 
-## Dataframes
+There is an R operator that's very helpful with this. The `:` operator
+will create a sequence of values: 
+
+```{r}
+1:3
+```
+
+Therefore, to get the first three values from the `main_characters` 
+vector, you can call:
+
+```{r}
+main_characters[1:3] 
+```
+
+## Structure of dataframe objects
 
 ```{r fig.align = "center", out.width = "300pt", echo = FALSE}
 knitr::include_graphics("../figures/example_dataframe.jpg")
@@ -917,7 +1016,7 @@ knitr::include_graphics("../figures/example_dataframe.jpg")
 A **dataframe** combines one or more vectors of the same length stuck together
 side-by-side. 
 
-## Dataframes
+## Structure of dataframe objects
 
 ```{r fig.align = "center", out.width = "325pt", echo = FALSE}
 knitr::include_graphics("../figures/example_dataframe_labeled.jpg")
@@ -926,18 +1025,22 @@ knitr::include_graphics("../figures/example_dataframe_labeled.jpg")
 A dataframe contains **rows** and **columns**, and each column has a 
 **column name**.
 
-## Dataframes
+## Creating dataframes
 
-You can create dataframes using the `tibble` function from the `tibble`
-package. We'll look at how to do that.
+We'll be working with a specific class of dataframe called a **tibble**.
+
+You can create tibble dataframe using the `tibble` function from the `tibble`
+package. 
 
 However, most often you will create a dataframe by reading in data from
-a file using something like `read_csv` from the `readr` package---most datasets
+a file---most datasets
 will not be short enough that you want to enter them by hand in R.
 
-## Dataframes
+We'll look at both methods of creating dataframes.
 
-The format for using `tibble` is:
+## Creating dataframes
+
+The format for creating a tibble dataframe using the `tibble` function is:
 
 ```{r eval = FALSE}
 ## Generic code
@@ -949,7 +1052,7 @@ library("tibble")
                            etc.)
 ```
 
-## Dataframes
+## Creating dataframes
 
 ```{r}
 library("tibble")
@@ -960,7 +1063,7 @@ hp_data <- tibble(first_name = c("Harry", "Ron", "Hermione"),
 hp_data
 ```
 
-## Dataframes
+## Creating dataframes
 
 You can also create dataframes by joining together vector objects you previously
 created, as long as they have the same length and line up:
@@ -971,6 +1074,60 @@ hp_data <- tibble(first_name = main_characters,
                   n_kids = n_kids,
                   survived = c(TRUE, TRUE, TRUE))
 hp_data
+```
+
+## Creating dataframes
+
+Usually, instead of creating a dataframe from vectors, you'll read one in from
+data on an outside file, for example using `read_csv` from the `readr` package.
+
+\medskip
+
+For example, to read in a dataset from a csv file called "daily_show_guests.csv":
+
+```{r echo = FALSE, message = FALSE}
+library("readr")
+daily_show <- read_csv("../data/daily_show_guests.csv",
+                       skip = 4)
+```
+```{r eval = FALSE}
+library("readr")
+daily_show <- read_csv("daily_show_guests.csv",
+                       skip = 4)
+```
+
+## Creating dataframes
+
+This has read data in from the external file into a dataframe object in my R
+session:
+
+```{r}
+ls()
+```
+
+## Dataframes
+
+You can use the functions `dim`, `nrow`, and `ncol` to figure out the dimensions
+(number of rows and columns) of a dataframe:
+
+```{r}
+dim(daily_show)
+nrow(daily_show)
+ncol(daily_show)
+```
+
+## Dataframes
+
+Base R also has some useful functions for quickly exploring dataframes:
+
+- `str`: Show the structure of an R object, including a dataframe
+- `summary`: Give summaries of each column of a dataframe.
+
+For example, to get summaries of the first two columns of the Daily Show data,
+you can run:
+
+```{r}
+summary(daily_show[ , c(1, 2)])
 ```
 
 ## Extracting values from dataframes
@@ -984,7 +1141,7 @@ based on their column position.
 For example, if you wanted to get the first two rows of the `hp_data`
 dataframe, you could run:
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 library("dplyr")
 slice(.data = hp_data, c(1:2))
 ```
@@ -1025,110 +1182,24 @@ select(slice(.data = hp_data, c(1:2)), c(1, 4))
 <!-- hp_data[3, ] # Last row, all columns -->
 <!-- ``` -->
 
+## In-Course Exercises
 
-## Dataframes
+We'll take a break now to finish this week's in-course exercise. You can
+find all the instructions on the [online coursebook](https://geanders.github.io/RProgrammingForResearch/r-preliminaries.html).
 
-Usually, instead of creating a dataframe from vectors, you'll read one in from
-data on an outside file, for example using `read_csv` from the `readr` package.
+Get together with your group members and do Sections 1.8.4 through 1.8.8 of the
+In-Course Exercise for Week #1 ("R Preliminaries"). 
 
-\medskip
-
-For example, to read in a dataset from a csv file called "daily_show_guests.csv":
-
-```{r echo = FALSE, message = FALSE}
-library("readr")
-daily_show <- read_csv("../data/daily_show_guests.csv",
-                       skip = 4)
-```
-```{r eval = FALSE}
-library("readr")
-daily_show <- read_csv("daily_show_guests.csv",
-                       skip = 4)
-```
-
-## Dataframes
-
-This has read data in from the external file into a dataframe object in my R
-session:
-
-```{r}
-daily_show[1:4, 1:4]
-```
-
-## Dataframes
-
-You can use the functions `dim`, `nrow`, and `ncol` to figure out the dimensions
-(number of rows and columns) of a dataframe:
-
-```{r}
-dim(daily_show)
-nrow(daily_show)
-ncol(daily_show)
-```
-
-## Dataframes
-
-Base R also has some useful functions for quickly exploring dataframes:
-
-- `str`: Show the structure of an R object, including a dataframe
-- `summary`: Give summaries of each column of a dataframe.
-
-For example, to get summaries of the first two columns of the Daily Show data,
-you can run:
-
-```{r}
-summary(daily_show[ , c(1, 2)])
-```
+If you have extra time, also try 1.8.9.
 
 ## In-Course Exercises
 
-Here are a few tips for doing these in-course exercises: 
-
-- Sometimes, I will ask you to try out things that we haven't covered yet in
-class. In this case, I'll give you detailed instructions. You can also use
-Google, R help files, and any other resources you want to help you figure out
-how to do something for an in-course exercises. If you're really stumped, I'm
-happy to help.
-- For each section of the exercise, I've included some example R code to show
-one possible solution. Try to not look at this until you've tried the exerise
-yourself without it. If you move quickly to this example R code, you will not
-learn R very quickly.
-- Some groups tend to move more quickly then others. I often include "If you
-have extra time" sections for groups who are moving more quickly.
-- Use Google!
-
-## In-Course Exercises
-
-The #1 rule for this class: 
+Hint: 
 
 **Don't use spaces in file pathnames!**
 
 This includes the names of files and the names of directories. Keep this in mind
 during today's exercise. (We'll talk more about why not next week.)
-
-## In-Course Exercises
-
-We'll take a break now to get started on this week's in-course exercise. You can
-find all the instructions on the online coursebook
-(https://geanders.github.io/RProgrammingForResearch/r-preliminaries.html).
-
-Get together with your group members and do Sections 1.8.1 through 1.8.4 of the
-In-Course Exercise for Week #1 ("R Preliminaries").
-
-## Nate Silver / FiveThirtyEight
-
-```{r echo = FALSE, out.width = "300pt", fig.align='center'}
-knitr::include_graphics("../figures/is-nate-silver-a-witch.png")
-```
-
-## Nate Silver / FiveThirtyEight
-
-```{r echo = FALSE, out.width = "300pt", fig.align='center'}
-knitr::include_graphics("../figures/obama-nate-silver-turkey.jpg")
-```
-
-For the story, see
-http://www.politico.com/blogs/media/2012/11/obama-cracks-nate-silver-joke-at-turkey-pardoning-150132.
 
 # Some odds and ends
 
@@ -1278,14 +1349,6 @@ phonenumber::letterToNumber(message)
 
 ## Alternative package::function notation
 
-Search path
-
-- base R
-- phonenumber package
-- decoder ring package
-
-## Alternative package::function notation
-
 The `package::function` notation is not typically used because it substantially
 increases how much you have to type in your code.
 
@@ -1321,7 +1384,7 @@ We'll explore this a **lot** more later in the course, but here's a taste of how
 that looks:
 
 ```{r}
-library(magrittr)
+library("magrittr")
 
 paste("Hello world") %>% 
   print()
@@ -1331,6 +1394,8 @@ paste("Hello world") %>%
 
 Here's another example. Earlier, we used the following code to extract certain
 rows and columns from a dataframe: 
+
+\small
 
 ```{r}
 select(slice(hp_data, c(1:2)), c(1, 4))

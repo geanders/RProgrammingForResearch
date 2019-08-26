@@ -384,30 +384,30 @@ One thing that makes this rule confusing is that there are a few cases in R wher
 A dataframe is a 2-dimensional object, and is made of one or more vectors of the same length stuck together side-by-side. It is the closest R has to an Excel spreadsheet-type structure. For example, here's a dataframe with some basic information about the Beatles: 
 
 ```{r echo = FALSE, message = FALSE, results = TRUE}
-library(tibble)
-beatles <- data_frame(first_name = c("John", "Paul", "Ringo", 
+library("tibble")
+beatles <- tibble(first_name = c("John", "Paul", "Ringo", 
                                      "George"),
-                      last_name = c("Lennon", "McCartney", 
+                  last_name = c("Lennon", "McCartney", 
                                     "Starr", "Harrison"),
-                      birth_year = c(1940, 1942, 1940, 1943),
-                      alive = c(FALSE, TRUE, TRUE, FALSE))
+                  birth_year = c(1940, 1942, 1940, 1943),
+                  alive = c(FALSE, TRUE, TRUE, FALSE))
 beatles
 ```
 
 Note that each row of this dataframe gives a different observation (in this case, our unit of observation is a Beatle). Each column gives a different type of information (first name, last name, birth year, and whether they're still alive) for each of the observations (Beatles). Notice that the number of elements in each of the columns must be the same in this dataframe, but that the different columns can have different classes of data (e.g., character vectors for `first_name` and `last_name`, logical value of TRUE or FALSE for `alive`).
 
-You can create dataframes using the `data_frame` function from the `tibble` package. However, most often you will create a dataframe by reading in data from a file, using something like `read_csv` from the `readr` package. 
+You can create tibble dataframes using the `tibble` function from the `tibble` package. However, most often you will create a dataframe by reading in data from a file, using something like `read_csv` from the `readr` package. 
 
 ```{block, type = "rmdnote"}
-There are base R functions for both of these tasks (`data.frame` and `read.csv`, respectively), eliminating the need to load additional packages with a `library` call. However, the series of packages that make up what's called the "tidyverse" have brought a huge improvement in the ease and speed of working with data in R. We will be teaching these tools in this course, and that's why we're going directly to `data_frame` and `read_csv` from the start, rather than base R equivalents. Later in the course, we'll talk more about this "tidyverse" and what makes it so great. 
+There are base R functions for both of these tasks (`data.frame` and `read.csv`, respectively), eliminating the need to load additional packages with a `library` call. However, the series of packages that make up what's called the "tidyverse" have brought a huge improvement in the ease and speed of working with data in R. We will be teaching these tools in this course, and that's why we're going directly to `tibble` and `read_csv` from the start, rather than base R equivalents. Later in the course, we'll talk more about this "tidyverse" and what makes it so great. 
 ```
 
-To create a dataframe, you can use the `data_frame` function from the `tibble` package. The general format for using `data_frame` is:
+To create a dataframe, you can use the `tibble` function from the `tibble` package. The general format for using `tibble` is:
 
 ```{r eval = FALSE}
 ## Note: Generic code
-[name of object] <- data_frame([1st column name] = [1st column content],
-                               [2nd column name] = [2nd column content])
+[name of object] <- tibble([1st column name] = [1st column content],
+                           [2nd column name] = [2nd column content])
 ```
 
 with an equals sign between the column name and column content for each column, and commas between each of the columns.
@@ -416,7 +416,7 @@ Here is an example of the code used to create the `beatles` object shown above:
 
 ```{r}
 library(tibble)
-beatles <- data_frame(first_name = c("John", "Paul", "Ringo", 
+beatles <- tibble(first_name = c("John", "Paul", "Ringo", 
                                      "George"),
                       last_name = c("Lennon", "McCartney", 
                                     "Starr", "Harrison"),
@@ -428,8 +428,8 @@ beatles <- data_frame(first_name = c("John", "Paul", "Ringo",
 You can also create a dataframe by sticking together vectors you already have saved as R objects. For example:
 
 ```{r}
-fibonacci_seq <- data_frame(num_in_seq = one_to_five,
-                            fibonacci_num = fibonacci)
+fibonacci_seq <- tibble(num_in_seq = one_to_five,
+                        fibonacci_num = fibonacci)
 fibonacci_seq
 ```
 
@@ -438,6 +438,8 @@ Note that this call requires that the `one_to_five` and `fibonacci` vectors are 
 ```{block, type = "rmdnote"}
 You can put more than one function call in a single line of R code, as in this example (the `c` creates a vector, while the `data.frame` creates a dataframe, using the vectors created by the calls to `c`). When you use multiple functions within a single R call, R will evaluate starting from the inner-most parentheses out, much like the order of operations in a math equation with parentheses.
 ```
+
+To extract data from a dataframe, you can use some functions from the `dplyr` package, `select` and `slice`. The `select` function will pull out columns, while the `slice` function will pull out rows.
 
 You can use square-bracket indexing (`[..., ...]`) for dataframes, too, but now they'll have two dimensions (rows, then columns). Put the rows you want before the comma, the columns after. If you want all of something (e.g., all rows in the dataframe), leave the designated spot blank. Here are two examples of using square-bracket indexing to pull a subset of the `fibonacci_seq` dataframe we created above:
 
@@ -633,9 +635,32 @@ There's typically no reason to use code comments when running commands at the R 
 
 ## In-course Exercise
 
+### Trying out the code in slides so far
+
+To start, you'll try running some simple code in R, using examples from the course
+slides up to this point. Take the following steps:
+
+1. Open an R session and find the "Console" pane. 
+2. Go through the slides we've covered so far. Find any examples of R expressions and try them
+out at the prompt in the console. 
+3. Once you've run an assignment expression, find the "Environment" pane. Check
+that the object name that you assigned now appears there. 
+
+### Writing your code as an R script
+
+While the R console is fine for initially exploring data, you should get in the habit of writing up R code in an R script for most of your data analysis projects in R. 
+
+* Open a new R script and save it to your current working directory (i.e., wherever you saved the data you downloaded for this exercise).
+* Take some of the code that you wrote for this exercise. Put it in the R script. Do not put more than one function call per line (but it's fine to have longer function calls span a few lines).
+* Use the "Run" button to run a single line of this code. Check the console to see what happens when you do.
+* Highlight a few lines of the code and use "Run" to run them.
+* Try using the keyboard shortcut (Command-Return) to run the line of code your cursor is currently on. Try doing this with a function call that runs across several lines of the R script file-- what do you see at the console?
+* Try running the whole script using "Source". Again, look at the console after you "source" the script. 
+* Close your R session (and save any changes to your R script). Do **not** save your R session history. Re-open R and see if you can re-open your R script and re-run it. Try using `ls()` to list the objects in your R session before and after you re-run your script. Does anything about the result surprise you?
+
 ### About the dataset
 
-For today's class, you'll be using a dataset of all the guests on *The Daily Show* when Jon Stewart was the host. This data was originally collected by Nate Silver's website, [FiveThirtyEight](http://fivethirtyeight.com) and is available on [FiveThirtyEight's GitHub page](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests) under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/). I have copied this data into my GitHub repository for this class. The only change made to the original file was to add (commented) attribution information at the start of the file.
+For the rest of today's class, you'll be using a dataset of all the guests on *The Daily Show* when Jon Stewart was the host. This data was originally collected by Nate Silver's website, [FiveThirtyEight](http://fivethirtyeight.com) and is available on [FiveThirtyEight's GitHub page](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests) under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/). I have copied this data into my GitHub repository for this class. The only change made to the original file was to add (commented) attribution information at the start of the file.
 
 **First, check out a bit more about this data and its source:**
 
@@ -663,7 +688,7 @@ Start by manually creating some vectors and data frames with a small subset of t
 * In the same way, create a vector with the year of each of these guests' appearances. Assign this vector to an object named `appearance_year`. What class (numeric or character) do you think this vector will be? Will you need to use quotation marks for each element you add to the vector?
 * Use the `class` function to determine the classes (e.g., numeric, character) of each of the vectors you just created.
 * Combine these two vectors to create a dataframe named `guest_list`. For the columns, use the same column names used in the original, raw data for the guest names and appearance year. Print out this dataframe at the R console to make sure it looks like you thought it would.
-* Use square bracket indexing to print out the following subsets of this dataframe (you'll have one R call per subset): (1) The appearance year of the first guest; (2) Names of the third through fifth guests; (3) Names of all guests; (4) Both names and appearance years of the first and third guests.
+* Use functions from the `dplyr` package to print out the following subsets of this dataframe (you'll have one R call per subset): (1) The appearance year of the first guest; (2) Names of the third through fifth guests; (3) Names of all guests; (4) Both names and appearance years of the first and third guests.
 * The `str` function can be used to figure out the structure of a dataframe. Run this command on the `guest_list` dataframe you created. What information does this give you? Use the helpfile for `str` to help you figure this out (which you can access by running `?str`). Do you see anything that surprises you?
 * Use the `ls` function to list all the objects you currently have defined in your R session. Compare this list to the "Environment" pane in RStudio.
 
@@ -695,16 +720,17 @@ class(appearance_year)
 
 # Create the data frame, then print it out to make sure it looks like you thought
 # it would
-library(tibble)
-guest_list <- data_frame(Raw_Guest_List = five_guests,
-                         YEAR = appearance_year)
+library("tibble")
+guest_list <- tibble(Raw_Guest_List = five_guests,
+                     YEAR = appearance_year)
 guest_list
 
-# Use square bracket indexing to print subsets of the data frame
-guest_list[1, 2]
-guest_list[3:5, 1]
-guest_list[ , 1]
-guest_list[c(1, 3), ]
+# Use functions from the dplyr package to extract values from the dataframe
+library("dplyr")
+slice(select(.data = guest_list, 2), 1)
+slice(select(.data = guest_list, 1), 3:5)
+select(.data = guest_list, 1)
+slice(.data = guest_list, c(1, 3))
 
 # Use `str` to check out the structure of the data frame you created
 str(guest_list)
@@ -728,7 +754,7 @@ install.packages("stringr")
 ```
 ```{r}
 # Load the package into your current R session
-library(stringr)
+library("stringr")
 ```
 ```{r eval = FALSE}
 # Open the package's vignette
@@ -829,16 +855,16 @@ You now have the data available in your current R session as the `daily_show` ob
 **Take the following steps to check out the dataset**
 
 * Use the `dim` function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (that it includes all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?  
-* Use indexing to look at the first two rows of the dataset. Based on this, what does each row "measure" (**unit of observation**)? What information (**variables**) do you get for each "measurement"? As a reminder, indexing uses square brackets immediately after the object name. If the object has two dimensions, like a dataframe (rows and columns), you put the rows you want, then a comma, then the columns you want. If you want all rows (or columns), you leave that space blank. For example, if you wanted to get the first two rows and the first three columns, you'd use `daily_show[1:2, 1:3]`. If you wanted to get the first five rows and all the columns, you'd use `daily_show[1:5, ]`. 
+* Use functions from the `dplyr` package to look at the first two rows of the dataset. Based on this, what does each row "measure" (**unit of observation**)? What information (**variables**) do you get for each "measurement"? 
 * The `head` function can be used to explore the first few rows of dataframes (see the helpfile at `?head`). Use the `head` function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart's first show? Does it look like this dataset covers that first show?
 * Use the `tail` function to look at the last few rows of the dataframe. What is the last show date covered by the dataframe? Who was the last guest?
-* Use the `str` function to get more details about the `daily_show` dataframe you read in. 
 
 Example R code:
 
-```{r}
-# Use indexing to see a subset of the data
-daily_show[1:2, ]
+```{r message = FALSE}
+# Extract values from the dataframe
+library("dplyr") # Load the 'dplyr' package
+slice(.data = daily_show, 1:2) # Look at the first two rows of data
 
 # Check the dimensions of the data
 dim(daily_show)
@@ -866,7 +892,7 @@ Nate Silver was a guest on *The Daily Show*. Let's use this data to figure out h
 * The `subset` function can be combined with logical statements to help you create a specific subset of data. For example, if you only wanted data from guest visits in 1999, you could run `subset(daily_show, YEAR == 1999)`. Check out the helpfile for `subset` and use the function to create a new dataframe that only has the rows of `daily_show` when Nate Silver was a guest (`Raw_Guest_List == "Nate Silver"`). Save this as an object named `nate_silver`.
 * Print out the full `nate_silver` dataframe by typing `nate_silver`. (You could just use this to answer both questions, but still try the next steps. They would be important with a bigger dataset.)
 * To count the number of times Nate Silver was a guest, you'll need to count the number of rows in the new dataset. You can either use the `dim` function or the `nrow` function to do this. What additional information does the `dim` function give you?
-* To get the dates when Nate Silver was a guest, you can print out just the `Show` column of the dataframe. There are a few ways you can do this using indexing: `nate_silver[ , 3]` (since `Show` is the third column), `nate_silver[ , "Show"]`, or `nate_silver$Show`. Try these.
+* To get the dates when Nate Silver was a guest, you can print out just the `Show` column of the dataframe. There are a few ways you can do this using the `select` function from the `dplyr` package.
 
 Example R code:
 
@@ -879,8 +905,7 @@ nate_silver <- subset(daily_show,
 nate_silver
 dim(nate_silver)
 nrow(nate_silver)
-nate_silver[ , 3]
-nate_silver[ , "Show"]
+select(.data = nate_silver, 3)
 ```
 
 If you have extra time:
@@ -898,7 +923,7 @@ statisticians
 ```{r}
 num_visits <- table(daily_show[ , 2])
 head(num_visits) # Note: This is a vector rather than a dataframe
-head(names(num_visits[num_visits == 1]))
+head(names(num_visits[num_visits == 1])) # This is using a "logical operator" to extract values that meet a condition
 subset(daily_show, GoogleKnowlege_Occupation == "chess player")
 subset(daily_show, GoogleKnowlege_Occupation == "mathematician")
 subset(daily_show, GoogleKnowlege_Occupation == "orca trainer")
@@ -906,14 +931,4 @@ subset(daily_show, GoogleKnowlege_Occupation == "Puzzle Creator")
 subset(daily_show, GoogleKnowlege_Occupation == "Scholar")
 ```
 
-### Writing your code as an R script
 
-While the R console is fine for initially exploring data, you should get in the habit of writing up R code in an R script for most of your data analysis projects in R. 
-
-* Open a new R script and save it to your current working directory (i.e., wherever you saved the data you downloaded for this exercise).
-* Take some of the code that you wrote for this exercise (including the function to read the data into R). Put it in the R script. Do not put more than one function call per line (but it's fine to have longer function calls span a few lines).
-* Use the "Run" button to run a single line of this code. Check the console to see what happens when you do.
-* Highlight a few lines of the code and use "Run" to run them.
-* Try using the keyboard shortcut (Command-Return) to run the line of code your cursor is currently on. Try doing this with a function call that runs across several lines of the R script file-- what do you see at the console?
-* Try running the whole script using "Source". Again, look at the console after you "source" the script. 
-* Close your R session (and save any changes to your R script). Do **not** save your R session history. Re-open R and see if you can re-open your R script and re-run it. Try using `ls()` to list the objects in your R session before and after you re-run your script. Does anything about the result surprise you?
