@@ -1,5 +1,9 @@
 ---
 title: "Preliminaries in R"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 output: 
   beamer_presentation:
     theme: "metropolis"
@@ -10,22 +14,25 @@ fontsize: 10pt
 
 ## What is R?
 
-- A statistical programming language
+- A programming language good for data analysis / statistics
+- A base package of some software with many available user-created add-ons (packages)
 - Free and open-source software
-- A core package with many available user-created add-ons (packages)
+- A scripting language
 
 \bigskip
 
 R is currently popular in a number of fields, including:
 
-- Statistics
+- Statistics / Biostatistics
 - Machine learning
-- Data journalism / Data analysis
+- Data journalism 
+- Ecology 
+- Financial engineering
 - Bioinformatics
 
 ## What is R?
 
-R is a programming language popular for statistical computing. 
+R is a programming language popular for statistical computing. \medskip
 
 > "The best thing about R is that it was developed by statisticians. The worst thing about R is that... it was developed by statisticians."
 
@@ -41,15 +48,33 @@ Other programming languages popular for statistical computing include:
 
 ## Free and open-source software
 
-- Gratis: Free as in beer
-- Libre: Free as in speech
+```{r echo = FALSE, out.width = "150pt", fig.align='center'}
+knitr::include_graphics("../figures/stallman")
+```
 
-\medskip
+\footnotesize Source: Ruben Rodriguez. 
+licensed under the [Creative Commons Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/deed.en).
+
+[Stallman story]
+
+## Free and open-source software
+
+How a lot of software is created:
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/OpenSourceOverviewIntro.png")
+```
+
+## Free and open-source software
 
 A basic sketch of how software can be "free":
+
 ```{r echo = FALSE, out.width = "300pt", fig.align='center'}
 knitr::include_graphics("../figures/OpenSourceOverview.png")
 ```
+
+- **Gratis**: Free as in beer
+- **Libre**: Free as in speech
 
 ## Free and open-source software
 
@@ -83,7 +108,7 @@ knitr::include_graphics("../figures/OpenSourceOverview.png")
 
 ## Free and open-source software
 
-Funding agencies are starting to ask for grant proposals to develop open-source tools. For example, a recent call from the NIH asks for:
+Funding agencies are starting to ask for grant proposals to develop open-source tools. For example, a recent call from the NIH asks for: \medskip
 
 > "**Open-source,** generalizable, and scalable bioinformatics tools"
 
@@ -91,19 +116,54 @@ NIH RFA-RM-17-012: "Metabolomics Data Analysis and Interpretation Tools (U01)"
 
 ## Scripting languages
 
+- Point-and-click software
+- Scripting language
+- Compiled language
+- Assembly language
+- Machine code
+
 ## Scripting languages
 
 ## Scripting languages
 
 ## RStudio vs. R
 
-RStudio (the software) is an integrated development environment (IDE) for R. You download it separately from R, but it's a "nicer" way to work in R. 
+In this class, I'm having you download both R and RStudio. It's helpful for you 
+to know the difference between the two. 
+
+**R** provides the engine, while **RStudio** provides a nice place to work 
+while using that engine (the leather interior, say). 
+
+## RStudio vs. R
+
+```{r fig.align = "center", out.width = "250pt", echo = FALSE}
+knitr::include_graphics("../figures/r_vs_rstudio.jpg")
+```
+
+## RStudio vs. R
+
+[Engine versus interior]
+
+## RStudio vs. R
+
+```{r fig.align = "center", out.width = "250pt", echo = FALSE}
+knitr::include_graphics("../figures/plain_delorean.jpg")
+```
+
+When you open **R**, it does have a user interface, it's just not 
+as nice as RStudio's.
+
+## RStudio vs. R
+
+RStudio (the software) is an integrated development environment (IDE) for R. You
+download it separately from R, but it's a "nicer" way to work in R.
 
 \bigskip
 
 This IDE includes: 
 
-- An interface with "panes" for key tasks you'll be doing (e.g., one pane with the R console, one for scripts, one to view graphs)
+- An interface with "panes" for key tasks you'll be doing (e.g., one pane with
+the R console, one for scripts, one to view graphs)
 - Code highlighting
 - Version control (git) and interface with GitHub
 - Tools for Shiny web app development
@@ -114,8 +174,9 @@ This IDE includes:
 RStudio (the company) is a leader in the R community. Currently, the company:
 
 - Develops and freely provides the RStudio IDE
-- Provides excellent resources for learning and using R (e.g., cheatsheets, free online books)
-- Is producing some of the most-used R packages
+- Provides excellent resources for learning and using R (e.g., cheatsheets, free
+online books)
+- Is producing some of the most-used R packages 
 - Employs some of the top people in R development
 - Is a key member of The R Consortium (others include Microsoft, IBM, and Google)
 
@@ -123,7 +184,7 @@ RStudio (the company) is a leader in the R community. Currently, the company:
 
 If do not already have them, you will need to download and install both R and RStudio. 
 
-- Go to [CRAN](https://cran.r-project.org) and download the latest version of R for your system. Install.
+- Go to https://cran.r-project.org and download the latest version of R for your system. Install.
 - Go to the [RStudio download page](https://www.rstudio.com/products/rstudio/download/) and download the latest version of RStudio for your system. Install. 
 - Defaults should be fine for everything.
 
@@ -202,6 +263,12 @@ Here is an example of this structure:
 print(x = "Hello world")
 ```
 
+## Function calls
+
+```{r fig.align = "center", out.width = "325pt", echo = FALSE}
+knitr::include_graphics("../figures/function_call.jpg")
+```
+
 In this example, we're **calling** a function with the **name** `print`. It has one
 **argument**, with a **formal argument** of `x`, which in this call we've provided
 the **named argument** "Hello world". 
@@ -247,8 +314,13 @@ call the function, R will respond with an error. For example, `x` is a **require
 for the `print` function, so if you try to call the function without it, you'll get an 
 error: 
 
-```{r error = TRUE}
+```{r eval = FALSE}
 print()
+```
+
+```
+Error in print.default() : argument "x" is 
+  missing, with no default
 ```
 
 ## Function calls
@@ -291,7 +363,21 @@ This will open a helpfile in the "Help" pane in RStudio.
 
 ## Function helpfiles
 
-[Navigating the helpfile for `mean`]
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/helpfile.jpg")
+```
+
+The helpfile includes sections giving the function's **usage**, **arguments**,
+**value**, and **examples**.
+
+## Function helpfiles
+
+```{r fig.align = "center", out.width = "250pt", echo = FALSE}
+knitr::include_graphics("../figures/helpfile_arguments.jpg")
+```
+
+You can figure out which arguments are **required** and which are
+**optional** in the Usage section of the helpfile.
 
 ## Objects, object names, and assignments
 
@@ -307,17 +393,6 @@ later.
 If you want to re-use the results of a function call later, you can **assign** that
 **object** to an **object name**.
 
-## R objects
-
-You can think of an **object name** as kind of like an acronym. \medskip
-
-> "Here, we investigate particulate matter with a diameter less than 2.5
-micrometers ($PM_{2.5}$). Many large urban centers in developing countries
-experience multi-day episodes of extremely high $PM_{2.5}$."
-
-By assigning an object a name, you can quickly reference it later, rather than
-having to re-define (or re-create) the object every time you need to use it.
-
 ## R's MVP: The *gets arrow*
 
 The *gets arrow*, `<-`, is R's assignment operator. It takes whatever you've
@@ -326,7 +401,7 @@ name you put on the left hand side of the `<-` :
 
 ```{r eval = FALSE}
 ## Note: Generic code-- this will not work
-[name I want to use to refer to the object] <- [object I want to assign a name to]
+[object name] <- [object]
 ```
 
 ## R's MVP: The *gets arrow*
@@ -382,9 +457,13 @@ have been assigned in the current R session.
 
 Here's an example of the first two strategies:
 
+1. Enter the object's name at the prompt and press return:
+
 ```{r}
 message
 ```
+
+2. Call the `ls` function:
 
 ```{r}
 ls()
@@ -392,33 +471,36 @@ ls()
 
 ## "Environment" pane
 
-[Example of Environment pane]
+```{r fig.align = "center", out.width = "250pt", echo = FALSE}
+knitr::include_graphics("../figures/environment_pane.jpg")
+```
 
+## Object names
 
+There are some rules for the names you can use for an object name:
 
-## Naming objects
-
-There are some rules for the names you can use for an object:
-
-- Use only letters, numbers, and underscores
+- Use only letters, numbers, and underscores [and dots?]
 - Don't start with anything but a letter
 
-*From [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html)*
+*From [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html)* [link still current?]
 
 - Use lower case for variable names (`fedex_number`, not `FedExNumber`)
 - Use an underscore as a separator (`fedex_number`, not `fedex.number` or `fedexNumber`)
 - Avoid using names that are already defined in R (e.g., don't name an object `mean`, because a `mean` function exists)
 
-## Naming objects
+## Assigning objects to object names
 
 If you try to assign an object to a name that doesn't follow the "hard" rules, you'll 
-get an error: 
+get an error. 
 
-```{r error = TRUE}
+For example, all of these expressions will give you an error: 
+
+```{r eval = FALSE}
 1message <- "Hello world"
 _message <- "Hello world"
 message! <- "Hello world"
 ```
+
 
 ## "Composing" to combine function calls
 
@@ -543,22 +625,17 @@ knitr::include_graphics("../figures/TrainComplex.JPG")
 
 You can get packages to add-on to your version of R from:
 
-- CRAN (thousands of available packages)
+- CRAN 
 - Bioconductor (specifically for bioinformatics-related packages)
 - GitHub
 - Your friends and collaborators
 - Make them yourself
 
-\medskip
-
-The most popular place from which to get packages is currently CRAN. You can
-install packages from CRAN using R code.
-
 ## CRAN 
 
-The Comprehensive R Archive Network (CRAN) is the primary source of R packages.
-Each of the packages available on CRAN has a unique name and has passed some
-broad checks.
+The Comprehensive R Archive Network (CRAN) is the primary source of R packages,
+with thousands of available packages. Each of the packages available on CRAN has
+a unique name and has passed some broad checks.
 
 ```{r echo = FALSE, out.width = "300pt", fig.align='center'}
 knitr::include_graphics("../figures/CRAN_package_10000.png")
@@ -567,7 +644,7 @@ knitr::include_graphics("../figures/CRAN_package_10000.png")
 ## Installing from CRAN  
 
 The main way you will install new packages will be with the `install.packages`
-function, which by defaults installs packages available on CRAN.
+function. By default, this installs packages from CRAN.
 
 For example, to get the package "phonenumber", you could use:
 
@@ -585,7 +662,8 @@ knitr::include_graphics("../figures/telephone_keypad.png")
 
 \medskip
 
-You will need to be online to install a package. 
+You will need to be online to install a package, because it downloads the package
+from an online repository. 
 
 \medskip
 
@@ -614,10 +692,18 @@ library("phonenumber")
 Once it's loaded, you can use all its functions.
 
 ```{r}
-fedex_number <- "GoFedEx"
-letterToNumber(fedex_number)
+message <- "HelloWorld"
+letterToNumber(message)
 ```
 
+## Installing versus loading
+
+```{r echo = FALSE, out.width = "275pt", fig.align='center'}
+knitr::include_graphics("../figures/install_vs_library.jpg")
+```
+
+**Install** a package (with `install.packages`) to get it onto your computer. **Load** it (with `library`) to get it into
+your R session.
 
 ## Package vignettes
 
@@ -697,45 +783,91 @@ with objects from these two classes.
 
 ## Extracting values from a dataframe
 
-## R's most basic object types
+## R's most basic object classes
 
 The two most common types of objects for data in R that we will use in this
 class are **vectors** (1D) and **dataframes** (2D).
 
 ## Vectors
 
-- A vector is a string of values. 
-- All values must be of the same *class* (i.e., all numbers, all characters, all
-dates)
-- You can use `c` to join values together to create a vector
-- The *length* of the vector is how many values it has in it
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/example_vector.jpg")
+```
 
-For example:
+A **vector** is an object class where the object is made of a string of values.
+All those values must be of the same **class** (i.e., all numbers, all
+characters, all dates)
+
+## Vectors
+
+To create a vector, you can use the concatenate function, `c`:
+
 ```{r}
-fibonacci <- c(1, 1, 2, 3, 5)
-fibonacci
-length(fibonacci)
+c("Harry", "Ron", "Hermione")
 ```
 
 ## Vectors
 
-Vectors can have several different classes, including numeric, character,
-factor, and date.
-
-Typically, when you use `c`, you'll be creating a numeric or character vector.
-More complex classes (like factors and dates) require a bit more work to create
-"from scratch".
-
-- For character vectors, use quotation marks on each element. 
+If you want to use that object later, you can assign it to a name: 
 
 ```{r}
-one_to_five <- c("one", "two", "three", "four", "five")
+main_characters <- c("Harry", "Ron", "Hermione")
+print(x = main_characters)
 ```
 
-- For numeric, don't use quotation marks, but make sure you're using numbers. 
+## Vectors
 
-```{r eval = FALSE}
-fibonacci <- c(1, 1, 2, 3, 5)
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/assign_vector.jpg")
+```
+
+This **assignment expression** follows the structure we covered earlier for
+function calls and expressions.
+
+## Vectors
+
+The *length* of the vector is how many values it has in it. The 
+`main_characters` vector includes three values ("Harry", "Ron", and "Hermione"),
+so it has a length of 3.
+
+You can use the `length` function to figure out how long a vector is:
+
+```{r}
+length(x = main_characters)
+```
+
+## Vectors
+
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/vector_classes.jpg")
+```
+
+Vectors can have several different **classes**, including numeric, character,
+factor, date, and logical. Some of these classes are further divided into more
+specific classes.
+
+## Vectors
+
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/vector_class_examples.jpg")
+```
+
+## Vectors
+
+Typically, when you use the `c` function, you'll be creating a numeric,
+character, or logical vector. More complex classes (like factors and dates)
+require a bit more work to create "from scratch".
+
+- For character vectors, use quotation marks around each element. 
+
+```{r}
+main_characters <- c("Harry", "Ron", "Hermione")
+```
+
+- For numeric, don't use quotation marks. 
+
+```{r}
+n_kids <- c(1, 7, 1)
 ```
 
 
@@ -744,19 +876,25 @@ fibonacci <- c(1, 1, 2, 3, 5)
 You can use the `class` function to figure out the class of a vector. 
 
 ```{r}
-class(fibonacci)
-class(one_to_five)
-class(c("1", "2", 5))
+class(main_characters)
+class(n_kids)
 ```
 
 ## Vectors
 
-If you mix classes, it will default to most generic:
+If you create a vector with a mix of classes, R will default the whole vector to
+the most generic class:
 
 ```{r}
 mixed_classes <- c(1, 3, "five")
 mixed_classes
 ```
+
+[Order of generic]
+
+## Extracting values from vectors
+
+[Tidyverse alternative to indexing?]
 
 ## Vectors
 
@@ -764,48 +902,62 @@ You can pull out certain values by using indexing (`[...]`) to identify the
 locations you want to get:
 
 ```{r}
-fibonacci[2] # Get the second value
-fibonacci[c(1, 5)] # Get first and fifth values
-fibonacci[1:3] # Get the first three values
+main_characters[2] # Get the second value
+main_characters[c(1, 3)] # Get first and third values
+main_characters[1:3] # Get the first three values
 ```
 
 
 ## Dataframes
 
-A dataframe is one or more vectors of the same length stuck together
-side-by-side. It is the closest R has to what you'd get with an Excel
-spreadsheet.
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/example_dataframe.jpg")
+```
 
-\medskip
+A **dataframe** combines one or more vectors of the same length stuck together
+side-by-side. 
 
-You can create dataframes using the `data_frame` function from the `tibble`
-package. However, most often you will create a dataframe by reading in data from
+## Dataframes
+
+```{r fig.align = "center", out.width = "325pt", echo = FALSE}
+knitr::include_graphics("../figures/example_dataframe_labeled.jpg")
+```
+
+A dataframe contains **rows** and **columns**, and each column has a 
+**column name**.
+
+## Dataframes
+
+You can create dataframes using the `tibble` function from the `tibble`
+package. We'll look at how to do that.
+
+However, most often you will create a dataframe by reading in data from
 a file using something like `read_csv` from the `readr` package---most datasets
 will not be short enough that you want to enter them by hand in R.
 
 ## Dataframes
 
-The format for using `data_frame` is:
+The format for using `tibble` is:
 
 ```{r eval = FALSE}
 ## Generic code
-[name of object] <- data_frame([1st column name] = 
+library("tibble")
+[name of object] <- tibble([1st column name] = 
                                      [1st column content],
-                               [2nd column name] = 
-                                     [2nd column content])
+                           [2nd column name] = 
+                                     [2nd column content],
+                           etc.)
 ```
 
 ## Dataframes
 
 ```{r}
 library("tibble")
-beatles <- data_frame(first_name = c("John", "Paul", "Ringo", 
-                                     "George"),
-                      last_name = c("Lennon", "McCartney", 
-                                    "Starr", "Harrison"),
-                      birth_year = c(1940, 1942, 1940, 1943),
-                      alive = c(FALSE, TRUE, TRUE, FALSE))
-beatles
+hp_data <- tibble(first_name = c("Harry", "Ron", "Hermione"),
+                  last_name = c("Potter", "Weasley", "Granger"),
+                  n_kids = c(1, 7, 1),
+                  survived = c(TRUE, TRUE, TRUE))
+hp_data
 ```
 
 ## Dataframes
@@ -814,27 +966,65 @@ You can also create dataframes by joining together vector objects you previously
 created, as long as they have the same length and line up:
 
 ```{r}
-fibonacci_seq <- data_frame(num_in_seq = one_to_five,
-                            fibonacci_num = fibonacci)
-fibonacci_seq
+hp_data <- tibble(first_name = main_characters,
+                  last_name = c("Potter", "Weasley", "Granger"),
+                  n_kids = n_kids,
+                  survived = c(TRUE, TRUE, TRUE))
+hp_data
 ```
 
-## Dataframes
+## Extracting values from dataframes
 
-You can use indexing (`[..., ...]`) for dataframes, too, but now they'll have
-two dimensions (rows, then columns). For example:
+The `dplyr` package has two functions for extracting data from dataframes by position: 
+`slice` to extract rows based on their row position and select to extract columns
+based on their column position.
+
+## Extracting values from dataframes
+
+For example, if you wanted to get the first two rows of the `hp_data`
+dataframe, you could run:
 
 ```{r}
-fibonacci_seq[1:2, 2] # First two rows, second column
+library("dplyr")
+slice(.data = hp_data, c(1:2))
 ```
 
-## Dataframes
+## Extracting values from dataframes
 
-If you want all of something, leave the designated spot blank. For example:
+If you wanted to get the first and fourth columns, you could run: 
 
 ```{r}
-fibonacci_seq[5, ] # Last row, all columns
+select(.data = hp_data, c(1, 4))
 ```
+
+## Extracting values from dataframes
+
+You can compose calls from both functions. For example, you could extract the
+values in the first and fourth columns of the first two rows with: 
+
+```{r}
+select(slice(.data = hp_data, c(1:2)), c(1, 4))
+```
+
+
+
+<!-- ## Dataframes -->
+
+<!-- You can use indexing (`[..., ...]`) for dataframes, too, but now they'll have -->
+<!-- two dimensions (rows, then columns). For example: -->
+
+<!-- ```{r} -->
+<!-- hp_data[1:2, 2] # First two rows, second column -->
+<!-- ``` -->
+
+<!-- ## Dataframes -->
+
+<!-- If you want all of something, leave the designated spot blank. For example: -->
+
+<!-- ```{r} -->
+<!-- hp_data[3, ] # Last row, all columns -->
+<!-- ``` -->
+
 
 ## Dataframes
 
@@ -951,6 +1141,16 @@ c(1, 4, NA)
 c("Jane Doe", NA)
 ```
 
+## Missing values
+
+```{r echo = FALSE, out.width = "225pt", fig.align='center'}
+knitr::include_graphics("../figures/null_license_plate.png")
+```
+
+For the full story: 
+https://arstechnica.com/cars/2019/08/wiseguy-changes-license-plate-to-null-gets-12k-in-parking-tickets/
+
+
 ## The `$` operator
 
 We've talked about how you can combine vectors of the same length to create a dataframe.
@@ -979,39 +1179,6 @@ class(example_df$color)
 ```
 
 (Note: You can use tab completion in RStudio after you put in `example_df$`.)
-
-## When to use quotations
-
-- Use quotation marks if you **literally** mean that specific character string
-- Don't use quotation marks if you want to reference an R object by its name
-- Never use quotation marks on the left-hand side of `<-` or `=`.
-
-```{r echo = FALSE, out.width = "300pt", fig.align='center'}
-knitr::include_graphics("../figures/literally.jpg")
-```
-\small Source: xkcd.com
-
-## When to use quotations
-
-- Use quotation marks if you **literally** mean that specific character string
-
-```{r}
-c("Alpha", "Bravo")
-```
-
-- Never use quotation marks on the left-hand side of `<-` or `=`.
-
-```{r}
-Alpha <- c("Alan", "Ada")
-Bravo <- c("Bob")
-```
-
-- Don't use quotation marks if you want to reference an R object by its name
-
-```{r}
-c(Alpha, Bravo)
-```
-
 
 
 ## `paste` and `paste0`
@@ -1044,7 +1211,11 @@ You can make assignments using either `<-` or `=`, and you'll see both when you'
 
 \medskip
 
-However, R gurus advise using `<-` in your own code, and as you move to doing more complex things, problems might crop up if you use `=`. 
+However, R gurus advise using `<-` in your own code. 
+
+The arrow shows the *direction* of assignment. Also, as you move to doing more
+complex things, problems might crop up if you use `=` for assignment in a few
+specific cases.
 
 ## <- vs. =
 
@@ -1058,6 +1229,39 @@ one_to_ten = 1:10
 one_to_ten
 ```
 
+## When to use quotations
+
+- Use quotation marks if you **literally** mean that specific character string
+- Don't use quotation marks if you want to reference an R object by its name
+- Never use quotation marks on the left-hand side of `<-` or `=`.
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/literally.jpg")
+```
+\small Source: xkcd.com
+
+## When to use quotations
+
+- Use quotation marks if you **literally** mean that specific character string
+
+```{r}
+c("Harry", "Ron")
+```
+
+- Never use quotation marks on the left-hand side of `<-` or `=`.
+
+```{r}
+Harry <- c("Good at Quidditch")
+Ron <- c("Good at Wizard Chess")
+```
+
+- Don't use quotation marks if you want to reference an R object by its name
+
+```{r}
+c(Harry, Ron)
+```
+
+
 ## Alternative package::function notation
 
 The `library` function is the most common way you'll access functions from R
@@ -1069,8 +1273,16 @@ You can call functions by specifying the package name, a double colon, and then
 the function name you want to use from that package. For example:
 
 ```{r}
-phonenumber::letterToNumber(fedex_number)
+phonenumber::letterToNumber(message)
 ```
+
+## Alternative package::function notation
+
+Search path
+
+- base R
+- phonenumber package
+- decoder ring package
 
 ## Alternative package::function notation
 
@@ -1088,7 +1300,7 @@ packages.
 
 ## Alternative package::function notation
 
-There is one useful trick that you can do with the `package::function` notation.
+There is another useful trick that you can do with the `package::function` notation.
 
 RStudio has tab complemention, which means that once you start typing an object
 name or function, if you press the Tab key, RStudio will give you suggestions
@@ -1114,3 +1326,20 @@ library(magrittr)
 paste("Hello world") %>% 
   print()
 ```
+
+## "Composing" to combine function calls
+
+Here's another example. Earlier, we used the following code to extract certain
+rows and columns from a dataframe: 
+
+```{r}
+select(slice(hp_data, c(1:2)), c(1, 4))
+```
+
+You can use a pipe to express this much more cleanly: 
+
+```{r}
+slice(.data = hp_data, c(1:2)) %>% 
+  select(c(1, 4))
+```
+
