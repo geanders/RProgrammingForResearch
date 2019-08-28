@@ -1376,7 +1376,7 @@ on FiveThirtyEight. What are some specific questions they used this data to
 answer for this article?
 * Who is Nate Silver?
 
-### Manually creating vectors and a dataframe
+### Manually creating vectors 
 
 Start by manually creating some vectors and data frames with a small subset of
 this data.
@@ -1398,20 +1398,6 @@ appearances. Assign this vector to an object named `appearance_year`. What class
 quotation marks for each element you add to the vector?
 * Use the `class` function to determine the classes (e.g., numeric, character)
 of each of the vectors you just created.
-* Combine these two vectors to create a dataframe named `guest_list`. For the
-columns, use the same column names used in the original, raw data for the guest
-names and appearance year. Print out this dataframe at the R console to make
-sure it looks like you thought it would.
-* Use functions from the `dplyr` package to print out the following subsets of
-this dataframe (you'll have one R call per subset): (1) The appearance year of
-the first guest; (2) Names of the third through fifth guests; (3) Names of all
-guests; (4) Both names and appearance years of the first and third guests.
-* The `str` function can be used to figure out the structure of a dataframe. Run
-this command on the `guest_list` dataframe you created. What information does
-this give you? Use the helpfile for `str` to help you figure this out (which you
-can access by running `?str`). Do you see anything that surprises you?
-* Use the `ls` function to list all the objects you currently have defined in
-your R session. Compare this list to the "Environment" pane in RStudio.
 
 Example R code:
 
@@ -1438,23 +1424,6 @@ appearance_year <- c(1999, 2000, 2001, 2001, 2002)
 # Figure out the classes of the two vectors you just created
 class(x = five_guests)
 class(x = appearance_year)
-
-# Create the data frame, then print it out to make sure it looks like you thought
-# it would
-library(package = "tibble")
-guest_list <- tibble(Raw_Guest_List = five_guests,
-                     YEAR = appearance_year)
-guest_list
-
-# Use functions from the dplyr package to extract values from the dataframe
-library(package = "dplyr")
-slice(.data = select(.data = guest_list, 2), 1)
-slice(.data = select(.data = guest_list, 1), 3:5)
-select(.data = guest_list, 1)
-slice(.data = guest_list, c(1, 3))
-
-# Use `str` to check out the structure of the data frame you created
-str(guest_list)
 ```
 
 ### Installing and using a package
@@ -1495,6 +1464,45 @@ str_to_lower(string = five_guests)
 
 # Convert the `five_guests` strings to uppercase
 str_to_upper(string = five_guests)
+```
+
+### Manually creating a dataframe
+
+* Combine the two vectors you created earlier, `five_guests` and
+`appearance_year` to create a dataframe named `guest_list`. For the columns, use
+the same column names used in the original, raw data for the guest names and
+appearance year. Print out this dataframe at the R console to make sure it looks
+like you thought it would.
+* Use functions from the `dplyr` package to print out the following subsets of
+this dataframe (you'll have one R call per subset): (1) The appearance year of
+the first guest; (2) Names of the third through fifth guests; (3) Names of all
+guests; (4) Both names and appearance years of the first and third guests.
+* The `str` function can be used to figure out the structure of a dataframe. Run
+this command on the `guest_list` dataframe you created. What information does
+this give you? Use the helpfile for `str` to help you figure this out (which you
+can access by running `?str`). Do you see anything that surprises you?
+* Use the `ls` function to list all the objects you currently have defined in
+your R session. Compare this list to the "Environment" pane in RStudio.
+
+Example R code:
+
+```{r}
+# Create the data frame, then print it out to make sure it looks like you thought
+# it would
+library(package = "tibble")
+guest_list <- tibble(Raw_Guest_List = five_guests,
+                     YEAR = appearance_year)
+guest_list
+
+# Use functions from the dplyr package to extract values from the dataframe
+library(package = "dplyr")
+slice(.data = select(.data = guest_list, 2), 1)
+slice(.data = select(.data = guest_list, 1), 3:5)
+select(.data = guest_list, 1)
+slice(.data = guest_list, c(1, 3))
+
+# Use `str` to check out the structure of the data frame you created
+str(guest_list)
 ```
 
 ### Getting the data onto your computer
