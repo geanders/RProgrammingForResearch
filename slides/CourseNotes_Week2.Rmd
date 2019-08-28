@@ -511,9 +511,9 @@ colnames(daily_show)
 
 ## Renaming columns 
 
-To rename these columns, use the `rename` function from the `dplyr` function. 
+To rename these columns, use the `rename` function from `dplyr`. 
 
-```{r echo = FALSE, fig.align='center', out.width = "250pt"}
+```{r echo = FALSE, fig.align='center', out.width = "200pt"}
 knitr::include_graphics("../figures/rename_conceptual.png")
 ```
 
@@ -582,7 +582,7 @@ daily_show <- rename(daily_show,
 Next, you may want to select only some columns of the dataframe. You can use the
 `select` function for this.
 
-```{r echo = FALSE, fig.align='center', out.width = "250pt"}
+```{r echo = FALSE, fig.align='center', out.width = "225pt"}
 knitr::include_graphics("../figures/select_conceptual.png")
 ```
 
@@ -675,7 +675,7 @@ We'll go through what each of these does and how to use them.
 The `slice` function from the `dplyr` package can extract certain rows based on
 their position in the dataframe.
 
-```{r echo = FALSE, fig.align='center', out.width = "250pt"}
+```{r echo = FALSE, fig.align='center', out.width = "275pt"}
 knitr::include_graphics("../figures/slice_conceptual.png")
 ```
 
@@ -690,6 +690,12 @@ run:
 ```{r}
 library("dplyr")
 slice(.data = daily_show, 1:3)
+```
+
+## Add or change columns
+
+```{r echo = FALSE, fig.align='center', out.width = "300pt"}
+knitr::include_graphics("../figures/slice_example.jpg")
 ```
 
 ## Randomly sampling rows
@@ -772,7 +778,8 @@ If you want the ordering to be reversed (e.g., from "z" to "a" for character
 vectors, from higher to lower for numeric, latest to earliest for a Date), you
 can include the `desc` function.
 
-For example, to reorder the `daily_show` data by job category, you can run:
+For example, to reorder the `daily_show` data by job category in descending 
+alphabetical order, you can run:
 
 ```{r}
 daily_show <- arrange(daily_show, desc(category))
@@ -782,12 +789,15 @@ head(daily_show, 3)
 ## Filtering to certain rows
 
 Next, you might want to filter the dataset down so that it only includes certain
-rows. You can use `filter` to do that. The syntax is:
+rows. You can use the `filter` function from the `dplyr` package to do that. The
+syntax is:
 
 ```{r eval = FALSE}
 ## Generic code
 filter(dataframe, logical expression)
 ```
+
+## Filtering to certain rows
 
 The **logical expression** gives the condition that a row must meet to be
 included in the output data frame. For example, you might want to pull:
@@ -840,8 +850,16 @@ c(1, 2, 3) == c(1, 2, 4)
 
 ## Add or change columns
 
-You can change a column or add a new column using the `mutate` function. That
-function has the syntax:
+You can **change **a column or **add** a new column using the `mutate` function
+from the `dplyr` package.
+
+```{r echo = FALSE, fig.align='center', out.width = "200pt"}
+knitr::include_graphics("../figures/mutate_conceptual.png")
+```
+
+## Add or change columns
+
+The `mutate` function has the syntax:
 
 ```{r eval = FALSE}
 # Generic code
@@ -855,6 +873,20 @@ the left of the equation.
 - If you want to **add** a new column, use a new column name (you pick what that
 name will be) on the left of the equation (this will be the name of the new
 column).
+
+## Add or change columns
+
+
+```{r echo = FALSE, fig.align='center', out.width = "250pt"}
+knitr::include_graphics("../figures/mutate_change_column.jpg")
+```
+
+## Add or change columns
+
+
+```{r echo = FALSE, fig.align='center', out.width = "250pt"}
+knitr::include_graphics("../figures/mutate_add_column.jpg")
+```
 
 ## Add or change columns
 
@@ -958,6 +990,12 @@ daily_show <- filter(daily_show, category == "Science")
 ## Piping
 
 "Piping" lets you clean this code up a bit. It can be used with any function that inputs a dataframe as its first argument. It "pipes" the dataframe created right before the pipe (`%>%`) into the function right after the pipe. 
+
+## Piping
+
+```{r echo = FALSE, fig.align='center', out.width = "300pt"}
+knitr::include_graphics("../figures/pipe_example.jpg")
+```
 
 ## Piping
 
