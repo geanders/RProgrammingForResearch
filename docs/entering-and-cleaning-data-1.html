@@ -329,7 +329,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="entering-and-cleaning-data-1" class="section level1">
 <h1><span class="header-section-number">Chapter 2</span> Entering and cleaning data #1</h1>
-<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2.pdf">Download</a> a pdf of the lecture slides covering this topic.</p>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2.pdf">Download</a>
+a pdf of the lecture slides covering this topic.</p>
 <div id="objectives-1" class="section level2">
 <h2><span class="header-section-number">2.1</span> Objectives</h2>
 <p>After this chapter, you should (know / understand / be able to ):</p>
@@ -353,35 +354,56 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="overview" class="section level2">
 <h2><span class="header-section-number">2.2</span> Overview</h2>
-<p>There are four basic steps you will often repeat as you prepare to analyze data in R:</p>
+<p>There are four basic steps you will often repeat as you prepare to analyze data
+in R:</p>
 <ol style="list-style-type: decimal">
-<li>Identify where the data is (If it’s on your computer, which directory? If it’s online, what’s the url?)</li>
-<li>Read data into R (e.g., <code>read_delim</code>, <code>read_csv</code> from the <code>readr</code> package) using the file path you figured out in step 1</li>
+<li>Identify where the data is (If it’s on your computer, which directory? If
+it’s online, what’s the url?)</li>
+<li>Read data into R (e.g., <code>read_delim</code>, <code>read_csv</code> from the <code>readr</code> package)
+using the file path you figured out in step 1</li>
 <li>Check to make sure the data came in correctly (<code>dim</code>, <code>head</code>, <code>tail</code>, <code>str</code>)</li>
 <li>Clean the data up</li>
 </ol>
-<p>In this chapter, I’ll go basics for each of these steps, as well as dive a bit deeper into some related topics you should learn now to make your life easier as you get started using R for research.</p>
+<p>In this chapter, I’ll go basics for each of these steps, as well as dive a bit
+deeper into some related topics you should learn now to make your life easier as
+you get started using R for research.</p>
 </div>
 <div id="reading-data-into-r" class="section level2">
 <h2><span class="header-section-number">2.3</span> Reading data into R</h2>
-<p>The following video covers the slides in this section on “Reading data into R”:</p>
+<p>The following video covers the slides in this section on “Reading data into R”
+from 2018:</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/JJr_ZPIx_ok" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
-<p>Data comes in files of all shapes and sizes. R has the capability to read data in from many of these, even proprietary files for other software (e.g., Excel and SAS files). As a small sample, here are some of the types of data files that R can read and work with:</p>
+<p>Data comes in files of all shapes and sizes. R has the capability to read data
+in from many of these, even proprietary files for other software (e.g., Excel
+and SAS files). As a small sample, here are some of the types of data files that
+R can read and work with:</p>
 <ul>
 <li>Flat files (much more about these in just a minute)</li>
 <li>Files from other statistical packages (SAS, Excel, Stata, SPSS)</li>
-<li>Tables on webpages (e.g., the table on ebola outbreaks near the end of <a href="http://en.wikipedia.org/wiki/Ebola_virus_epidemic_in_West_Africa">this Wikipedia page</a>)</li>
+<li>Tables on webpages (e.g., the table on ebola outbreaks near the end of <a href="http://en.wikipedia.org/wiki/Ebola_virus_epidemic_in_West_Africa">this
+Wikipedia
+page</a>)</li>
 <li>Data in a database (e.g., MySQL, Oracle)</li>
 <li>Data in JSON and XML formats</li>
-<li>Really crazy data formats used in other disciplines (e.g., netCDF files from climate research, MRI data stored in Analyze, NIfTI, and DICOM formats)</li>
+<li>Really crazy data formats used in other disciplines (e.g., netCDF files from
+climate research, MRI data stored in Analyze, NIfTI, and DICOM formats)</li>
 <li>Geographic shapefiles</li>
 <li>Data through APIs</li>
 </ul>
-<p>Often, it is possible to read in and clean up even incredibly messy data, by using functions like <code>scan</code> and <code>readLines</code> to read the data in a line at a time, and then using regular expressions (which I’ll cover in the “Intermediate” section of the course) to clean up each line as it comes in. In over a decade of coding in R, I think the only time I’ve come across a data file I couldn’t get into R was for proprietary precision agriculture data collected at harvest by a combine.</p>
+<p>Often, it is possible to read in and clean up even incredibly messy data, by
+using functions like <code>scan</code> and <code>readLines</code> to read the data in a line at a
+time, and then using regular expressions (which I’ll cover in the “Intermediate”
+section of the course) to clean up each line as it comes in. In over a decade of
+coding in R, I think the only time I’ve come across a data file I couldn’t get
+into R was for proprietary precision agriculture data collected at harvest by a
+combine.</p>
 <div id="reading-local-flat-files" class="section level3">
 <h3><span class="header-section-number">2.3.1</span> Reading local flat files</h3>
-<p>Much of the data that you will want to read in will be in flat files. Basically, these are files that you can open using a text editor; the most common type you’ll work with are probably comma-separated files (often with a <code>.csv</code> or <code>.txt</code> file extension). Most flat files come in two general categories:</p>
+<p>Much of the data that you will want to read in will be in flat files. Basically,
+these are files that you can open using a text editor; the most common type
+you’ll work with are probably comma-separated files (often with a <code>.csv</code> or
+<code>.txt</code> file extension). Most flat files come in two general categories:</p>
 <ol style="list-style-type: decimal">
 <li><p>Fixed width files; and</p></li>
 <li><p>Delimited files:</p></li>
@@ -391,7 +413,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>“.tab”, “.tsv”: Tab-separated values</li>
 <li>Other possible delimiters: colon, semicolon, pipe (“|”)</li>
 </ul>
-<p><em>Fixed width files</em> are files where a column always has the same width, for all the rows in the column. These tend to look very neat and easy-to-read when you open them in a text editor. For example, the first few rows of a fixed-width file might look like this:</p>
+<p><em>Fixed width files</em> are files where a column always has the same width, for all
+the rows in the column. These tend to look very neat and easy-to-read when you
+open them in a text editor. For example, the first few rows of a fixed-width
+file might look like this:</p>
+<pre><code>Course            Number          Day          Time
+Intro to Epi      501             M/W/F        9:00-9:50
+Advanced Epi      521             T/Th         1:00-2:15</code></pre>
 <p>Fixed width files used to be very popular, and they make it easier to look at data
 when you open the file in a text editor. However, now it’s pretty rare to just use
 a text editor to open a file and check out the data, and these files can be a bit
@@ -399,23 +427,28 @@ of a pain to read into R and other programs because you sometimes have to specif
 exactly how wide each of the columns is. You may come across a fixed width file
 every now and then, though, particularly when working with older data sets, so it’s
 useful to be able to recognize one and to know how to read it in.</p>
-<pre><code>Course            Number          Day          Time
-Intro to Epi      501             M/W/F        9:00-9:50
-Advanced Epi      521             T/Th         1:00-2:15</code></pre>
-<p><em>Delimited files</em> use some <em>delimiter</em> (for example, a column or a tab) to separate each column value within a row. The first few rows of a delimited file might look like this:</p>
+<p><em>Delimited files</em> use some <em>delimiter</em> (for example, a column or a tab) to
+separate each column value within a row. The first few rows of a delimited file
+might look like this:</p>
 <pre><code>Course, Number, Day, Time
 &quot;Intro to Epi&quot;, 501, &quot;M/W/F&quot;, &quot;9:00-9:50&quot;
 &quot;Advanced Epi&quot;, 521, &quot;T/Th&quot;, &quot;1:00-2:15&quot;</code></pre>
-<p>Delimited files are very easy to read into R. You just need to be able to figure out
-what character is used as a delimiter (commas in the example above) and specify that
-to R in the function call to read in the data.</p>
-<p>These flat files can have a number of different file extensions. The most generic is <code>.txt</code>, but they will also have ones more specific to their format, like <code>.csv</code> for a comma-delimited file or <code>.fwf</code> for a fixed with file.</p>
-<p>R can read in data from both fixed with and delimited flat files. The only catch is that you need to tell R a bit more about the format of the flat file, including whether it is fixed width or delimited. If the file is fixed width, you will usually have to tell R the width of each column. If the file is delimited, you’ll need to tell R which delimiter is being used.</p>
-<p>If the file is delimited, you can use the <code>read_delim</code> family of functions from the
-<code>readr</code> package to read it in. This family of functions includes several specialized
-functions. All members of the <code>read_delim</code> family are doing the same basic thing. The
-only difference is what defaults each function has for the delimiter (<code>delim</code>).
-Members of the <code>read_delim</code> family include:</p>
+<p>Delimited files are very easy to read into R. You just need to be able to figure
+out what character is used as a delimiter (commas in the example above) and
+specify that to R in the function call to read in the data.</p>
+<p>These flat files can have a number of different file extensions. The most
+generic is <code>.txt</code>, but they will also have ones more specific to their format,
+like <code>.csv</code> for a comma-delimited file or <code>.fwf</code> for a fixed with file.</p>
+<p>R can read in data from both fixed with and delimited flat files. The only catch
+is that you need to tell R a bit more about the format of the flat file,
+including whether it is fixed width or delimited. If the file is fixed width,
+you will usually have to tell R the width of each column. If the file is
+delimited, you’ll need to tell R which delimiter is being used.</p>
+<p>If the file is delimited, you can use the <code>read_delim</code> family of functions from
+the <code>readr</code> package to read it in. This family of functions includes several
+specialized functions. All members of the <code>read_delim</code> family are doing the same
+basic thing. The only difference is what defaults each function has for the
+delimiter (<code>delim</code>). Members of the <code>read_delim</code> family include:</p>
 <table>
 <thead>
 <tr class="header">
@@ -446,12 +479,14 @@ Members of the <code>read_delim</code> family include:</p>
 However, you will need to specify the delimiter using the <code>delim</code> parameters. If you
 remember the more specialized function call (e.g., <code>read_csv</code> for a comma delimited
 file), therefore, you can save yourself some typing.</p>
-<p>For example, to read in the Ebola data, which is comma-delimited, you could either use <code>read_table</code> with a <code>delim</code> argument specified or use <code>read_csv</code>, in which case you don’t have to specify <code>delim</code>:</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb184-1" title="1"><span class="kw">library</span>(readr)</a>
+<p>For example, to read in the Ebola data, which is comma-delimited, you could
+either use <code>read_table</code> with a <code>delim</code> argument specified or use <code>read_csv</code>, in
+which case you don’t have to specify <code>delim</code>:</p>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb184-1" title="1"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;readr&quot;</span>)</a>
 <a class="sourceLine" id="cb184-2" title="2"></a>
 <a class="sourceLine" id="cb184-3" title="3"><span class="co"># The following two calls do the same thing</span></a>
-<a class="sourceLine" id="cb184-4" title="4">ebola &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>, <span class="dt">delim =</span> <span class="st">&quot;,&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb185-1" title="1">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb184-4" title="4">ebola &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="dt">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>, <span class="dt">delim =</span> <span class="st">&quot;,&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb185-1" title="1">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>)</a></code></pre></div>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   Date = col_character(),
@@ -545,16 +580,17 @@ helpful to know what they are. Functions in the <code>read.table</code> family i
 </ul>
 <div class="rmdnote">
 <p>
-The <code>readr</code> package is a member of the tidyverse of packages. The <em>tidyverse</em> describes an evolving collection of R packages with a common philosophy, and they are unquestionably changing the way people code in R. Many were developed in part or full by Hadley Wickham and others at RStudio. Many of these packages are less than ten years old, but have been rapidly adapted by the R community. As a result, newer examples of R code will often look very different from the code in older R scripts, including examples in books that are more than a few years old. In this course, I’ll focus on “tidyverse” functions when possible, but I do put in details about base R equivalent functions or processes at some points—this will help you interpret older code. You can download all the tidyverse packages using <code>install.packages(“tidyverse”)</code>, <code>library(tidyverse)</code> makes all the tidyverse functions available for use.
+The <code>readr</code> package is a member of the tidyverse of packages. The <em>tidyverse</em> describes an evolving collection of R packages with a common philosophy, and they are unquestionably changing the way people code in R. Many were developed in part or full by Hadley Wickham and others at RStudio. Many of these packages are less than ten years old, but have been rapidly adapted by the R community. As a result, newer examples of R code will often look very different from the code in older R scripts, including examples in books that are more than a few years old. In this course, I’ll focus on “tidyverse” functions when possible, but I do put in details about base R equivalent functions or processes at some points—this will help you interpret older code. You can download all the tidyverse packages using <code>install.packages(“tidyverse”)</code>, <code>library(“tidyverse”)</code> makes all the tidyverse functions available for use.
 </p>
 </div>
 </div>
 <div id="reading-in-other-file-types" class="section level3">
 <h3><span class="header-section-number">2.3.2</span> Reading in other file types</h3>
-<p>Later in the course, we’ll talk about how to open a variety of other file types in R. However, you might
-find it immediately useful to be able to read in files from other statistical programs.</p>
-<p>There are two “tidyverse” packages—<code>readxl</code> and <code>haven</code>—that help with this. They allow you to read in
-files from the following formats:</p>
+<p>Later in the course, we’ll talk about how to open a variety of other file types
+in R. However, you might find it immediately useful to be able to read in files
+from other statistical programs.</p>
+<p>There are two “tidyverse” packages—<code>readxl</code> and <code>haven</code>—that help with this.
+They allow you to read in files from the following formats:</p>
 <table>
 <thead>
 <tr class="header">
@@ -590,124 +626,163 @@ files from the following formats:</p>
 </div>
 <div id="directories-and-pathnames" class="section level2">
 <h2><span class="header-section-number">2.4</span> Directories and pathnames</h2>
-<p>The following video covers this section on “Directories and pathnames”:</p>
+<p>The following video covers this section on “Directories and pathnames” from 2018:</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/CRYR0-4-HzQ" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
 <div id="directory-structure" class="section level3">
 <h3><span class="header-section-number">2.4.1</span> Directory structure</h3>
-<p>So far, we’ve only looked at reading in files that are located in your current working directory.
-For example, if you’re working in an R Project, by default the project will open with that directory
-as the working directory, so you can read files that are saved in that project’s main directory
-using only the file name as a reference.</p>
-<p>However, you’ll often want to read in files that are located somewhere else on your computer, or
-even files that are saved on another computer (for example, data files that are posted online).
-Doing this is very similar to reading in a file that is in your current working directory; the only
-difference is that you need to give R some directions so it can find the file.</p>
-<p>The most common case will be reading in files in a subdirectory of your current working directory.
-For example, you may have created a “data” subdirectory in one of your R Projects directories to
-keep all the project’s data files in the same place while keeping the structure of the main
-directory fairly clean. In this case, you’ll need to direct R into that subdirectory when you want
-to read one of those files.</p>
-<p>To understand how to give R these directions, you need to have some understanding of the directory
-structure of your computer. It seems a bit of a pain and a bit complex to have to think about computer
-directory structure in the “basics” part of this class, but this structure is not terribly complex once
-you get the idea of it. There are a couple of very good reasons why it’s worth learning now.</p>
-<p>First, many of the most frustrating errors you get when you start using R trace back to understanding
-directories and filepaths. For example, when you try to read a file into R using only the filename, and
-that file is not in your current working directory, you will get an error like:</p>
+<p>So far, we’ve only looked at reading in files that are located in your current
+working directory. For example, if you’re working in an R Project, by default
+the project will open with that directory as the working directory, so you can
+read files that are saved in that project’s main directory using only the file
+name as a reference.</p>
+<p>However, you’ll often want to read in files that are located somewhere else on
+your computer, or even files that are saved on another computer (for example,
+data files that are posted online). Doing this is very similar to reading in a
+file that is in your current working directory; the only difference is that you
+need to give R some directions so it can find the file.</p>
+<p>The most common case will be reading in files in a subdirectory of your current
+working directory. For example, you may have created a “data” subdirectory in
+one of your R Projects directories to keep all the project’s data files in the
+same place while keeping the structure of the main directory fairly clean. In
+this case, you’ll need to direct R into that subdirectory when you want to read
+one of those files.</p>
+<p>To understand how to give R these directions, you need to have some
+understanding of the directory structure of your computer. It seems a bit of a
+pain and a bit complex to have to think about computer directory structure in
+the “basics” part of this class, but this structure is not terribly complex once
+you get the idea of it. There are a couple of very good reasons why it’s worth
+learning now.</p>
+<p>First, many of the most frustrating errors you get when you start using R trace
+back to understanding directories and filepaths. For example, when you try to
+read a file into R using only the filename, and that file is not in your current
+working directory, you will get an error like:</p>
 <pre><code>Error in file(file, &quot;rt&quot;) : cannot open the connection
 In addition: Warning message:
 In file(file, &quot;rt&quot;) : cannot open file &#39;Ex.csv&#39;: No such file or directory</code></pre>
-<p>This error is especially frustrating when you’re new to R because it happens at the very beginning of your
-analysis—you can’t even get your data in. Also, if you don’t understand a bit about working directories
-and how R looks for the file you’re asking it to find, you’d have no idea where to start to fix this error.
-Second, once you understand how to use pathnames, especially relative pathnames, to tell R how to find a
-file that is in a directory other than your working directory, you will be able to organize all of your
-files for a project in a much cleaner way. For example, you can create a directory for your project, then
-create one subdirectory to store all of your R scripts, and another to store all of your data, and so on.
-This can help you keep very complex projects more structured and easier to navigate. We’ll talk about these
-ideas more in the course sections on Reproducible Research, but it’s good to start learning how directory
-structures and filepaths work early.</p>
-<p>Your computer organizes files through a collection of directories. Chances are, you are fairly used to
-working with these in your daily life already (although you may call them “folders” rather than
-“directories”). For example, you’ve probably created new directories to store data files and Word
-documents for a specific project.</p>
-<p>Figure <a href="entering-and-cleaning-data-1.html#fig:filedirstructure">2.1</a> gives an example file directory structure for a hypothetical
-computer. Directories are shown in blue, and files in green.</p>
+<p>This error is especially frustrating when you’re new to R because it happens at
+the very beginning of your analysis—you can’t even get your data in. Also, if
+you don’t understand a bit about working directories and how R looks for the
+file you’re asking it to find, you’d have no idea where to start to fix this
+error. Second, once you understand how to use pathnames, especially relative
+pathnames, to tell R how to find a file that is in a directory other than your
+working directory, you will be able to organize all of your files for a project
+in a much cleaner way. For example, you can create a directory for your project,
+then create one subdirectory to store all of your R scripts, and another to
+store all of your data, and so on. This can help you keep very complex projects
+more structured and easier to navigate. We’ll talk about these ideas more in the
+course sections on Reproducible Research, but it’s good to start learning how
+directory structures and filepaths work early.</p>
+<p>Your computer organizes files through a collection of directories. Chances are,
+you are fairly used to working with these in your daily life already (although
+you may call them “folders” rather than “directories”). For example, you’ve
+probably created new directories to store data files and Word documents for a
+specific project.</p>
+<p>Figure <a href="entering-and-cleaning-data-1.html#fig:filedirstructure">2.1</a> gives an example file directory structure for
+a hypothetical computer. Directories are shown in blue, and files in green.</p>
 <div class="figure" style="text-align: center"><span id="fig:filedirstructure"></span>
 <img src="figures/FileDirectoryStructure.png" alt="An example of file directory structure." width="600pt" />
 <p class="caption">
 Figure 2.1: An example of file directory structure.
 </p>
 </div>
-<p>You can notice a few interesting things from Figure <a href="entering-and-cleaning-data-1.html#fig:filedirstructure">2.1</a>. First, you might notice
-the structure includes a few of the directories that you use a lot on your own computer, like <code>Desktop</code>,
-<code>Documents</code>, and <code>Downloads</code>. Next, the directory at the very top is the computer’s root directory, <code>/</code>.
-For a PC, the root directory might something like <code>C:</code>; for Unix and Macs, it’s usually <code>/</code>. Finally, if
-you look closely, you’ll notice that it’s possible to have different files in different locations of the
-directory structure with the same file name. For example, in the figure, there are files names
-<code>heat_mort.csv</code> in both the <code>CourseText</code> directory and in the <code>example_data</code> directory. These are two
-different files with different contents, but they can have the same name as long as they’re in different
-directories. This fact—that you can have files with the same name in different places—should help you
-appreciate how useful it is that R requires you to give very clear directions to describe exactly which
-file you want R to read in, if you aren’t reading in something in your current working directory.</p>
-<p>You will have a home directory somewhere near the top of your structure, although it’s likely not your
-root directory. In the hypothetic computer in Figure <a href="entering-and-cleaning-data-1.html#fig:filedirstructure">2.1</a>, the home directory is <code>/Users/brookeanderson</code>. I’ll describe just a bit later how you can figure out what your own home directory is on your own computer.</p>
+<p>You can notice a few interesting things from Figure <a href="entering-and-cleaning-data-1.html#fig:filedirstructure">2.1</a>.
+First, you might notice the structure includes a few of the directories that you
+use a lot on your own computer, like <code>Desktop</code>, <code>Documents</code>, and <code>Downloads</code>.
+Next, the directory at the very top is the computer’s root directory, <code>/</code>. For a
+PC, the root directory might something like <code>C:</code>; for Unix and Macs, it’s
+usually <code>/</code>. Finally, if you look closely, you’ll notice that it’s possible to
+have different files in different locations of the directory structure with the
+same file name. For example, in the figure, there are files names
+<code>heat_mort.csv</code> in both the <code>CourseText</code> directory and in the <code>example_data</code>
+directory. These are two different files with different contents, but they can
+have the same name as long as they’re in different directories. This fact—that
+you can have files with the same name in different places—should help you
+appreciate how useful it is that R requires you to give very clear directions to
+describe exactly which file you want R to read in, if you aren’t reading in
+something in your current working directory.</p>
+<p>You will have a home directory somewhere near the top of your structure,
+although it’s likely not your root directory. In the hypothetic computer in
+Figure <a href="entering-and-cleaning-data-1.html#fig:filedirstructure">2.1</a>, the home directory is
+<code>/Users/brookeanderson</code>. I’ll describe just a bit later how you can figure out
+what your own home directory is on your own computer.</p>
 </div>
 <div id="working-directory" class="section level3">
 <h3><span class="header-section-number">2.4.2</span> Working directory</h3>
-<p>When you run R, it’s always running from within some working directory, which will be one of the directories somewhere in your computer’s directory structure. At any time, you can figure out which directory R is working in by running the command <code>getwd()</code> (short for “get working directory”). For example, my R session is currently running in the following directory:</p>
+<p>When you run R, it’s always running from within some working directory, which
+will be one of the directories somewhere in your computer’s directory structure.
+At any time, you can figure out which directory R is working in by running the
+command <code>getwd()</code> (short for “get working directory”). For example, my R session
+is currently running in the following directory:</p>
 <div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb188-1" title="1"><span class="kw">getwd</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;/Users/georgianaanderson/Documents/my_books/RProgrammingForResearch&quot;</code></pre>
-<p>This means that, for my current R session, R is working in the <code>RProgrammingForResearch</code> subdirectory of my <code>brookeanderson</code> directory (which is my home directory).</p>
-<p>There are a few general rules for which working directory R will start in when you open an R session.
-These are not absolute rules, but they’re generally true. If you have R closed, and you open it by
-double-clicking on an R script, then R will generally open with, as its working directory, the directory
-in which that script is stored. This is often a very convenient convention, because often any of the data
-you’ll be reading in for that script is somewhere near where the script file is saved in the directory
-structure. If you open R by double-clicking on the R icon in “Applications” (or something similar on a PC),
-R will start in its default working directory. You can find out what this is, or change it, in RStudio’s
-“Preferences”. Finally, later in the course, if you open an R Project, R will start in that project’s working directory (the directory in which the <code>.Rproj</code> file for the project is stored).</p>
+<p>This means that, for my current R session, R is working in the
+<code>RProgrammingForResearch</code> subdirectory of my <code>brookeanderson</code> directory (which
+is my home directory).</p>
+<p>There are a few general rules for which working directory R will start in when
+you open an R session. These are not absolute rules, but they’re generally true.
+If you have R closed, and you open it by double-clicking on an R script, then R
+will generally open with, as its working directory, the directory in which that
+script is stored. This is often a very convenient convention, because often any
+of the data you’ll be reading in for that script is somewhere near where the
+script file is saved in the directory structure. If you open R by
+double-clicking on the R icon in “Applications” (or something similar on a PC),
+R will start in its default working directory. You can find out what this is, or
+change it, in RStudio’s “Preferences”. Finally, if you open
+an R Project, R will start in that project’s working directory (the directory in
+which the <code>.Rproj</code> file for the project is stored).</p>
 </div>
 <div id="file-and-directory-pathnames" class="section level3">
 <h3><span class="header-section-number">2.4.3</span> File and directory pathnames</h3>
-<p>Once you get a picture of how your directories and files are organized, you can use pathnames, either
-absolute or relative, to read in files from different directories than your current working directory.
-Pathnames are the directions for getting to a directory or file stored on your computer.</p>
-<p>When you want to reference a directory or file, you can use one of two types of pathnames:</p>
+<p>Once you get a picture of how your directories and files are organized, you can
+use pathnames, either absolute or relative, to read in files from different
+directories than your current working directory. Pathnames are the directions
+for getting to a directory or file stored on your computer.</p>
+<p>When you want to reference a directory or file, you can use one of two types of
+pathnames:</p>
 <ul>
-<li><em>Relative pathname</em>: How to get to the file or directory from your current working directory</li>
-<li><em>Absolute pathname</em>: How to get to the file or directory from anywhere on the computer</li>
+<li><em>Relative pathname</em>: How to get to the file or directory from your current
+working directory</li>
+<li><em>Absolute pathname</em>: How to get to the file or directory from anywhere on the
+computer</li>
 </ul>
-<p>Absolute pathnames are a bit more straightforward conceptually, because they don’t depend on your current
-working directory. However, they’re also a lot longer to write, and they’re much less convenient if you’ll
-be sharing some of your code with other people who might run it on their own computers. I’ll explain this
-second point a bit more later in this section.</p>
-<p><em>Absolute pathnames</em> give the full directions to a directory or file, starting all the way at the root
-directory. For example, the <code>heat_mort.csv</code> file in the <code>CourseText</code> directory has the absolute pathname:</p>
+<p>Absolute pathnames are a bit more straightforward conceptually, because they
+don’t depend on your current working directory. However, they’re also a lot
+longer to write, and they’re much less convenient if you’ll be sharing some of
+your code with other people who might run it on their own computers. I’ll
+explain this second point a bit more later in this section.</p>
+<p><em>Absolute pathnames</em> give the full directions to a directory or file, starting
+all the way at the root directory. For example, the <code>heat_mort.csv</code> file in the
+<code>CourseText</code> directory has the absolute pathname:</p>
 <pre><code>&quot;/Users/brookeanderson/Desktop/RCourseFall2015/CourseText/heat_mort.csv&quot;</code></pre>
-<p>You can use this absolute pathname to read this file in using any of the <code>readr</code> functions to read in
-data. This absolute pathname will <em>always</em> work, regardless of your current working directory, because it
-gives directions from the root—it will always be clear to R exactly what file you’re talking about.
-Here’s the code to use to read that file in using the <code>read.csv</code> function with the file’s absolute
-pathname:</p>
-<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb191-1" title="1">heat_mort &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;/Users/brookeanderson/Desktop/RCourseFall2015/CourseText/heat_mort.csv&quot;</span>)</a></code></pre></div>
-<p>The <em>relative pathname</em>, on the other hand, gives R the directions for how to get to a directory or file
-from the current working directory. If the file or directory you’re looking for is pretty close to your
-current working directory in your directory structure, then a relative pathname can be a much shorter way
-to tell R how to get to the file than an absolute pathname. However, the relative pathname depends on your
-current working directory—the relative pathname that works perfectly when you’re working in one
-directory will not work at all once you move into a different working directory.</p>
-<p>As an example of a relative pathname, say you’re working in the directory <code>RCourseFall2015</code> within the
-file structure shown in Figure <a href="entering-and-cleaning-data-1.html#fig:filedirstructure">2.1</a>, and you want to read in the <code>heat_mort.csv</code>
-file in the <code>CourseText</code> directory. To get from <code>RCourseFall2015</code> to that file, you’d need to look in the
-subdirectory <code>CourseText</code>, where you could find <code>heat_mort.csv</code>. Therefore, the relative pathname from
-your working directory would be:</p>
+<p>You can use this absolute pathname to read this file in using any of the <code>readr</code>
+functions to read in data. This absolute pathname will <em>always</em> work, regardless
+of your current working directory, because it gives directions from the
+root—it will always be clear to R exactly what file you’re talking about.
+Here’s the code to use to read that file in using the <code>read.csv</code> function with
+the file’s absolute pathname:</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb191-1" title="1">heat_mort &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;/Users/brookeanderson/Desktop/RCourseFall2015/CourseText/heat_mort.csv&quot;</span>)</a></code></pre></div>
+<p>The <em>relative pathname</em>, on the other hand, gives R the directions for how to
+get to a directory or file from the current working directory. If the file or
+directory you’re looking for is pretty close to your current working directory
+in your directory structure, then a relative pathname can be a much shorter way
+to tell R how to get to the file than an absolute pathname. However, the
+relative pathname depends on your current working directory—the relative
+pathname that works perfectly when you’re working in one directory will not work
+at all once you move into a different working directory.</p>
+<p>As an example of a relative pathname, say you’re working in the directory
+<code>RCourseFall2015</code> within the file structure shown in Figure
+<a href="entering-and-cleaning-data-1.html#fig:filedirstructure">2.1</a>, and you want to read in the <code>heat_mort.csv</code> file in
+the <code>CourseText</code> directory. To get from <code>RCourseFall2015</code> to that file, you’d
+need to look in the subdirectory <code>CourseText</code>, where you could find
+<code>heat_mort.csv</code>. Therefore, the relative pathname from your working directory
+would be:</p>
 <pre><code>&quot;CourseText/heat_mort.csv&quot;</code></pre>
 <p>You can use this relative pathname to tell R where to find and read in the file:</p>
 <div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb193-1" title="1">heat_mort &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;CourseText/heat_mort.csv&quot;</span>)</a></code></pre></div>
-<p>While this pathname is much shorter than the absolute pathname, it is important to remember that if
-you are working in a different working directory, this relative pathname would no longer work.</p>
+<p>While this pathname is much shorter than the absolute pathname, it is important
+to remember that if you are working in a different working directory, this
+relative pathname would no longer work.</p>
 <p>There are a few abbreviations that can be really useful for pathnames:</p>
 <table>
 <thead>
@@ -735,68 +810,121 @@ you are working in a different working directory, this relative pathname would n
 </tr>
 </tbody>
 </table>
-<p>These can help you keep pathnames shorter and also help you move “up-and-over” to get to a file or
-directory that’s not on the direct path below your current working directory.</p>
-<p>For example, my home directory is <code>/Users/brookeanderson</code>. You can use the <code>list.files()</code> function to
-list all the files in a directory. If I wanted to list all the files in my <code>Downloads</code> directory, which is
-a direct sub-directory of my home directory, I could use:</p>
+<p>These can help you keep pathnames shorter and also help you move “up-and-over”
+to get to a file or directory that’s not on the direct path below your current
+working directory.</p>
+<p>For example, my home directory is <code>/Users/brookeanderson</code>. You can use the
+<code>list.files()</code> function to list all the files in a directory. If I wanted to
+list all the files in my <code>Downloads</code> directory, which is a direct sub-directory
+of my home directory, I could use:</p>
 <pre><code>list.files(&quot;~/Downloads&quot;)</code></pre>
-<p>As a second example, say I was working in the working directory <code>CourseText</code>, but I wanted to read in the <code>heat_mort.csv</code> file that’s in the <code>example_data</code> directory, rather than the one in the <code>CourseText</code> directory. I can use the <code>..</code> abbreviation to tell R to look up one directory from the current working directory, and then down within a subdirectory of that. The relative pathname in this case is:</p>
+<p>As a second example, say I was working in the working directory <code>CourseText</code>,
+but I wanted to read in the <code>heat_mort.csv</code> file that’s in the <code>example_data</code>
+directory, rather than the one in the <code>CourseText</code> directory. I can use the <code>..</code>
+abbreviation to tell R to look up one directory from the current working
+directory, and then down within a subdirectory of that. The relative pathname in
+this case is:</p>
 <pre><code>&quot;../Week2_Aug31/example_data/heat_mort.csv&quot;</code></pre>
-<p>This tells R to look one directory up from the working directory (<code>..</code>) (this is also known as the
-<strong>parent directory</strong> of the current directory), which in this case is to
-<code>RCourseFall2015</code>, and then down within that directory to <code>Week2_Aug31</code>, then to <code>example_data</code>, and then
-to look there for the file <code>heat_mort.csv</code>.</p>
-<p>The relative pathname to read this file while R is working in the <code>CourseTest</code> directory would be:</p>
+<p>This tells R to look one directory up from the working directory (<code>..</code>) (this is
+also known as the <strong>parent directory</strong> of the current directory), which in this
+case is to <code>RCourseFall2015</code>, and then down within that directory to
+<code>Week2_Aug31</code>, then to <code>example_data</code>, and then to look there for the file
+<code>heat_mort.csv</code>.</p>
+<p>The relative pathname to read this file while R is working in the <code>CourseTest</code>
+directory would be:</p>
 <pre><code>heat_mort &lt;- read_csv(&quot;../Week2_Aug31/example_data/heat_mort.csv&quot;)</code></pre>
-<p>Relative pathnames “break” as soon as you tried them from a different working directory—this fact
-might make it seem like you would never want to use relative pathnames, and would always want to use
-absolute ones instead, even if they’re longer. If that were the only consideration (length of the
-pathname), then perhaps that would be true. However, as you do more and more in R, there will likely be
-many occasions when you want to use relative pathnames instead. They are particularly useful if you ever
-want to share a whole directory, with all subdirectories, with a collaborator. In that case, if you’ve
-used relative pathnames, all the code should work fine for the person you share with, even though they’re
-running it on their own computer. Conversely, if you’d used absolute pathnames, none of them would work
-on another computer, because the “top” of the directory structure (i.e., for me,
-<code>/Users/brookeanderson/Desktop</code>) will almost definitely be different for your collaborator’s computer
-than it is for yours.</p>
-<p>If you’re getting errors reading in files, and you think it’s related to the relative pathname you’re using, it’s often helpful to use <code>list.files()</code> to make sure the file you’re trying to load is in the directory that the relative pathname you’re using is directing R to.</p>
+<p>Relative pathnames “break” as soon as you tried them from a different working
+directory—this fact might make it seem like you would never want to use
+relative pathnames, and would always want to use absolute ones instead, even if
+they’re longer. If that were the only consideration (length of the pathname),
+then perhaps that would be true. However, as you do more and more in R, there
+will likely be many occasions when you want to use relative pathnames instead.
+They are particularly useful if you ever want to share a whole directory, with
+all subdirectories, with a collaborator. In that case, if you’ve used relative
+pathnames, all the code should work fine for the person you share with, even
+though they’re running it on their own computer. Conversely, if you’d used
+absolute pathnames, none of them would work on another computer, because the
+“top” of the directory structure (i.e., for me, <code>/Users/brookeanderson/Desktop</code>)
+will almost definitely be different for your collaborator’s computer than it is
+for yours.</p>
+<p>If you’re getting errors reading in files, and you think it’s related to the
+relative pathname you’re using, it’s often helpful to use <code>list.files()</code> to make
+sure the file you’re trying to load is in the directory that the relative
+pathname you’re using is directing R to.</p>
 </div>
 <div id="diversion-paste" class="section level3">
 <h3><span class="header-section-number">2.4.4</span> Diversion: <code>paste</code></h3>
-<p>This is a good opportunity to explain how to use some functions that can be very helpful when you’re using relative or absolute pathnames: <code>paste()</code> and <code>paste0()</code>.</p>
-<p>As a bit of important background information, it’s important that you understand that you can save a pathname (absolute or relative) as an R object, and then use that R object in calls to later functions like <code>list.files()</code> and <code>read_csv()</code>. For example, to use the absolute pathname to read the <code>heat_mort.csv</code> file in the <code>CourseText</code> directory, you could run:</p>
+<p>This is a good opportunity to explain how to use some functions that can be very
+helpful when you’re using relative or absolute pathnames: <code>paste()</code> and
+<code>paste0()</code>.</p>
+<p>As a bit of important background information, it’s important that you understand
+that you can save a pathname (absolute or relative) as an R object, and then use
+that R object in calls to later functions like <code>list.files()</code> and <code>read_csv()</code>.
+For example, to use the absolute pathname to read the <code>heat_mort.csv</code> file in
+the <code>CourseText</code> directory, you could run:</p>
 <pre><code>my_file &lt;- &quot;/Users/brookeanderson/Desktop/RCourseFall2015/CourseText/heat_mort.csv&quot;
-heat_mort &lt;- read_csv(my_file)</code></pre>
-<p>You’ll notice from this code that the pathname to get to a directory or file can sometimes become ungainly and long. To keep your code cleaner, you can address this by using the <code>paste</code> or <code>paste0</code> functions. These functions come in handy in a lot of other applications, too, but this is a good place to introduce them.</p>
-<p>The <code>paste()</code> function is very straightforward. It takes, as inputs, a series of different character strings you want to join together, and it pastes them together in a single character string. (As a note, this means that your result vector will only be one element long, for basic uses of <code>paste()</code>, while the inputs will be several different character stings.) You separate all the different things you want to paste together using with commas in the function call. For example:</p>
+heat_mort &lt;- read_csv(file = my_file)</code></pre>
+<p>You’ll notice from this code that the pathname to get to a directory or file can
+sometimes become ungainly and long. To keep your code cleaner, you can address
+this by using the <code>paste</code> or <code>paste0</code> functions. These functions come in handy
+in a lot of other applications, too, but this is a good place to introduce them.</p>
+<p>The <code>paste()</code> function is very straightforward. It takes, as inputs, a series of
+different character strings you want to join together, and it pastes them
+together in a single character string. (As a note, this means that your result
+vector will only be one element long, for basic uses of <code>paste()</code>, while the
+inputs will be several different character stings.) You separate all the
+different things you want to paste together using with commas in the function
+call. For example:</p>
 <div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb198-1" title="1"><span class="kw">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>)</a></code></pre></div>
 <pre><code>## [1] &quot;Sunday Monday Tuesday&quot;</code></pre>
-<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb200-1" title="1"><span class="kw">length</span>(<span class="kw">c</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb200-1" title="1"><span class="kw">length</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>))</a></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb202-1" title="1"><span class="kw">length</span>(<span class="kw">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb202-1" title="1"><span class="kw">length</span>(<span class="dt">x =</span> <span class="kw">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>))</a></code></pre></div>
 <pre><code>## [1] 1</code></pre>
-<p>The <code>paste()</code> function has an option called <code>sep =</code>. This tells R what you want to use to separate the values you’re pasting together in the output. The default is for R to use a space, as shown in the example above. To change the separator, you can change this option, and you can put in just about anything you want. For example, if you wanted to paste all the values together without spaces, you could use <code>sep = ""</code>:</p>
+<p>The <code>paste()</code> function has an option called <code>sep =</code>. This tells R what you want
+to use to separate the values you’re pasting together in the output. The default
+is for R to use a space, as shown in the example above. To change the separator,
+you can change this option, and you can put in just about anything you want. For
+example, if you wanted to paste all the values together without spaces, you
+could use <code>sep = ""</code>:</p>
 <div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb204-1" title="1"><span class="kw">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
 <pre><code>## [1] &quot;SundayMondayTuesday&quot;</code></pre>
-<p>As a shortcut, instead of using the <code>sep = ""</code> option, you could achieve the same thing using the <code>paste0</code> function. This function is almost exactly like <code>paste</code>, but it defaults to <code>""</code> (i.e., no space) as the separator between values by default:</p>
+<p>As a shortcut, instead of using the <code>sep = ""</code> option, you could achieve the
+same thing using the <code>paste0</code> function. This function is almost exactly like
+<code>paste</code>, but it defaults to <code>""</code> (i.e., no space) as the separator between
+values by default:</p>
 <div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb206-1" title="1"><span class="kw">paste0</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>)</a></code></pre></div>
 <pre><code>## [1] &quot;SundayMondayTuesday&quot;</code></pre>
-<p>With pathnames, you will usually not want spaces. Therefore, you could think about using <code>paste0()</code> to write an object with the pathname you want to ultimately use in commands like <code>list.files()</code> and <code>setwd()</code>. This will allow you to keep your code cleaner, since you can now divide long pathnames over multiple lines:</p>
+<p>With pathnames, you will usually not want spaces. Therefore, you could think
+about using <code>paste0()</code> to write an object with the pathname you want to
+ultimately use in commands like <code>list.files()</code> and <code>setwd()</code>. This will allow
+you to keep your code cleaner, since you can now divide long pathnames over
+multiple lines:</p>
 <pre><code>my_file &lt;- paste0(&quot;/Users/brookeanderson/Desktop/&quot;,
                   &quot;RCourseFall2015/CourseText/heat_mort.csv&quot;)
-heat_mort &lt;- read_csv(my_file)</code></pre>
-<p>You will end up using <code>paste()</code> and <code>paste0()</code> for many other applications, but this is a good example of how you can start using these functions to start to get a feel for them.</p>
+heat_mort &lt;- read_csv(file = my_file)</code></pre>
+<p>You will end up using <code>paste()</code> and <code>paste0()</code> for many other applications, but
+this is a good example of how you can start using these functions to start to
+get a feel for them.</p>
 </div>
 <div id="reading-online-flat-files" class="section level3">
 <h3><span class="header-section-number">2.4.5</span> Reading online flat files</h3>
-<p>So far, I’ve only shown you how to read in data from files that are saved to your computer. R can also read in data directly from the web. If a flat file is posted online, you can read it into R in almost exactly the same way that you would read in a local file. The only difference is that you will use the file’s url instead of a local file path for the <code>file</code> argument.</p>
-<p>With the <code>read_*</code> family of functions, you can do this both for flat files from a non-secure webpage (i.e., one that starts with <code>http</code>) and for files from a secure webpage (i.e., one that starts with <code>https</code>), including GitHub and Dropbox.</p>
-<p>For example, to read in data from this <a href="https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv">GitHub repository of Ebola data</a>, you can run:</p>
+<p>So far, I’ve only shown you how to read in data from files that are saved to
+your computer. R can also read in data directly from the web. If a flat file is
+posted online, you can read it into R in almost exactly the same way that you
+would read in a local file. The only difference is that you will use the file’s
+url instead of a local file path for the <code>file</code> argument.</p>
+<p>With the <code>read_*</code> family of functions, you can do this both for flat files from
+a non-secure webpage (i.e., one that starts with <code>http</code>) and for files from a
+secure webpage (i.e., one that starts with <code>https</code>), including GitHub and
+Dropbox.</p>
+<p>For example, to read in data from this <a href="https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv">GitHub repository of Ebola
+data</a>,
+you can run:</p>
 <div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb209-1" title="1">url &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;https://raw.githubusercontent.com/cmrivers/&quot;</span>,</a>
 <a class="sourceLine" id="cb209-2" title="2">              <span class="st">&quot;ebola/master/country_timeseries.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb209-3" title="3">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(url)</a>
-<a class="sourceLine" id="cb209-4" title="4">ebola[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a></code></pre></div>
+<a class="sourceLine" id="cb209-3" title="3">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> url)</a>
+<a class="sourceLine" id="cb209-4" title="4"><span class="kw">slice</span>(<span class="dt">.data =</span> (<span class="kw">select</span>(<span class="dt">.data =</span> ebola, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)), <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   Date       Day Cases_Guinea
 ##   &lt;chr&gt;    &lt;dbl&gt;        &lt;dbl&gt;
@@ -807,13 +935,14 @@ heat_mort &lt;- read_csv(my_file)</code></pre>
 </div>
 <div id="data-cleaning" class="section level2">
 <h2><span class="header-section-number">2.5</span> Data cleaning</h2>
-<p>The following video covers the section on “Data Cleaning”:</p>
+<p>The following video covers the section on “Data Cleaning” from 2018:</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/EUJcgIU8xmY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
-<p>Once you have loaded data into R, you’ll likely need to clean it up a little before you’re ready to
-analyze it. Here, I’ll go over the first steps of how to do that with functions from <code>dplyr</code>, another
-package in the tidyverse. Here are some of the most common data-cleaning tasks, along with the
-corresponding <code>dplyr</code> function for each:</p>
+<p>Once you have loaded data into R, you’ll likely need to clean it up a little
+before you’re ready to analyze it. Here, I’ll go over the first steps of how to
+do that with functions from <code>dplyr</code>, another package in the tidyverse. Here are
+some of the most common data-cleaning tasks, along with the corresponding
+<code>dplyr</code> function for each:</p>
 <table>
 <thead>
 <tr class="header">
@@ -840,12 +969,16 @@ corresponding <code>dplyr</code> function for each:</p>
 </tr>
 </tbody>
 </table>
-<p>In this section, I’ll describe how to do each of these four tasks; in later sections of the course, we’ll go much deeper into how to clean messier data.</p>
-<p>For the examples in this section, I’ll use example data listing guests to the Daily Show. To follow along with these examples, you’ll want to load that data, as well as load the <code>dplyr</code> package (install it using <code>install.packages</code> if you have not already):</p>
-<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb211-1" title="1"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb211-2" title="2">daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/daily_show_guests.csv&quot;</span>, <span class="dt">skip =</span> <span class="dv">4</span>)</a></code></pre></div>
+<p>In this section, I’ll describe how to do each of these four tasks; in later
+sections of the course, we’ll go much deeper into how to clean messier data.</p>
+<p>For the examples in this section, I’ll use example data listing guests to the
+Daily Show. To follow along with these examples, you’ll want to load that data,
+as well as load the <code>dplyr</code> package (install it using <code>install.packages</code> if you
+have not already):</p>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb211-1" title="1"><span class="kw">library</span>(<span class="st">&quot;dplyr&quot;</span>)</a>
+<a class="sourceLine" id="cb211-2" title="2">daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>, <span class="dt">skip =</span> <span class="dv">4</span>)</a></code></pre></div>
 <p>I’ve used this data in previous examples, but as a reminder, here’s what it looks like:</p>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb212-1" title="1"><span class="kw">head</span>(daily_show)</a></code></pre></div>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb212-1" title="1"><span class="kw">head</span>(<span class="dt">x =</span> daily_show)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group  Raw_Guest_List  
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;           
@@ -857,30 +990,36 @@ corresponding <code>dplyr</code> function for each:</p>
 ## 6  1999 actor                     1/19/99 Acting William Baldwin</code></pre>
 <div id="renaming-columns" class="section level3">
 <h3><span class="header-section-number">2.5.1</span> Renaming columns</h3>
-<p>A first step is often re-naming the columns of the dataframe. It can be hard to work with a column name that:</p>
+<p>A first step is often re-naming the columns of the dataframe. It can be hard to
+work with a column name that:</p>
 <ul>
 <li>is long</li>
 <li>includes spaces or other special characters</li>
 <li>includes upper case</li>
 </ul>
-<p>You can check out the column names for a dataframe using the <code>colnames</code> function, with the dataframe object as the argument. Several of the column names in <code>daily_show</code> have some of these issues:</p>
-<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb214-1" title="1"><span class="kw">colnames</span>(daily_show)</a></code></pre></div>
+<p>You can check out the column names for a dataframe using the <code>colnames</code>
+function, with the dataframe object as the argument. Several of the column names
+in <code>daily_show</code> have some of these issues:</p>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb214-1" title="1"><span class="kw">colnames</span>(<span class="dt">x =</span> daily_show)</a></code></pre></div>
 <pre><code>## [1] &quot;YEAR&quot;                      &quot;GoogleKnowlege_Occupation&quot;
 ## [3] &quot;Show&quot;                      &quot;Group&quot;                    
 ## [5] &quot;Raw_Guest_List&quot;</code></pre>
 <p>To rename these columns, use <code>rename</code>. The basic syntax is:</p>
 <div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb216-1" title="1"><span class="co">## Generic code</span></a>
-<a class="sourceLine" id="cb216-2" title="2"><span class="kw">rename</span>(dataframe, </a>
+<a class="sourceLine" id="cb216-2" title="2"><span class="kw">rename</span>(<span class="dt">.data =</span> dataframe, </a>
 <a class="sourceLine" id="cb216-3" title="3">       <span class="dt">new_column_name_1 =</span> old_column_name_<span class="dv">1</span>,</a>
 <a class="sourceLine" id="cb216-4" title="4">       <span class="dt">new_column_name_2 =</span> old_column_name_<span class="dv">2</span>)</a></code></pre></div>
-<p>The first argument is the dataframe for which you’d like to rename columns. Then you list each pair of new versus old column names (in that order) for each of the columns you want to rename. To rename columns in the <code>daily_show</code> data using <code>rename</code>, for example, you would run:</p>
-<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" title="1">daily_show &lt;-<span class="st"> </span><span class="kw">rename</span>(daily_show,</a>
+<p>The first argument is the dataframe for which you’d like to rename columns. Then
+you list each pair of new versus old column names (in that order) for each of
+the columns you want to rename. To rename columns in the <code>daily_show</code> data using
+<code>rename</code>, for example, you would run:</p>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" title="1">daily_show &lt;-<span class="st"> </span><span class="kw">rename</span>(<span class="dt">.data =</span> daily_show,</a>
 <a class="sourceLine" id="cb217-2" title="2">                     <span class="dt">year =</span> YEAR,</a>
 <a class="sourceLine" id="cb217-3" title="3">                     <span class="dt">job =</span> GoogleKnowlege_Occupation, </a>
 <a class="sourceLine" id="cb217-4" title="4">                     <span class="dt">date =</span> Show, </a>
 <a class="sourceLine" id="cb217-5" title="5">                     <span class="dt">category =</span> Group,</a>
 <a class="sourceLine" id="cb217-6" title="6">                     <span class="dt">guest_name =</span> Raw_Guest_List)</a>
-<a class="sourceLine" id="cb217-7" title="7"><span class="kw">head</span>(daily_show, <span class="dv">3</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb217-7" title="7"><span class="kw">head</span>(<span class="dt">x =</span> daily_show, <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##    year job                date    category guest_name     
 ##   &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;          
@@ -895,11 +1034,16 @@ Many of the functions in tidyverse packages, including those in <code>dplyr</cod
 </div>
 <div id="selecting-columns" class="section level3">
 <h3><span class="header-section-number">2.5.2</span> Selecting columns</h3>
-<p>Next, you may want to select only some columns of the dataframe. You can use the <code>select</code> function from <code>dplyr</code> to subset the dataframe to certain columns. The basic structure of this command is:</p>
+<p>Next, you may want to select only some columns of the dataframe. You can use the
+<code>select</code> function from <code>dplyr</code> to subset the dataframe to certain columns. The
+basic structure of this command is:</p>
 <div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" title="1"><span class="co">## Generic code</span></a>
-<a class="sourceLine" id="cb219-2" title="2"><span class="kw">select</span>(dataframe, column_name_<span class="dv">1</span>, column_name_<span class="dv">2</span>, ...)</a></code></pre></div>
-<p>In this call, you first specify the dataframe to use and then list all of the column names to include in the output dataframe, with commas between each column name. For example, to select all columns in <code>daily_show</code> except <code>year</code> (since that information is already included in <code>date</code>), run:</p>
-<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb220-1" title="1"><span class="kw">select</span>(daily_show, job, date, category, guest_name)</a></code></pre></div>
+<a class="sourceLine" id="cb219-2" title="2"><span class="kw">select</span>(<span class="dt">.data =</span> dataframe, column_name_<span class="dv">1</span>, column_name_<span class="dv">2</span>, ...)</a></code></pre></div>
+<p>In this call, you first specify the dataframe to use and then list all of the
+column names to include in the output dataframe, with commas between each column
+name. For example, to select all columns in <code>daily_show</code> except <code>year</code> (since
+that information is already included in <code>date</code>), run:</p>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb220-1" title="1"><span class="kw">select</span>(<span class="dt">.data =</span> daily_show, job, date, category, guest_name)</a></code></pre></div>
 <pre><code>## # A tibble: 2,693 x 4
 ##    job                date    category guest_name      
 ##    &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
@@ -919,9 +1063,11 @@ Many of the functions in tidyverse packages, including those in <code>dplyr</cod
 Don’t forget that, if you want to change column names in the saved object, you must reassign the object to be the output of <code>rename</code>. If you run one of these cleaning functions without reassigning the object, R will print out the result, but the object itself won’t change. You can take advantage of this, as I’ve done in this example, to look at the result of applying a function to a dataframe without changing the original dataframe. This can be helpful as you’re figuring out how to write your code.
 </p>
 </div>
-<p>The <code>select</code> function also provides some time-saving tools. For example, in the last example, we wanted all the columns except one. Instead of writing out all the columns we want, we can use <code>-</code> with the columns we don’t want to save time:</p>
-<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb222-1" title="1">daily_show &lt;-<span class="st"> </span><span class="kw">select</span>(daily_show, <span class="op">-</span>year)</a>
-<a class="sourceLine" id="cb222-2" title="2"><span class="kw">head</span>(daily_show, <span class="dv">3</span>)</a></code></pre></div>
+<p>The <code>select</code> function also provides some time-saving tools. For example, in the
+last example, we wanted all the columns except one. Instead of writing out all
+the columns we want, we can use <code>-</code> with the columns we don’t want to save time:</p>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb222-1" title="1">daily_show &lt;-<span class="st"> </span><span class="kw">select</span>(<span class="dt">.data =</span> daily_show, <span class="op">-</span>year)</a>
+<a class="sourceLine" id="cb222-2" title="2"><span class="kw">head</span>(<span class="dt">x =</span> daily_show, <span class="dt">n =</span> <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
 ##   job                date    category guest_name     
 ##   &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;          
@@ -931,20 +1077,24 @@ Don’t forget that, if you want to change column names in the saved object, you
 </div>
 <div id="add-or-change-columns" class="section level3">
 <h3><span class="header-section-number">2.5.3</span> Add or change columns</h3>
-<p>You can change a column or add a new column using the <code>mutate</code> function from the <code>dplyr</code> package. That function has the syntax:</p>
+<p>You can change a column or add a new column using the <code>mutate</code> function from the
+<code>dplyr</code> package. That function has the syntax:</p>
 <div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb224-1" title="1"><span class="co"># Generic code</span></a>
-<a class="sourceLine" id="cb224-2" title="2"><span class="kw">mutate</span>(dataframe,</a>
+<a class="sourceLine" id="cb224-2" title="2"><span class="kw">mutate</span>(<span class="dt">.data =</span> dataframe,</a>
 <a class="sourceLine" id="cb224-3" title="3">       <span class="dt">changed_column =</span> <span class="cf">function</span>(changed_column),</a>
 <a class="sourceLine" id="cb224-4" title="4">       <span class="dt">new_column =</span> <span class="cf">function</span>(other arguments))</a></code></pre></div>
-<p>For example, the <code>job</code> column in <code>daily_show</code> sometimes uses upper case and sometimes does not (this call uses the <code>unique</code> function to list only unique values in this column):</p>
-<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb225-1" title="1"><span class="kw">head</span>(<span class="kw">unique</span>(daily_show<span class="op">$</span>job), <span class="dv">10</span>)</a></code></pre></div>
+<p>For example, the <code>job</code> column in <code>daily_show</code> sometimes uses upper case and
+sometimes does not (this call uses the <code>unique</code> function to list only unique
+values in this column):</p>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb225-1" title="1"><span class="kw">head</span>(<span class="dt">x =</span> <span class="kw">unique</span>(<span class="dt">x =</span> daily_show<span class="op">$</span>job), <span class="dt">n =</span> <span class="dv">10</span>)</a></code></pre></div>
 <pre><code>##  [1] &quot;actor&quot;              &quot;Comedian&quot;           &quot;television actress&quot;
 ##  [4] &quot;film actress&quot;       &quot;Singer-lyricist&quot;    &quot;model&quot;             
 ##  [7] &quot;stand-up comedian&quot;  &quot;actress&quot;            &quot;comedian&quot;          
 ## [10] &quot;Singer-songwriter&quot;</code></pre>
 <p>To make all the observations in the <code>job</code> column lowercase, use the <code>str_to_lower</code> function from the <code>stringr</code> package within a <code>mutate</code> function:</p>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb227-1" title="1"><span class="kw">library</span>(stringr)</a>
-<a class="sourceLine" id="cb227-2" title="2"><span class="kw">mutate</span>(daily_show, <span class="dt">job =</span> <span class="kw">str_to_lower</span>(job))</a></code></pre></div>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb227-1" title="1"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;stringr&quot;</span>)</a>
+<a class="sourceLine" id="cb227-2" title="2"><span class="kw">mutate</span>(<span class="dt">.data =</span> daily_show, </a>
+<a class="sourceLine" id="cb227-3" title="3">       <span class="dt">job =</span> <span class="kw">str_to_lower</span>(<span class="dt">string =</span> job))</a></code></pre></div>
 <pre><code>## # A tibble: 2,693 x 4
 ##    job                date    category guest_name      
 ##    &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
@@ -962,7 +1112,8 @@ Don’t forget that, if you want to change column names in the saved object, you
 </div>
 <div id="base-r-equivalents-to-dplyr-functions" class="section level3">
 <h3><span class="header-section-number">2.5.4</span> Base R equivalents to <code>dplyr</code> functions</h3>
-<p>Just so you know, all of these <code>dplyr</code> functions have alternatives, either functions or processes, in base R:</p>
+<p>Just so you know, all of these <code>dplyr</code> functions have alternatives, either
+functions or processes, in base R:</p>
 <table>
 <thead>
 <tr class="header">
@@ -994,13 +1145,15 @@ Don’t forget that, if you want to change column names in the saved object, you
 </div>
 <div id="dates-and-filtering" class="section level2">
 <h2><span class="header-section-number">2.6</span> Dates and filtering</h2>
-<p>The following video covers the lecture material on working with dates in R and on filtering a dataframe
-to a subset of rows using logical operators:</p>
+<p>The following video covers the lecture material on working with dates in R and
+on filtering a dataframe to a subset of rows using logical operators from 2018:</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/v-nRrFnYl50" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
 <div id="dates-in-r" class="section level3">
 <h3><span class="header-section-number">2.6.1</span> Dates in R</h3>
-<p>As part of the data cleaning process, you may want to change the class of some of the columns in the dataframe. For example, you may want to change a column from a character to a date.</p>
+<p>As part of the data cleaning process, you may want to change the class of some
+of the columns in the dataframe. For example, you may want to change a column
+from a character to a date.</p>
 <p>Here are some of the most common vector classes in R:</p>
 <table>
 <thead>
@@ -1032,128 +1185,68 @@ to a subset of rows using logical operators:</p>
 </tr>
 </tbody>
 </table>
-<p>To find out the class of a vector (including a column in a dataframe – remember each column can be thought of as a vector), you can use <code>class()</code>:</p>
+<p>To find out the class of a vector (including a column in a dataframe – remember
+each column can be thought of as a vector), you can use <code>class()</code>:</p>
 <div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb229-1" title="1"><span class="kw">class</span>(daily_show<span class="op">$</span>date)</a></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<p>It is especially common to need to convert dates during the data cleaning process, since date columns will usually be read into R as characters or factors – you can do some interesting things with vectors that are in a Date class that you cannot do with a vector in a character class.</p>
-<p>To convert a vector to the <code>Date</code> class, if you’d like to only use base R, you can use the <code>as.Date</code> function. I’ll walk through how to use <code>as.Date</code>, since it’s often used in older R code. However, I recommend in your own code that you instead use the <code>lubridate</code> package, which I’ll talk about later in this section.</p>
-<p>For example, to convert the <code>date</code> column in the <code>daily_show</code> data into a Date class, you can run:</p>
-<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb231-1" title="1">daily_show &lt;-<span class="st"> </span><span class="kw">mutate</span>(daily_show,</a>
-<a class="sourceLine" id="cb231-2" title="2">                     <span class="dt">date =</span> <span class="kw">as.Date</span>(date, <span class="dt">format =</span> <span class="st">&quot;%m/%d/%y&quot;</span>))</a>
-<a class="sourceLine" id="cb231-3" title="3"><span class="kw">head</span>(daily_show, <span class="dv">3</span>)</a></code></pre></div>
+<p>It is especially common to need to convert dates during the data cleaning
+process, since date columns will usually be read into R as characters or
+factors—you can do some interesting things with vectors that are in a Date
+class that you cannot do with a vector in a character class.</p>
+<p>To convert a vector to the <code>Date</code> class, if you’d like to only use base R, you
+can use the <code>as.Date</code> function. I’ll walk through how to use <code>as.Date</code>, since
+it’s often used in older R code. However, I recommend in your own code that you
+instead use the <code>lubridate</code> package, which I’ll talk about later in this
+section.</p>
+<p>To convert a vector to the <code>Date</code> class, you can use functions in the
+<code>lubridate</code> package. This package has a series of functions based on the order
+that date elements are given in the incoming character with date information.
+For example, in “12/31/99”, the date elements are given in the order of month
+(<strong>m</strong>), day (<strong>d</strong>), year (<strong>y</strong>), so this character string could be converted
+to the date class with the function <code>mdy</code>. As another example, the <code>ymd</code>
+function from lubridate can be used to parse a column into a Date class,
+regardless of the original format of the date, as long as the date elements are
+in the order: year, month, day. For example:</p>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb231-1" title="1"><span class="kw">library</span>(<span class="st">&quot;lubridate&quot;</span>)</a>
+<a class="sourceLine" id="cb231-2" title="2"><span class="kw">ymd</span>(<span class="st">&quot;2008-10-13&quot;</span>)</a></code></pre></div>
+<pre><code>## [1] &quot;2008-10-13&quot;</code></pre>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb233-1" title="1"><span class="kw">ymd</span>(<span class="st">&quot;&#39;08 Oct 13&quot;</span>)</a></code></pre></div>
+<pre><code>## [1] &quot;2008-10-13&quot;</code></pre>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" title="1"><span class="kw">ymd</span>(<span class="st">&quot;&#39;08 Oct 13&quot;</span>)</a></code></pre></div>
+<pre><code>## [1] &quot;2008-10-13&quot;</code></pre>
+<p>To convert the <code>date</code> column in the <code>daily_show</code> data into a Date
+class, then, you can run:</p>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb237-1" title="1"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;lubridate&quot;</span>)</a>
+<a class="sourceLine" id="cb237-2" title="2"></a>
+<a class="sourceLine" id="cb237-3" title="3"><span class="kw">class</span>(<span class="dt">x =</span> daily_show<span class="op">$</span>date) <span class="co"># Check the class of the &#39;date&#39; column before mutating it</span></a></code></pre></div>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb239-1" title="1">daily_show &lt;-<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">.data =</span> daily_show,</a>
+<a class="sourceLine" id="cb239-2" title="2">                     <span class="dt">date =</span> <span class="kw">mdy</span>(date))</a>
+<a class="sourceLine" id="cb239-3" title="3"><span class="kw">head</span>(<span class="dt">x =</span> daily_show, <span class="dt">n =</span> <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
 ##   job                date       category guest_name     
 ##   &lt;chr&gt;              &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;          
 ## 1 actor              1999-01-11 Acting   Michael J. Fox 
 ## 2 Comedian           1999-01-12 Comedy   Sandra Bernhard
 ## 3 television actress 1999-01-13 Acting   Tracey Ullman</code></pre>
-<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb233-1" title="1"><span class="kw">class</span>(daily_show<span class="op">$</span>date)</a></code></pre></div>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb241-1" title="1"><span class="kw">class</span>(<span class="dt">x =</span> daily_show<span class="op">$</span>date) <span class="co"># Check the class of the &#39;date&#39; column after mutating it</span></a></code></pre></div>
 <pre><code>## [1] &quot;Date&quot;</code></pre>
-<p>Once you have an object in the <code>Date</code> class, you can do things like plot by date, calculate the range of dates, and calculate the total number of days the dataset covers:</p>
-<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" title="1"><span class="kw">range</span>(daily_show<span class="op">$</span>date)</a>
-<a class="sourceLine" id="cb235-2" title="2"><span class="kw">diff</span>(<span class="kw">range</span>(daily_show<span class="op">$</span>date))</a></code></pre></div>
-<p>You can convert dates expressed in a number of different ways into a Date class in R, as long as you can explain to R how to parse the format that the date is in before you convert it. The only tricky thing in converting objects into a Date class is learning the abbreviations for the <code>format</code> option of the <code>as.Date</code> function. Here are some common ones:</p>
-<table>
-<thead>
-<tr class="header">
-<th>Abbreviation</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>%m</code></td>
-<td>Month as a number (e.g., 1, 05)</td>
-</tr>
-<tr class="even">
-<td><code>%B</code></td>
-<td>Full month name (e.g., August)</td>
-</tr>
-<tr class="odd">
-<td><code>%b</code></td>
-<td>Abbreviated month name (e.g., Aug)</td>
-</tr>
-<tr class="even">
-<td><code>%y</code></td>
-<td>Two-digit year (e.g., 99)</td>
-</tr>
-<tr class="odd">
-<td><code>%Y</code></td>
-<td>Four-digit year (e.g., 1999)</td>
-</tr>
-<tr class="even">
-<td><code>%A</code></td>
-<td>Full weekday (e.g., Monday)</td>
-</tr>
-<tr class="odd">
-<td><code>%a</code></td>
-<td>Abberviated weekday (e.g., Mon)</td>
-</tr>
-</tbody>
-</table>
-<p>Here are some examples of what you would specify for the <code>format</code> argument of <code>as.Date</code> for some different original formats of date columns:</p>
-<table>
-<thead>
-<tr class="header">
-<th>Your date</th>
-<th><code>format</code></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>10/23/2008</td>
-<td>“%m/%d%Y”</td>
-</tr>
-<tr class="even">
-<td>08-10-23</td>
-<td>“%y-%m-%d”</td>
-</tr>
-<tr class="odd">
-<td>Oct. 23 2008</td>
-<td>“%b. %d %Y”</td>
-</tr>
-<tr class="even">
-<td>October 23, 2008</td>
-<td>“%B %d, %Y”</td>
-</tr>
-<tr class="odd">
-<td>Thurs, 23 October 2008</td>
-<td>“%a, %d %B %Y”</td>
-</tr>
-</tbody>
-</table>
-<div class="rmdwarning">
-<p>
-You must use the <code>format</code> argument to specify what your date column looks like <strong>before</strong> it’s converted to a Date class, not how you’d like it to look after its converted. Once an objects is in a date class, it will always be printed out using a common format, unless you change it back into a character class. (Confusingly, there is a <code>format</code> function that you can use to convert from a Date class to a character class and, in that case, the <code>format</code> argument does specify how the final date will look. This is mainly useful as a last step in data analysis, when you’re creating plot labels of table columns, for example.)
-</p>
-</div>
-<p>There is also a package in the tidyverse, called <code>lubridate</code>, that helps in parsing dates. In many cases you can use functions from this package to parse dates much more easily, without having to specify specific starting formats.</p>
-<p>The <code>ymd</code> function from lubridate can be used to parse a column into a Date class, regardless of the original format of the date, as long as the date elements are in the order: year, month, day. For example:</p>
-<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb236-1" title="1"><span class="kw">library</span>(lubridate)</a>
-<a class="sourceLine" id="cb236-2" title="2"><span class="kw">ymd</span>(<span class="st">&quot;2008-10-13&quot;</span>)</a></code></pre></div>
-<pre><code>## [1] &quot;2008-10-13&quot;</code></pre>
-<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb238-1" title="1"><span class="kw">ymd</span>(<span class="st">&quot;&#39;08 Oct 13&quot;</span>)</a></code></pre></div>
-<pre><code>## [1] &quot;2008-10-13&quot;</code></pre>
-<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb240-1" title="1"><span class="kw">ymd</span>(<span class="st">&quot;&#39;08 Oct 13&quot;</span>)</a></code></pre></div>
-<pre><code>## [1] &quot;2008-10-13&quot;</code></pre>
-<p>The <code>lubridate</code> package has similar functions for other date orders or for date-times, including:</p>
-<ul>
-<li><code>dmy</code></li>
-<li><code>mdy</code></li>
-<li><code>ymd_h</code></li>
-<li><code>ymd_hm</code></li>
-</ul>
+<p>Once you have an object in the <code>Date</code> class, you can do things like plot by
+date, calculate the range of dates, and calculate the total number of days the
+dataset covers:</p>
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb243-1" title="1"><span class="kw">range</span>(daily_show<span class="op">$</span>date)</a>
+<a class="sourceLine" id="cb243-2" title="2"><span class="kw">diff</span>(<span class="dt">x =</span> <span class="kw">range</span>(daily_show<span class="op">$</span>date))</a></code></pre></div>
 <p>We could have used these to transform the date in <code>daily_show</code>, using the following pipe chain:</p>
-<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb242-1" title="1">daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</a>
-<a class="sourceLine" id="cb242-2" title="2">                       <span class="dt">skip =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb242-3" title="3"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">job =</span> GoogleKnowlege_Occupation, </a>
-<a class="sourceLine" id="cb242-4" title="4">         <span class="dt">date =</span> Show,</a>
-<a class="sourceLine" id="cb242-5" title="5">         <span class="dt">category =</span> Group,</a>
-<a class="sourceLine" id="cb242-6" title="6">         <span class="dt">guest_name =</span> Raw_Guest_List) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb242-7" title="7"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>YEAR) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb242-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">date =</span> <span class="kw">mdy</span>(date)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb242-9" title="9"><span class="st">  </span><span class="kw">filter</span>(category <span class="op">==</span><span class="st"> &quot;Science&quot;</span>)</a>
-<a class="sourceLine" id="cb242-10" title="10"><span class="kw">head</span>(daily_show, <span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb244-1" title="1">daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</a>
+<a class="sourceLine" id="cb244-2" title="2">                       <span class="dt">skip =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb244-3" title="3"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">job =</span> GoogleKnowlege_Occupation, </a>
+<a class="sourceLine" id="cb244-4" title="4">         <span class="dt">date =</span> Show,</a>
+<a class="sourceLine" id="cb244-5" title="5">         <span class="dt">category =</span> Group,</a>
+<a class="sourceLine" id="cb244-6" title="6">         <span class="dt">guest_name =</span> Raw_Guest_List) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb244-7" title="7"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>YEAR) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb244-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">date =</span> <span class="kw">mdy</span>(date)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb244-9" title="9"><span class="st">  </span><span class="kw">filter</span>(category <span class="op">==</span><span class="st"> &quot;Science&quot;</span>)</a>
+<a class="sourceLine" id="cb244-10" title="10"><span class="kw">head</span>(<span class="dt">x =</span> daily_show, <span class="dt">n =</span> <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
 ##   job          date       category guest_name     
 ##   &lt;chr&gt;        &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;          
@@ -1169,10 +1262,10 @@ You must use the <code>format</code> argument to specify what your date column l
 <li><code>year</code></li>
 </ul>
 <p>For example, we could use <code>wday</code> to create a new column with the weekday of each show:</p>
-<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb244-1" title="1"><span class="kw">mutate</span>(daily_show,</a>
-<a class="sourceLine" id="cb244-2" title="2">       <span class="dt">show_day =</span> <span class="kw">wday</span>(date, <span class="dt">label =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb244-3" title="3"><span class="st">  </span><span class="kw">select</span>(date, show_day, guest_name) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb244-4" title="4"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb246-1" title="1"><span class="kw">mutate</span>(<span class="dt">.data =</span> daily_show,</a>
+<a class="sourceLine" id="cb246-2" title="2">       <span class="dt">show_day =</span> <span class="kw">wday</span>(<span class="dt">x =</span> date, <span class="dt">label =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb246-3" title="3"><span class="st">  </span><span class="kw">select</span>(date, show_day, guest_name) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb246-4" title="4"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   date       show_day guest_name            
 ##   &lt;date&gt;     &lt;ord&gt;    &lt;chr&gt;                 
@@ -1189,13 +1282,19 @@ R functions tend to use the timezone of <strong>YOUR</strong> computer’s opera
 </div>
 <div id="filtering-to-certain-rows" class="section level3">
 <h3><span class="header-section-number">2.6.2</span> Filtering to certain rows</h3>
-<p>Next, you might want to filter the dataset down so that it only includes certain rows. For example, you might want to get a dataset with only the guests from 2015, or only guests who are scientists.</p>
-<p>You can use the <code>filter</code> function from <code>dplyr</code> to filter a dataframe down to a subset of rows. The syntax is:</p>
-<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb246-1" title="1"><span class="co">## Generic code</span></a>
-<a class="sourceLine" id="cb246-2" title="2"><span class="kw">filter</span>(dataframe, logical statement)</a></code></pre></div>
-<p>The <code>logical statement</code> in this call gives the condition that a row must meet to be included in the output data frame. For example, if you want to create a data frame that only includes guests who were scientists, you can run:</p>
-<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb247-1" title="1">scientists &lt;-<span class="st"> </span><span class="kw">filter</span>(daily_show, category <span class="op">==</span><span class="st"> &quot;Science&quot;</span>)</a>
-<a class="sourceLine" id="cb247-2" title="2"><span class="kw">head</span>(scientists)</a></code></pre></div>
+<p>Next, you might want to filter the dataset down so that it only includes certain
+rows. For example, you might want to get a dataset with only the guests from
+2015, or only guests who are scientists.</p>
+<p>You can use the <code>filter</code> function from <code>dplyr</code> to filter a dataframe down to a
+subset of rows. The syntax is:</p>
+<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb248-1" title="1"><span class="co">## Generic code</span></a>
+<a class="sourceLine" id="cb248-2" title="2"><span class="kw">filter</span>(<span class="dt">.data =</span> dataframe, logical expression)</a></code></pre></div>
+<p>The <code>logical expression</code> in this call gives the condition that a row must meet to
+be included in the output data frame. For example, if you want to create a data
+frame that only includes guests who were scientists, you can run:</p>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb249-1" title="1">scientists &lt;-<span class="st"> </span><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, </a>
+<a class="sourceLine" id="cb249-2" title="2">                     category <span class="op">==</span><span class="st"> &quot;Science&quot;</span>)</a>
+<a class="sourceLine" id="cb249-3" title="3"><span class="kw">head</span>(<span class="dt">x =</span> scientists)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 4
 ##   job            date       category guest_name            
 ##   &lt;chr&gt;          &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;                 
@@ -1205,7 +1304,8 @@ R functions tend to use the timezone of <strong>YOUR</strong> computer’s opera
 ## 4 doctor         2005-09-06 Science  Dr. Marc Siegel       
 ## 5 astronaut      2006-02-13 Science  Astronaut Mike Mullane
 ## 6 Astrophysicist 2007-01-30 Science  Neil deGrasse Tyson</code></pre>
-<p>To build a logical statement to use in <code>filter</code>, you’ll need to know some of R’s logical operators. Some of the most commonly used ones are:</p>
+<p>To build a logical expression to use in <code>filter</code>, you’ll need to know some of R’s
+logical operators. Some of the most commonly used ones are:</p>
 <table>
 <thead>
 <tr class="header">
@@ -1252,7 +1352,8 @@ R functions tend to use the timezone of <strong>YOUR</strong> computer’s opera
 </tr>
 </tbody>
 </table>
-<p>We’ll use these logical operators a lot more as the course continues, so they’re worth learning by heart.</p>
+<p>We’ll use these logical operators and expressions a lot more as the course
+continues, so they’re worth learning by heart.</p>
 <div class="rmdwarning">
 <p>
 Two common errors with logical operators are: (1) Using <code>=</code> instead of <code>==</code> to check if two values are equal; and (2) Using <code>== NA</code> instead of <code>is.na</code> to check for missing observations.
@@ -1262,51 +1363,81 @@ Two common errors with logical operators are: (1) Using <code>=</code> instead o
 </div>
 <div id="piping" class="section level2">
 <h2><span class="header-section-number">2.7</span> Piping</h2>
-<p>The following video covers the lecture material on piping:</p>
+<p>The following video covers the lecture material on piping from 2018:</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6beqELKjuG4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
-<p>So far, I’ve shown how to use these <code>dplyr</code> functions one at a time to clean up the data, reassigning the dataframe object at each step. However, there’s a trick called “piping” that will let you clean up your code a bit when you’re writing a script to clean data.</p>
-<p>If you look at the format of these <code>dplyr</code> functions, you’ll notice that they all take a dataframe as their first argument:</p>
-<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb249-1" title="1"><span class="co"># Generic code</span></a>
-<a class="sourceLine" id="cb249-2" title="2"><span class="kw">rename</span>(dataframe, </a>
-<a class="sourceLine" id="cb249-3" title="3">       <span class="dt">new_column_name_1 =</span> old_column_name_<span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb249-4" title="4">       <span class="dt">new_column_name_2 =</span> old_column_name_<span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb249-5" title="5"><span class="kw">select</span>(dataframe, column_name_<span class="dv">1</span>, column_name_<span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb249-6" title="6"><span class="kw">filter</span>(dataframe, logical statement)</a>
-<a class="sourceLine" id="cb249-7" title="7"><span class="kw">mutate</span>(dataframe,</a>
-<a class="sourceLine" id="cb249-8" title="8">       <span class="dt">changed_column =</span> <span class="cf">function</span>(changed_column),</a>
-<a class="sourceLine" id="cb249-9" title="9">       <span class="dt">new_column =</span> <span class="cf">function</span>(other arguments))</a></code></pre></div>
-<p>Without piping, you have to reassign the dataframe object at each step of this cleaning if you want the changes saved in the object:</p>
-<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb250-1" title="1">daily_show &lt;-<span class="kw">read_csv</span>(<span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</a>
-<a class="sourceLine" id="cb250-2" title="2">                      <span class="dt">skip =</span> <span class="dv">4</span>)</a>
-<a class="sourceLine" id="cb250-3" title="3">daily_show &lt;-<span class="st"> </span><span class="kw">rename</span>(daily_show, </a>
-<a class="sourceLine" id="cb250-4" title="4">                     <span class="dt">job =</span> GoogleKnowlege_Occupation,</a>
-<a class="sourceLine" id="cb250-5" title="5">                     <span class="dt">date =</span> Show,</a>
-<a class="sourceLine" id="cb250-6" title="6">                     <span class="dt">category =</span> Group,</a>
-<a class="sourceLine" id="cb250-7" title="7">                     <span class="dt">guest_name =</span> Raw_Guest_List)</a>
-<a class="sourceLine" id="cb250-8" title="8">daily_show &lt;-<span class="st"> </span><span class="kw">select</span>(daily_show, <span class="op">-</span>YEAR) </a>
-<a class="sourceLine" id="cb250-9" title="9">daily_show &lt;-<span class="st"> </span><span class="kw">mutate</span>(daily_show, <span class="dt">job =</span> <span class="kw">tolower</span>(job))</a>
-<a class="sourceLine" id="cb250-10" title="10">daily_show &lt;-<span class="st"> </span><span class="kw">filter</span>(daily_show, category <span class="op">==</span><span class="st"> &quot;Science&quot;</span>)</a></code></pre></div>
-<p>Piping lets you clean this code up a bit. It can be used with any function that inputs a dataframe as its first argument. It <em>pipes</em> the dataframe created right before the pipe (<code>%&gt;%</code>) into the function right after the pipe. With piping, therefore, the same data cleaning looks like:</p>
-<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb251-1" title="1">daily_show &lt;-<span class="kw">read_csv</span>(<span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</a>
-<a class="sourceLine" id="cb251-2" title="2">                      <span class="dt">skip =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb251-3" title="3"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">job =</span> GoogleKnowlege_Occupation,</a>
-<a class="sourceLine" id="cb251-4" title="4">         <span class="dt">date =</span> Show,</a>
-<a class="sourceLine" id="cb251-5" title="5">         <span class="dt">category =</span> Group,</a>
-<a class="sourceLine" id="cb251-6" title="6">         <span class="dt">guest_name =</span> Raw_Guest_List) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb251-7" title="7"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>YEAR) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb251-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">job =</span> <span class="kw">tolower</span>(job)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb251-9" title="9"><span class="st">  </span><span class="kw">filter</span>(category <span class="op">==</span><span class="st"> &quot;Science&quot;</span>)</a></code></pre></div>
-<p>Notice that, when piping, the first argument (the name of the dataframe) is excluded from all function calls that follow a pipe. This is because piping sends the dataframe from the last step into each of these functions as the dataframe argument.</p>
+<p>So far, I’ve shown how to use these <code>dplyr</code> functions one at a time to clean up
+the data, reassigning the dataframe object at each step. However, there’s a
+trick called “piping” that will let you clean up your code a bit when you’re
+writing a script to clean data.</p>
+<p>If you look at the format of these <code>dplyr</code> functions, you’ll notice that they
+all take a dataframe as their first argument:</p>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb251-1" title="1"><span class="co"># Generic code</span></a>
+<a class="sourceLine" id="cb251-2" title="2"><span class="kw">rename</span>(<span class="dt">.data =</span> dataframe, </a>
+<a class="sourceLine" id="cb251-3" title="3">       <span class="dt">new_column_name_1 =</span> old_column_name_<span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb251-4" title="4">       <span class="dt">new_column_name_2 =</span> old_column_name_<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb251-5" title="5"><span class="kw">select</span>(<span class="dt">.data =</span> dataframe, </a>
+<a class="sourceLine" id="cb251-6" title="6">       column_name_<span class="dv">1</span>, column_name_<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb251-7" title="7"><span class="kw">filter</span>(<span class="dt">.data =</span> dataframe, </a>
+<a class="sourceLine" id="cb251-8" title="8">       logical expression)</a>
+<a class="sourceLine" id="cb251-9" title="9"><span class="kw">mutate</span>(<span class="dt">.data =</span> dataframe,</a>
+<a class="sourceLine" id="cb251-10" title="10">       <span class="dt">changed_column =</span> <span class="cf">function</span>(changed_column),</a>
+<a class="sourceLine" id="cb251-11" title="11">       <span class="dt">new_column =</span> <span class="cf">function</span>(other arguments))</a></code></pre></div>
+<p>Without piping, you have to reassign the dataframe object at each step of this
+cleaning if you want the changes saved in the object:</p>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb252-1" title="1">daily_show &lt;-<span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</a>
+<a class="sourceLine" id="cb252-2" title="2">                      <span class="dt">skip =</span> <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb252-3" title="3">daily_show &lt;-<span class="st"> </span><span class="kw">rename</span>(<span class="dt">.data =</span> daily_show, </a>
+<a class="sourceLine" id="cb252-4" title="4">                     <span class="dt">job =</span> GoogleKnowlege_Occupation,</a>
+<a class="sourceLine" id="cb252-5" title="5">                     <span class="dt">date =</span> Show,</a>
+<a class="sourceLine" id="cb252-6" title="6">                     <span class="dt">category =</span> Group,</a>
+<a class="sourceLine" id="cb252-7" title="7">                     <span class="dt">guest_name =</span> Raw_Guest_List)</a>
+<a class="sourceLine" id="cb252-8" title="8">daily_show &lt;-<span class="st"> </span><span class="kw">select</span>(<span class="dt">.data =</span> daily_show, </a>
+<a class="sourceLine" id="cb252-9" title="9">                     <span class="op">-</span>YEAR) </a>
+<a class="sourceLine" id="cb252-10" title="10">daily_show &lt;-<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">.data =</span> daily_show, </a>
+<a class="sourceLine" id="cb252-11" title="11">                     <span class="dt">job =</span> <span class="kw">str_to_lower</span>(job))</a>
+<a class="sourceLine" id="cb252-12" title="12">daily_show &lt;-<span class="st"> </span><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, </a>
+<a class="sourceLine" id="cb252-13" title="13">                     category <span class="op">==</span><span class="st"> &quot;Science&quot;</span>)</a></code></pre></div>
+<p>Piping lets you clean this code up a bit. It can be used with any function that
+inputs a dataframe as its first argument. It <em>pipes</em> the dataframe created right
+before the pipe (<code>%&gt;%</code>) into the function right after the pipe. With piping,
+therefore, the same data cleaning looks like:</p>
+<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb253-1" title="1">daily_show &lt;-<span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</a>
+<a class="sourceLine" id="cb253-2" title="2">                      <span class="dt">skip =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb253-3" title="3"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">job =</span> GoogleKnowlege_Occupation,</a>
+<a class="sourceLine" id="cb253-4" title="4">         <span class="dt">date =</span> Show,</a>
+<a class="sourceLine" id="cb253-5" title="5">         <span class="dt">category =</span> Group,</a>
+<a class="sourceLine" id="cb253-6" title="6">         <span class="dt">guest_name =</span> Raw_Guest_List) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb253-7" title="7"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>YEAR) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb253-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">job =</span> <span class="kw">str_to_lower</span>(job)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb253-9" title="9"><span class="st">  </span><span class="kw">filter</span>(category <span class="op">==</span><span class="st"> &quot;Science&quot;</span>)</a></code></pre></div>
+<p>Notice that, when piping, the first argument (the name of the dataframe) is
+excluded from all function calls that follow a pipe. This is because piping
+sends the dataframe from the last step into each of these functions as the
+dataframe argument.</p>
 </div>
 <div id="in-course-exercise-1" class="section level2">
 <h2><span class="header-section-number">2.8</span> In-course Exercise</h2>
 <div id="downloading-and-checking-out-the-example-data" class="section level3">
 <h3><span class="header-section-number">2.8.1</span> Downloading and checking out the example data</h3>
-<p>Download the whole directory for this week from Github (<a href="https://github.com/geanders/week_2_data" class="uri">https://github.com/geanders/week_2_data</a>). To do that, go the the <a href="https://github.com/geanders/week_2_data">GitHub page with data for this week’s exercise</a> and, in the top right, choose “Clone or Download” and then choose “Download ZIP”. This will download a compressed file with the full directory of data, probably to your computer’s “Downloads” folder. Then move the directory into your course Project directory and “unzip” it (try double-clicking the file, or right click on the file and see if there’s a “decompress” or “unzip” option). All the files will be in a subdirectory—move them into the main Project directory (don’t do this in R, just use whatever technique you usually use on your computer to move files between directories).</p>
+<p>Download the whole directory for this week from Github
+(<a href="https://github.com/geanders/week_2_data" class="uri">https://github.com/geanders/week_2_data</a>). To do that, go the the <a href="https://github.com/geanders/week_2_data">GitHub page
+with data for this week’s exercise</a>
+and, in the top right, choose “Clone or Download” and then choose “Download
+ZIP”. This will download a compressed file with the full directory of data,
+probably to your computer’s “Downloads” folder. Then move the directory into
+your course Project directory and “unzip” it (try double-clicking the file, or
+right click on the file and see if there’s a “decompress” or “unzip” option).
+All the files will be in a subdirectory—move them into the main Project
+directory (don’t do this in R, just use whatever technique you usually use on
+your computer to move files between directories).</p>
 <ul>
-<li>Look through the structure of the “data” directory. What files are in the directory? Which files are <strong>flat files</strong>? Which are <strong>delimited</strong> (one category of flat files), and what are their delimiters?</li>
-<li>Create a new R script to put all the code you use for this exercise. Create a subdirectory in your course directory called “R” and save this script there using a <code>.R</code> extension (e.g., “week_2.R”).</li>
+<li>Look through the structure of the “data” directory. What files are in the
+directory? Which files are <strong>flat files</strong>? Which are <strong>delimited</strong> (one category
+of flat files), and what are their delimiters?</li>
+<li>Create a new R script to put all the code you use for this exercise. Create a
+subdirectory in your course directory called “R” and save this script there
+using a <code>.R</code> extension (e.g., “week_2.R”).</li>
 </ul>
 </div>
 <div id="reading-in-different-types-of-files" class="section level3">
@@ -1314,16 +1445,30 @@ Two common errors with logical operators are: (1) Using <code>=</code> instead o
 <p>Now you’ll try reading in data from a variety of types of file formats.</p>
 <p>Try the following tasks:</p>
 <ul>
-<li>What type of flat file do you think the “ld_genetics.txt” file is? See if you can read it in and save it as the R object <code>ld_genetics</code>. Use the <code>summary</code> function to check out basic statistics on the data.</li>
-<li>Check out the file “measles_data/02-09-2015.txt”. What type of flat file do you think it is? Since it’s in a subdirectory, you’ll need to tell R how to get to it from the project directory, using something called a <strong>relative pathname</strong> (we’ll talk about this a lot more in the next section of the lecture). Read this file into R as an object named <code>ca_measles</code>, using the relative pathname (“measles_data/02-09-2015.txt”) in place of the file name in the <code>read_tsv</code> function call. Use the <code>col_names</code> option to name the columns “city” and “count”. What would the default column names be if you didn’t use this option (try this out by running <code>read_csv</code> without the <code>col_names</code> option)?</li>
-<li>Read in the Excel file “icd-10.xls” and assign it to the object name <code>idc10</code>. Use the <a href="https://github.com/hadley/readxl"><code>readxl</code> package to do that</a> (examples are at the bottom of the linked page).</li>
-<li>Read in the SAS file <code>icu.sas7bdat</code>. To do this, use the <a href="https://github.com/hadley/haven"><code>haven</code> package</a>. Read the file into the R object <code>icu</code>.</li>
+<li>What type of flat file do you think the “ld_genetics.txt” file is? See if you
+can read it in and save it as the R object <code>ld_genetics</code>. Use the <code>summary</code>
+function to check out basic statistics on the data.</li>
+<li>Check out the file “measles_data/02-09-2015.txt”. What type of flat file do
+you think it is? Since it’s in a subdirectory, you’ll need to tell R how to get
+to it from the project directory, using something called a <strong>relative pathname</strong>
+(we’ll talk about this a lot more in the next section of the lecture). Read this
+file into R as an object named <code>ca_measles</code>, using the relative pathname
+(“measles_data/02-09-2015.txt”) in place of the file name in the <code>read_tsv</code>
+function call. Use the <code>col_names</code> option to name the columns “city” and
+“count”. What would the default column names be if you didn’t use this option
+(try this out by running <code>read_csv</code> without the <code>col_names</code> option)?</li>
+<li>Read in the Excel file “icd-10.xls” and assign it to the object name <code>idc10</code>.
+Use the <a href="https://github.com/hadley/readxl"><code>readxl</code> package to do that</a>
+(examples are at the bottom of the linked page).</li>
+<li>Read in the SAS file <code>icu.sas7bdat</code>. To do this, use the <a href="https://github.com/hadley/haven"><code>haven</code>
+package</a>. Read the file into the R object
+<code>icu</code>.</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb252-1" title="1"><span class="co"># Load the `readr` package</span></a>
-<a class="sourceLine" id="cb252-2" title="2"><span class="kw">library</span>(readr)</a></code></pre></div>
-<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb253-1" title="1"><span class="co"># Use `read_tsv` to read this file. </span></a>
-<a class="sourceLine" id="cb253-2" title="2">ld_genetics &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(<span class="st">&quot;ld_genetics.txt&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb254-1" title="1"><span class="co"># Load the `readr` package</span></a>
+<a class="sourceLine" id="cb254-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;readr&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb255-1" title="1"><span class="co"># Use `read_tsv` to read this file. </span></a>
+<a class="sourceLine" id="cb255-2" title="2">ld_genetics &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(<span class="dt">file =</span> <span class="st">&quot;ld_genetics.txt&quot;</span>)</a></code></pre></div>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   pos = col_double(),
@@ -1336,7 +1481,7 @@ Two common errors with logical operators are: (1) Using <code>=</code> instead o
 ##   cGCsk = col_double(),
 ##   cTAsk = col_double()
 ## )</code></pre>
-<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb255-1" title="1"><span class="kw">summary</span>(ld_genetics)</a></code></pre></div>
+<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb257-1" title="1"><span class="kw">summary</span>(<span class="dt">object =</span> ld_genetics)</a></code></pre></div>
 <pre><code>##       pos                nA            nC              nG       
 ##  Min.   :    500   Min.   :185   Min.   :120.0   Min.   : 85.0  
 ##  1st Qu.: 876000   1st Qu.:288   1st Qu.:173.0   1st Qu.:172.0  
@@ -1358,17 +1503,17 @@ Two common errors with logical operators are: (1) Using <code>=</code> instead o
 ##  Mean   : 7855  
 ##  3rd Qu.:15036  
 ##  Max.   :19049</code></pre>
-<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb257-1" title="1"><span class="co"># Use `read_tsv` to read this file. Because the first line</span></a>
-<a class="sourceLine" id="cb257-2" title="2"><span class="co"># of the file is *not* the column names, you need to specify what the column</span></a>
-<a class="sourceLine" id="cb257-3" title="3"><span class="co"># names should be with the `col_names` parameter. </span></a>
-<a class="sourceLine" id="cb257-4" title="4">ca_measles &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(<span class="st">&quot;measles_data/02-09-2015.txt&quot;</span>,</a>
-<a class="sourceLine" id="cb257-5" title="5">                       <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;count&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb259-1" title="1"><span class="co"># Use `read_tsv` to read this file. Because the first line</span></a>
+<a class="sourceLine" id="cb259-2" title="2"><span class="co"># of the file is *not* the column names, you need to specify what the column</span></a>
+<a class="sourceLine" id="cb259-3" title="3"><span class="co"># names should be with the `col_names` parameter. </span></a>
+<a class="sourceLine" id="cb259-4" title="4">ca_measles &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(<span class="dt">file =</span> <span class="st">&quot;measles_data/02-09-2015.txt&quot;</span>,</a>
+<a class="sourceLine" id="cb259-5" title="5">                       <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;count&quot;</span>))</a></code></pre></div>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   city = col_character(),
 ##   count = col_double()
 ## )</code></pre>
-<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb259-1" title="1"><span class="kw">head</span>(ca_measles)</a></code></pre></div>
+<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb261-1" title="1"><span class="kw">head</span>(<span class="dt">x =</span> ca_measles)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 2
 ##   city               count
 ##   &lt;chr&gt;              &lt;dbl&gt;
@@ -1378,11 +1523,11 @@ Two common errors with logical operators are: (1) Using <code>=</code> instead o
 ## 4 City of Pasadena       4
 ## 5 MARIN                  2
 ## 6 ORANGE                34</code></pre>
-<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb261-1" title="1"><span class="co"># You&#39;ll need the `readxl` package to read in the Excel file. Load that. </span></a>
-<a class="sourceLine" id="cb261-2" title="2"><span class="kw">library</span>(readxl)</a></code></pre></div>
-<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb262-1" title="1"><span class="co"># Use the `read_excel` function to read in the file. </span></a>
-<a class="sourceLine" id="cb262-2" title="2">icd10 &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&quot;icd-10.xls&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb263-1" title="1"><span class="kw">head</span>(icd10)</a></code></pre></div>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb263-1" title="1"><span class="co"># You&#39;ll need the `readxl` package to read in the Excel file. Load that. </span></a>
+<a class="sourceLine" id="cb263-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;readxl&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb264-1" title="1"><span class="co"># Use the `read_excel` function to read in the file. </span></a>
+<a class="sourceLine" id="cb264-2" title="2">icd10 &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="dt">path =</span> <span class="st">&quot;icd-10.xls&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb265-1" title="1"><span class="kw">head</span>(<span class="dt">x =</span> icd10)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 2
 ##   Code    `ICD Title`                                       
 ##   &lt;chr&gt;   &lt;chr&gt;                                             
@@ -1392,11 +1537,12 @@ Two common errors with logical operators are: (1) Using <code>=</code> instead o
 ## 4 A00.0   Cholera due to Vibrio cholerae 01, biovar cholerae
 ## 5 A00.1   Cholera due to Vibrio cholerae 01, biovar eltor   
 ## 6 A00.9   Cholera, unspecified</code></pre>
-<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb265-1" title="1"><span class="co"># You&#39;ll need the `haven` function to read in the SAS file. Load that.</span></a>
-<a class="sourceLine" id="cb265-2" title="2"><span class="kw">library</span>(haven)</a></code></pre></div>
-<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb266-1" title="1"><span class="co"># Use the `read_sas` function to read in this file.</span></a>
-<a class="sourceLine" id="cb266-2" title="2">icu &lt;-<span class="st"> </span><span class="kw">read_sas</span>(<span class="st">&quot;icu.sas7bdat&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb267-1" title="1">icu[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb267-1" title="1"><span class="co"># You&#39;ll need the `haven` function to read in the SAS file. Load that.</span></a>
+<a class="sourceLine" id="cb267-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;haven&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb268-1" title="1"><span class="co"># Use the `read_sas` function to read in this file.</span></a>
+<a class="sourceLine" id="cb268-2" title="2">icu &lt;-<span class="st"> </span><span class="kw">read_sas</span>(<span class="dt">data_file =</span> <span class="st">&quot;icu.sas7bdat&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb269-1" title="1"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>)</a>
+<a class="sourceLine" id="cb269-2" title="2"><span class="kw">slice</span>(<span class="dt">.data =</span> <span class="kw">select</span>(<span class="dt">.data =</span> icu, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>), <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 5
 ##      ID   STA   AGE GENDER  RACE
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -1408,89 +1554,134 @@ Two common errors with logical operators are: (1) Using <code>=</code> instead o
 </div>
 <div id="directory-structure-1" class="section level3">
 <h3><span class="header-section-number">2.8.3</span> Directory structure</h3>
-<p>Once you have the data, I’d like you to try using <code>getwd()</code> to figure out your current working directory and <code>list.files()</code> to figure out which files you have in the directories near that current working directory.</p>
-<p>Start by creating a new subdirectory called “data” in your R Project directory for this
-class (if you don’t already have that subdirectory). Move the data you downloaded in
-the start of this In-Course Exercise into that “data” subdirectory. (For this, use whatever tools you would normally use on your computer to move files from one directory to another—you don’t have to do this part in R.) Keep the “measles” data in its own subdirectory (so, the “data” subdirectory of your project will have its own “measles” subdirectory, which will have those files).</p>
+<p>Once you have the data, I’d like you to try using <code>getwd()</code> to figure out your
+current working directory and <code>list.files()</code> to figure out which files you have
+in the directories near that current working directory.</p>
+<p>Start by creating a new subdirectory called “data” in your R Project directory
+for this class (if you don’t already have that subdirectory). Move the data you
+downloaded in the start of this In-Course Exercise into that “data”
+subdirectory. (For this, use whatever tools you would normally use on your
+computer to move files from one directory to another—you don’t have to do this
+part in R.) Keep the “measles” data in its own subdirectory (so, the “data”
+subdirectory of your project will have its own “measles” subdirectory, which
+will have those files).</p>
 <p>Check that you are, in fact, in the working directory you think you’re in. Run:</p>
-<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb269-1" title="1"><span class="kw">getwd</span>()</a></code></pre></div>
-<p>Does it agree with the R project name in the top right hand corner of your R Studio window?</p>
-<p>Now, use the <code>list.files</code> function to print out which files or subdirectories you have in your current working directory:</p>
-<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb270-1" title="1"><span class="kw">list.files</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb271-1" title="1"><span class="kw">getwd</span>()</a></code></pre></div>
+<p>Does it agree with the R project name in the top right hand corner of your R
+Studio window?</p>
+<p>Now, use the <code>list.files</code> function to print out which files or subdirectories
+you have in your current working directory:</p>
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb272-1" title="1"><span class="kw">list.files</span>()</a></code></pre></div>
 <p>Try the following tasks:</p>
 <ul>
-<li>Read in the ebola data in <code>country_timeseries.csv</code> from your current working directory. This will require you to use a relative filename to direct R to how to find that file in the “data” subdirectory of your current working directory.</li>
-<li>Assign the data you read in to an R object named <code>ebola</code>. How many rows and columns does it have? What are the names of the columns?</li>
-<li>While staying in the same working directory, used <code>list.files()</code> to print the names of the available files in the “data” subdirectory. How about in the “R” subdirectory (if you have one)?</li>
+<li>Read in the ebola data in <code>country_timeseries.csv</code> from your current working
+directory. This will require you to use a relative filename to direct R to how
+to find that file in the “data” subdirectory of your current working directory.</li>
+<li>Assign the data you read in to an R object named <code>ebola</code>. How many rows and
+columns does it have? What are the names of the columns?</li>
+<li>While staying in the same working directory, used <code>list.files()</code> to print the
+names of the available files in the “data” subdirectory using the <code>path</code>
+argument. How about in the “R” subdirectory (if you have one)?</li>
 <li>Try to list the files in your “data” subdirectory using:
 <ul>
 <li>A relative pathname</li>
 <li>An absolute pathname</li>
 </ul></li>
-<li>Now use a relative pathname along with <code>list.files()</code> to list all the files in the “measles_data” subdirectory.</li>
-<li>Then try to read in the Ebola data using the appropriate <code>readr</code> function and a relative pathname.</li>
-<li>Which method (absolute or relative pathnames) always used the same code, regardless of your current working directory? Which method used different code, depending on the starting working directory?</li>
+<li>Now use a relative pathname along with <code>list.files()</code> to list all the files in
+the “measles_data” subdirectory.</li>
+<li>Then try to read in the Ebola data using the appropriate <code>readr</code> function and
+a relative pathname.</li>
+<li>Which method (absolute or relative pathnames) always used the same code,
+regardless of your current working directory? Which method used different code,
+depending on the starting working directory?</li>
 </ul>
-<p>Read in the ebola data in <code>country_timeseries.csv</code> from your current working directory. This will require you to use a relative filename to direct R to how to find that file in the “data” subdirectory of your current working directory.</p>
-<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb271-1" title="1">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>)</a></code></pre></div>
+<p>Read in the ebola data in <code>country_timeseries.csv</code> from your current working
+directory. This will require you to use a relative filename to direct R to how
+to find that file in the “data” subdirectory of your current working directory.</p>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb273-1" title="1">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>)</a></code></pre></div>
 <p>How many rows and columns does it have? What are the names of the columns?</p>
-<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb272-1" title="1"><span class="kw">dim</span>(ebola)    <span class="co"># Get the dimensions of the data (`nrow` and `ncol` would also work)</span></a>
-<a class="sourceLine" id="cb272-2" title="2"><span class="kw">colnames</span>(ebola) <span class="co"># Get the column names (you can also just print the object: `ebola`)</span></a></code></pre></div>
-<p>While staying in the same working directory, used <code>list.files()</code> to print the names of the available files in the “data” subdirectory. How about in the “R” subdirectory (if you have one)?</p>
-<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb273-1" title="1"><span class="kw">list.files</span>(<span class="st">&quot;data&quot;</span>)</a>
-<a class="sourceLine" id="cb273-2" title="2"><span class="kw">list.files</span>(<span class="st">&quot;R&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb274-1" title="1"><span class="kw">dim</span>(<span class="dt">x =</span> ebola)    <span class="co"># Get the dimensions of the data (`nrow` and `ncol` would also work)</span></a>
+<a class="sourceLine" id="cb274-2" title="2"><span class="kw">colnames</span>(<span class="dt">x =</span> ebola) <span class="co"># Get the column names (you can also just print the object: `ebola`)</span></a></code></pre></div>
+<p>While staying in the same working directory, used <code>list.files()</code> to print the
+names of the available files in the “data” subdirectory by using the <code>path</code>
+argument. How about in the “R” subdirectory (if you have one)?</p>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb275-1" title="1"><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data&quot;</span>)</a>
+<a class="sourceLine" id="cb275-2" title="2"><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;R&quot;</span>)</a></code></pre></div>
 <p>Try to list the files in your “data” subdirectory using:
 + A relative pathname
 + An absolute pathname</p>
-<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb274-1" title="1"><span class="kw">list.files</span>(<span class="st">&quot;data&quot;</span>) <span class="co"># This is using a relative pathname</span></a>
-<a class="sourceLine" id="cb274-2" title="2"><span class="kw">list.files</span>(<span class="st">&quot;/Users/brookeanderson/Desktop/r_course_2018/data&quot;</span>) <span class="co"># Absolute pathname</span></a>
-<a class="sourceLine" id="cb274-3" title="3">     <span class="co"># (Yours will be different and will depend on how your computer file</span></a>
-<a class="sourceLine" id="cb274-4" title="4">     <span class="co"># structure is set up.)</span></a></code></pre></div>
-<p>Now use a relative pathname along with <code>list.files()</code> to list all the files in the “measles_data” subdirectory.</p>
-<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb275-1" title="1"><span class="kw">list.files</span>(<span class="st">&quot;data/measles_data&quot;</span>)</a></code></pre></div>
-<p>Then try to read in the Ebola data using the appropriate <code>readr</code> function and a relative pathname</p>
-<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb276-1" title="1">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb276-1" title="1"><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data&quot;</span>) <span class="co"># This is using a relative pathname</span></a>
+<a class="sourceLine" id="cb276-2" title="2"><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;/Users/brookeanderson/Desktop/r_course_2018/data&quot;</span>) <span class="co"># Absolute pathname</span></a>
+<a class="sourceLine" id="cb276-3" title="3">     <span class="co"># (Yours will be different and will depend on how your computer file</span></a>
+<a class="sourceLine" id="cb276-4" title="4">     <span class="co"># structure is set up.)</span></a></code></pre></div>
+<p>Now use a relative pathname along with <code>list.files()</code> to list all the files in
+the “measles_data” subdirectory.</p>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb277-1" title="1"><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/measles_data&quot;</span>)</a></code></pre></div>
+<p>Then try to read in the Ebola data using the appropriate <code>readr</code> function and a
+relative pathname</p>
+<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb278-1" title="1">ebola &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>)</a></code></pre></div>
 <p>If you have extra time:</p>
 <ul>
-<li>Find out some more about this Ebola dataset by checking out <a href="https://github.com/cmrivers/ebola">Caitlin Rivers’ Ebola data GitHub repository</a>. Who is Caitlin Rivers? How did she put this dataset together?</li>
-<li>Search for R code related to Ebola research on GitHub. Go to the <a href="https://github.com">GitHub home page</a> and use the search bar to search for “ebola”. On the results page, scroll down and use the “Language” sidebar on the left to choose repositories with R code. Did you find any interesting projects?</li>
-<li>When you <code>list.files()</code> for the “data” subdirectory, almost everything listed has a file extension, like <code>.csv</code>, <code>.xls</code>, <code>.sas7bdat</code>. One thing does not. Which one? Why does this listing not have a file extension?</li>
+<li>Find out some more about this Ebola dataset by checking out <a href="https://github.com/cmrivers/ebola">Caitlin Rivers’
+Ebola data GitHub repository</a>. Who is Caitlin
+Rivers? How did she put this dataset together?</li>
+<li>Search for R code related to Ebola research on GitHub. Go to the <a href="https://github.com">GitHub home
+page</a> and use the search bar to search for “ebola”. On the
+results page, scroll down and use the “Language” sidebar on the left to choose
+repositories with R code. Did you find any interesting projects?</li>
+<li>When you <code>list.files()</code> for the “data” subdirectory, almost everything listed
+has a file extension, like <code>.csv</code>, <code>.xls</code>, <code>.sas7bdat</code>. One thing does not.
+Which one? Why does this listing not have a file extension?</li>
 </ul>
 </div>
 <div id="cleaning-up-data-1" class="section level3">
 <h3><span class="header-section-number">2.8.4</span> Cleaning up data #1</h3>
 <p>Try out the following tasks:</p>
 <ul>
-<li>Copy the following code into an R script. Figure out what each line does, and add comments to each line of code describing what the code is doing.</li>
+<li>Copy the following code into an R script. Figure out what each line does, and
+add comments to each line of code describing what the code is doing.</li>
 </ul>
-<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb277-1" title="1"><span class="co"># Copy this code to an R script and add comments describing what each line is doing</span></a>
-<a class="sourceLine" id="cb277-2" title="2"><span class="kw">library</span>(haven)</a>
-<a class="sourceLine" id="cb277-3" title="3">icu &lt;-<span class="st"> </span><span class="kw">read_sas</span>(<span class="st">&quot;data/icu.sas7bdat&quot;</span>)</a>
-<a class="sourceLine" id="cb277-4" title="4"></a>
-<a class="sourceLine" id="cb277-5" title="5">icu &lt;-<span class="st"> </span><span class="kw">select</span>(icu, ID, AGE, GENDER)</a>
-<a class="sourceLine" id="cb277-6" title="6"></a>
-<a class="sourceLine" id="cb277-7" title="7">icu &lt;-<span class="st"> </span><span class="kw">rename</span>(icu, </a>
-<a class="sourceLine" id="cb277-8" title="8">              <span class="dt">id =</span> ID,</a>
-<a class="sourceLine" id="cb277-9" title="9">              <span class="dt">age =</span> AGE,</a>
-<a class="sourceLine" id="cb277-10" title="10">              <span class="dt">gender =</span> GENDER)</a>
-<a class="sourceLine" id="cb277-11" title="11"></a>
-<a class="sourceLine" id="cb277-12" title="12">icu &lt;-<span class="st"> </span><span class="kw">mutate</span>(icu,</a>
-<a class="sourceLine" id="cb277-13" title="13">              <span class="dt">gender =</span> <span class="kw">factor</span>(gender, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>)),</a>
-<a class="sourceLine" id="cb277-14" title="14">              <span class="dt">id =</span> <span class="kw">as.character</span>(id))</a>
-<a class="sourceLine" id="cb277-15" title="15"></a>
-<a class="sourceLine" id="cb277-16" title="16">icu</a></code></pre></div>
+<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb279-1" title="1"><span class="co"># Copy this code to an R script and add comments describing what each line is doing</span></a>
+<a class="sourceLine" id="cb279-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;haven&quot;</span>)</a>
+<a class="sourceLine" id="cb279-3" title="3"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;forcats&quot;</span>)</a>
+<a class="sourceLine" id="cb279-4" title="4"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;stringr&quot;</span>)</a>
+<a class="sourceLine" id="cb279-5" title="5"></a>
+<a class="sourceLine" id="cb279-6" title="6">icu &lt;-<span class="st"> </span><span class="kw">read_sas</span>(<span class="dt">data_file =</span> <span class="st">&quot;data/icu.sas7bdat&quot;</span>)</a>
+<a class="sourceLine" id="cb279-7" title="7"></a>
+<a class="sourceLine" id="cb279-8" title="8">icu &lt;-<span class="st"> </span><span class="kw">select</span>(<span class="dt">.data =</span> icu, ID, AGE, GENDER)</a>
+<a class="sourceLine" id="cb279-9" title="9"></a>
+<a class="sourceLine" id="cb279-10" title="10">icu &lt;-<span class="st"> </span><span class="kw">rename</span>(<span class="dt">.data =</span> icu, </a>
+<a class="sourceLine" id="cb279-11" title="11">              <span class="dt">id =</span> ID,</a>
+<a class="sourceLine" id="cb279-12" title="12">              <span class="dt">age =</span> AGE,</a>
+<a class="sourceLine" id="cb279-13" title="13">              <span class="dt">gender =</span> GENDER)</a>
+<a class="sourceLine" id="cb279-14" title="14"></a>
+<a class="sourceLine" id="cb279-15" title="15">icu &lt;-<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">.data =</span> icu,</a>
+<a class="sourceLine" id="cb279-16" title="16">              <span class="dt">gender =</span> <span class="kw">as_factor</span>(<span class="dt">x =</span> gender),</a>
+<a class="sourceLine" id="cb279-17" title="17">              <span class="dt">gender =</span> <span class="kw">fct_recode</span>(gender,</a>
+<a class="sourceLine" id="cb279-18" title="18">                                  <span class="dt">Male =</span> <span class="st">&quot;0&quot;</span>,</a>
+<a class="sourceLine" id="cb279-19" title="19">                                  <span class="dt">Female =</span> <span class="st">&quot;1&quot;</span>),</a>
+<a class="sourceLine" id="cb279-20" title="20">              <span class="dt">id =</span> <span class="kw">str_c</span>(id)) </a>
+<a class="sourceLine" id="cb279-21" title="21"></a>
+<a class="sourceLine" id="cb279-22" title="22">icu</a></code></pre></div>
 <ul>
-<li>Following previous parts of the in-course exercise, you have an R object called <code>ebola</code> (if you need to, use some code from earlier in this in-course exercise to read in the data and create that object). Create an object called <code>ebola_liberia</code> that only has the columns with the date and the number of cases and deaths in Liberia. How many columns does this new dataframe have? How many observations?</li>
+<li>Following previous parts of the in-course exercise, you have an R object
+called <code>ebola</code> (if you need to, use some code from earlier in this in-course
+exercise to read in the data and create that object). Create an object called
+<code>ebola_liberia</code> that only has the columns with the date and the number of cases
+and deaths in Liberia. How many columns does this new dataframe have? How many
+observations?</li>
 <li>Change the column names to <code>date</code>, <code>cases</code>, and <code>deaths</code>.</li>
-<li>Add a column called <code>ratio</code> that has the ratio of deaths to cases for each observation (i.e., death counts divided by case counts).</li>
+<li>Add a column called <code>ratio</code> that has the ratio of deaths to cases for each
+observation (i.e., death counts divided by case counts).</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb278-1" title="1"><span class="co"># Load the dplyr package</span></a>
-<a class="sourceLine" id="cb278-2" title="2"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb278-3" title="3"></a>
-<a class="sourceLine" id="cb278-4" title="4"><span class="co">## Create a subset with just the Liberia columns and Date</span></a>
-<a class="sourceLine" id="cb278-5" title="5">ebola_liberia &lt;-<span class="st"> </span><span class="kw">select</span>(ebola, Date, Cases_Liberia, Deaths_Liberia)</a>
-<a class="sourceLine" id="cb278-6" title="6"><span class="kw">head</span>(ebola_liberia)</a></code></pre></div>
+<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb280-1" title="1"><span class="co"># Load the dplyr package</span></a>
+<a class="sourceLine" id="cb280-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>)</a>
+<a class="sourceLine" id="cb280-3" title="3"></a>
+<a class="sourceLine" id="cb280-4" title="4"><span class="co">## Create a subset with just the Liberia columns and Date</span></a>
+<a class="sourceLine" id="cb280-5" title="5">ebola_liberia &lt;-<span class="st"> </span><span class="kw">select</span>(<span class="dt">.data =</span> ebola, </a>
+<a class="sourceLine" id="cb280-6" title="6">                        Date, Cases_Liberia, Deaths_Liberia)</a>
+<a class="sourceLine" id="cb280-7" title="7"><span class="kw">head</span>(<span class="dt">x =</span> ebola_liberia)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 3
 ##   Date       Cases_Liberia Deaths_Liberia
 ##   &lt;chr&gt;              &lt;dbl&gt;          &lt;dbl&gt;
@@ -1500,17 +1691,17 @@ the start of this In-Course Exercise into that “data” subdirectory. (For thi
 ## 4 1/2/2015            8157           3496
 ## 5 12/31/2014          8115           3471
 ## 6 12/28/2014          8018           3423</code></pre>
-<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb280-1" title="1"><span class="co">## How many colums and rows does the whole dataset have (could also use `dim`)?</span></a>
-<a class="sourceLine" id="cb280-2" title="2"><span class="kw">ncol</span>(ebola_liberia)</a></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb282-1" title="1"><span class="co">## How many colums and rows does the whole dataset have (could also use `dim`)?</span></a>
+<a class="sourceLine" id="cb282-2" title="2"><span class="kw">ncol</span>(<span class="dt">x =</span> ebola_liberia)</a></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb282-1" title="1"><span class="kw">nrow</span>(ebola_liberia)</a></code></pre></div>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb284-1" title="1"><span class="kw">nrow</span>(<span class="dt">x =</span> ebola_liberia)</a></code></pre></div>
 <pre><code>## [1] 122</code></pre>
-<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb284-1" title="1"><span class="co">## Rename the columns</span></a>
-<a class="sourceLine" id="cb284-2" title="2">ebola_liberia &lt;-<span class="st"> </span><span class="kw">rename</span>(ebola_liberia,</a>
-<a class="sourceLine" id="cb284-3" title="3">                        <span class="dt">date =</span> Date,</a>
-<a class="sourceLine" id="cb284-4" title="4">                        <span class="dt">cases =</span> Cases_Liberia,</a>
-<a class="sourceLine" id="cb284-5" title="5">                        <span class="dt">deaths =</span> Deaths_Liberia)</a>
-<a class="sourceLine" id="cb284-6" title="6"><span class="kw">head</span>(ebola_liberia)</a></code></pre></div>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb286-1" title="1"><span class="co">## Rename the columns</span></a>
+<a class="sourceLine" id="cb286-2" title="2">ebola_liberia &lt;-<span class="st"> </span><span class="kw">rename</span>(<span class="dt">.data =</span> ebola_liberia,</a>
+<a class="sourceLine" id="cb286-3" title="3">                        <span class="dt">date =</span> Date,</a>
+<a class="sourceLine" id="cb286-4" title="4">                        <span class="dt">cases =</span> Cases_Liberia,</a>
+<a class="sourceLine" id="cb286-5" title="5">                        <span class="dt">deaths =</span> Deaths_Liberia)</a>
+<a class="sourceLine" id="cb286-6" title="6"><span class="kw">head</span>(ebola_liberia)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 3
 ##   date       cases deaths
 ##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
@@ -1520,9 +1711,10 @@ the start of this In-Course Exercise into that “data” subdirectory. (For thi
 ## 4 1/2/2015    8157   3496
 ## 5 12/31/2014  8115   3471
 ## 6 12/28/2014  8018   3423</code></pre>
-<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb286-1" title="1"><span class="co">## Add a `ratio` column</span></a>
-<a class="sourceLine" id="cb286-2" title="2">ebola_liberia &lt;-<span class="st"> </span><span class="kw">mutate</span>(ebola_liberia, <span class="dt">ratio =</span> deaths <span class="op">/</span><span class="st"> </span>cases)</a>
-<a class="sourceLine" id="cb286-3" title="3"><span class="kw">head</span>(ebola_liberia)</a></code></pre></div>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb288-1" title="1"><span class="co">## Add a `ratio` column</span></a>
+<a class="sourceLine" id="cb288-2" title="2">ebola_liberia &lt;-<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">.data =</span> ebola_liberia, </a>
+<a class="sourceLine" id="cb288-3" title="3">                        <span class="dt">ratio =</span> deaths <span class="op">/</span><span class="st"> </span>cases)</a>
+<a class="sourceLine" id="cb288-4" title="4"><span class="kw">head</span>(<span class="dt">x =</span> ebola_liberia)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 4
 ##   date       cases deaths  ratio
 ##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
@@ -1536,30 +1728,38 @@ the start of this In-Course Exercise into that “data” subdirectory. (For thi
 <div id="cleaning-up-data-2" class="section level3">
 <h3><span class="header-section-number">2.8.5</span> Cleaning up data #2</h3>
 <ul>
-<li>For the <code>ebola_liberia</code> dataframe, what class is the <code>date</code> column currently in? Convert it to a Date class. What are the starting and ending dates of observations in this dataframe?</li>
-<li>This data has earliest dates last and latest dates first. Often, we want our data in chronological order. Change the dataset so it’s in chronological order, from the observation with the earliest date to the one with the latest date.</li>
-<li>Filter out all rows from the <code>ebola_liberia</code> dataframe that are missing death counts for Liberia. How many rows are in the dataframe now?</li>
-<li>Create a new object called <code>first_five</code> that has only the five observations with the highest death counts in Liberia. What date in this dataset had the most deaths?</li>
+<li>For the <code>ebola_liberia</code> dataframe, what class is the <code>date</code> column currently
+in? Convert it to a Date class. What are the starting and ending dates of
+observations in this dataframe?</li>
+<li>This data has earliest dates last and latest dates first. Often, we want our
+data in chronological order. Change the dataset so it’s in chronological order,
+from the observation with the earliest date to the one with the latest date.</li>
+<li>Filter out all rows from the <code>ebola_liberia</code> dataframe that are missing death
+counts for Liberia. How many rows are in the dataframe now?</li>
+<li>Create a new object called <code>first_five</code> that has only the five observations
+with the highest death counts in Liberia. What date in this dataset had the most
+deaths?</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb288-1" title="1"><span class="co">## What class is the `date` column?</span></a>
-<a class="sourceLine" id="cb288-2" title="2"><span class="kw">class</span>(ebola_liberia<span class="op">$</span>date)</a></code></pre></div>
+<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb290-1" title="1"><span class="co">## What class is the `date` column?</span></a>
+<a class="sourceLine" id="cb290-2" title="2"><span class="kw">class</span>(<span class="dt">x =</span> ebola_liberia<span class="op">$</span>date)</a></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb290-1" title="1"><span class="co">## Use the `mdy` from `lubridate` to convert to Date class</span></a>
-<a class="sourceLine" id="cb290-2" title="2"><span class="kw">library</span>(lubridate)</a>
-<a class="sourceLine" id="cb290-3" title="3">ebola_liberia &lt;-<span class="st"> </span><span class="kw">mutate</span>(ebola_liberia, </a>
-<a class="sourceLine" id="cb290-4" title="4">                        <span class="dt">date =</span> <span class="kw">mdy</span>(date))</a>
-<a class="sourceLine" id="cb290-5" title="5"><span class="kw">class</span>(ebola_liberia<span class="op">$</span>date)</a></code></pre></div>
+<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb292-1" title="1"><span class="co">## Use the `mdy` from `lubridate` to convert to Date class</span></a>
+<a class="sourceLine" id="cb292-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;lubridate&quot;</span>)</a>
+<a class="sourceLine" id="cb292-3" title="3">ebola_liberia &lt;-<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">.data =</span> ebola_liberia, </a>
+<a class="sourceLine" id="cb292-4" title="4">                        <span class="dt">date =</span> <span class="kw">mdy</span>(date))</a>
+<a class="sourceLine" id="cb292-5" title="5"><span class="kw">class</span>(<span class="dt">x =</span> ebola_liberia<span class="op">$</span>date)</a></code></pre></div>
 <pre><code>## [1] &quot;Date&quot;</code></pre>
-<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb292-1" title="1"><span class="kw">head</span>(ebola_liberia<span class="op">$</span>date)</a></code></pre></div>
+<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb294-1" title="1"><span class="kw">head</span>(<span class="dt">x =</span> ebola_liberia<span class="op">$</span>date)</a></code></pre></div>
 <pre><code>## [1] &quot;2015-01-05&quot; &quot;2015-01-04&quot; &quot;2015-01-03&quot; &quot;2015-01-02&quot; &quot;2014-12-31&quot;
 ## [6] &quot;2014-12-28&quot;</code></pre>
-<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb294-1" title="1"><span class="co">## What are the starting and ending dates?</span></a>
-<a class="sourceLine" id="cb294-2" title="2"><span class="kw">range</span>(ebola_liberia<span class="op">$</span>date)</a></code></pre></div>
+<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb296-1" title="1"><span class="co">## What are the starting and ending dates?</span></a>
+<a class="sourceLine" id="cb296-2" title="2"><span class="kw">range</span>(ebola_liberia<span class="op">$</span>date)</a></code></pre></div>
 <pre><code>## [1] &quot;2014-03-22&quot; &quot;2015-01-05&quot;</code></pre>
-<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb296-1" title="1"><span class="co">## Re-order the dataset from first date to last date</span></a>
-<a class="sourceLine" id="cb296-2" title="2">ebola_liberia &lt;-<span class="st"> </span><span class="kw">arrange</span>(ebola_liberia, date)</a>
-<a class="sourceLine" id="cb296-3" title="3"><span class="kw">head</span>(ebola_liberia)</a></code></pre></div>
+<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb298-1" title="1"><span class="co">## Re-order the dataset from first date to last date</span></a>
+<a class="sourceLine" id="cb298-2" title="2">ebola_liberia &lt;-<span class="st"> </span><span class="kw">arrange</span>(<span class="dt">.data =</span> ebola_liberia, </a>
+<a class="sourceLine" id="cb298-3" title="3">                         date)</a>
+<a class="sourceLine" id="cb298-4" title="4"><span class="kw">head</span>(<span class="dt">x =</span> ebola_liberia)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 4
 ##   date       cases deaths ratio
 ##   &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -1569,9 +1769,10 @@ the start of this In-Course Exercise into that “data” subdirectory. (For thi
 ## 4 2014-03-26    NA     NA NA   
 ## 5 2014-03-27     8      6  0.75
 ## 6 2014-03-28     3      3  1</code></pre>
-<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb298-1" title="1"><span class="co">## Filter out the rows that are missing death counts for Liberia</span></a>
-<a class="sourceLine" id="cb298-2" title="2">ebola_liberia &lt;-<span class="st"> </span><span class="kw">filter</span>(ebola_liberia, <span class="op">!</span><span class="kw">is.na</span>(deaths))</a>
-<a class="sourceLine" id="cb298-3" title="3"><span class="kw">head</span>(ebola_liberia)</a></code></pre></div>
+<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb300-1" title="1"><span class="co">## Filter out the rows that are missing death counts for Liberia</span></a>
+<a class="sourceLine" id="cb300-2" title="2">ebola_liberia &lt;-<span class="st"> </span><span class="kw">filter</span>(<span class="dt">.data =</span> ebola_liberia, </a>
+<a class="sourceLine" id="cb300-3" title="3">                        <span class="op">!</span><span class="kw">is.na</span>(deaths))</a>
+<a class="sourceLine" id="cb300-4" title="4"><span class="kw">head</span>(<span class="dt">x =</span> ebola_liberia)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 4
 ##   date       cases deaths ratio
 ##   &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -1581,12 +1782,14 @@ the start of this In-Course Exercise into that “data” subdirectory. (For thi
 ## 4 2014-03-31     8      4 0.5  
 ## 5 2014-04-01     8      5 0.625
 ## 6 2014-04-04    18      7 0.389</code></pre>
-<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb300-1" title="1"><span class="kw">nrow</span>(ebola_liberia)</a></code></pre></div>
+<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb302-1" title="1"><span class="kw">nrow</span>(<span class="dt">x =</span> ebola_liberia)</a></code></pre></div>
 <pre><code>## [1] 81</code></pre>
-<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb302-1" title="1"><span class="co">## Create an object with just the top five observations in terms of death counts</span></a>
-<a class="sourceLine" id="cb302-2" title="2">first_five &lt;-<span class="st"> </span><span class="kw">arrange</span>(ebola_liberia, <span class="kw">desc</span>(deaths)) <span class="co"># First, rearrange the rows by deaths</span></a>
-<a class="sourceLine" id="cb302-3" title="3">first_five &lt;-<span class="st"> </span><span class="kw">slice</span>(first_five, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) <span class="co"># Limit the dataframe to the first five rows</span></a>
-<a class="sourceLine" id="cb302-4" title="4">first_five <span class="co"># Two days tied for the highest deaths counts (Jan. 2 and 3, 2015).</span></a></code></pre></div>
+<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb304-1" title="1"><span class="co">## Create an object with just the top five observations in terms of death counts</span></a>
+<a class="sourceLine" id="cb304-2" title="2">first_five &lt;-<span class="st"> </span><span class="kw">arrange</span>(<span class="dt">.data =</span> ebola_liberia, </a>
+<a class="sourceLine" id="cb304-3" title="3">                      <span class="kw">desc</span>(deaths)) <span class="co"># First, rearrange the rows by deaths</span></a>
+<a class="sourceLine" id="cb304-4" title="4">first_five &lt;-<span class="st"> </span><span class="kw">slice</span>(<span class="dt">.data =</span> first_five, </a>
+<a class="sourceLine" id="cb304-5" title="5">                    <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) <span class="co"># Limit the dataframe to the first five rows</span></a>
+<a class="sourceLine" id="cb304-6" title="6">first_five <span class="co"># Two days tied for the highest deaths counts (Jan. 2 and 3, 2015).</span></a></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
 ##   date       cases deaths ratio
 ##   &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -1597,47 +1800,67 @@ the start of this In-Course Exercise into that “data” subdirectory. (For thi
 ## 5 2014-12-24  7977   3413 0.428</code></pre>
 <p>If you have extra time:</p>
 <ul>
-<li>Try using the basic plotting function, <code>plot()</code>, to plot the number of cases of Ebola over time in Liberia from this dataframe. Do you think that the <code>cases</code> variable is measuring the count of cases for that day, or the cumulative number of cases up to that day? See if you can figure out more on Caitlin Rivers’ GitHub documentation. Do you notice any potential data quality issues in this data? <em>Hint: The <code>plot()</code> function takes, as required arguments, the vector you want to plot on the x-axis and then the vector you want to plot on the y-axis, like <code>plot([x vector], [y vector])</code>. If you are pulling the vectors from a dataset, you will need to use indexing to pull out the column you want as a vector, like <code>plot([dataframe name]$[column name for x], [dataframe]$[column name for y])</code>.</em></li>
+<li>Try using the basic plotting function, <code>plot()</code>, to plot the number of cases
+of Ebola over time in Liberia from this dataframe. Do you think that the <code>cases</code>
+variable is measuring the count of cases for that day, or the cumulative number
+of cases up to that day? See if you can figure out more on Caitlin Rivers’
+GitHub documentation. Do you notice any potential data quality issues in this
+data? <em>Hint: The <code>plot()</code> function takes, as required arguments, the vector you
+want to plot on the x-axis and then the vector you want to plot on the y-axis,
+like <code>plot([x vector], [y vector])</code>. If you are pulling the vectors from a
+dataset, you will need to use indexing to pull out the column you want as a
+vector, like <code>plot([dataframe name]$[column name for x], [dataframe]$[column name for y])</code>.</em></li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb304-1" title="1"><span class="co">## Plot the data</span></a>
-<a class="sourceLine" id="cb304-2" title="2"><span class="kw">plot</span>(ebola_liberia<span class="op">$</span>date, ebola_liberia<span class="op">$</span>cases)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-152-1.png" width="672" /></p>
+<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb306-1" title="1"><span class="co">## Plot the data</span></a>
+<a class="sourceLine" id="cb306-2" title="2"><span class="kw">plot</span>(<span class="dt">x =</span> ebola_liberia<span class="op">$</span>date, <span class="dt">y =</span> ebola_liberia<span class="op">$</span>cases)</a></code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-151-1.png" width="672" /></p>
 </div>
 <div id="piping-1" class="section level3">
 <h3><span class="header-section-number">2.8.6</span> Piping</h3>
 <p>Try the following tasks:</p>
 <ul>
-<li>Copy the following “piped” code into an R script. Figure out what each line does, and add comments to each line of code describing what the code is doing.</li>
+<li>Copy the following “piped” code into an R script. Figure out what each line
+does, and add comments to each line of code describing what the code is doing.</li>
 </ul>
-<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb305-1" title="1"><span class="co"># Copy this code to an R script and add comments describing what each line is doing</span></a>
-<a class="sourceLine" id="cb305-2" title="2"><span class="kw">library</span>(haven)</a>
-<a class="sourceLine" id="cb305-3" title="3">icu &lt;-<span class="st"> </span><span class="kw">read_sas</span>(<span class="st">&quot;data/icu.sas7bdat&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb305-4" title="4"><span class="st">  </span><span class="kw">select</span>(ID, AGE, GENDER) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb305-5" title="5"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">id =</span> ID,</a>
-<a class="sourceLine" id="cb305-6" title="6">         <span class="dt">age =</span> AGE, </a>
-<a class="sourceLine" id="cb305-7" title="7">         <span class="dt">gender =</span> GENDER) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb305-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gender =</span> <span class="kw">factor</span>(gender, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>)),</a>
-<a class="sourceLine" id="cb305-9" title="9">         <span class="dt">id =</span> <span class="kw">as.character</span>(id)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb305-10" title="10"><span class="st">  </span><span class="kw">arrange</span>(age) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb305-11" title="11"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb305-12" title="12"></a>
-<a class="sourceLine" id="cb305-13" title="13">icu</a></code></pre></div>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb307-1" title="1"><span class="co"># Copy this code to an R script and add comments describing what each line is doing</span></a>
+<a class="sourceLine" id="cb307-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;haven&quot;</span>)</a>
+<a class="sourceLine" id="cb307-3" title="3">icu &lt;-<span class="st"> </span><span class="kw">read_sas</span>(<span class="dt">data_file =</span> <span class="st">&quot;data/icu.sas7bdat&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb307-4" title="4"><span class="st">  </span><span class="kw">select</span>(ID, AGE, GENDER) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb307-5" title="5"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">id =</span> ID,</a>
+<a class="sourceLine" id="cb307-6" title="6">         <span class="dt">age =</span> AGE, </a>
+<a class="sourceLine" id="cb307-7" title="7">         <span class="dt">gender =</span> GENDER) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb307-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gender =</span> <span class="kw">as_factor</span>(<span class="dt">x =</span> gender),</a>
+<a class="sourceLine" id="cb307-9" title="9">         <span class="dt">gender =</span> <span class="kw">fct_recode</span>(<span class="dt">.f =</span> gender, </a>
+<a class="sourceLine" id="cb307-10" title="10">                             <span class="dt">Male =</span> <span class="st">&quot;0&quot;</span>,</a>
+<a class="sourceLine" id="cb307-11" title="11">                             <span class="dt">Female =</span> <span class="st">&quot;1&quot;</span>),</a>
+<a class="sourceLine" id="cb307-12" title="12">         <span class="dt">id =</span> <span class="kw">str_c</span>(id)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb307-13" title="13"><span class="st">  </span><span class="kw">arrange</span>(age) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb307-14" title="14"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb307-15" title="15"></a>
+<a class="sourceLine" id="cb307-16" title="16">icu</a></code></pre></div>
 <ul>
-<li>In previous sections of the in-course exercise, you have created code to read in and clean the Ebola dataset to create <code>ebola_liberia</code>. This included the following cleaning steps: (1) selecting certain columns, (2) renaming those columns, (3) adding a <code>ratio</code> column, (4) mutating the <code>date</code> column to a Date class, (5) re-ordering the observations from earliest to latest date, and (6) removing observations for which the count of deaths in Liberia is missing. Re-write this code to create and clean <code>ebola_liberia</code> as “piped” code. Start from reading in the raw data.</li>
+<li>In previous sections of the in-course exercise, you have created code to read
+in and clean the Ebola dataset to create <code>ebola_liberia</code>. This included the
+following cleaning steps: (1) selecting certain columns, (2) renaming those
+columns, (3) adding a <code>ratio</code> column, (4) mutating the <code>date</code> column to a Date
+class, (5) re-ordering the observations from earliest to latest date, and (6)
+removing observations for which the count of deaths in Liberia is missing.
+Re-write this code to create and clean <code>ebola_liberia</code> as “piped” code. Start
+from reading in the raw data.</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb306-1" title="1">ebola_liberia &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/country_timeseries.csv&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb306-2" title="2"><span class="st">  </span><span class="kw">select</span>(Date, Cases_Liberia, Deaths_Liberia) <span class="op">%&gt;%</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb306-3" title="3"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">date =</span> Date, </a>
-<a class="sourceLine" id="cb306-4" title="4">         <span class="dt">cases =</span> Cases_Liberia, </a>
-<a class="sourceLine" id="cb306-5" title="5">         <span class="dt">deaths =</span> Deaths_Liberia) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb306-6" title="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ratio =</span> deaths <span class="op">/</span><span class="st"> </span>cases) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb306-7" title="7"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">date =</span> <span class="kw">mdy</span>(date)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb306-8" title="8"><span class="st">  </span><span class="kw">arrange</span>(date) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb306-9" title="9"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(cases))</a>
-<a class="sourceLine" id="cb306-10" title="10"></a>
-<a class="sourceLine" id="cb306-11" title="11"><span class="kw">head</span>(ebola_liberia)</a></code></pre></div>
+<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb308-1" title="1">ebola_liberia &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb308-2" title="2"><span class="st">  </span><span class="kw">select</span>(Date, Cases_Liberia, Deaths_Liberia) <span class="op">%&gt;%</span><span class="st">  </span></a>
+<a class="sourceLine" id="cb308-3" title="3"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">date =</span> Date, </a>
+<a class="sourceLine" id="cb308-4" title="4">         <span class="dt">cases =</span> Cases_Liberia, </a>
+<a class="sourceLine" id="cb308-5" title="5">         <span class="dt">deaths =</span> Deaths_Liberia) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb308-6" title="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ratio =</span> deaths <span class="op">/</span><span class="st"> </span>cases) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb308-7" title="7"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">date =</span> <span class="kw">mdy</span>(date)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb308-8" title="8"><span class="st">  </span><span class="kw">arrange</span>(date) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb308-9" title="9"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(<span class="dt">x =</span> cases))</a>
+<a class="sourceLine" id="cb308-10" title="10"></a>
+<a class="sourceLine" id="cb308-11" title="11"><span class="kw">head</span>(<span class="dt">x =</span> ebola_liberia)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 4
 ##   date       cases deaths ratio
 ##   &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
