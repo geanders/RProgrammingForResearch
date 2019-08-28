@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2019-08-27" />
+<meta name="date" content="2019-08-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -687,7 +687,7 @@ Any of these aesthetics could also be given a constant value, instead of being m
 <div id="constant-aesthetics" class="section level3">
 <h3><span class="header-section-number">3.5.4</span> Constant aesthetics</h3>
 <p>Instead of mapping an aesthetic to an element of your data, you can use a constant value for it. For example, you may want to make all the points green, rather than having color map to gender:</p>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-182-1.png" width="0.6\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-183-1.png" width="0.6\textwidth" style="display: block; margin: auto;" /></p>
 <p>In this case, you’ll define that aesthetic when you add the geom, outside of an <code>aes</code> statement. In R, you can specify the shape of points with a number. Figure <a href="exploring-data-1.html#fig:shapeexamples">3.2</a> shows the shapes that correspond to the numbers 1 to 25 in the <code>shape</code> aesthetic. This figure also provides an example of the difference between color (black for all these example points) and fill (red for these examples). You can see that some point shapes include a fill (21 for example), while some are either empty (1) or solid (19).</p>
 <pre><code>## Warning: `data_frame()` is deprecated, use `tibble()`.
 ## This warning is displayed once per session.</code></pre>
@@ -1103,18 +1103,18 @@ Figure 3.12: Example of creating separate boxplots, divided by a categorical gro
 <div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb425-1" title="1"><span class="co"># Without piping</span></a>
 <a class="sourceLine" id="cb425-2" title="2"><span class="kw">ggplot</span>(worldcup) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb425-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes))</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-206-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-207-1.png" width="480" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" title="1"><span class="co"># With piping</span></a>
 <a class="sourceLine" id="cb426-2" title="2">worldcup <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb426-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
 <a class="sourceLine" id="cb426-4" title="4"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes)) </a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-206-2.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-207-2.png" width="480" style="display: block; margin: auto;" /></p>
 <p>Create the same scatterplot, but have each point in the scatterplot show that player’s position.</p>
 <div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb427-1" title="1"><span class="kw">ggplot</span>(worldcup,</a>
 <a class="sourceLine" id="cb427-2" title="2">       <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes, <span class="dt">color =</span> Position)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb427-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb427-4" title="4"><span class="st">  </span><span class="kw">geom_rug</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-207-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-208-1.png" width="672" /></p>
 <p>Create a scatterplot of number of shots (x-axis) versus number of tackles (y-axis) for <strong>just</strong> players on one of the four teams that made the semi-finals (Spain, Netherlands, Germany, Uruguay). Use color to show player’s position and shape to show player’s team. For an extra challenge, also try adding each player’s name on top of each point.</p>
 <div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" title="1">worldcup <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb428-2" title="2"><span class="st">  </span><span class="kw">rownames_to_column</span>(<span class="dt">var =</span> <span class="st">&quot;Name&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -1124,13 +1124,13 @@ Figure 3.12: Example of creating separate boxplots, divided by a categorical gro
 <a class="sourceLine" id="cb428-6" title="6"><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Shots, <span class="dt">y =</span> Tackles, </a>
 <a class="sourceLine" id="cb428-7" title="7">                          <span class="dt">color =</span> Position, <span class="dt">label =</span> Name), </a>
 <a class="sourceLine" id="cb428-8" title="8">            <span class="dt">size =</span> <span class="fl">2.5</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-208-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-209-1.png" width="672" /></p>
 <p>Create a scatterplot of player time versus passes. Use color to show whether the player was on one of the top 4 teams or not.</p>
 <div class="sourceCode" id="cb429"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb429-1" title="1">worldcup <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb429-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">top_4 =</span> Team <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Spain&quot;</span>, <span class="st">&quot;Netherlands&quot;</span>, <span class="st">&quot;Germany&quot;</span>, <span class="st">&quot;Uruguay&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb429-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb429-4" title="4"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes, <span class="dt">color =</span> top_<span class="dv">4</span>))</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-209-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-210-1.png" width="672" /></p>
 </div>
 </div>
 <div id="exploring-the-data-using-basic-plots-2" class="section level3">
@@ -1150,34 +1150,34 @@ Figure 3.12: Example of creating separate boxplots, divided by a categorical gro
 <div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb430-1" title="1"><span class="kw">ggplot</span>(worldcup) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb430-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes),</a>
 <a class="sourceLine" id="cb430-3" title="3">             <span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-210-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-211-1.png" width="672" /></p>
 <p>Google “R colors” to find a list of color names in R. Pick your favorite and make all the points in the scatterplot that color.</p>
 <div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb431-1" title="1"><span class="co"># Make the points &quot;darkseagreen4&quot;</span></a>
 <a class="sourceLine" id="cb431-2" title="2"><span class="kw">ggplot</span>(worldcup) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb431-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes),</a>
 <a class="sourceLine" id="cb431-4" title="4">             <span class="dt">color =</span> <span class="st">&quot;darkseagreen4&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-211-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-212-1.png" width="672" /></p>
 <p>Change the size of the points to make them smaller (hint: check out the <code>size</code> aesthetic).</p>
 <div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" title="1"><span class="kw">ggplot</span>(worldcup) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb432-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes),</a>
 <a class="sourceLine" id="cb432-3" title="3">             <span class="dt">size =</span> <span class="fl">0.8</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-212-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-213-1.png" width="672" /></p>
 <p>Make it so the color of the points shows the player’s position and all the points are slightly transparent.</p>
 <div class="sourceCode" id="cb433"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb433-1" title="1"><span class="kw">ggplot</span>(worldcup) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb433-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes),</a>
 <a class="sourceLine" id="cb433-3" title="3">             <span class="dt">alpha =</span> <span class="fl">0.3</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-213-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-214-1.png" width="672" /></p>
 <p>Change the title of the x-axis to “Time (minutes)” and the y-axis to “Number of passes”.</p>
 <div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb434-1" title="1"><span class="kw">ggplot</span>(worldcup) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb434-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb434-3" title="3"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Time (minutes)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Number of passes&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-214-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-215-1.png" width="672" /></p>
 <p>Add the title “World Cup statistics” and the subtitle “2010 World Cup”.</p>
 <div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb435-1" title="1"><span class="kw">ggplot</span>(worldcup) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb435-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb435-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;World Cup statistics&quot;</span>,</a>
 <a class="sourceLine" id="cb435-4" title="4">          <span class="dt">subtitle =</span> <span class="st">&quot;2010 World Cup&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-215-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-216-1.png" width="672" /></p>
 </div>
 </div>
 <div id="exploring-the-data-using-basic-plots-3" class="section level3">
@@ -1196,20 +1196,20 @@ Figure 3.12: Example of creating separate boxplots, divided by a categorical gro
 <p>Use histograms to explore the distribution of different variables. If you want to change the number of bins in the histogram, try playing around with the <code>bins</code> and <code>binwidth</code> arguments. You can use the <code>bins</code> argument to say how many bins you want (e.g., <code>bins = 50</code>). You can use the <code>binwidth</code> argument to say how wide you want the bins to be (e.g., <code>binwidth = 10</code> if you wanted bins to be 10 units wide, in the units of the variable mapped to the <code>x</code> aesthetic. Try using <code>fill</code> and <code>color</code> to change the appearance of the plot. Google “R colors” and search the images to find links to listings of different R colors.</p>
 <div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb436-1" title="1"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb436-2" title="2"><span class="st">  </span><span class="kw">geom_histogram</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-216-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-217-1.png" width="480" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb437-1" title="1"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb437-2" title="2"><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">bins =</span> <span class="dv">50</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-216-2.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-217-2.png" width="480" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb438-1" title="1"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb438-2" title="2"><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">100</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-216-3.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-217-3.png" width="480" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb439-1" title="1"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb439-2" title="2"><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">50</span>, <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">fill =</span> <span class="st">&quot;cyan4&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-216-4.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-217-4.png" width="480" style="display: block; margin: auto;" /></p>
 <p>To create a boxplot of <code>Shots</code> by <code>Position</code>, you can use <code>geom_boxplot</code>:</p>
 <div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb440-1" title="1"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Position, <span class="dt">y =</span> Shots)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb440-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-217-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-218-1.png" width="480" style="display: block; margin: auto;" /></p>
 <p>The top four teams in this World Cup were Spain, the Netherlands, Germany, and Uruguay. Create a subset with just the data for these four teams:</p>
 <div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb441-1" title="1">top_teams &lt;-<span class="st"> </span>worldcup <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb441-2" title="2"><span class="st">  </span><span class="kw">filter</span>(Team <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Spain&quot;</span>, <span class="st">&quot;Netherlands&quot;</span>, <span class="st">&quot;Germany&quot;</span>, <span class="st">&quot;Uruguay&quot;</span>)) </a></code></pre></div>
@@ -1217,16 +1217,16 @@ Figure 3.12: Example of creating separate boxplots, divided by a categorical gro
 <div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb442-1" title="1"><span class="kw">ggplot</span>(top_teams, <span class="kw">aes</span>(<span class="dt">x =</span> Team, <span class="dt">y =</span> Shots)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb442-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb442-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Shots per player in World Cup 2010&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-219-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-220-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Create a histogram using data only from the four top teams for the amount of time each player played. Use the color aesthetic of the histogram to show team.</p>
 <div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb443-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> top_teams) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb443-2" title="2"><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">fill =</span> Team))</a></code></pre></div>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-220-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-221-1.png" width="672" /></p>
 <p>Note that you can also explore other values for <code>geom_histogram</code> arguments. For example, you could change the binwidths to be 90 minutes (since games are 90 minutes).</p>
 <div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb445-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> top_teams) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb445-2" title="2"><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">fill =</span> Team), <span class="dt">binwidth =</span> <span class="dv">90</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-221-1.png" width="672" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-222-1.png" width="672" /></p>
 
 </div>
 </div>

@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2019-08-27" />
+<meta name="date" content="2019-08-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -481,7 +481,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 </p>
 </div>
 <p>In the below graphs, the names of the players with the most shots and passes have been added to highlight these unusual points. </p>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-225-1.png" width="768" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-226-1.png" width="768" /></p>
 <p>One helpful way to annotate is with text, using <code>geom_text()</code>. For this, you’ll first need to create a dataframe with the hottest day in the data:</p>
 <div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb449-1" title="1">hottest_day &lt;-<span class="st"> </span>chic_july <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb449-2" title="2"><span class="st">  </span><span class="kw">filter</span>(temp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(temp))</a>
@@ -491,12 +491,12 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb451-1" title="1">chic_plot <span class="op">+</span><span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> hottest_day, </a>
 <a class="sourceLine" id="cb451-2" title="2">                      <span class="dt">label =</span> <span class="st">&quot;Max&quot;</span>,</a>
 <a class="sourceLine" id="cb451-3" title="3">                      <span class="dt">size =</span> <span class="dv">3</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-227-1.png" width="0.7\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-228-1.png" width="0.7\textwidth" style="display: block; margin: auto;" /></p>
 <p>With <code>geom_text</code>, you’ll often want to use position adjustment (the <code>position</code> parameter) to move the text so it won’t be right on top of the data points:</p>
 <div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb452-1" title="1">chic_plot <span class="op">+</span><span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> hottest_day, </a>
 <a class="sourceLine" id="cb452-2" title="2">                      <span class="dt">label =</span> <span class="st">&quot;Max&quot;</span>,</a>
 <a class="sourceLine" id="cb452-3" title="3">                      <span class="dt">size =</span> <span class="dv">3</span>, <span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">vjust =</span> <span class="dv">-1</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-228-1.png" width="0.5\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-229-1.png" width="0.5\textwidth" style="display: block; margin: auto;" /></p>
 <p>You can also use lines to highlight. For this, it is often useful to create a new dataframe with data for the reference. To add a line for the Chicago heat wave, I’ve added a dataframe called <code>hw</code> with the relevant date range. I’m setting the y-value to be high enough (425) to ensure the line will be placed above the mortality data.</p>
 <div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb453-1" title="1">hw &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">date =</span> <span class="kw">c</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1995-07-12&quot;</span>), </a>
 <a class="sourceLine" id="cb453-2" title="2">                          <span class="kw">as.Date</span>(<span class="st">&quot;1995-07-16&quot;</span>)),</a>
@@ -507,7 +507,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <a class="sourceLine" id="cb453-7" title="7">                  <span class="kw">aes</span>(<span class="dt">x =</span> date, <span class="dt">y =</span> death),</a>
 <a class="sourceLine" id="cb453-8" title="8">                  <span class="dt">size =</span> <span class="dv">2</span>)</a></code></pre></div>
 <div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb454-1" title="1">b</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-230-1.png" width="0.7\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-231-1.png" width="0.7\textwidth" style="display: block; margin: auto;" /></p>
 </div>
 <div id="order" class="section level2">
 <h2><span class="header-section-number">4.6</span> Order</h2>
@@ -515,7 +515,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <p>Guideline 5: <strong>Make order meaningful.</strong></p>
 </blockquote>
 <p>You can make the ranking of data clearer from a graph by using order to show rank. Often, factor or categorical variables are ordered by something that is not interesting, like alphabetical order.</p>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-231-1.png" width="768" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-232-1.png" width="768" /></p>
 <p>You can re-order factor variables in a graph by resetting the factor using the <code>factor</code> function and changing the order that levels are included in the <code>levels</code> parameter.</p>
 </div>
 <div id="small-multiples" class="section level2">
@@ -525,7 +525,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 </blockquote>
 <p><em>Small multiples</em> are graphs that use many small plots showing the same thing for different facets of the data. For example, instead of using color in a single plot to show data for males and females, you could use two small plots, one each for males and females. </p>
 <p>Typically, in small multiples, all plots use the same x- and y-axes. This makes it easier to compare across plots, and it also allows you to save room by limiting axis annotation.</p>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-232-1.png" width="768" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-233-1.png" width="768" /></p>
 <p>You can use the <code>facet</code> functions to create small multiples. This separates the graph into several small graphs, one for each level of a factor. </p>
 <p>The <code>facet</code> functions are:</p>
 <ul>
@@ -536,7 +536,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb455-1" title="1"><span class="kw">ggplot</span>(nepali, <span class="kw">aes</span>(ht, wt)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb455-2" title="2"><span class="st">        </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb455-3" title="3"><span class="st">        </span><span class="kw">facet_grid</span>(. <span class="op">~</span><span class="st"> </span>sex)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-233-1.png" width="768" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-234-1.png" width="768" /></p>
 <p>The <code>facet_grid</code> function can facet by one or two variables. One will be shown by rows, and one by columns:</p>
 <div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb456-1" title="1"><span class="co">## Generic code</span></a>
 <a class="sourceLine" id="cb456-2" title="2"><span class="kw">facet_grid</span>([factor <span class="cf">for</span> rows] <span class="op">~</span><span class="st"> </span>[factor <span class="cf">for</span> columns])</a></code></pre></div>
@@ -551,7 +551,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb459-1" title="1"><span class="kw">ggplot</span>(nepali, <span class="kw">aes</span>(ht, wt)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb459-2" title="2"><span class="st">        </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb459-3" title="3"><span class="st">        </span><span class="kw">facet_grid</span>(. <span class="op">~</span><span class="st"> </span>sex)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-237-1.png" width="768" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-238-1.png" width="768" /></p>
 <p>To re-order the factor, and show the plot for “Female” first, you can use <code>factor</code> to change the order of the levels:</p>
 <div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb460-1" title="1">nepali &lt;-<span class="st"> </span>nepali <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb460-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sex =</span> <span class="kw">factor</span>(sex, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>)))</a></code></pre></div>
@@ -559,7 +559,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb461-1" title="1"><span class="kw">ggplot</span>(nepali, <span class="kw">aes</span>(ht, wt)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb461-2" title="2"><span class="st">        </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb461-3" title="3"><span class="st">        </span><span class="kw">facet_grid</span>(. <span class="op">~</span><span class="st"> </span>sex)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-239-1.png" width="768" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-240-1.png" width="768" /></p>
 </div>
 <div id="advanced-customization" class="section level2">
 <h2><span class="header-section-number">4.8</span> Advanced customization</h2>
@@ -573,14 +573,14 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb463-1" title="1"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes,</a>
 <a class="sourceLine" id="cb463-2" title="2">                     <span class="dt">color =</span> Position, <span class="dt">size =</span> Shots)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb463-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-241-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-242-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb464-1" title="1"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes,</a>
 <a class="sourceLine" id="cb464-2" title="2">                     <span class="dt">color =</span> Position, <span class="dt">size =</span> Shots)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb464-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb464-4" title="4"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">name =</span> <span class="st">&quot;Time played (minutes)&quot;</span>, </a>
 <a class="sourceLine" id="cb464-5" title="5">                     <span class="dt">breaks =</span> <span class="dv">90</span> <span class="op">*</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>),</a>
 <a class="sourceLine" id="cb464-6" title="6">                     <span class="dt">minor_breaks =</span> <span class="dv">90</span> <span class="op">*</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>))</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-242-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-243-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
 <p>Parameters you might find useful in <code>scale</code> functions include:</p>
 <table>
 <thead>
@@ -615,18 +615,18 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <p>For dates, you can use <code>scale</code> functions like <code>scale_x_date</code> and <code>scale_x_datetime</code>. For example, here’s a plot of deaths in Chicago in July 1995 using default values for the x-axis:</p>
 <div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" title="1"><span class="kw">ggplot</span>(chic_july, <span class="kw">aes</span>(<span class="dt">x =</span> date, <span class="dt">y =</span> death)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb465-2" title="2"><span class="st">  </span><span class="kw">geom_line</span>() </a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-244-1.png" width="0.9\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-245-1.png" width="0.9\textwidth" style="display: block; margin: auto;" /></p>
 <p>And here’s an example of changing the formating and name of the x-axis:</p>
 <div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb466-1" title="1"><span class="kw">ggplot</span>(chic_july, <span class="kw">aes</span>(<span class="dt">x =</span> date, <span class="dt">y =</span> death)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb466-2" title="2"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb466-3" title="3"><span class="st">  </span><span class="kw">scale_x_date</span>(<span class="dt">name =</span> <span class="st">&quot;Date in July 1995&quot;</span>,</a>
 <a class="sourceLine" id="cb466-4" title="4">               <span class="dt">date_labels =</span> <span class="st">&quot;%m-%d&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-245-1.png" width="0.9\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-246-1.png" width="0.9\textwidth" style="display: block; margin: auto;" /></p>
 <p>You can also use the <code>scale</code> functions to transform an axis. For example, to show the Chicago plot with “deaths” on a log scale, you can run:</p>
 <div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb467-1" title="1"><span class="kw">ggplot</span>(chic_july, <span class="kw">aes</span>(<span class="dt">x =</span> date, <span class="dt">y =</span> death)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb467-2" title="2"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></a>
 <a class="sourceLine" id="cb467-3" title="3"><span class="st">  </span><span class="kw">scale_y_log10</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-246-1.png" width="0.9\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-247-1.png" width="0.9\textwidth" style="display: block; margin: auto;" /></p>
 <p>For colors and fills, the conventions for the names of the <code>scale</code> functions can vary. For example, to adjust the color scale when you’re mapping a discrete variable (i.e., categorical, like gender or animal breed) to color, you’d use <code>scale_color_hue</code>. To adjust the color scale for a continuous variable, like age, you’ll use <code>scale_color_gradient</code>.</p>
 <p>For any color scales, consider starting with <code>brewer</code> first (e.g., <code>scale_color_brewer</code>, <code>scale_color_distiller</code>). Scale functions from <code>brewer</code> allow you to set colors using different palettes. You can explore these palettes at <a href="http://colorbrewer2.org/" class="uri">http://colorbrewer2.org/</a>.</p>
 <p>The Brewer palettes fall into three categories: sequential, divergent, and qualitative. You should use sequential or divergent for continuous data and qualitative for categorical data. Use <code>display.brewer.pal</code> to show the palette for a given number of colors.</p>
@@ -634,7 +634,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <a class="sourceLine" id="cb468-2" title="2"><span class="kw">display.brewer.pal</span>(<span class="dt">name =</span> <span class="st">&quot;Set1&quot;</span>, <span class="dt">n =</span> <span class="dv">8</span>)</a>
 <a class="sourceLine" id="cb468-3" title="3"><span class="kw">display.brewer.pal</span>(<span class="dt">name =</span> <span class="st">&quot;PRGn&quot;</span>, <span class="dt">n =</span> <span class="dv">8</span>)</a>
 <a class="sourceLine" id="cb468-4" title="4"><span class="kw">display.brewer.pal</span>(<span class="dt">name =</span> <span class="st">&quot;PuBuGn&quot;</span>, <span class="dt">n =</span> <span class="dv">8</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-247-1.png" width="0.32\textwidth" /><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-247-2.png" width="0.32\textwidth" /><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-247-3.png" width="0.32\textwidth" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-248-1.png" width="0.32\textwidth" /><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-248-2.png" width="0.32\textwidth" /><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-248-3.png" width="0.32\textwidth" /></p>
 <p>Use the <code>palette</code> argument within a <code>scales</code> function to customize the palette:</p>
 <div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb469-1" title="1">a &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">y =</span> <span class="kw">rnorm</span>(<span class="dv">5</span>),</a>
 <a class="sourceLine" id="cb469-2" title="2">                       <span class="dt">group =</span> letters[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]),</a>
@@ -644,20 +644,20 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <a class="sourceLine" id="cb469-6" title="6">c &lt;-<span class="st"> </span>a <span class="op">+</span><span class="st"> </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Pastel2&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb469-7" title="7"><span class="st">  </span><span class="kw">theme_dark</span>()</a>
 <a class="sourceLine" id="cb469-8" title="8"><span class="kw">grid.arrange</span>(a, b, c, <span class="dt">ncol =</span> <span class="dv">3</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-248-1.png" width="\textwidth" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-249-1.png" width="\textwidth" /></p>
 <div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb470-1" title="1"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes,</a>
 <a class="sourceLine" id="cb470-2" title="2">                     <span class="dt">color =</span> Position, <span class="dt">size =</span> Shots)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb470-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb470-4" title="4"><span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Dark2&quot;</span>,</a>
 <a class="sourceLine" id="cb470-5" title="5">                     <span class="dt">name =</span> <span class="st">&quot;Player position&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-249-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-250-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
 <p>You can also set colors manually:</p>
 <div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb471-1" title="1"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes,</a>
 <a class="sourceLine" id="cb471-2" title="2">                     <span class="dt">color =</span> Position, <span class="dt">size =</span> Shots)) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb471-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb471-4" title="4"><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>, </a>
 <a class="sourceLine" id="cb471-5" title="5">                                <span class="st">&quot;darkgreen&quot;</span>, <span class="st">&quot;darkgray&quot;</span>))</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-250-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-251-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="to-find-out-more" class="section level2">
@@ -706,44 +706,44 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <div id="implementing-plot-guidelines-1" class="section level3">
 <h3><span class="header-section-number">4.10.2</span> Implementing plot guidelines #1</h3>
 <p>In this section, we’ll work on creating a plot like this:</p>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-254-1.png" width="768" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-255-1.png" width="768" /></p>
 <p>Do the following tasks:</p>
 <ul>
 <li>Create a simple scatterplot of Time versus Shots for the World Cup data. It should look like this:</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-255-1.png" width="288" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-256-1.png" width="288" /></p>
 <ul>
 <li>Next, before any more coding, talk with your group members about how this graph is different from the simple one you created with <code>ggplot</code> in the last section. Also discuss what you can figure out from this new graph that was less clear from a simpler scatterplot of Time versus Shots for this data.</li>
 <li>Often, in graphs with a lot of points, it’s hard to see some of the points, because they overlap other points. Three strategies to address this are: (a) make the points smaller; and (b) make the points somewhat transparent. Try doing these first two with the scatterplot you’re creating. At this point, the plot should look something like this:</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-256-1.png" width="288" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-257-1.png" width="288" /></p>
 <ul>
 <li>Create a new column in the <code>worldcup</code> data called <code>top_four</code> that specifies whether or not the <code>Team</code> for that observation was one of the top four teams in the tournament (Netherlands, Uruguay, Spain, and Germany). Make the colors of the points correspond to whether the team was a top-four team. At this point, the plot should look something like this:</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-257-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-258-1.png" width="384" /></p>
 <ul>
 <li>Increase data density: Try changing the theme, to come up with a graph with a bit less non-data ink. From the <code>ggthemes</code> package, try some of the following themes: <code>theme_few()</code>, <code>theme_tufte()</code>, <code>theme_stata()</code>, <code>theme_fivethirtyeight()</code>, <code>theme_economist_white()</code>, and <code>theme_wsj()</code>. Pick a theme that helps increase the graph’s data density. At this point, the plot should look something like this:</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-258-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-259-1.png" width="384" /></p>
 <ul>
 <li>Use meaningful labels: Use the <code>labs()</code> function to make a clearer title for the x-axis. (You may have already written this code in the last section of this exercise.) In addition to setting the x-axis title with the <code>labs</code> function, you can also set the title for the color scale (use <code>color =</code> within the <code>labs</code> function). You may want to make a line break in the color title– you can use the linebreak character (<code>\n</code>) inside the character string with the title to do that. At this point, the plot should look something like this:</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-259-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-260-1.png" width="384" /></p>
 <ul>
 <li>Provide useful references: The standard time for a soccer game is 90 minutes. In the World Cup, all teams play at least three games, and then the top teams continue and play more games. Add a reference line at 270 minutes (i.e., the amount of standard time played for the three games that all teams play). At this point, the plot should look something like this:</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-260-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-261-1.png" width="384" /></p>
 <div id="example-r-code-7" class="section level4">
 <h4><span class="header-section-number">4.10.2.1</span> Example R code</h4>
 <p>As a reminder, here’s the code to do a simple scatterplot ot Shots by Time for the <code>worldcup</code> data:</p>
 <div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb477-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> worldcup) <span class="op">+</span></a>
 <a class="sourceLine" id="cb477-2" title="2"><span class="st">        </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Shots))</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-261-1.png" width="288" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-262-1.png" width="288" /></p>
 <p>Next, try to make it clearer to see the points by making them smaller and somewhat transparent. This can be done with the <code>size</code> and <code>alpha</code> aesthetics for <code>geom_points</code>. For the <code>size</code> aesthetic, a value smaller than about 2 = smaller than default, larger than about 2 = larger than default. For the <code>alpha</code> aesthetic, closer to 0 = more tranparent, closer to 1 = more opaque. As a reminder, in this case you are changing all of the points in the same way, so you will be setting those aesthetics to constant values. That means that you should specify the values <strong>outside</strong> of an <code>aes</code> call. This code could make these changes:</p>
 <div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb478-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> worldcup) <span class="op">+</span></a>
 <a class="sourceLine" id="cb478-2" title="2"><span class="st">        </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Shots),</a>
 <a class="sourceLine" id="cb478-3" title="3">                   <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-262-1.png" width="288" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-263-1.png" width="288" /></p>
 <p>To create a new column called <code>top_four</code>, first create vector that lists those top four teams, then create a logical vector in the dataframe for whether the team for that observation is in one of the top four teams:</p>
 <div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb479-1" title="1">worldcup &lt;-<span class="st"> </span>worldcup <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb479-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">top_4 =</span> Team <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Spain&quot;</span>, <span class="st">&quot;Germany&quot;</span>,  </a>
@@ -763,30 +763,30 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb483-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> worldcup) <span class="op">+</span></a>
 <a class="sourceLine" id="cb483-2" title="2"><span class="st">        </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Shots, <span class="dt">color =</span> top_<span class="dv">4</span>),</a>
 <a class="sourceLine" id="cb483-3" title="3">                   <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-264-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-265-1.png" width="384" /></p>
 <p>To increase the data density, try out different themes for the plot. First, I’ll save everything we’ve done so far as the object <code>shot_plot</code>, then I’ll try adding different themes:</p>
 <div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb484-1" title="1">shot_plot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> worldcup) <span class="op">+</span></a>
 <a class="sourceLine" id="cb484-2" title="2"><span class="st">        </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Shots, <span class="dt">color =</span> top_<span class="dv">4</span>),</a>
 <a class="sourceLine" id="cb484-3" title="3">                   <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</a>
 <a class="sourceLine" id="cb484-4" title="4"></a>
 <a class="sourceLine" id="cb484-5" title="5">shot_plot <span class="op">+</span><span class="st"> </span><span class="kw">theme_few</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-265-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-266-1.png" width="384" /></p>
 <div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb485-1" title="1">shot_plot <span class="op">+</span><span class="st"> </span><span class="kw">theme_tufte</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-265-2.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-266-2.png" width="384" /></p>
 <div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb486-1" title="1">shot_plot <span class="op">+</span><span class="st"> </span><span class="kw">theme_wsj</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-265-3.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-266-3.png" width="384" /></p>
 <div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb487-1" title="1">shot_plot <span class="op">+</span><span class="st"> </span><span class="kw">theme_fivethirtyeight</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-265-4.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-266-4.png" width="384" /></p>
 <div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb488-1" title="1">shot_plot <span class="op">+</span><span class="st"> </span><span class="kw">theme_stata</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-265-5.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-266-5.png" width="384" /></p>
 <div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb489-1" title="1">shot_plot <span class="op">+</span><span class="st"> </span><span class="kw">theme_economist_white</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-265-6.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-266-6.png" width="384" /></p>
 <p>The data density is increased with the <code>theme_few()</code> theme, so I’ll use that:</p>
 <div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb490-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> worldcup) <span class="op">+</span></a>
 <a class="sourceLine" id="cb490-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Shots, <span class="dt">color =</span> top_<span class="dv">4</span>),</a>
 <a class="sourceLine" id="cb490-3" title="3">             <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb490-4" title="4"><span class="st">  </span><span class="kw">theme_few</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-266-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-267-1.png" width="384" /></p>
 <p>To change the titles for some of the scales (the x-axis and color scale), you can use the <code>labs()</code> function. Note that you can use <code>\n</code> to add a line break inside one of these titles (I’ve done that for the title for the color scale):</p>
 <div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb491-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> worldcup) <span class="op">+</span></a>
 <a class="sourceLine" id="cb491-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Shots, <span class="dt">color =</span> top_<span class="dv">4</span>),</a>
@@ -794,7 +794,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <a class="sourceLine" id="cb491-4" title="4"><span class="st">  </span><span class="kw">theme_few</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb491-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Time played in World Cup (minutes)&quot;</span>,</a>
 <a class="sourceLine" id="cb491-6" title="6">       <span class="dt">color =</span> <span class="st">&quot;Team&#39;s final</span><span class="ch">\n</span><span class="st">ranking&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-267-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-268-1.png" width="384" /></p>
 <p>As an extra note, if you want to create nicer labels for the legend for color, convert the <code>top_four</code> column into the factor class, with the labels you want to use in the figure legend:</p>
 <div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb492-1" title="1">worldcup &lt;-<span class="st"> </span>worldcup <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb492-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">top_4 =</span> <span class="kw">factor</span>(top_<span class="dv">4</span>, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>),</a>
@@ -808,7 +808,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <a class="sourceLine" id="cb494-4" title="4"><span class="st">  </span><span class="kw">theme_few</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb494-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Time played in World Cup (minutes)&quot;</span>,</a>
 <a class="sourceLine" id="cb494-6" title="6">       <span class="dt">color =</span> <span class="st">&quot;Team&#39;s final</span><span class="ch">\n</span><span class="st">ranking&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-269-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-270-1.png" width="384" /></p>
 <p>To add a reference line at 270 minutes of time, use the <code>geom_vline()</code> function. You’ll want to make it a light color (like light gray) and dashed or dotted (<code>linetype</code> of 2 or 3), so it won’t be too prominent on the graph:</p>
 <div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb495-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> worldcup) <span class="op">+</span></a>
 <a class="sourceLine" id="cb495-2" title="2"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">270</span>, <span class="dt">color =</span> <span class="st">&quot;lightgray&quot;</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></a>
@@ -817,7 +817,7 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <a class="sourceLine" id="cb495-5" title="5"><span class="st">  </span><span class="kw">theme_few</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb495-6" title="6"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Time played in World Cup (minutes)&quot;</span>,</a>
 <a class="sourceLine" id="cb495-7" title="7">       <span class="dt">color =</span> <span class="st">&quot;Team&#39;s final</span><span class="ch">\n</span><span class="st">ranking&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-270-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-271-1.png" width="384" /></p>
 </div>
 </div>
 <div id="implementing-plot-guidelines-2" class="section level3">
@@ -825,32 +825,32 @@ Figure 4.7: Mortality in Chicago, July 1995. In the plot on the right, a thick r
 <ul>
 <li>Highlighting interesting data: Who had the most shots in the 2010 World Cup? Was he on a top-four team? Use <code>geom_text()</code> to label his point on the graph with his name (try out some different values of <code>hjust</code> and <code>vjust</code> in this function call to get the label in a place you like). At this point, the plot should look something like this:</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-271-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-272-1.png" width="384" /></p>
 <ul>
 <li>For labeling the player with the top number of shots, instead of only using the player’s name, use the following format: “[Player’s name], [Player’s team]”. (Hint: You may want to use <code>mutate</code> to add a new column, where you used <code>paste0</code> to paste together the player’s name, <code>", "</code>, and the team name.) At this point, the plot should look something like this:</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-272-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-273-1.png" width="384" /></p>
 <ul>
 <li>Create small multiples. The relationship between time played and shots taken is probably different by the players’ positions. Use faceting to create different graphs for each position. At this point, the plot should look something like this:</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-273-1.png" width="768" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-274-1.png" width="768" /></p>
 <ul>
 <li>Make order meaningful: What order are the faceted graphs currently in? Offensive players have more chances to take shots than defensive players, so that might be a useful ordering for the facets. Re-order the <code>Position</code> factor column to go from nearest your own goal to nearest the opponents goal, and then re-plot the graph from the previous step.</li>
 </ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-274-1.png" width="768" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-275-1.png" width="768" /></p>
 <div id="example-r-code-8" class="section level4">
 <h4><span class="header-section-number">4.10.3.1</span> Example R code</h4>
 <p>To add a text label with just the player with the most shots, you’ll want to create a new dataframe with just the top player. You can use the <code>top_n</code> function to do that (the <code>wt</code> option is specifying that we want the top player in terms of values in the <code>Shots</code> column):</p>
 <div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb496-1" title="1">top_player &lt;-<span class="st"> </span>worldcup <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb496-2" title="2"><span class="st">  </span><span class="kw">top_n</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">wt =</span> Shots)</a></code></pre></div>
 <p>Now you can use <code>geom_text()</code> to label this player’s point on the graph with his name. You may need to mess around with some of the options in <code>geom_text()</code>, like <code>size</code>, <code>hjust</code>, and <code>vjust</code> (<code>hjust</code> and <code>vjust</code> say where, in relation to the point location, to put the label), to get something you’re happy with.</p>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-276-1.png" width="384" /></p>
-<p>If you want to put both the player’s name and his team, you can add a <code>mutate()</code> function when you create the new dataframe with just the top player, and then use this for the label:</p>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-277-1.png" width="384" /></p>
+<p>If you want to put both the player’s name and his team, you can add a <code>mutate()</code> function when you create the new dataframe with just the top player, and then use this for the label:</p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-278-1.png" width="384" /></p>
 <p>To create small multiples, use the <code>facet_wrap()</code> command (you’ll probably want to use <code>ncol</code> to specify to use four columns):</p>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-278-1.png" width="768" /></p>
-<p>To re-order the <code>Position</code> column of the dataframe, add a <code>mutate</code> statement before you pipe into the plotting code. Use the <code>levels</code> option of the <code>factor()</code> function– whatever order you put the factors in for this argument will be the new order in which R saves the levels of this factor.</p>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-279-1.png" width="768" /></p>
+<p>To re-order the <code>Position</code> column of the dataframe, add a <code>mutate</code> statement before you pipe into the plotting code. Use the <code>levels</code> option of the <code>factor()</code> function– whatever order you put the factors in for this argument will be the new order in which R saves the levels of this factor.</p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-280-1.png" width="768" /></p>
 <div class="rmdnote">
 <p>
 Note from this code example that you can use the <code>levels</code> function to find out the levels and their order for a factor-class vector.
