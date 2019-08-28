@@ -699,7 +699,7 @@ CRAN, you can install the package to your computer using the `install.packages`
 function:
 
 ```{r, eval = FALSE, messages = FALSE, warnings = FALSE, results = FALSE}
-install.packages("phonenumber")
+install.packages(pkgs = "phonenumber")
 ```
 
 This downloads the package from CRAN and saves it in a special location on your
@@ -724,7 +724,7 @@ You can load a package in an R session using the
 `library` function, with the package name inside the parentheses.
 
 ```{r messages = FALSE, warnings = FALSE, results = FALSE}
-library("phonenumber")
+library(package = "phonenumber")
 ```
 
 Figure \@ref(fig:install-vs-load) provides a conceptual
@@ -743,7 +743,7 @@ the `library` function, you can use this function in your R session:
 
 ```{r}
 fedex_number <- "GoFedEx"
-letterToNumber(fedex_number)
+letterToNumber(value = fedex_number)
 ```
 
 ```{block, type = "rmdnote"}
@@ -767,7 +767,7 @@ if it implements an algorithm or method that is not standard. You can use the
 `citation` function to get the information you need about how to cite a package:
 
 ```{r}
-citation("phonenumber")
+citation(package = "phonenumber")
 ```
 
 ```{block, type = "rmdnote"}
@@ -811,7 +811,7 @@ Once you know the name of the vignette you would like to open, you can also use
 `vignette` to open it:
 
 ```{r eval = FALSE}
-vignette("phonenumber")
+vignette(topic = "phonenumber")
 ```
 
 To access the helpfile for any function within a package you've loaded, you can
@@ -914,14 +914,14 @@ are put in a vector with a value with the character data type. You can use the
 `class` function to determine the class of an object: 
 
 ```{r}
-class(mixed_classes)
+class(x = mixed_classes)
 ```
 
 A vector's *length* is the number of elements in the vector. You can use the
 `length` function to determine a vector's length:
 
 ```{r}
-length(mixed_classes)
+length(x = mixed_classes)
 ```
 
 Once you create an object, you will often want to reference the whole object in
@@ -984,8 +984,8 @@ you want to literally load the package "phonenumber", rather than load whatever
 character string is saved in the object named `phonenumber`. However, `library`
 is one of the functions where you can be lazy and skip the quotation marks, and
 it will still load "phonenumber" for you. Therefore, if you want, this function
-also works if you call `library(phonenumber)` (without the quotation marks)
-instead of how we actually called it (`library(phonenumber)`). 
+also works if you call `library(package = phonenumber)` (without the quotation marks)
+instead of how we actually called it (`library(package = phonenumber)`). 
 ```
 
 ### Dataframes
@@ -1003,7 +1003,7 @@ knitr::include_graphics("figures/example_dataframe.jpg")
 Here's how the dataframe in Figure \@ref(fig:example-dataframe) will look in R: 
 
 ```{r echo = FALSE, message = FALSE, results = TRUE}
-library("tibble")
+library(package = "tibble")
 hp_data <- tibble(first_name = c("Harry", "Ron", "Hermione"),
                   last_name = c("Potter", "Weasley", "Granger"),
                   n_kids = c(1, 7, 1),
@@ -1057,7 +1057,7 @@ Here is an example of the code used to create the *Harry Potter* tibble
 dataframe shown above:
 
 ```{r}
-library("tibble")
+library(package = "tibble")
 hp_data <- tibble(first_name = c("Harry", "Ron", "Hermione"),
                   last_name = c("Potter", "Weasley", "Granger"),
                   n_kids = c(1, 7, 1),
@@ -1098,13 +1098,13 @@ comma-separated (csv) file on your computer called "daily_show_guests.csv"
 can read it into your R session with the following code:
 
 ```{r echo = FALSE, message = FALSE}
-library(readr)
-daily_show <- read_csv("data/daily_show_guests.csv",
+library(package = "readr")
+daily_show <- read_csv(file = "data/daily_show_guests.csv",
                        skip = 4)
 ```
 ```{r eval = FALSE}
-library(readr)
-daily_show <- read_csv("daily_show_guests.csv",
+library(package = "readr")
+daily_show <- read_csv(file = "daily_show_guests.csv",
                        skip = 4)
 ```
 
@@ -1117,9 +1117,9 @@ You can use the functions `dim`, `nrow`, and `ncol` to figure out the dimensions
 (number of rows and columns) of a dataframe:
 
 ```{r}
-dim(daily_show)
-nrow(daily_show)
-ncol(daily_show)
+dim(x = daily_show)
+nrow(x = daily_show)
+ncol(x = daily_show)
 ```
 
 Base R also has some useful functions for quickly exploring dataframes:
@@ -1131,8 +1131,8 @@ For example, you can explore the data we just pulled in on the *Daily Show*
 with: 
 
 ```{r}
-str(daily_show)
-summary(daily_show)
+str(object = daily_show)
+summary(object = daily_show)
 ```
 
 To extract data from a dataframe, you can use some functions from the `dplyr`
@@ -1146,7 +1146,7 @@ For example, if you wanted to get the first two rows of the `hp_data`
 dataframe, you could run:
 
 ```{r message = FALSE, warning = FALSE}
-library("dplyr")
+library(package = "dplyr")
 slice(.data = hp_data, c(1:2))
 ```
 
@@ -1160,7 +1160,7 @@ You can compose calls from both functions. For example, you could extract the
 values in the first and fourth columns of the first two rows with: 
 
 ```{r}
-select(slice(.data = hp_data, c(1:2)), c(1, 4))
+select(.data = slice(.data = hp_data, c(1:2)), c(1, 4))
 ```
 
 You can use square-bracket indexing (`[..., ...]`) for dataframes, too, but now
@@ -1294,56 +1294,124 @@ To start, you'll try running some simple code in R, using examples from the cour
 slides up to this point. Take the following steps:
 
 1. Open an R session and find the "Console" pane. 
-2. Go through the slides we've covered so far. Find any examples of R expressions and try them
-out at the prompt in the console. 
+2. Go through the slides we've covered so far. Find any examples of R
+expressions and try them out at the prompt in the console.
 3. Once you've run an assignment expression, find the "Environment" pane. Check
-that the object name that you assigned now appears there. 
+that the object name that you assigned now appears there.
 
 ### Writing your code as an R script
 
-While the R console is fine for initially exploring data, you should get in the habit of writing up R code in an R script for most of your data analysis projects in R. 
+While the R console is fine for initially exploring data, you should get in the
+habit of writing up R code in an R script for most of your data analysis
+projects in R.
 
-* Open a new R script and save it to your current working directory (i.e., wherever you saved the data you downloaded for this exercise).
-* Take some of the code that you wrote for this exercise. Put it in the R script. Do not put more than one function call per line (but it's fine to have longer function calls span a few lines).
-* Use the "Run" button to run a single line of this code. Check the console to see what happens when you do.
+* Open a new R script and save it to your current working directory (i.e.,
+wherever you saved the data you downloaded for this exercise).
+* Take some of the code that you wrote for this exercise. Put it in the R
+script. Do not put more than one function call per line (but it's fine to have
+longer function calls span a few lines).
+* Use the "Run" button to run a single line of this code. Check the console to
+see what happens when you do.
 * Highlight a few lines of the code and use "Run" to run them.
-* Try using the keyboard shortcut (Command-Return) to run the line of code your cursor is currently on. Try doing this with a function call that runs across several lines of the R script file-- what do you see at the console?
-* Try running the whole script using "Source". Again, look at the console after you "source" the script. 
-* Close your R session (and save any changes to your R script). Do **not** save your R session history. Re-open R and see if you can re-open your R script and re-run it. Try using `ls()` to list the objects in your R session before and after you re-run your script. Does anything about the result surprise you?
+* Try using the keyboard shortcut (Command-Return) to run the line of code your
+cursor is currently on. Try doing this with a function call that runs across
+several lines of the R script file-- what do you see at the console?
+* Try running the whole script using "Source". Again, look at the console after
+you "source" the script.
+* Close your R session (and save any changes to your R script). Do **not** save
+your R session history. Re-open R and see if you can re-open your R script and
+re-run it. Try using `ls()` to list the objects in your R session before and
+after you re-run your script. Does anything about the result surprise you?
 
 ### About the dataset
 
-For the rest of today's class, you'll be using a dataset of all the guests on *The Daily Show* when Jon Stewart was the host. This data was originally collected by Nate Silver's website, [FiveThirtyEight](http://fivethirtyeight.com) and is available on [FiveThirtyEight's GitHub page](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests) under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/). I have copied this data into my GitHub repository for this class. The only change made to the original file was to add (commented) attribution information at the start of the file.
+For the rest of today's class, you'll be using a dataset of all the guests on
+*The Daily Show* when Jon Stewart was the host. This data was originally
+collected by Nate Silver's website,
+[FiveThirtyEight](http://fivethirtyeight.com) and is available on
+[FiveThirtyEight's GitHub
+page](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests)
+under the [Creative Commons Attribution 4.0 International
+License](http://creativecommons.org/licenses/by/4.0/). I have copied this data
+into my GitHub repository for this class. The only change made to the original
+file was to add (commented) attribution information at the start of the file.
 
 **First, check out a bit more about this data and its source:**
 
-* Check out [the Creative Commons license](http://creativecommons.org/licenses/by/4.0/). What are we allowed to do with this data? What restrictions are there on using the data?
-* It's often helpful to use prior knowledge to help check out or validate your dataset. One thing we might want to know about this data is if it covers the whole time that Jon Stewart hosted *The Daily Show*. Use Google to find out the dates he started and finished as host.
-* Briefly browse around [FiveThirtyEight's GitHub data page](https://github.com/fivethirtyeight/data). What are some other datasets available that you find interesting? For any dataset, you can scroll to the bottom of the page to get to the compiled README.md content, which gives the full titles and links to relevant datasets. You can also click on any dataset to get more information. 
-* Look at [the GitHub page for this *Daily Show* data](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests). How many columns will be in this dataset? What kind of information does the data include? What do the columns show? What do the rows show?
+* Check out [the Creative Commons
+license](http://creativecommons.org/licenses/by/4.0/). What are we allowed to do
+with this data? What restrictions are there on using the data?
+* It's often helpful to use prior knowledge to help check out or validate your
+dataset. One thing we might want to know about this data is if it covers the
+whole time that Jon Stewart hosted *The Daily Show*. Use Google to find out the
+dates he started and finished as host.
+* Briefly browse around [FiveThirtyEight's GitHub data
+page](https://github.com/fivethirtyeight/data). What are some other datasets
+available that you find interesting? For any dataset, you can scroll to the
+bottom of the page to get to the compiled README.md content, which gives the
+full titles and links to relevant datasets. You can also click on any dataset to
+get more information.
+* Look at [the GitHub page for this *Daily Show*
+data](https://github.com/fivethirtyeight/data/tree/master/daily-show-guests).
+How many columns will be in this dataset? What kind of information does the data
+include? What do the columns show? What do the rows show?
 
 ```{block, type = "rmdnote"}
-In this exercise, you're using data posted by [FiveThirtyEight](http://fivethirtyeight.com) on [GitHub](https://github.com). We'll be using a lot of data that's on GitHub this semester, and GitHub is being used behind-the-scenes for both this book and the course note slides. We'll talk more about GitHub later, but you might find it interesting to explore a bit now. It's a place where people can post, work on, and share code in a number of programming languages-- it's been referred to as "Facebook for Nerds". You can search GitHub repositories and code specifically by programming language, so it can be a good way to find example R code from which to learn.
+In this exercise, you're using data posted by
+[FiveThirtyEight](http://fivethirtyeight.com) on [GitHub](https://github.com).
+We'll be using a lot of data that's on GitHub this semester, and GitHub is being
+used behind-the-scenes for both this book and the course note slides. We'll talk
+more about GitHub later, but you might find it interesting to explore a bit now.
+It's a place where people can post, work on, and share code in a number of
+programming languages-- it's been referred to as "Facebook for Nerds". You can
+search GitHub repositories and code specifically by programming language, so it
+can be a good way to find example R code from which to learn.
 ```
 
 If you have extra time:
 
-* Check out [the related article](http://fivethirtyeight.com/datalab/every-guest-jon-stewart-ever-had-on-the-daily-show/) on FiveThirtyEight. What are some specific questions they used this data to answer for this article?
+* Check out [the related
+article](http://fivethirtyeight.com/datalab/every-guest-jon-stewart-ever-had-on-the-daily-show/)
+on FiveThirtyEight. What are some specific questions they used this data to
+answer for this article?
 * Who is Nate Silver?
 
 ### Manually creating vectors and a dataframe
 
-Start by manually creating some vectors and data frames with a small subset of this data.
+Start by manually creating some vectors and data frames with a small subset of
+this data.
 
-* Use the concatenate function (`c`) to create a vector "from scratch" with the names of the five guests to appear on the show (these could be the first five guests, or you could also randomly pick five guests). Assign this vector to an object named `five_guests`. What class (numeric or character) do you think this vector will be? Will you need to use quotation marks for each element you add to the vector?
-* Use square bracket indexing to print out the following subsets of this vector (you'll have one R call per subset): (1) The first guest in the vector; (2) The third and fifth guests; (3) The second through fourth guests.
-* Create a new vector called `first_guest` with just the first set, using the square bracket indexing you used in the previous step. 
-* In the same way, create a vector with the year of each of these guests' appearances. Assign this vector to an object named `appearance_year`. What class (numeric or character) do you think this vector will be? Will you need to use quotation marks for each element you add to the vector?
-* Use the `class` function to determine the classes (e.g., numeric, character) of each of the vectors you just created.
-* Combine these two vectors to create a dataframe named `guest_list`. For the columns, use the same column names used in the original, raw data for the guest names and appearance year. Print out this dataframe at the R console to make sure it looks like you thought it would.
-* Use functions from the `dplyr` package to print out the following subsets of this dataframe (you'll have one R call per subset): (1) The appearance year of the first guest; (2) Names of the third through fifth guests; (3) Names of all guests; (4) Both names and appearance years of the first and third guests.
-* The `str` function can be used to figure out the structure of a dataframe. Run this command on the `guest_list` dataframe you created. What information does this give you? Use the helpfile for `str` to help you figure this out (which you can access by running `?str`). Do you see anything that surprises you?
-* Use the `ls` function to list all the objects you currently have defined in your R session. Compare this list to the "Environment" pane in RStudio.
+* Use the concatenate function (`c`) to create a vector "from scratch" with the
+names of the five guests to appear on the show (these could be the first five
+guests, or you could also randomly pick five guests). Assign this vector the
+object name `five_guests`. What class (numeric or character) do you think this
+vector will be? Will you need to use quotation marks for each element you add to
+the vector?
+* Use square bracket indexing to print out the following subsets of this vector
+(you'll have one R expression per subset): (1) The first guest in the vector; (2) The
+third and fifth guests; (3) The second through fourth guests.
+* Create a new vector called `first_guest` with just the first guest in the
+vector, using the square bracket indexing you used in the previous step.
+* In the same way, create a vector with the year of each of these five guests'
+appearances. Assign this vector to an object named `appearance_year`. What class
+(numeric or character) do you think this vector will be? Will you need to use
+quotation marks for each element you add to the vector?
+* Use the `class` function to determine the classes (e.g., numeric, character)
+of each of the vectors you just created.
+* Combine these two vectors to create a dataframe named `guest_list`. For the
+columns, use the same column names used in the original, raw data for the guest
+names and appearance year. Print out this dataframe at the R console to make
+sure it looks like you thought it would.
+* Use functions from the `dplyr` package to print out the following subsets of
+this dataframe (you'll have one R call per subset): (1) The appearance year of
+the first guest; (2) Names of the third through fifth guests; (3) Names of all
+guests; (4) Both names and appearance years of the first and third guests.
+* The `str` function can be used to figure out the structure of a dataframe. Run
+this command on the `guest_list` dataframe you created. What information does
+this give you? Use the helpfile for `str` to help you figure this out (which you
+can access by running `?str`). Do you see anything that surprises you?
+* Use the `ls` function to list all the objects you currently have defined in
+your R session. Compare this list to the "Environment" pane in RStudio.
 
 Example R code:
 
@@ -1368,20 +1436,20 @@ first_guest
 appearance_year <- c(1999, 2000, 2001, 2001, 2002)
 
 # Figure out the classes of the two vectors you just created
-class(five_guests)
-class(appearance_year)
+class(x = five_guests)
+class(x = appearance_year)
 
 # Create the data frame, then print it out to make sure it looks like you thought
 # it would
-library("tibble")
+library(package = "tibble")
 guest_list <- tibble(Raw_Guest_List = five_guests,
                      YEAR = appearance_year)
 guest_list
 
 # Use functions from the dplyr package to extract values from the dataframe
-library("dplyr")
-slice(select(.data = guest_list, 2), 1)
-slice(select(.data = guest_list, 1), 3:5)
+library(package = "dplyr")
+slice(.data = select(.data = guest_list, 2), 1)
+slice(.data = select(.data = guest_list, 1), 3:5)
 select(.data = guest_list, 1)
 slice(.data = guest_list, c(1, 3))
 
@@ -1391,44 +1459,61 @@ str(guest_list)
 
 ### Installing and using a package
 
-The `stringr` package includes a number of functions that make it easier to work with character strings in R. In particular, it includes functions to change the capitalization of words in character stings. Here, you'll install and load this package and then use it to work with the `five_guests` vector we created in the last section. 
+The `stringr` package includes a number of functions that make it easier to work
+with character strings in R. In particular, it includes functions to change the
+capitalization of words in character stings. Here, you'll install and load this
+package and then use it to work with the `five_guests` vector we created in the
+last section.
 
 * If you have not already installed the `stringr` package, install it from CRAN.
-* Load the `stringr` package in your current R session, so you will be able to use its functions. 
-* Check if the package has a vignette. If so, check out out that vignette. 
-* See if you can use the `str_to_lower` function from the `stringr` package to convert all the names in your `five_guests` vector to lowercase. 
-* See if you can find a function in the `stringr` package that you can use to convert all the names in your `five_guests` vector to uppercase. (Hint: At the R console, try typing `?stringr::` and then the Tab key.)
+* Load the `stringr` package in your current R session, so you will be able to
+use its functions.
+* Check if the package has a vignette. If so, check out out that vignette.
+* See if you can use the `str_to_lower` function from the `stringr` package to
+convert all the names in your `five_guests` vector to lowercase.
+* See if you can find a function in the `stringr` package that you can use to
+convert all the names in your `five_guests` vector to uppercase. (Hint: At the R
+console, try typing `?stringr::` and then the Tab key.)
 
 Example R code: 
 
 ```{r eval = FALSE}
 # If you need to, install the package from CRAN
-install.packages("stringr")
+install.packages(pkgs = "stringr")
 ```
 ```{r}
 # Load the package into your current R session
-library("stringr")
+library(package = "stringr")
 ```
 ```{r eval = FALSE}
 # Open the package's vignette
-vignette("stringr")
+vignette(topic = "stringr")
 ```
 ```{r}
 # Convert the `five_guests` strings to lowercase
-str_to_lower(five_guests)
+str_to_lower(string = five_guests)
 
 # Convert the `five_guests` strings to uppercase
-str_to_upper(five_guests)
+str_to_upper(string = five_guests)
 ```
 
 ### Getting the data onto your computer
 
-Next, we will work with the whole dataset. Download the data [from GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv) onto your computer. In class, we created an R Project for you to use for this class. Put the *Daily Show* data in that directory. 
+Next, we will work with the whole dataset. Download the data [from
+GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv)
+onto your computer. In class, we created an R Project for you to use for this
+class. Put the *Daily Show* data in that directory.
 
 **Take the following steps to get the data onto your computer**
 
-* Download the file [from GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv). Right click on `Raw` and then choose "Download linked file". Put the file into the directory you created for this course. 
-* Use the `list.files` command to make sure that the "daily_show_guests.csv" file is in your current working directory (we'll talk more about workign directories, listing files in your working directory, and R Projects later in the semester).
+* Download the file [from
+GitHub](https://github.com/geanders/RProgrammingForResearch/blob/master/data/daily_show_guests.csv).
+Right click on `Raw` and then choose "Download linked file". Put the file into
+the directory you created for this course.
+* Use the `list.files` command to make sure that the "daily_show_guests.csv"
+file is in your current working directory (we'll talk more about working
+directories, listing files in your working directory, and R Projects later in
+the semester).
 
 ```{r eval = FALSE}
 # List the files in your current working directory 
@@ -1441,31 +1526,43 @@ list.files()
 
 ### Getting the data into R
 
-Now that you have the dataset in your working directory, you can read it into R. This dataset is in a *csv* (comma separated values) format. (We will talk more about different file formats in Week 2.) You can read csv files into R using the function `read_csv` from the `readr` package. 
+Now that you have the dataset in your working directory, you can read it into R.
+This dataset is in a *csv* (comma separated values) format. (We will talk more
+about different file formats in Week 2.) You can read csv files into R using the
+function `read_csv` from the `readr` package.
 
 **Read the data into your R session**
 
-* If you do not already have it, install the `readr` package. Then load this package within your current R session using `library`.
-* Use the `read_csv` function from the `readr` package to read the data into R and save it as the object `daily_show`.
-* Use the help file for the `read_csv` function to figure out how this function works. To pull that up, type `?read_csv` at the R console. Can you figure out why it's critical to use the `skip` option and set it to 4? (We will be talking a lot more about the `read_csv` function in Week 2, so don't worry if you don't completely understand it right now.)
+* If you do not already have it, install the `readr` package. Then load this
+package within your current R session using `library`.
+* Use the `read_csv` function from the `readr` package to read the data into R
+and save it as the object `daily_show`.
+* Use the help file for the `read_csv` function to figure out how this function
+works. To pull that up, type `?read_csv` at the R console. Can you figure out
+why it's critical to use the `skip` option and set it to 4? (We will be talking
+a lot more about the `read_csv` function in Week 2, so don't worry if you don't
+completely understand it right now.)
 * Note that you need to put the file name in quotation marks.
-* What would have happened if you'd used `read_csv` but hadn't saved the result as the object `daily_show`? (For example, you'd run the code `read_csv("daily_show_guests.csv", skip = 4)` rather than `daily_show <- read_csv("daily_show_guests.csv")`.)
+* What would have happened if you'd used `read_csv` but hadn't saved the result
+as the object `daily_show`? (For example, you'd run the code
+`read_csv("daily_show_guests.csv", skip = 4)` rather than `daily_show <-
+read_csv("daily_show_guests.csv")`.)
 
 Example R code:
 
 ```{r, eval=FALSE}
 # Install (if needed) and load the `readr` package
-install.packages("readr") # You only need to do this if you 
+install.packages(pkgs = "readr") # You only need to do this if you 
                           # do not already have the `readr`
                           # package.
-library(readr)
+library(package = "readr")
 
 # Read in dataframe from the csv file with Daily Show guests
-daily_show <- read_csv("daily_show_guests.csv", skip = 4)
+daily_show <- read_csv(file = "daily_show_guests.csv", skip = 4)
 ```
 
 ```{r echo = FALSE}
-daily_show <- read_csv("data/daily_show_guests.csv", skip = 4)
+daily_show <- read_csv(file = "data/daily_show_guests.csv", skip = 4)
 ```
 
 ```{r}
@@ -1473,24 +1570,30 @@ daily_show <- read_csv("data/daily_show_guests.csv", skip = 4)
 daily_show
 ```
 
-
-
 If you have extra time:
 
-* Say this was a really big dataset. You want to check out just the first 10 rows to make sure that you've got your code right before you take the time to pull in the whole dataset. Use the help file for `read_csv` to figure out how to only read in a few rows. 
-* Look through the help file for other options available for `read_csv`. Can you think of examples when some of these options would be useful?
-* Look again at the version of this raw data on FiveThirtyEight's GitHub page (rather than the course's GitHub repository, where you downloaded the data for the course exercise). How are these two versions of the raw data different? How would you need to change your `read_csv` call if you changed to use the FiveThirtyEight version of the raw data?
+* Say this was a really big dataset. You want to check out just the first 10
+rows to make sure that you've got your code right before you take the time to
+pull in the whole dataset. Use the help file for `read_csv` to figure out how to
+only read in a few rows.
+* Look through the help file for other options available for `read_csv`. Can you
+think of examples when some of these options would be useful?
+* Look again at the version of this raw data on FiveThirtyEight's GitHub page
+(rather than the course's GitHub repository, where you downloaded the data for
+the course exercise). How are these two versions of the raw data different? How
+would you need to change your `read_csv` call if you changed to use the
+FiveThirtyEight version of the raw data?
 
 Example R code:
 
 ```{r, eval=FALSE}
 # Read in only the first 10 rows of the dataset
-daily_show_first10 <- read_csv("daily_show_guests.csv", 
+daily_show_first10 <- read_csv(file = "daily_show_guests.csv", 
                        skip = 4, n_max = 10)
 ```
 
 ```{r echo = FALSE}
-daily_show_first10 <- read_csv("data/daily_show_guests.csv", 
+daily_show_first10 <- read_csv(file = "data/daily_show_guests.csv", 
                        skip = 4, n_max = 10)
 ```
 
@@ -1499,89 +1602,126 @@ daily_show_first10 <- read_csv("data/daily_show_guests.csv",
 daily_show_first10
 ```
 
-
-
 ### Checking out the data
 
-You now have the data available in your current R session as the `daily_show` object. You'll want to check it out to make sure it read in correctly, and also to get a feel for the data. Throughout, you can use the help pages to figure out more about any of the functions being used (for example, `?dim`).
+You now have the data available in your current R session as the `daily_show`
+object. You'll want to check it out to make sure it read in correctly, and also
+to get a feel for the data. Throughout, you can use the help pages to figure out
+more about any of the functions being used (for example, `?dim`).
 
 **Take the following steps to check out the dataset**
 
-* Use the `dim` function to find out how many rows and columns this dataframe has. Based on what you found out about the data from the GitHub page, does it have the number of columns you expected? Based on what you know about the data (that it includes all the guests who came on The Daily Show with Jon Stewart), do you think it has about the right number of rows?  
-* Use functions from the `dplyr` package to look at the first two rows of the dataset. Based on this, what does each row "measure" (**unit of observation**)? What information (**variables**) do you get for each "measurement"? 
-* The `head` function can be used to explore the first few rows of dataframes (see the helpfile at `?head`). Use the `head` function to look at the first few rows of the dataframe. Does it look like the rows go in order by date? What was the date of Jon Stewart's first show? Does it look like this dataset covers that first show?
-* Use the `tail` function to look at the last few rows of the dataframe. What is the last show date covered by the dataframe? Who was the last guest?
+* Use the `dim` function to find out how many rows and columns this dataframe
+has. Based on what you found out about the data from the GitHub page, does it
+have the number of columns you expected? Based on what you know about the data
+(that it includes all the guests who came on The Daily Show with Jon Stewart),
+do you think it has about the right number of rows?
+* Use functions from the `dplyr` package to look at the first two rows of the
+dataset. Based on this, what does each row "measure" (**unit of observation**)?
+What information (**variables**) do you get for each "measurement"?
+* The `head` function can be used to explore the first few rows of dataframes
+(see the helpfile at `?head`). Use the `head` function to look at the first few
+rows of the dataframe. Does it look like the rows go in order by date? What was
+the date of Jon Stewart's first show? Does it look like this dataset covers that
+first show?
+* Use the `tail` function to look at the last few rows of the dataframe. What is
+the last show date covered by the dataframe? Who was the last guest?
 
 Example R code:
 
 ```{r message = FALSE}
 # Extract values from the dataframe
-library("dplyr") # Load the 'dplyr' package
+library(package = "dplyr") # Load the 'dplyr' package
 slice(.data = daily_show, 1:2) # Look at the first two rows of data
 
 # Check the dimensions of the data
-dim(daily_show)
-head(daily_show)
-tail(daily_show)
+dim(x = daily_show)
+head(x = daily_show)
+tail(x = daily_show)
 ```
 
 If you have extra time:
 
-* Say you wanted to look at the first ten rows of the dataframe, rather than the first six. How could you use an option with `head` to do this?
+* Say you wanted to look at the first ten rows of the dataframe, rather than the
+first six. How could you use an option with `head` to do this?
 
 Example R code:
 
 ```{r}
 # Look at the first few rows of the data
-head(daily_show, n = 10)
+head(x = daily_show, n = 10)
 ```
 
 ### Using the data to answer questions
 
-Nate Silver was a guest on *The Daily Show*. Let's use this data to figure out how many times he was a guest and when he was on the show.
+Nate Silver was a guest on *The Daily Show*. Let's use this data to figure out
+how many times he was a guest and when he was on the show.
 
 **Find out more about Nate Silver on The Daily Show**
 
-* The `subset` function can be combined with logical statements to help you create a specific subset of data. For example, if you only wanted data from guest visits in 1999, you could run `subset(daily_show, YEAR == 1999)`. Check out the helpfile for `subset` and use the function to create a new dataframe that only has the rows of `daily_show` when Nate Silver was a guest (`Raw_Guest_List == "Nate Silver"`). Save this as an object named `nate_silver`.
-* Print out the full `nate_silver` dataframe by typing `nate_silver`. (You could just use this to answer both questions, but still try the next steps. They would be important with a bigger dataset.)
-* To count the number of times Nate Silver was a guest, you'll need to count the number of rows in the new dataset. You can either use the `dim` function or the `nrow` function to do this. What additional information does the `dim` function give you?
-* To get the dates when Nate Silver was a guest, you can print out just the `Show` column of the dataframe. There are a few ways you can do this using the `select` function from the `dplyr` package.
+* The `filter` function from the `dplyr` package can be combined with logical
+statements to help you create a specific subset of data. For example, if you
+only wanted data from guest visits in 1999, you could run `filter(.data =
+daily_show, YEAR == 1999)`. Check out the helpfile for `filter` and use the
+function to create a new dataframe that only has the rows of `daily_show` when
+Nate Silver was a guest (`Raw_Guest_List == "Nate Silver"`). Save this as an
+object named `nate_silver`.
+* Print out the full `nate_silver` dataframe by typing `nate_silver`. (You could
+just use this to answer both questions, but still try the next steps. They would
+be important with a bigger dataset.)
+* To count the number of times Nate Silver was a guest, you'll need to count the
+number of rows in the new dataset. You can either use the `dim` function or the
+`nrow` function to do this. What additional information does the `dim` function
+give you?
+* To get the dates when Nate Silver was a guest, you can print out just the
+`Show` column of the dataframe. There are a few ways you can do this using the
+`select` function from the `dplyr` package.
 
 Example R code:
 
 ```{r}
+library(package = "dplyr")
 # Create a subset of the data with just Nate Silver appearances
-nate_silver <- subset(daily_show, 
-                      Raw_Guest_List == "Nate Silver")
+nate_silver <- filter(.data = daily_show, Raw_Guest_List == "Nate Silver")
 
 # Investigate this subset of the data
 nate_silver
-dim(nate_silver)
-nrow(nate_silver)
+dim(x = nate_silver)
+nrow(x = nate_silver)
 select(.data = nate_silver, 3)
 ```
 
 If you have extra time:
 
 * Was Nate Silver the only statistician to be a guest on the show?
-* What were the occupations that were only represented by one guest visit? Since `GoogleKnowlege_Occupation` is a factor, you can use the `table` function to create a new vector with the number of times each value of `GoogleKnowlege_Occupation` shows up. You can put this information into a new vector and then pull out only the values that equal 1 (so, only had one guest). (Note that "Statistician" doesn't show up-- there was only one person who was a guest, but he had three visits.) Pick your favorite "one-off" example and find out who the guest was for that occupation.
+* What were the occupations that were only represented by one guest visit? Since
+`GoogleKnowlege_Occupation` is a factor, you can use the `table` function to
+create a new vector with the number of times each value of
+`GoogleKnowlege_Occupation` shows up. You can put this information into a new
+vector and then pull out only the values that equal 1 (so, only had one guest).
+(Note that "Statistician" doesn't show up-- there was only one person who was a
+guest, but he had three visits.) Pick your favorite "one-off" example and find
+out who the guest was for that occupation.
 
 Example R code:
 
 ```{r}
-statisticians <- subset(daily_show,
+statisticians <- filter(.data = daily_show,
                         GoogleKnowlege_Occupation == "Statistician")
 statisticians
 ```
 ```{r}
-num_visits <- table(daily_show[ , 2])
-head(num_visits) # Note: This is a vector rather than a dataframe
-head(names(num_visits[num_visits == 1])) # This is using a "logical operator" to extract values that meet a condition
-subset(daily_show, GoogleKnowlege_Occupation == "chess player")
-subset(daily_show, GoogleKnowlege_Occupation == "mathematician")
-subset(daily_show, GoogleKnowlege_Occupation == "orca trainer")
-subset(daily_show, GoogleKnowlege_Occupation == "Puzzle Creator")
-subset(daily_show, GoogleKnowlege_Occupation == "Scholar")
+num_visits <- table(daily_show$GoogleKnowlege_Occupation)
+head(x = num_visits) # Note: This is a vector rather than a dataframe
+
+single_visits <- num_visits[num_visits == 1] # This is using a "logical operator" to extract values that meet a condition
+names(single_visits)
+
+filter(.data = daily_show, GoogleKnowlege_Occupation == "chess player")
+filter(.data = daily_show, GoogleKnowlege_Occupation == "mathematician")
+filter(.data = daily_show, GoogleKnowlege_Occupation == "orca trainer")
+filter(.data = daily_show, GoogleKnowlege_Occupation == "Puzzle Creator")
+filter(.data = daily_show, GoogleKnowlege_Occupation == "Scholar")
 ```
 
 

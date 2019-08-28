@@ -744,7 +744,7 @@ function. By default, this installs packages from CRAN.
 For example, to get the package "phonenumber", you could use:
 
 ```{r, eval = FALSE}
-install.packages("phonenumber")
+install.packages(pkgs = "phonenumber")
 ```
 
 ```{r fig.align = "center", out.width = "75pt", echo = FALSE}
@@ -790,14 +790,14 @@ Once you have a package, you can load it to an R session using the `library()`
 function.
 
 ```{r}
-library("phonenumber")
+library(package = "phonenumber")
 ```
 
 Once it's loaded, you can use all its functions.
 
 ```{r}
 message <- "HelloWorld"
-letterToNumber(message)
+letterToNumber(value = message)
 ```
 
 
@@ -821,14 +821,16 @@ function. For example, to open the vignette called "phonenumber" for the
 `phonenumber` package, run:
 
 ```{r eval = FALSE}
-vignette("phonenumber", package = "phonenumber")
+vignette(topic = "phonenumber",
+         package = "phonenumber")
 ```
 
 Many packages only have one vignette, with the same name as the package. In that
-case, you can open the vignette using a shorter call:
+case, the vignette topic usually has the same name as the whole package, so you can 
+open the vignette using a shorter call:
 
 ```{r eval = FALSE}
-vignette("phonenumber")
+vignette(topic = "phonenumber")
 ```
 
 ## Function helpfiles
@@ -942,8 +944,8 @@ n_kids <- c(1, 7, 1)
 You can use the `class` function to figure out the class of a vector. 
 
 ```{r}
-class(main_characters)
-class(n_kids)
+class(x = main_characters)
+class(x = n_kids)
 ```
 
 ## Vectors
@@ -1086,12 +1088,12 @@ For example, to read in a dataset from a csv file called "daily_show_guests.csv"
 
 ```{r echo = FALSE, message = FALSE}
 library("readr")
-daily_show <- read_csv("../data/daily_show_guests.csv",
+daily_show <- read_csv(file = "../data/daily_show_guests.csv",
                        skip = 4)
 ```
 ```{r eval = FALSE}
 library("readr")
-daily_show <- read_csv("daily_show_guests.csv",
+daily_show <- read_csv(file = "daily_show_guests.csv",
                        skip = 4)
 ```
 
@@ -1110,9 +1112,9 @@ You can use the functions `dim`, `nrow`, and `ncol` to figure out the dimensions
 (number of rows and columns) of a dataframe:
 
 ```{r}
-dim(daily_show)
-nrow(daily_show)
-ncol(daily_show)
+dim(x = daily_show)
+nrow(x = daily_show)
+ncol(x = daily_show)
 ```
 
 ## Dataframes
@@ -1226,8 +1228,8 @@ you can use the `$` operator.
 For example, say you have the following dataset and want to pull the `color` column as a vector:
 
 ```{r}
-example_df <- data.frame(color = c("red", "blue"), 
-                         value = c(1, 2))
+example_df <- tibble(color = c("red", "blue"), 
+                     value = c(1, 2))
 example_df
 ```
 
@@ -1241,7 +1243,7 @@ example_df$color
 ```
 
 ```{r}
-class(example_df$color)
+class(x = example_df$color)
 ```
 
 (Note: You can use tab completion in RStudio after you put in `example_df$`.)
@@ -1330,6 +1332,44 @@ Ron <- c("Good at Wizard Chess")
 c(Harry, Ron)
 ```
 
+## Being lazy
+
+There are a few cases in R where you can be a bit lazy. 
+
+One has to do with quotations. There are a few cases where, following the
+rules we just covered, it will seem like you *should* use quotations, 
+but you either don't have to or can't. 
+
+One example is calling the `library` function. You can put the name of 
+the library you want to load in quotation marks, or you can leave them off:
+
+```{r}
+library("readr")
+library(readr)
+```
+
+Another example, which we'll cover more next week, is referencing columns
+by their column names in many tidyverse functions.
+
+## Being lazy
+
+Another way to be lazy is through leaving off formal argument names when 
+you call a function. 
+
+If you don't include formal argument names, then R will match actual arguments
+in the function call to formal arguments by *position*. 
+
+For example, since the first formal argument to the `class` function is `x = `,
+the following two calls are the same: 
+
+```{r}
+class(x = main_characters)
+class(main_characters)
+```
+
+
+
+
 
 ## Alternative package::function notation
 
@@ -1342,7 +1382,7 @@ You can call functions by specifying the package name, a double colon, and then
 the function name you want to use from that package. For example:
 
 ```{r}
-phonenumber::letterToNumber(message)
+phonenumber::letterToNumber(value = message)
 ```
 
 ## Alternative package::function notation
@@ -1367,7 +1407,9 @@ RStudio has tab complemention, which means that once you start typing an object
 name or function, if you press the Tab key, RStudio will give you suggestions
 for how you can finish the name.
 
-If you want to scroll through the names of all the external functions in a package, you can do so by typing something like `?phonenumber::` in the console (don't press Return) and then pressing the Tab key.
+If you want to scroll through the names of all the external functions in a
+package, you can do so by typing something like `?phonenumber::` in the console
+(don't press Return) and then pressing the Tab key.
 
 ## "Composing" to combine function calls
 
@@ -1384,7 +1426,7 @@ that looks:
 ```{r}
 library("magrittr")
 
-paste("Hello world") %>% 
+paste(x = "Hello world") %>% 
   print()
 ```
 
@@ -1396,7 +1438,7 @@ rows and columns from a dataframe:
 \small
 
 ```{r}
-select(slice(hp_data, c(1:2)), c(1, 4))
+select(.data = slice(.data = hp_data, c(1:2)), c(1, 4))
 ```
 
 You can use a pipe to express this much more cleanly: 
