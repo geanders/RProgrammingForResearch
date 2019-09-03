@@ -1210,7 +1210,7 @@ a relative pathname.
 regardless of your current working directory? Which method used different code,
 depending on the starting working directory?
 
-Read in the ebola data in `country_timeseries.csv` from your current working
+Read in the Ebola data in `country_timeseries.csv` from your current working
 directory. This will require you to use a relative filename to direct R to how
 to find that file in the "data" subdirectory of your current working directory.
 
@@ -1240,7 +1240,7 @@ Try to list the files in your "data" subdirectory using:
     
 ```{r eval = FALSE}
 list.files(path = "data") # This is using a relative pathname
-list.files(path = "/Users/brookeanderson/Desktop/r_course_2018/data") # Absolute pathname
+list.files(path = "/Users/brookeanderson/Documents/r_course_2018/data") # Absolute pathname
      # (Yours will be different and will depend on how your computer file
      # structure is set up.)
 ```
@@ -1277,10 +1277,12 @@ Which one? Why does this listing not have a file extension?
 Try out the following tasks:
 
 - Copy the following code into an R script. Figure out what each line does, and
-add comments to each line of code describing what the code is doing.
+add comments to each line of code describing what the code is doing. Use the 
+helpfiles for functions as needed to figure out functions we haven't covered yet.
 
 ```{r eval = FALSE}
 # Copy this code to an R script and add comments describing what each line is doing
+# Install any packages that the code loads but that you don't have.
 library(package = "haven")
 library(package = "forcats")
 library(package = "stringr")
@@ -1296,7 +1298,7 @@ icu <- rename(.data = icu,
 
 icu <- mutate(.data = icu,
               gender = as_factor(x = gender),
-              gender = fct_recode(gender,
+              gender = fct_recode(.f = gender,
                                   Male = "0",
                                   Female = "1"),
               id = str_c(id)) 
@@ -1344,12 +1346,6 @@ head(x = ebola_liberia)
 
 ### Cleaning up data #2
 
-- For the `ebola_liberia` dataframe, what class is the `date` column currently
-in? Convert it to a Date class. What are the starting and ending dates of
-observations in this dataframe?
-- This data has earliest dates last and latest dates first. Often, we want our
-data in chronological order. Change the dataset so it's in chronological order,
-from the observation with the earliest date to the one with the latest date.
 - Filter out all rows from the `ebola_liberia` dataframe that are missing death
 counts for Liberia. How many rows are in the dataframe now?
 - Create a new object called `first_five` that has only the five observations
@@ -1359,24 +1355,6 @@ deaths?
 Example R code:
 
 ```{r}
-## What class is the `date` column?
-class(x = ebola_liberia$date)
-
-## Use the `mdy` from `lubridate` to convert to Date class
-library(package = "lubridate")
-ebola_liberia <- mutate(.data = ebola_liberia, 
-                        date = mdy(date))
-class(x = ebola_liberia$date)
-head(x = ebola_liberia$date)
-
-## What are the starting and ending dates?
-range(ebola_liberia$date)
-
-## Re-order the dataset from first date to last date
-ebola_liberia <- arrange(.data = ebola_liberia, 
-                         date)
-head(x = ebola_liberia)
-
 ## Filter out the rows that are missing death counts for Liberia
 ebola_liberia <- filter(.data = ebola_liberia, 
                         !is.na(deaths))
@@ -1389,28 +1367,6 @@ first_five <- arrange(.data = ebola_liberia,
 first_five <- slice(.data = first_five, 
                     1:5) # Limit the dataframe to the first five rows
 first_five # Two days tied for the highest deaths counts (Jan. 2 and 3, 2015).
-```
-
-If you have extra time:
-
-- Try using the basic plotting function, `plot()`, to plot the number of cases
-of Ebola over time in Liberia from this dataframe. Do you think that the `cases`
-variable is measuring the count of cases for that day, or the cumulative number
-of cases up to that day? See if you can figure out more on Caitlin Rivers'
-GitHub documentation. Do you notice any potential data quality issues in this
-data? *Hint: The `plot()` function takes, as required arguments, the vector you
-want to plot on the x-axis and then the vector you want to plot on the y-axis,
-like `plot([x vector], [y vector])`. If you are pulling the vectors from a
-dataset, you will need to use indexing to pull out the column you want as a
-vector, like `plot([dataframe name]$[column name for x], [dataframe]$[column
-name for y])`.*
-
-
-Example R code: 
-
-```{r}
-## Plot the data
-plot(x = ebola_liberia$date, y = ebola_liberia$cases)
 ```
 
 ### Piping
@@ -1441,8 +1397,7 @@ icu
 - In previous sections of the in-course exercise, you have created code to read
 in and clean the Ebola dataset to create `ebola_liberia`. This included the
 following cleaning steps: (1) selecting certain columns, (2) renaming those
-columns, (3) adding a `ratio` column, (4) mutating the `date` column to a Date
-class, (5) re-ordering the observations from earliest to latest date, and (6)
+columns, (3) adding a `ratio` column, and (4)
 removing observations for which the count of deaths in Liberia is missing.
 Re-write this code to create and clean `ebola_liberia` as "piped" code. Start
 from reading in the raw data.
@@ -1456,8 +1411,6 @@ ebola_liberia <- read_csv(file = "data/country_timeseries.csv") %>%
          cases = Cases_Liberia, 
          deaths = Deaths_Liberia) %>% 
   mutate(ratio = deaths / cases) %>% 
-  mutate(date = mdy(date)) %>% 
-  arrange(date) %>% 
   filter(!is.na(x = cases))
 
 head(x = ebola_liberia)
