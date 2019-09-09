@@ -446,6 +446,64 @@ beijing_pm %>%
 We'll take a break now to start the in-course exercise for this week (Sections
 1 and 2 for Week 3).
 
+# Data from R packages
+
+## Data from R packages
+
+So far we've covered two ways to get data into R:
+
+1. From flat files (either on your computer or online)
+2. From files like SAS and Excel
+
+Many R packages come with their own data, which is very easy to load and use.
+
+## Data from R packages
+
+For example, the `faraway` package has a dataset called `worldcup` that you'll
+use today. To load it, use the `data()` function once you've loaded the package
+with the name of the dataset as its argument:
+
+```{r}
+library("faraway")
+data("worldcup")
+```
+
+## Data from R packages
+
+Unlike most data objects you'll work with, the data that comes with an R package
+will often have its own help file. You can access this using the `?` operator:
+
+```{r, eval = FALSE}
+?worldcup
+```
+
+## Data from R packages
+
+To find out all the datasets that are available in the packages you currently
+have loaded, run `data()` without an option inside the parentheses:
+
+```{r, eval = FALSE}
+data()
+```
+
+To find out all of the datasets available within a certain package, run `data`
+with the argument `package`:
+
+```{r eval = FALSE}
+data(package = "faraway")
+```
+
+
+As a note, you can similarly use `library()`, without the name of a package, to
+list all of the packages you have installed that you could call with
+`library()`:
+
+```{r, eval = FALSE}
+library()
+```
+
+
+
 # Dates in R
 
 ## `Date` class
@@ -741,114 +799,6 @@ sum(!beijing_pm$beyond_index)
 We'll take a break now to start the in-course exercise for this week (Section
 3 for Week 3).
 
-# Data from R packages
-
-## Data from R packages
-
-So far we've covered two ways to get data into R:
-
-1. From flat files (either on your computer or online)
-2. From files like SAS and Excel
-
-Many R packages come with their own data, which is very easy to load and use.
-
-## Data from R packages
-
-For example, the `faraway` package has a dataset called `worldcup` that you'll
-use today. To load it, use the `data()` function once you've loaded the package
-with the name of the dataset as its argument:
-
-```{r}
-library("faraway")
-data("worldcup")
-```
-
-## Data from R packages
-
-Unlike most data objects you'll work with, the data that comes with an R package
-will often have its own help file. You can access this using the `?` operator:
-
-```{r, eval = FALSE}
-?worldcup
-```
-
-## Data from R packages
-
-To find out all the datasets that are available in the packages you currently
-have loaded, run `data()` without an option inside the parentheses:
-
-```{r, eval = FALSE}
-data()
-```
-
-To find out all of the datasets available within a certain package, run `data`
-with the argument `package`:
-
-```{r eval = FALSE}
-data(package = "faraway")
-```
-
-
-As a note, you can similarly use `library()`, without the name of a package, to
-list all of the packages you have installed that you could call with
-`library()`:
-
-```{r, eval = FALSE}
-library()
-```
-
-## `nepali` example data
-
-For the example plots, I'll use a dataset in the `faraway` package called
-`nepali`. This gives data from a study of the health of a group of Nepalese
-children.
-
-```{r}
-library("faraway")
-data("nepali")
-```
-
-I'll be using functions from the `dplyr`, `forcats`, and `ggplot2` packages
-during the course, so I'll load those:
-
-```{r message = FALSE, warning = FALSE}
-library("dplyr")
-library("forcats")
-library("ggplot2")
-```
-
-## `nepali` example data
-
-For the `nepali` dataset, each observation is a single measurement for a child; there can be multiple observations per child. \medskip 
-
-I'll limit it to the columns with the child's id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
-
-```{r message = FALSE}
-
-distinct_nepali <- nepali %>%
-  # Limit to certain columns
-  select(id:ht, age) %>%
-  # Convert id and sex to factors
-  mutate(id = as_factor(id),
-         sex = as_factor(sex),
-         sex = fct_recode(sex, 
-                          Male = "1",
-                          Female = "2")) %>%
-  # Limit to first obs. per child
-  distinct(id, .keep_all = TRUE)
-```
-
-## `distinct_nepali` example data
-
-The first few rows of the data now looks like:
-
-```{r}
-distinct_nepali %>% 
-  slice(1:4)
-```
-
-
-
 
 # Tidyverse and cheatsheets
 
@@ -902,9 +852,46 @@ As a reminder, that is available at:
 
 http://r4ds.had.co.nz
 
-## In-course exercise
+# Basic plotting
 
-We'll take a break now to continue the in-course exercise for this week (Section 3.5.3).
+## Example data---Beijing air quality
+
+Let's read the Beijing data in and clean up the "-999" values: 
+
+```{r}
+library("readr")
+```
+```{r echo = FALSE, message = FALSE}
+beijing_pm_raw <- read_csv("../data/Beijing_2017_HourlyPM25.csv", 
+                       skip = 3, na = "-999")
+```
+```{r eval = FALSE}
+beijing_pm_raw <- read_csv("data/Beijing_2017_HourlyPM25.csv", 
+                       skip = 3, na = "-999")
+```
+
+## Example data---Beijing air quality
+
+Clean up as before:
+
+\footnotesize
+
+```{r}
+beijing_pm <- beijing_pm_raw %>% 
+  rename(sample_time = `Date (LST)`, 
+         value = Value,
+         qc = `QC Name`) %>% 
+  select(sample_time, value, qc) %>% 
+  mutate(aqi = cut(value, 
+                   breaks = c(0, 50, 100, 150, 200, 
+                              300, 500, Inf),
+                   labels = c("Good", "Moderate",
+                              "Unhealthy for Sensitive Groups",
+                              "Unhealthy", "Very Unhealthy", 
+                              "Hazardous", "Beyond Index"))) %>% 
+  mutate(sample_time = mdy_hm(sample_time)) %>% 
+  mutate(heating = sample_time < mdy("03/15/2017"))
+```
 
 # Plots 
 
@@ -912,9 +899,11 @@ We'll take a break now to continue the in-course exercise for this week (Section
 
 Plots can be invaluable in exploring your data. \medskip
 
-Today, we will focus on **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data. \medskip
+Today, we will focus on **useful**, rather than **attractive** graphs, since we
+are focusing on exploring rather than presenting data. \medskip
 
-Next lecture, we will talk more about customization, to help you make more attractive plots that would go into final reports. \medskip
+Next lecture, we will talk more about customization, to help you make more
+attractive plots that would go into final reports. \medskip
 
 ## `ggplot` conventions
 
@@ -926,52 +915,66 @@ library("ggplot2")
 
 The basic steps behind creating a plot with `ggplot2` are:
 
-1. Create an object of the `ggplot` class, typically specifying the **data** to be shown in the plot; 
-2. Add on (using `+`) one or more **geoms**, specifying the **aesthetics** for each; and 
-3. Add on (using `+`) other elements to create and customize the plot (e.g., add layers to customize scales or themes or to add facets).
+1. Create an object of the `ggplot` class, typically specifying the **data** to
+be shown in the plot;
+2. Add on (using `+`) one or more **geoms**, specifying the **aesthetics** for
+each; and
+3. Add on (using `+`) other elements to create and customize the plot (e.g., add
+layers to customize scales or themes or to add facets).
 
 *Note*: To avoid errors, end lines with `+`, don't start lines with it. 
 
 ## Plot data
 
-The `ggplot` function requires you to input a dataframe with the data you will plot. All the columns in that dataframe can be mapped to specific aesthetics within the plot. 
+The `ggplot` function requires you to input a dataframe with the data you will
+plot. All the columns in that dataframe can be mapped to specific aesthetics
+within the plot.
 
 ```{r}
-distinct_nepali %>% 
+beijing_pm %>% 
   slice(1:3)
 ```
 
-For example, if we input the `nepali` dataframe, we would be able to create a scatterplot that shows each child's initial height on the x-axis, weight on the y-axis, and sex by the color of the point.
+For example, if we input the `beijing_pm` dataframe, we would be able to create
+a plot that shows each sample's sampling time on the x-axis,
+PM\textsubscript{2.5} concentration on the y-axis, and AQI by the color of the
+point.
 
 ## Plot aesthetics
 
-**Aesthetics** are plotting elements that can show certain elements of the data. \medskip
+**Aesthetics** are plotting elements that can show certain elements of the data.
+\medskip
 
-For example, you may want to create a scatterplot where color shows gender, x-position shows height, and y-position shows weight. \medskip
+For example, you may want to create a scatterplot where color shows AQI,
+x-position shows sampling time, and y-position shows PM\textsubscript{2.5}
+concentration. \medskip
 
-```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-distinct_nepali %>%
-  ggplot(aes(x = ht, y = wt, color = sex)) + 
+```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 8, fig.height = 3.5}
+beijing_pm %>%
+  ggplot(aes(x = sample_time, y = value, 
+             color = aqi)) + 
   geom_point() + 
-  xlab("Height (cm)") + ylab("Weight (kg)")
+  xlab("Sampling time") + ylab("PM2.5 concentration")
 ```
 
 ## Plot aesthetics
 
-In the previous graph, the mapped aesthetics are color, x, and y. In the `ggplot` code, all of these aesthetic mappings will be specified within an `aes` call, which will be nested in another call in the `ggplot` pipeline. \medskip
+In the previous graph, the mapped aesthetics are color, x, and y. In the
+`ggplot` code, all of these aesthetic mappings will be specified within an `aes`
+call, which will be nested in another call in the `ggplot` pipeline. \medskip
 
-Aesthetic       | `ggplot` abbreviation  | `nepali` column
+Aesthetic       | `ggplot` abbreviation  | `beijing_pm` column
 ----------------|------------------------|-----------------
-x-axis position | `x = `                 | `ht`
-y-axis position | `y = `                 | `wt`
-color           | `color = `             | `sex`
+x-axis position | `x = `                 | `sample_time`
+y-axis position | `y = `                 | `value`
+color           | `color = `             | `aqi`
 
 This is how these mappings will be specified in an `aes` call:
 
 ```{r eval = FALSE}
 # Note: This code should not be run by itself. 
 # It will eventually be nested in a ggplot call.
-aes(x = ht, y = wt, color = sex)
+aes(x = sample_time, y = value, color = aqi)
 ```
 
 
@@ -996,9 +999,12 @@ knitr::kable(aes_vals, col.names = c("Code", "Description"))
 
 ## Geoms
 
-You will add **geoms** that create the actual geometric objects on the plot. For example, a scatterplot has "points" geoms, since each observation is displayed as a point. 
+You will add **geoms** that create the actual geometric objects on the plot. For
+example, a scatterplot has "points" geoms, since each observation is displayed
+as a point.
 
-There are `geom_*` functions that can be used to add a variety of geoms. The function to add a "points" geom is `geom_point`. 
+There are `geom_*` functions that can be used to add a variety of geoms. The
+function to add a "points" geom is `geom_point`.
 
 We just covered three plotting elements: 
 
@@ -1006,7 +1012,8 @@ We just covered three plotting elements:
 - Aesthetics
 - Geoms
 
-These are three elements that you will almost always specify when using `ggplot`, and they are sufficient to create a number of basic plots. 
+These are three elements that you will almost always specify when using
+`ggplot`, and they are sufficient to create a number of basic plots.
 
 ## Creating a ggplot object
 
@@ -1022,23 +1029,31 @@ ggplot(data = dataframe) +
 \small 
 Notice that: 
 
-1. The `ggplot` call specifies the **dataframe** with the data you want to plot 
-2. A **geom** is added using the appropriate `geom_*` function for a scatterplot (`geom_point`). 
-3. The mappings between columns in the dataframe and **aesthetics** of the geom is specified within an `aes` call in the `mapping` argument of the `geom_*` function call.
-4. The `aes` call includes mappings to two aesthetics that are required from the `geom_point` geom (`x` and `y`) and one that is optional (`color`).
+1. The `ggplot` call specifies the **dataframe** with the data you want to plot
+2. A **geom** is added using the appropriate `geom_*` function for a scatterplot
+(`geom_point`).
+3. The mappings between columns in the dataframe and **aesthetics** of the geom
+is specified within an `aes` call in the `mapping` argument of the `geom_*`
+function call.
+4. The `aes` call includes mappings to two aesthetics that are required from the
+`geom_point` geom (`x` and `y`) and one that is optional (`color`).
 
 ## Creating a ggplot object
 
-Let's put these ideas together to write the code to create a scatterplot for our example data: 
+Let's put these ideas together to write the code to create a plot for our
+example data:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-  ggplot(data = distinct_nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt, color = sex)) 
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 8, fig.height = 3.5}
+  ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value, 
+                           color = aqi)) 
 ```
 
 ## Adding geoms
 
-There are a number of different `geom_*` functions you can use to add geoms to a plot. They are divided between geoms that directly map the data to an aesthetic and those that show some summary or statistic of the data. \medskip 
+There are a number of different `geom_*` functions you can use to add geoms to a
+plot. They are divided between geoms that directly map the data to an aesthetic
+and those that show some summary or statistic of the data. \medskip
 
 Some of the most common direct-mapping geoms are:
 
@@ -1056,19 +1071,22 @@ Geom(s)                     | Description
 You can add several geoms to the same plot as layers:
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-  ggplot(data = distinct_nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt, color = sex)) + 
-  geom_line(mapping = aes(x = ht, y = wt, color = sex)) + 
-  geom_rug(mapping = aes(x = ht, y = wt, color = sex)) 
+  ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value)) + 
+  geom_line(mapping = aes(x = sample_time, y = value)) + 
+  geom_rug(mapping = aes(x = sample_time, y = value)) 
 ```
 
 ## Creating a ggplot object
 
-You may have noticed that all of these geoms use the same aesthetic mappings (height to x-axis position, weight to y-axis position, and sex to color). To save time, you can specify the aesthetic mappings in the first `ggplot` call. These mappings will then be the default for any of the added geoms. 
+You may have noticed that all of these geoms use the same aesthetic mappings
+(height to x-axis position, weight to y-axis position, and sex to color). To
+save time, you can specify the aesthetic mappings in the first `ggplot` call.
+These mappings will then be the default for any of the added geoms.
 
-```{r eval = FALSE}
-ggplot(data = distinct_nepali,
-       mapping = aes(x = ht, y = wt, color = sex)) + 
+```{r eval = FALSE, warning = FALSE}
+ggplot(data = beijing_pm,
+       mapping = aes(x = sample_time, y = value)) + 
   geom_point() + 
   geom_line() + 
   geom_rug() 
@@ -1076,11 +1094,12 @@ ggplot(data = distinct_nepali,
 
 ## Creating a ggplot object
 
-Because the first argument of the `ggplot` call is a dataframe, you can also "pipe into" a `ggplot` call:
+Because the first argument of the `ggplot` call is a dataframe, you can also
+"pipe into" a `ggplot` call:
 
 ```{r eval = FALSE}
-distinct_nepali %>% 
-  ggplot(aes(x = ht, y = wt, color = sex)) + 
+beijing_pm %>% 
+  ggplot(aes(x = sample_time, y = value)) + 
   geom_point() + 
   geom_line() + 
   geom_rug() 
@@ -1088,27 +1107,33 @@ distinct_nepali %>%
 
 ## In-course exercise
 
-We'll take a break now to continue the in-course exercise for this week (Section 3.5.4).
+We'll take a break now to continue the in-course exercise for this week (Section 4).
 
 ## Plot aesthetics
 
-Which aesthetics you must specify in the `aes` call depend on which geom you are adding to the plot. \medskip 
+Which aesthetics you must specify in the `aes` call depend on which geom you are
+adding to the plot. \medskip
 
-You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file (e.g., `?geom_point`). \medskip 
+You can find out the aesthetics you can use for a geom in the "Aesthetics"
+section of the geom's help file (e.g., `?geom_point`). \medskip
 
-Required aesthetics are in bold in this section of the help file and optional ones are not. 
+Required aesthetics are in bold in this section of the help file and optional
+ones are not.
 
 ## Constant aesthetics
 
-Instead of mapping an aesthetic to an element of your data, you can use a constant value for the aesthetic. For example, you may want to make all the points blue, rather than having color map to gender: 
+Instead of mapping an aesthetic to an element of your data, you can use a
+constant value for the aesthetic. For example, you may want to make all the
+points blue, rather than having color map to AQI:
 
 ```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-distinct_nepali %>%
-  ggplot(aes(x = ht, y = wt)) + 
+beijing_pm %>%
+  ggplot(aes(x = sample_time, y = value)) + 
   geom_point(color = "blue")
 ```
 
-In this case, you can define that aesthetic as a constant for the geom, outside of an `aes` statement.
+In this case, you can define that aesthetic as a constant for the geom,
+**outside** of an `aes` statement.
 
 ## Constant aesthetics
 
@@ -1131,11 +1156,13 @@ ggplot(to_plot, aes(x = x, y = y)) +
 
 ## Constant aesthetics
 
-Here is an example of mapping point shape to a constant value other than the default:
+Here is an example of mapping point shape to a constant value other than the
+default:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = distinct_nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt, color = sex),
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 8, fig.height = 3.5}
+ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value,
+                           color = aqi),
              shape = 9)
 ```
 
@@ -1163,9 +1190,9 @@ Google "R colors" and search the images to find links to listings of different R
 
 Here is an example of mapping point shape and color to constant values other than the defaults:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = distinct_nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt),
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 7, fig.height = 3}
+ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value),
              shape = 9, 
              color = "darkorchid")
 ```
@@ -1189,17 +1216,17 @@ knitr::kable(plot_adds, col.names = c("Element", "Description"))
 ## Useful plot additions
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = distinct_nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt)) + 
-  labs(x = "Height", y = "Weight") + 
-  ggtitle("Height vs. weight for Nepali children",
-          subtitle = "Based on data from West et al. (1997)") + 
-  expand_limits(x = 0, y = 0)
+ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value)) + 
+  labs(x = "Sampling Date and Time", 
+       y = "PM2.5 Concentration") + 
+  ggtitle("Measurements of PM2.5 in Beijing, China, 2017",
+          subtitle = "Based on U.S. Embassy Monitor") 
 ```
 
 ## In-course exercise
 
-We’ll take a break now to continue the in-course exercise for this week (Section 3.5.5).
+We’ll take a break now to continue the in-course exercise for this week (Section 5 of Week 3).
 
 ## Adding geoms
 
@@ -1217,37 +1244,34 @@ Geom(s)                        | Description
 
 ## Adding geoms
 
-These "statistical" geoms all input the original data and perform some calculations on that data to determine how to plot the final geom. Often, this calculation involves some kind of summarization. 
+These "statistical" geoms all input the original data and perform some
+calculations on that data to determine how to plot the final geom. Often, this
+calculation involves some kind of summarization.
 
-For example, the geom for a hexagonal 2-D heatmap (`geom_hex`) divides the data into an evenly-sized set of hexagons and then calculates the number of points in each hexagon to provide a 2-D visualization of how the data is distributed. 
-
-## Adding geoms
-
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = distinct_nepali) + 
-  geom_hex(aes(x = ht, y = wt))
-```
+For example, the geom for a histogram (`geom_hex`) divides the data into an
+evenly-sized set of "bins" and then calculates the number of points in each bin
+to provide a visualization of how the data is distributed.
 
 ## Adding geoms
 
-A histogram geom is a similar idea, but only gives the distribution across one variable: 
+A histogram geom is a similar idea, but only gives the distribution across one
+variable:
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = distinct_nepali) + 
-  geom_histogram(aes(x = ht))
+ggplot(data = beijing_pm) + 
+  geom_histogram(aes(x = value))
 ```
 
 
 ## Histogram example
 
-You can add some elements to the histogram, like `ggtitle`, `labs`, and `xlim`:
+You can add some elements to the histogram, like `ggtitle`, and `labs`:
 
 ```{r, fig.width = 4, fig.height = 2.5, out.width="0.6\\textwidth", fig.align = "center", message = FALSE, warning = FALSE}
-ggplot(distinct_nepali, aes(x = ht)) + 
+ggplot(beijing_pm, aes(x = value)) + 
   geom_histogram(fill = "lightblue", color = "black") + 
-  ggtitle("Height of children") + 
-  labs(x = "Height (cm)", y = "Weight (kg)") + 
-  xlim(c(0, 120))
+  ggtitle("PM2.5 Concentrations in Beijing") + 
+  labs(x = "PM2.5 Concentration", y = "Number of samples") 
 ```
 
 ## Histogram example
@@ -1255,25 +1279,36 @@ ggplot(distinct_nepali, aes(x = ht)) +
 `geom_histogram` also has its own special argument, `bins`. You can use this to change the number of bins that are used to make the histogram:
 
 ```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", warning = FALSE, message = FALSE}
-ggplot(distinct_nepali, aes(x = ht)) + 
-  geom_histogram(bins = 40) 
+ggplot(beijing_pm, aes(x = value)) + 
+  geom_histogram(bins = 100) 
 ```
 
 ## Bar chart
 
 You can use the `geom_bar` geom to create a barchart:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(distinct_nepali, aes(x = sex, fill = ht > 100)) + 
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 7, fig.height = 2.5}
+ggplot(beijing_pm, aes(x = aqi)) + 
   geom_bar()
 ```
 
 ## Bar chart
 
-With the `geom_bar` geom, you can use the `position` argument to change how the bars for different groups are shown (`"stack"`, `"dodge"`, `"fill"`):
+You can use the `geom_bar` geom to show counts for two factors by using `x` for
+one and `fill` for the other:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(distinct_nepali, aes(x = sex, fill = ht > 100)) + 
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 7, fig.height = 2.5}
+ggplot(beijing_pm, aes(x = aqi, fill = heating)) + 
+  geom_bar()
+```
+
+## Bar chart
+
+With the `geom_bar` geom, you can use the `position` argument to change how the
+bars for different groups are shown (`"stack"`, `"dodge"`, `"fill"`):
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 8, fig.height = 3}
+ggplot(beijing_pm, aes(x = aqi, fill = heating)) + 
   geom_bar(position = "dodge")
 ```
 
@@ -1282,21 +1317,21 @@ ggplot(distinct_nepali, aes(x = sex, fill = ht > 100)) +
 To create a boxplot, you can use `geom_boxplot`: 
 
 ```{r, fig.height = 2, fig.width = 2, warning = FALSE, fig.align="center"}
-ggplot(distinct_nepali, aes(x = 1, y = ht)) + 
+ggplot(beijing_pm, aes(x = 1, y = value)) + 
   geom_boxplot() + 
-  labs(x = "", y = "Height (cm)")
+  labs(x = "", y = "PM2.5 Concentration")
 ```
 
 ## Boxplot example
 
 You can also do separate boxplots by a factor. In this case, you'll need to include two aesthetics (`x` and `y`) when you initialize the ggplot object. 
 
-```{r, fig.height = 2, fig.width = 2.5, fig.align = "center", warning = FALSE}
-ggplot(distinct_nepali, aes(x = sex, y = ht, group = sex)) + 
+```{r, fig.height = 3.8, fig.width = 8, fig.align = "center", warning = FALSE, out.width = "\\textwidth"}
+ggplot(beijing_pm, aes(x = aqi, y = value, group = aqi)) + 
   geom_boxplot() + 
-  labs(x = "Sex", y = "Height (cm)")
+  labs(x = "AQI Category", y = "PM2.5 Concentration")
 ```
 
 ## In-course exercise
 
-We'll take a break now to finish the in-course exercise for this week (Section 3.5.6).
+We'll take a break now to finish the in-course exercise for this week (Section 6 of Week 3).
