@@ -46,7 +46,9 @@ https://www.sciencemag.org/news/2018/04/rooftop-sensors-us-embassies-are-warning
 
 ## Example data---Beijing air quality
 
-Download the data here. Then you can read this data into your R session: 
+Download the data [here](https://raw.githubusercontent.com/geanders/RProgrammingForResearch/master/data/Beijing_2017_HourlyPM25.csv). 
+
+Then you can read this data into your R session: 
 
 ```{r}
 library("readr")
@@ -414,6 +416,23 @@ beijing_pm %>%
 
 ## Factors in R
 
+As a note, there's a function called `n()` that you can use inside
+summarize to replace `count`. For example, these two expressions
+give the same output: 
+
+```{r eval = FALSE}
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  count()
+
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  summarize(n = n())
+```
+
+
+## Factors in R
+
 If a column is in a character class, but you'd like it to be a 
 factor, you can use `as.factor`: 
 
@@ -422,6 +441,10 @@ beijing_pm %>%
   mutate(qc = as.factor(qc))
 ```
 
+## In-course exercise
+
+We'll take a break now to start the in-course exercise for this week (Sections
+1 and 2 for Week 3).
 
 # Dates in R
 
@@ -713,6 +736,10 @@ sum(beijing_pm$beyond_index)
 sum(!beijing_pm$beyond_index)
 ```
 
+## In-course exercise
+
+We'll take a break now to start the in-course exercise for this week (Section
+3 for Week 3).
 
 # Data from R packages
 
@@ -822,10 +849,6 @@ distinct_nepali %>%
 
 
 
-## In-course exercise
-
-We'll take a break now to start the in-course exercise for this week (Sections
-3.5.1 and 3.5.2).
 
 # Tidyverse and cheatsheets
 
