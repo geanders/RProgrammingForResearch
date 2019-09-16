@@ -872,11 +872,11 @@ Put all of the steps of this cleaning process into just a few "chaining" calls.
 
 ```{r, message = FALSE, fig.width = 8, fig.height = 4}
 ebola <- read_csv(ebola_url) %>%
-        gather(variable, count, -Date, -Day) %>%
-        mutate(Date = mdy(Date)) %>%
-        separate(variable, c("type", "country"), sep = "_") %>% 
-        spread(type, count) %>%
-        filter(!is.na(Cases) & !is.na(Deaths))
+         pivot_longer(cols = c(-Date, -Day), names_to = "variable", values_to = "count") %>%
+         mutate(Date = mdy(Date)) %>%
+         separate(variable, c("type", "country"), sep = "_") %>%
+         pivot_wider(names_from = type, values_from = count) %>%
+         filter(!is.na(Cases) & !is.na(Deaths))
 
 ggplot(ebola, aes(x = Date, y = Cases)) + 
         geom_line() + 
