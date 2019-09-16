@@ -242,7 +242,7 @@ stock_summary %>%
   mutate("Mean (Std.dev.)" = paste0(round(mean, 2), " (",
                                     round(sd, 2), ")")) %>%
   dplyr::select(- mean, - sd) %>%
-  mutate(N = as.character(N)) %>%
+  mutate(N = as.character(N)) %>% # might be able to deal with this in pivot_longer call
   pivot_longer(cols = -stock, names_to = "Statistic", values_to = "Value") %>%
   pivot_wider(names_from = "stock", values_from = "Value") %>%
   knitr::kable()
