@@ -803,11 +803,11 @@ ebola <- read_csv(ebola_url)
 head(ebola)
 ```
 
-Change the data to long data using the `gather()` function from `dplyr`:
+Change the data to long data using the `pivoter_longer` function from `tidyr`:
 
 ```{r}
-ebola <- ebola %>% 
-  gather(key = variable, value = count, -Date, -Day)
+ebola <- ebola %>%
+  pivot_longer(cols = c(-Date, -Day), names_to = "variable", values_to = "count")
 head(ebola)
 ```
 
