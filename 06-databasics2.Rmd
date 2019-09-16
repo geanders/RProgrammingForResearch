@@ -917,11 +917,15 @@ R comes with a dataset called `VADeaths` that gives death rates per 1,000 people
 library(datasets)
 data(VADeaths)
 VADeaths <- VADeaths %>%
-  as.data.frame() %>% 
+  as_tibble() %>% 
   mutate(age = rownames(VADeaths)) %>%
-  gather(key = gender_loc, value = mort_rate, - age) %>%
-  separate(col = gender_loc, into = c("loc", "gender"),
+  pivot_longer(cols = -age,
+               names_to = "gender_loc",
+               values_to = "mort_rate") %>%
+  separate(col = gender_loc,
+           into = c("loc", "gender"),
            sep = " ")
+
 ggplot(VADeaths, aes(x = age, y = mort_rate,
                      color = gender)) + 
   geom_point() + 
