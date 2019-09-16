@@ -1145,7 +1145,7 @@ In R, you can specify point shape with a number. Here are the shapes that corres
 x <- rep(1:5, 5)
 y <- rep(1:5, each = 5)
 shape <- 1:25
-to_plot <- data_frame(x = x, y = y, shape = shape)
+to_plot <- tibble(x = x, y = y, shape = shape)
 ggplot(to_plot, aes(x = x, y = y)) + 
   geom_point(shape = shape, size = 4, color = "black", fill = "red") + 
   geom_text(label = shape, nudge_x = -0.25) +
@@ -1248,14 +1248,19 @@ These "statistical" geoms all input the original data and perform some
 calculations on that data to determine how to plot the final geom. Often, this
 calculation involves some kind of summarization.
 
-For example, the geom for a histogram (`geom_hex`) divides the data into an
+## Adding geoms
+
+For example, the geom for a histogram (`geom_hist`) divides the data into an
 evenly-sized set of "bins" and then calculates the number of points in each bin
 to provide a visualization of how the data is distributed.
 
+```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/histogram_illustration.jpg")
+```
+
 ## Adding geoms
 
-A histogram geom is a similar idea, but only gives the distribution across one
-variable:
+To plot a histogram of PM_{2.5} concentrations in the Beijing data, run:
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
 ggplot(data = beijing_pm) + 
