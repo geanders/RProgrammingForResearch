@@ -749,16 +749,16 @@ ebola_wider %>% slice(1:6)
 - Now that your data is tidy, create one plot showing Ebola cases by date, faceted by country, and one showing Ebola deaths by date, also faceted by country. Try using the option `scales = "free_y"` in the `facet_wrap` function and see how that changes these graphs. Discuss with your group the advantages and disadvantages of using this option when creating these small multiple plots. The plots should look something like this (if you're using the `scales = "free_y"` option): 
 
 ```{r echo = FALSE, fig.width = 8, fig.height = 4, message = FALSE, warning = FALSE}
-ebola <- filter(ebola, !is.na(Cases) & !is.na(Deaths))
+ebola_filtered <- filter(ebola_wider, !is.na(Cases) & !is.na(Deaths))
 
-ggplot(ebola, aes(x = Date, y = Cases)) + 
-        geom_line() + 
-        facet_wrap(~ country, ncol = 4, scales = "free_y") + 
-        theme_classic()
-ggplot(ebola, aes(x = Date, y = Deaths)) + 
-        geom_line() + 
-        facet_wrap(~ country, ncol = 4, scales = "free_y") + 
-        theme_classic()
+ggplot(ebola_filtered, aes(x = Date, y = Cases)) + 
+       geom_line() + 
+       facet_wrap(~ country, ncol = 4, scales = "free_y") + 
+       theme_classic()
+ggplot(ebola_filtered, aes(x = Date, y = Deaths)) + 
+       geom_line() + 
+       facet_wrap(~ country, ncol = 4, scales = "free_y") + 
+       theme_classic()
 ```
 
 - Based on these plots, what would your next questions be about this data before you used it for an analysis?
@@ -769,11 +769,11 @@ ggplot(ebola, aes(x = Date, y = Deaths)) +
 ebola_url <- paste0("https://github.com/geanders/RProgrammingForResearch/",
               "raw/master/data/country_timeseries.csv")
 ebola <- read_csv(ebola_url) %>%
-        gather(key = variable, value = count, -Date, -Day) %>%
-        mutate(Date = mdy(Date)) %>%
-        separate(variable, c("type", "country"), sep = "_") %>% 
-        spread(type, count) %>%
-        filter(!is.na(Cases) & !is.na(Deaths))
+         pivot_longer(cols = c(-Date, -Day), names_to = "variable", values_to = "count") %>%
+         mutate(Date = mdy(Date)) %>%
+         separate(variable, c("type", "country"), sep = "_") %>%
+         pivot_wider(names_from = type, values_from = count) %>%
+         filter(!is.na(Cases) & !is.na(Deaths))
 
 library(forcats)
 ggplot(ebola, aes(x = Date, y = Cases)) + 
