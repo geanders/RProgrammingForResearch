@@ -722,7 +722,9 @@ ggplot(data = mexico) +
 ebola_url <- paste0("https://github.com/geanders/RProgrammingForResearch/",
               "raw/master/data/country_timeseries.csv")
 ebola <- read_csv(ebola_url) %>% 
-  gather(key = variable, value = count, -Date, -Day)
+  pivot_longer(cols = c(-Date, -Day),
+               names_to = "variable",
+               values_to = "count")
 ebola %>% slice(1:6)
 ```
 
