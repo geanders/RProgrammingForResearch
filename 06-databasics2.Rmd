@@ -152,7 +152,7 @@ There are two functions from the `tidyr` package (another member of the tidyvers
 - `pivot_longer`: Takes several columns and gathers them into two columns. One of the new columns contains the former column names and the other contains the former cell values.
 - `pivot_wider`: Takes two columns and spreads them into multiple columns. Column names for the new columns will come from one column and the cell values from the other.
 
-The following examples are from `tidyr` help files and show the effects of making a dataset longer or wider.
+The following examples are show the effects of making a dataset longer or wider.
 
 Here is some simulated wide data:
 
@@ -175,11 +175,13 @@ In the `wide_stocks` dataset, there are separate columns for three different sto
 wide_stocks[1:3, ]
 ```
 
-If you want to convert the dataframe to have all stock values in a single column, you can use `gather` to convert wide data to long data: 
+If you want to convert the dataframe to have all stock values in a single column, you can use `pivot_longer` to convert wide data to long data: 
 
 ```{r}
-long_stocks <- gather(wide_stocks, key = stock,
-                      value = price, -time)
+long_stocks <- pivot_longer(data = wide_stocks,
+                            cols = -time,
+                            names_to = "stock",
+                            values_to = "price")
 long_stocks[1:5, ]
 ```
 
@@ -189,15 +191,14 @@ In this "long" dataframe, there is now one column that gives the identify of the
 long_stocks[1:5, ]
 ```
 
-The format for a `gather` call is: 
+The format for a `pivots_longer` call is: 
 
 ```{r eval = FALSE}
 ## Generic code
-new_df <- gather(old_df,
-                 key = [name of column with old column names],
-                 value = [name of column with cell values],
-                 - [name of column(s) you want to 
-                    exclude from gather])
+new_df <- pivot_longer(old_dataframe,
+                       cols = [name(s) of the columns you want to make longer],
+                       names_to = [name of new column to store the old column names],
+                       values_to = [name of new column to store the old values])
 ```
 
 Three important notes: 
