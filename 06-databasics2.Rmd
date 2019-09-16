@@ -201,13 +201,13 @@ new_df <- pivot_longer(old_df,
                        values_to = [name of new column to store the old values])
 ```
 
-Three important notes: 
+Three important notes:
 
-- Everything is gathered into one of two columns -- one column with the old column names, and one column with the old cell values
-- With the `key` and `value` arguments, you are just providing column names for the two columns that everything's gathered into.
-- If there is a column you don't want to gather (`date` in the example), use `-` to exclude it in the `gather` call.
+- Everything is pivoted into one of two columns -- one column with the old column names, and one column with the old cell values
+- With the `names_to` and `values_to` arguments, you are just providing column names for the two columns that everything's pivoted into.
+- If there is a column you don't want to include in the pivot (`date` in the example), use `-` to exclude it in the `cols` argument.
 
-Notice how easy it is, now that the data is gathered, to use `stock` for aesthetics of faceting in a `ggplot2` call:
+Notice how easy it is, now that the data is longer, to use `stock` for aesthetics of faceting in a `ggplot2` call:
 
 ```{r fig.width = 7, fig.height = 2.5}
 ggplot(long_stocks, aes(x = time, y = price)) + 
