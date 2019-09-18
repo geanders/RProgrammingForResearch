@@ -6,27 +6,27 @@
 knitr::opts_knit$set(error = TRUE)
 ```
 
-## R Notebooks 
+<!-- ## R Notebooks  -->
 
-From RStudio's [article on R Notebooks](http://rmarkdown.rstudio.com/r_notebooks.html):
+<!-- From RStudio's [article on R Notebooks](http://rmarkdown.rstudio.com/r_notebooks.html): -->
 
-> "An R Notebook is an R Markdown document with chunks that can be executed independently and interactively, with output visible immediately beneath the input."
+<!-- > "An R Notebook is an R Markdown document with chunks that can be executed independently and interactively, with output visible immediately beneath the input." -->
 
-R Notebooks are a new feature. Right now, if you want to use them, you need to update to RStudio's Preview version. You can get that [here](https://www.rstudio.com/products/rstudio/download/preview/).
+<!-- R Notebooks are a new feature. Right now, if you want to use them, you need to update to RStudio's Preview version. You can get that [here](https://www.rstudio.com/products/rstudio/download/preview/). -->
 
-You can render an R Notebook document to a final, static version (e.g., pdf, Word, HTML) just like an R Markdown file.  
+<!-- You can render an R Notebook document to a final, static version (e.g., pdf, Word, HTML) just like an R Markdown file.   -->
 
-Therefore, you can use R Notebooks as an alternative to R Markdown, with the ability to try out and change chunks interactively as you write the document. 
+<!-- Therefore, you can use R Notebooks as an alternative to R Markdown, with the ability to try out and change chunks interactively as you write the document.  -->
 
-You can open a new R Notebook file by going in RStudio to "File" -> "New File". In the Preview version of RStudio, there's an option there for "R Notebook".  
+<!-- You can open a new R Notebook file by going in RStudio to "File" -> "New File". In the Preview version of RStudio, there's an option there for "R Notebook".   -->
 
-As with R Markdown files, when you choose to create a new R Notebook file, RStudio opens a skeleton file with some example text and formatting already in the file.  
+<!-- As with R Markdown files, when you choose to create a new R Notebook file, RStudio opens a skeleton file with some example text and formatting already in the file.   -->
 
-The syntax is very similar to an R Markdown file, but the YAML now specifies: 
+<!-- The syntax is very similar to an R Markdown file, but the YAML now specifies:  -->
 
-```
-output: html_notebook
-```
+<!-- ``` -->
+<!-- output: html_notebook -->
+<!-- ``` -->
 
 ## Templates
 
@@ -386,39 +386,43 @@ http://r-pkgs.had.co.nz/git.html
 
 ### Organizing a project
 
-In this part of the group exercise, you will set up an R Project to use for the next homework assignment. You will want to set up a similar project for your group project. 
+In this part of the group exercise, you will set up an R Project to use for the next homework assignment. You will want to set up a similar project for your final group project. 
 
 - First, you need to create a new project. In RStudio, go to "File" -> "New Project" -> "New Directory". Choose where you want to save this directory and what you want to name it. 
-- If the R Project does not automatically open once you make it, navigate to the ".Rproj" file created for the project and double-click on that. Alternatively, you can go to "File" -> "Open Project". 
-- Use `getwd` once you've opened your project to determine which working directory is automatically used for the project. 
-- Once you open the project, one of the RStudio panes should have a tab called "Files". This shows the files in this project directory and allows you to navigate through them. Currently, you won't have any files other than the R project file (".Rproj"). As a next step, create several subdirectories. We'll use these to structure the code, data, and R Markdown files for your homework. Create the following subdirectories (you can use the "New Folder" button in the RStudio "Files" pane): 
-    + `data-raw`
+- Once you open the project, one of the RStudio panes should have a tab called "Files". This shows the files in this project directory and allows you to navigate through them. Currently, you won't have any files other than the R project file (".Rproj"). As a next step, create several subdirectories. We'll use these to structure the data and R Markdown files for your homework. Create the following subdirectories (you can use the "New Folder" button in the RStudio "Files" pane): 
     + `data`
-    + `R`
     + `writing`
-- The `data-raw` directory will ultimately have your raw data as well as some R scripts with code for cleaning up the raw data. The homework requires you to pull FARS data from several years. Create a subdirectory in `data-raw` that will just have that data. In the "Files" pane in RStudio, navigate into the `data-raw` subdirectory. Use the "New Folder" button to create a new subdirectory within the `data-raw` subdirectory. Name it `yearly_person_data`. 
-- Download FARS data from the years 1999 to 2010. From each year, pull out the "person" file. Save these yearly "person" files in the `yearly_person_data` subdirectory you created. As a file name, use "person_" and then the year. For example, if you are saving this file for 1999 in the form of a csv, you would name the file "person_1999.csv".
-- The `writing` subdirectory will have your R Markdown file and its output. Create a new R Markdown file ("File" -> "New File" -> "R Markdown") and save it to this subdirectory. You can change the name and date for the file if you'd like. Delete all the text that comes as a default. Write a piece of code that lists the files you saved in `data-raw/yearly_person_data`. Remember that the working directory for an R Markdown file is the directory in which it's saved, so you'll need to use a relative pathname that goes up one directory (`..`) and then goes into `data-raw` and `yearly_person_data`. 
-- If you have time, go to the FARS documentation that you found in an earlier in-course exercise and find out more about which variables are included in this data set and which values they can have. 
+- Download the data for the homework from the *Washington Post's* GitHub page: https://github.com/washingtonpost/data-homicides. Save this data inside your R project in the `data`
+subdirectory
 
 ### Initializing git for an R Project
 
 - If you do not already have one, sign up for a GitHub account. The free option is fine. 
 - If you do not already have git installed on your computer, install it: https://git-scm.com/downloads
-- Open a shell and configure git. For example, I would open a shell and run: 
+- Restart RStudio. go to “RStudio” -> “Preferences” ->“Git/SVN”. Choose “Enable version control”. If RStudio doesn’t find yourversion of git in the “Git executable” box, browse for it.
+- Open your homework project in RStudio. Change your Project settings to initialize git for this project (see the course notes for tips on how to do that).
+- Open a shell from R using the gear symbol in the "Git" pane you should now see in RStudio. Configure git
+from this shell. For example, I would open a shell and run: 
 ```
 git config --global user.name "Brooke Anderson"
 git config --global user.email "brooke.anderson@colostate.edu"
 ```
-- Restart RStudio. go to “RStudio” -> “Preferences” ->“Git/SVN”. Choose “Enable version control”. If RStudio doesn’t find yourversion of git in the “Git executable” box, browse for it.
-- Open your FARS analysis project in RStudio. Change your Project settings to initialize git for this project (see the course notes for tips on how to do that).
-- Try changing a few things in files you have in that project directory (or add a new file). Commit those changes using the "Commit" window. After you commit the changes, look at the "History" window to see the history of your commits.
+Note that you only need to do this once (until you get a new computer or, maybe, update git).
+- Go to the "Commit" window. Click on all of the files you see there, and then make an initial commit
+using "Initial commit" as your commit message.
+- The `writing` subdirectory will have your R Markdown file and its output. Create a new R Markdown file ("File" -> "New File" -> "R Markdown") and save it to this subdirectory. You can change the name and date for the file if you'd like. Delete all the text that comes as a default. Write a piece of code that lists the files you saved in the `data` subdirectory. Remember that the working directory for an R Markdown file is the directory in which it's saved, so you may need to use a relative pathname that goes up one directory (`..`) and then goes into `data` subdirectory. 
+- Commit this change using the "Commit" window. After you commit the changes, look at the "History" window to see the history of your commits.
 
 ### Linking your project with a GitHub repository
 
-- Create an empty GitHub repository for the project. Give it the same name as the name of your R project directory. 
-- Create an RSA key in RStudio and add it as an SSH key in your GitHub settings.
-- Add this empty GitHub repository as the remote branch of your local git repository for the project. 
+(See course notes for more on these steps.)
+
+- Login to your GitHub account online. Create an empty GitHub repository for the project. 
+Give it the same name as the name of your R project directory. 
+- If you do not already have an RSA kay, create one in RStudio and add it as an SSH key in your 
+GitHub settings. If you already have a key (you almost certainly know if you do), see if you can copy it and
+submit it in GitHub. 
+- Set this empty online GitHub repository as the remote branch of your local git repository for the project. 
 - Push your local repository to this GitHub repository. 
 - Go to your GitHub account and make sure the repository was pushed. 
 - Try making some more changes to your local repository. Commit the changes, then use the green up arrow in the Git window to push the changes to your GitHub repository.

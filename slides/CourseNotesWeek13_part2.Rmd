@@ -21,7 +21,8 @@ library(GISTools)
 
 ```{r}
 library(tigris)
-denver_tracts <- tracts(state = "CO", county = 31, cb = TRUE)
+denver_tracts <- tracts(state = "CO", county = 31, 
+                        cb = TRUE, class = "sf")
 load("../data/fars_colorado.RData")
 accident_data <- driver_data %>%
   dplyr::select(state, st_case, county, latitude, longitud,
@@ -91,7 +92,7 @@ leaflet() %>%
 You can use several types of R objects for your data for `leaflet`:
 
 - Dataframe with columns for latitude and longitude
-- Spatial objects (`SpatialPoints`, `SpatialLines`, etc.)
+- Simple feature objects 
 - Latitude-longitude matrix
 
 ## Adding markers
@@ -340,7 +341,7 @@ You can add popups for polygons, as well.
 
 ```{r eval = FALSE}
 polygon_popup <- paste0("Tract ID:  ", 
-                        denver_tracts@data$NAME)
+                        denver_tracts$TRACTCE)
 leaflet() %>%
   addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
   addPolygons(data = denver_tracts, popup = polygon_popup)
@@ -350,7 +351,7 @@ leaflet() %>%
 
 ```{r echo = FALSE}
 polygon_popup <- paste0("Tract ID:  ", 
-                        denver_tracts@data$NAME)
+                        denver_tracts$TRACTCE)
 leaflet() %>%
   addProviderTiles("OpenStreetMap.BlackAndWhite") %>%
   addPolygons(data = denver_tracts, popup = polygon_popup)
@@ -362,16 +363,14 @@ You can overlay different elements. For example, you can show both accidents and
 
 ```{r eval = FALSE}
 polygon_popup <- paste0("Tract ID:  ", 
-                        denver_tracts@data$NAME)
-accident_data_sp <- accident_data
-coordinates(accident_data_sp) <- c("longitud", "latitude")
-proj4string(accident_data_sp) <- CRS(proj4string(denver_tracts))
+                        denver_tracts$TRACTCE)
 leaflet() %>%
-  addProviderTiles("Thunderforest.Transport") %>%
+  addProviderTiles("OpenStreetMap") %>%
   addPolygons(data = denver_tracts, popup = polygon_popup,
               color = "#000000", fillColor = "969696", 
               weight = 2) %>%
-  addCircleMarkers(data = accident_data_sp, radius = 2,
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
                    popup = popup_info, opacity = 0.9,
                    color = pal(accident_data$drunk_dr)) %>%
   addLegend(pal = pal, values = accident_data$drunk_dr, opacity = 0.9)
@@ -381,16 +380,14 @@ leaflet() %>%
 
 ```{r echo = FALSE}
 polygon_popup <- paste0("Tract ID:  ", 
-                        denver_tracts@data$NAME)
-accident_data_sp <- accident_data
-coordinates(accident_data_sp) <- c("longitud", "latitude")
-proj4string(accident_data_sp) <- CRS(proj4string(denver_tracts))
+                        denver_tracts$TRACTCE)
 leaflet() %>%
-  addProviderTiles("Thunderforest.Transport") %>%
+  addProviderTiles("OpenStreetMap") %>%
   addPolygons(data = denver_tracts, popup = polygon_popup,
               color = "#000000", fillColor = "969696", 
               weight = 2) %>%
-  addCircleMarkers(data = accident_data_sp, radius = 2,
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
                    popup = popup_info, opacity = 0.9,
                    color = pal(accident_data$drunk_dr)) %>%
   addLegend(pal = pal, values = accident_data$drunk_dr, opacity = 0.9)
@@ -402,11 +399,12 @@ You can add the ability for the user to pick which layers to see using `addLayer
 
 ```{r eval = FALSE}
 leaflet() %>%
-  addProviderTiles("Thunderforest.Transport", group = "base map") %>%
+  addProviderTiles("OpenStreetMap") %>%
   addPolygons(data = denver_tracts, popup = polygon_popup,
               color = "#000000", fillColor = "969696", 
               weight = 2, group = "tracts") %>%
-  addCircleMarkers(data = accident_data_sp, radius = 2,
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
                    popup = popup_info, opacity = 0.9,
                    color = pal(accident_data$drunk_dr), 
                    group = "accidents") %>%
@@ -419,11 +417,12 @@ leaflet() %>%
 
 ```{r echo = FALSE}
 leaflet() %>%
-  addProviderTiles("Thunderforest.Transport", group = "base map") %>%
+  addProviderTiles("OpenStreetMap") %>%
   addPolygons(data = denver_tracts, popup = polygon_popup,
               color = "#000000", fillColor = "969696", 
               weight = 2, group = "tracts") %>%
-  addCircleMarkers(data = accident_data_sp, radius = 2,
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude,
                    popup = popup_info, opacity = 0.9,
                    color = pal(accident_data$drunk_dr), 
                    group = "accidents") %>%
