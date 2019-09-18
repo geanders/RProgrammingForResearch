@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>R Programming for Research</title>
-  <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016.">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 Reproducible research #1 | R Programming for Research</title>
+  <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
+  <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="R Programming for Research" />
+  <meta property="og:title" content="Chapter 5 Reproducible research #1 | R Programming for Research" />
   <meta property="og:type" content="book" />
   
   
@@ -17,25 +16,26 @@
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="R Programming for Research" />
+  <meta name="twitter:title" content="Chapter 5 Reproducible research #1 | R Programming for Research" />
   
   <meta name="twitter:description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
   
 
-<meta name="author" content="Brooke Anderson and Rachel Severson">
+<meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2018-10-03">
+<meta name="date" content="2019-09-11" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="reporting-data-results-1.html">
-<link rel="next" href="entering-and-cleaning-data-2.html">
+<link rel="prev" href="reporting-data-results-1.html"/>
+<link rel="next" href="appendix-a-vocabulary.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
@@ -50,41 +50,66 @@
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -109,11 +134,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="0.2" data-path="course-information.html"><a href="course-information.html#time-and-place"><i class="fa fa-check"></i><b>0.2</b> Time and place</a></li>
 <li class="chapter" data-level="0.3" data-path="course-information.html"><a href="course-information.html#detailed-schedule"><i class="fa fa-check"></i><b>0.3</b> Detailed schedule</a></li>
 <li class="chapter" data-level="0.4" data-path="course-information.html"><a href="course-information.html#grading"><i class="fa fa-check"></i><b>0.4</b> Grading</a><ul>
-<li class="chapter" data-level="0.4.1" data-path="course-information.html"><a href="course-information.html#attendance-and-class-participation"><i class="fa fa-check"></i><b>0.4.1</b> Attendance and class participation</a></li>
-<li class="chapter" data-level="0.4.2" data-path="course-information.html"><a href="course-information.html#weekly-in-course-group-exercises"><i class="fa fa-check"></i><b>0.4.2</b> Weekly in-course group exercises</a></li>
-<li class="chapter" data-level="0.4.3" data-path="course-information.html"><a href="course-information.html#in-class-quizzes"><i class="fa fa-check"></i><b>0.4.3</b> In-class quizzes</a></li>
-<li class="chapter" data-level="0.4.4" data-path="course-information.html"><a href="course-information.html#homework"><i class="fa fa-check"></i><b>0.4.4</b> Homework</a></li>
-<li class="chapter" data-level="0.4.5" data-path="course-information.html"><a href="course-information.html#final-group-project"><i class="fa fa-check"></i><b>0.4.5</b> Final group project</a></li>
+<li class="chapter" data-level="0.4.1" data-path="course-information.html"><a href="course-information.html#grading-for-erhs-535"><i class="fa fa-check"></i><b>0.4.1</b> Grading for ERHS 535</a></li>
+<li class="chapter" data-level="0.4.2" data-path="course-information.html"><a href="course-information.html#grading-for-erhs-581a3"><i class="fa fa-check"></i><b>0.4.2</b> Grading for ERHS 581A3</a></li>
+<li class="chapter" data-level="0.4.3" data-path="course-information.html"><a href="course-information.html#grading-for-erhs-581a4"><i class="fa fa-check"></i><b>0.4.3</b> Grading for ERHS 581A4</a></li>
+<li class="chapter" data-level="0.4.4" data-path="course-information.html"><a href="course-information.html#attendance-and-class-participation"><i class="fa fa-check"></i><b>0.4.4</b> Attendance and class participation</a></li>
+<li class="chapter" data-level="0.4.5" data-path="course-information.html"><a href="course-information.html#weekly-in-course-group-exercises"><i class="fa fa-check"></i><b>0.4.5</b> Weekly in-course group exercises</a></li>
+<li class="chapter" data-level="0.4.6" data-path="course-information.html"><a href="course-information.html#in-class-quizzes"><i class="fa fa-check"></i><b>0.4.6</b> In-class quizzes</a></li>
+<li class="chapter" data-level="0.4.7" data-path="course-information.html"><a href="course-information.html#homework"><i class="fa fa-check"></i><b>0.4.7</b> Homework</a></li>
+<li class="chapter" data-level="0.4.8" data-path="course-information.html"><a href="course-information.html#final-group-project"><i class="fa fa-check"></i><b>0.4.8</b> Final group project</a></li>
 </ul></li>
 <li class="chapter" data-level="0.5" data-path="course-information.html"><a href="course-information.html#course-set-up"><i class="fa fa-check"></i><b>0.5</b> Course set-up</a></li>
 <li class="chapter" data-level="0.6" data-path="course-information.html"><a href="course-information.html#coursebook"><i class="fa fa-check"></i><b>0.6</b> Coursebook</a><ul>
@@ -125,41 +153,36 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="1.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#objectives"><i class="fa fa-check"></i><b>1.1</b> Objectives</a></li>
 <li class="chapter" data-level="1.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#r-and-r-studio"><i class="fa fa-check"></i><b>1.2</b> R and R Studio</a><ul>
 <li class="chapter" data-level="1.2.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#what-is-r"><i class="fa fa-check"></i><b>1.2.1</b> What is R?</a></li>
-<li class="chapter" data-level="1.2.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#open-source-software"><i class="fa fa-check"></i><b>1.2.2</b> Open-source software</a></li>
+<li class="chapter" data-level="1.2.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#free-and-open-source-software"><i class="fa fa-check"></i><b>1.2.2</b> Free and open-source software</a></li>
 <li class="chapter" data-level="1.2.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#what-is-rstudio"><i class="fa fa-check"></i><b>1.2.3</b> What is RStudio?</a></li>
 </ul></li>
-<li class="chapter" data-level="1.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#the-package-system"><i class="fa fa-check"></i><b>1.3</b> The “package” system</a><ul>
-<li class="chapter" data-level="1.3.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#r-packages"><i class="fa fa-check"></i><b>1.3.1</b> R packages</a></li>
-<li class="chapter" data-level="1.3.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#installing-from-cran"><i class="fa fa-check"></i><b>1.3.2</b> Installing from CRAN</a></li>
-<li class="chapter" data-level="1.3.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#loading-an-installed-package"><i class="fa fa-check"></i><b>1.3.3</b> Loading an installed package</a></li>
+<li class="chapter" data-level="1.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#communicating-with-r"><i class="fa fa-check"></i><b>1.3</b> Communicating with R</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#r-sessions-the-console-and-the-command-prompt"><i class="fa fa-check"></i><b>1.3.1</b> R sessions, the console, and the command prompt</a></li>
+<li class="chapter" data-level="1.3.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#r-expressions-function-calls-and-objects"><i class="fa fa-check"></i><b>1.3.2</b> R expressions, function calls, and objects</a></li>
 </ul></li>
-<li class="chapter" data-level="1.4" data-path="r-preliminaries.html"><a href="r-preliminaries.html#basic-code-conventions-of-r"><i class="fa fa-check"></i><b>1.4</b> Basic code conventions of R</a><ul>
-<li class="chapter" data-level="1.4.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#r-objects"><i class="fa fa-check"></i><b>1.4.1</b> R objects</a></li>
-<li class="chapter" data-level="1.4.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#rs-mvp-the-gets-arrow"><i class="fa fa-check"></i><b>1.4.2</b> R’s MVP: The <em>gets arrow</em></a></li>
-<li class="chapter" data-level="1.4.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#assignment-operator-wars---vs."><i class="fa fa-check"></i><b>1.4.3</b> Assignment operator wars: <code>&lt;-</code> vs. <code>=</code></a></li>
-<li class="chapter" data-level="1.4.4" data-path="r-preliminaries.html"><a href="r-preliminaries.html#naming-objects"><i class="fa fa-check"></i><b>1.4.4</b> Naming objects</a></li>
+<li class="chapter" data-level="1.4" data-path="r-preliminaries.html"><a href="r-preliminaries.html#r-scripts"><i class="fa fa-check"></i><b>1.4</b> R scripts</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#commenting-code"><i class="fa fa-check"></i><b>1.4.1</b> Commenting code</a></li>
 </ul></li>
-<li class="chapter" data-level="1.5" data-path="r-preliminaries.html"><a href="r-preliminaries.html#rs-most-basic-object-types"><i class="fa fa-check"></i><b>1.5</b> R’s most basic object types</a><ul>
-<li class="chapter" data-level="1.5.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#vectors"><i class="fa fa-check"></i><b>1.5.1</b> Vectors</a></li>
-<li class="chapter" data-level="1.5.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#dataframes"><i class="fa fa-check"></i><b>1.5.2</b> Dataframes</a></li>
+<li class="chapter" data-level="1.5" data-path="r-preliminaries.html"><a href="r-preliminaries.html#the-package-system"><i class="fa fa-check"></i><b>1.5</b> The “package” system</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#r-packages"><i class="fa fa-check"></i><b>1.5.1</b> R packages</a></li>
+<li class="chapter" data-level="1.5.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#installing-from-cran"><i class="fa fa-check"></i><b>1.5.2</b> Installing from CRAN</a></li>
+<li class="chapter" data-level="1.5.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#loading-an-installed-package"><i class="fa fa-check"></i><b>1.5.3</b> Loading an installed package</a></li>
 </ul></li>
-<li class="chapter" data-level="1.6" data-path="r-preliminaries.html"><a href="r-preliminaries.html#using-r-functions"><i class="fa fa-check"></i><b>1.6</b> Using R functions</a><ul>
-<li class="chapter" data-level="1.6.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#function-structure"><i class="fa fa-check"></i><b>1.6.1</b> Function structure</a></li>
-<li class="chapter" data-level="1.6.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#function-help-files"><i class="fa fa-check"></i><b>1.6.2</b> Function help files</a></li>
-<li class="chapter" data-level="1.6.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#function-parameters"><i class="fa fa-check"></i><b>1.6.3</b> Function parameters</a></li>
+<li class="chapter" data-level="1.6" data-path="r-preliminaries.html"><a href="r-preliminaries.html#rs-most-basic-object-types"><i class="fa fa-check"></i><b>1.6</b> R’s most basic object types</a><ul>
+<li class="chapter" data-level="1.6.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#vectors"><i class="fa fa-check"></i><b>1.6.1</b> Vectors</a></li>
+<li class="chapter" data-level="1.6.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#dataframes"><i class="fa fa-check"></i><b>1.6.2</b> Dataframes</a></li>
 </ul></li>
-<li class="chapter" data-level="1.7" data-path="r-preliminaries.html"><a href="r-preliminaries.html#r-scripts"><i class="fa fa-check"></i><b>1.7</b> R scripts</a><ul>
-<li class="chapter" data-level="1.7.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#commenting-code"><i class="fa fa-check"></i><b>1.7.1</b> Commenting code</a></li>
-</ul></li>
-<li class="chapter" data-level="1.8" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>1.8</b> In-course Exercise</a><ul>
-<li class="chapter" data-level="1.8.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#about-the-dataset"><i class="fa fa-check"></i><b>1.8.1</b> About the dataset</a></li>
-<li class="chapter" data-level="1.8.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#manually-creating-vectors-and-a-dataframe"><i class="fa fa-check"></i><b>1.8.2</b> Manually creating vectors and a dataframe</a></li>
-<li class="chapter" data-level="1.8.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#installing-and-using-a-package"><i class="fa fa-check"></i><b>1.8.3</b> Installing and using a package</a></li>
-<li class="chapter" data-level="1.8.4" data-path="r-preliminaries.html"><a href="r-preliminaries.html#getting-the-data-onto-your-computer"><i class="fa fa-check"></i><b>1.8.4</b> Getting the data onto your computer</a></li>
-<li class="chapter" data-level="1.8.5" data-path="r-preliminaries.html"><a href="r-preliminaries.html#getting-the-data-into-r"><i class="fa fa-check"></i><b>1.8.5</b> Getting the data into R</a></li>
-<li class="chapter" data-level="1.8.6" data-path="r-preliminaries.html"><a href="r-preliminaries.html#checking-out-the-data"><i class="fa fa-check"></i><b>1.8.6</b> Checking out the data</a></li>
-<li class="chapter" data-level="1.8.7" data-path="r-preliminaries.html"><a href="r-preliminaries.html#using-the-data-to-answer-questions"><i class="fa fa-check"></i><b>1.8.7</b> Using the data to answer questions</a></li>
-<li class="chapter" data-level="1.8.8" data-path="r-preliminaries.html"><a href="r-preliminaries.html#writing-your-code-as-an-r-script"><i class="fa fa-check"></i><b>1.8.8</b> Writing your code as an R script</a></li>
+<li class="chapter" data-level="1.7" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>1.7</b> In-course Exercise</a><ul>
+<li class="chapter" data-level="1.7.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#trying-out-the-code-in-slides-so-far"><i class="fa fa-check"></i><b>1.7.1</b> Trying out the code in slides so far</a></li>
+<li class="chapter" data-level="1.7.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#writing-your-code-as-an-r-script"><i class="fa fa-check"></i><b>1.7.2</b> Writing your code as an R script</a></li>
+<li class="chapter" data-level="1.7.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#about-the-dataset"><i class="fa fa-check"></i><b>1.7.3</b> About the dataset</a></li>
+<li class="chapter" data-level="1.7.4" data-path="r-preliminaries.html"><a href="r-preliminaries.html#manually-creating-vectors"><i class="fa fa-check"></i><b>1.7.4</b> Manually creating vectors</a></li>
+<li class="chapter" data-level="1.7.5" data-path="r-preliminaries.html"><a href="r-preliminaries.html#installing-and-using-a-package"><i class="fa fa-check"></i><b>1.7.5</b> Installing and using a package</a></li>
+<li class="chapter" data-level="1.7.6" data-path="r-preliminaries.html"><a href="r-preliminaries.html#manually-creating-a-dataframe"><i class="fa fa-check"></i><b>1.7.6</b> Manually creating a dataframe</a></li>
+<li class="chapter" data-level="1.7.7" data-path="r-preliminaries.html"><a href="r-preliminaries.html#getting-the-data-onto-your-computer"><i class="fa fa-check"></i><b>1.7.7</b> Getting the data onto your computer</a></li>
+<li class="chapter" data-level="1.7.8" data-path="r-preliminaries.html"><a href="r-preliminaries.html#getting-the-data-into-r"><i class="fa fa-check"></i><b>1.7.8</b> Getting the data into R</a></li>
+<li class="chapter" data-level="1.7.9" data-path="r-preliminaries.html"><a href="r-preliminaries.html#checking-out-the-data"><i class="fa fa-check"></i><b>1.7.9</b> Checking out the data</a></li>
+<li class="chapter" data-level="1.7.10" data-path="r-preliminaries.html"><a href="r-preliminaries.html#using-the-data-to-answer-questions"><i class="fa fa-check"></i><b>1.7.10</b> Using the data to answer questions</a></li>
 </ul></li>
 </ul></li>
 <li class="part"><span><b>II Part II: Basics</b></span></li>
@@ -218,8 +241,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="3.6" data-path="exploring-data-1.html"><a href="exploring-data-1.html#in-course-exercise-2"><i class="fa fa-check"></i><b>3.6</b> In-course exercise</a><ul>
 <li class="chapter" data-level="3.6.1" data-path="exploring-data-1.html"><a href="exploring-data-1.html#loading-data-from-an-r-package"><i class="fa fa-check"></i><b>3.6.1</b> Loading data from an R package</a></li>
-<li class="chapter" data-level="3.6.2" data-path="exploring-data-1.html"><a href="exploring-data-1.html#exploring-the-data-using-logical-statements"><i class="fa fa-check"></i><b>3.6.2</b> Exploring the data using logical statements</a></li>
-<li class="chapter" data-level="3.6.3" data-path="exploring-data-1.html"><a href="exploring-data-1.html#exploring-the-data-using-simple-statistics-and-summarize"><i class="fa fa-check"></i><b>3.6.3</b> Exploring the data using simple statistics and <code>summarize</code></a></li>
+<li class="chapter" data-level="3.6.2" data-path="exploring-data-1.html"><a href="exploring-data-1.html#exploring-the-data-using-simple-statistics-and-summarize"><i class="fa fa-check"></i><b>3.6.2</b> Exploring the data using simple statistics and <code>summarize</code></a></li>
+<li class="chapter" data-level="3.6.3" data-path="exploring-data-1.html"><a href="exploring-data-1.html#exploring-the-data-using-logical-statements"><i class="fa fa-check"></i><b>3.6.3</b> Exploring the data using logical statements</a></li>
 <li class="chapter" data-level="3.6.4" data-path="exploring-data-1.html"><a href="exploring-data-1.html#exploring-the-data-using-basic-plots-1"><i class="fa fa-check"></i><b>3.6.4</b> Exploring the data using basic plots #1</a></li>
 <li class="chapter" data-level="3.6.5" data-path="exploring-data-1.html"><a href="exploring-data-1.html#exploring-the-data-using-basic-plots-2"><i class="fa fa-check"></i><b>3.6.5</b> Exploring the data using basic plots #2</a></li>
 <li class="chapter" data-level="3.6.6" data-path="exploring-data-1.html"><a href="exploring-data-1.html#exploring-the-data-using-basic-plots-3"><i class="fa fa-check"></i><b>3.6.6</b> Exploring the data using basic plots #3</a></li>
@@ -270,70 +293,23 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="5.6.4" data-path="reproducible-research-1.html"><a href="reproducible-research-1.html#r-style-guidelines"><i class="fa fa-check"></i><b>5.6.4</b> R style guidelines</a></li>
 </ul></li>
 </ul></li>
-<li class="part"><span><b>III Part III: Intermediate</b></span></li>
-<li class="chapter" data-level="6" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html"><i class="fa fa-check"></i><b>6</b> Entering and cleaning data #2</a><ul>
-<li class="chapter" data-level="6.1" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#joining-datasets"><i class="fa fa-check"></i><b>6.1</b> Joining datasets</a></li>
-<li class="chapter" data-level="6.2" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#tidy-data"><i class="fa fa-check"></i><b>6.2</b> Tidy data</a></li>
-<li class="chapter" data-level="6.3" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#gathering"><i class="fa fa-check"></i><b>6.3</b> Gathering</a></li>
-<li class="chapter" data-level="6.4" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#working-with-factors"><i class="fa fa-check"></i><b>6.4</b> Working with factors</a></li>
-<li class="chapter" data-level="6.5" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#string-operations-and-regular-expressions"><i class="fa fa-check"></i><b>6.5</b> String operations and regular expressions</a></li>
-<li class="chapter" data-level="6.6" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#in-course-exercise-5"><i class="fa fa-check"></i><b>6.6</b> In-course exercise</a><ul>
-<li class="chapter" data-level="6.6.1" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#designing-tidy-data"><i class="fa fa-check"></i><b>6.6.1</b> Designing tidy data</a></li>
-<li class="chapter" data-level="6.6.2" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#easier-data-wrangling"><i class="fa fa-check"></i><b>6.6.2</b> Easier data wrangling</a></li>
-<li class="chapter" data-level="6.6.3" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#more-extensive-data-wrangling"><i class="fa fa-check"></i><b>6.6.3</b> More extensive data wrangling</a></li>
-<li class="chapter" data-level="6.6.4" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#tidying-vadeaths-data"><i class="fa fa-check"></i><b>6.6.4</b> Tidying <code>VADeaths</code> data</a></li>
-<li class="chapter" data-level="6.6.5" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#exploring-fatality-analysis-reporting-system-fars-data"><i class="fa fa-check"></i><b>6.6.5</b> Exploring Fatality Analysis Reporting System (FARS) data</a></li>
-<li class="chapter" data-level="6.6.6" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#baby-names"><i class="fa fa-check"></i><b>6.6.6</b> Baby names</a></li>
-<li class="chapter" data-level="6.6.7" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#more-with-baby-names"><i class="fa fa-check"></i><b>6.6.7</b> More with baby names</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="exploring-data-2.html"><a href="exploring-data-2.html"><i class="fa fa-check"></i><b>7</b> Exploring data #2</a><ul>
-<li class="chapter" data-level="7.1" data-path="exploring-data-2.html"><a href="exploring-data-2.html#simple-statistical-tests-in-r"><i class="fa fa-check"></i><b>7.1</b> Simple statistical tests in R</a></li>
-<li class="chapter" data-level="7.2" data-path="exploring-data-2.html"><a href="exploring-data-2.html#matrices"><i class="fa fa-check"></i><b>7.2</b> Matrices</a></li>
-<li class="chapter" data-level="7.3" data-path="exploring-data-2.html"><a href="exploring-data-2.html#lists"><i class="fa fa-check"></i><b>7.3</b> Lists</a></li>
-<li class="chapter" data-level="7.4" data-path="exploring-data-2.html"><a href="exploring-data-2.html#regression-models"><i class="fa fa-check"></i><b>7.4</b> Regression models</a><ul>
-<li class="chapter" data-level="7.4.1" data-path="exploring-data-2.html"><a href="exploring-data-2.html#formula-structure"><i class="fa fa-check"></i><b>7.4.1</b> Formula structure</a></li>
-<li class="chapter" data-level="7.4.2" data-path="exploring-data-2.html"><a href="exploring-data-2.html#linear-models"><i class="fa fa-check"></i><b>7.4.2</b> Linear models</a></li>
-<li class="chapter" data-level="7.4.3" data-path="exploring-data-2.html"><a href="exploring-data-2.html#generalized-linear-models-glms"><i class="fa fa-check"></i><b>7.4.3</b> Generalized linear models (GLMs)</a></li>
-</ul></li>
-<li class="chapter" data-level="7.5" data-path="exploring-data-2.html"><a href="exploring-data-2.html#handling-model-objects"><i class="fa fa-check"></i><b>7.5</b> Handling model objects</a><ul>
-<li class="chapter" data-level="7.5.1" data-path="exploring-data-2.html"><a href="exploring-data-2.html#broomtidy"><i class="fa fa-check"></i><b>7.5.1</b> broom::tidy</a></li>
-<li class="chapter" data-level="7.5.2" data-path="exploring-data-2.html"><a href="exploring-data-2.html#broomaugment"><i class="fa fa-check"></i><b>7.5.2</b> broom::augment</a></li>
-<li class="chapter" data-level="7.5.3" data-path="exploring-data-2.html"><a href="exploring-data-2.html#broomglance"><i class="fa fa-check"></i><b>7.5.3</b> broom::glance</a></li>
-<li class="chapter" data-level="7.5.4" data-path="exploring-data-2.html"><a href="exploring-data-2.html#references-statistics-in-r"><i class="fa fa-check"></i><b>7.5.4</b> References– statistics in R</a></li>
-</ul></li>
-<li class="chapter" data-level="7.6" data-path="exploring-data-2.html"><a href="exploring-data-2.html#in-course-exercise-6"><i class="fa fa-check"></i><b>7.6</b> In-course exercise</a><ul>
-<li class="chapter" data-level="7.6.1" data-path="exploring-data-2.html"><a href="exploring-data-2.html#running-a-simple-statistical-test"><i class="fa fa-check"></i><b>7.6.1</b> Running a simple statistical test</a></li>
-<li class="chapter" data-level="7.6.2" data-path="exploring-data-2.html"><a href="exploring-data-2.html#using-regression-models-to-explore-data-1"><i class="fa fa-check"></i><b>7.6.2</b> Using regression models to explore data #1</a></li>
-<li class="chapter" data-level="7.6.3" data-path="exploring-data-2.html"><a href="exploring-data-2.html#using-regression-models-to-explore-data-2"><i class="fa fa-check"></i><b>7.6.3</b> Using regression models to explore data #2</a></li>
-<li class="chapter" data-level="7.6.4" data-path="exploring-data-2.html"><a href="exploring-data-2.html#exploring-fatality-analysis-reporting-system-fars-data-1"><i class="fa fa-check"></i><b>7.6.4</b> Exploring Fatality Analysis Reporting System (FARS) data</a></li>
-</ul></li>
-</ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="A" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html"><i class="fa fa-check"></i><b>A</b> Appendix A: Vocabulary</a><ul>
-<li class="chapter" data-level="A.1" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-1r-preliminaries-updated-for-2018"><i class="fa fa-check"></i><b>A.1</b> Quiz 1—R Preliminaries (Updated for 2018)</a></li>
-<li class="chapter" data-level="A.2" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-2entering-cleaning-data-1-updated-for-2018"><i class="fa fa-check"></i><b>A.2</b> Quiz 2—Entering / cleaning data #1 (Updated for 2018)</a></li>
-<li class="chapter" data-level="A.3" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-3-updated-for-2018"><i class="fa fa-check"></i><b>A.3</b> Quiz 3 (Updated for 2018)</a></li>
+<li class="chapter" data-level="A.1" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-1r-preliminaries-updated-for-2019"><i class="fa fa-check"></i><b>A.1</b> Quiz 1—R Preliminaries (Updated for 2019)</a></li>
+<li class="chapter" data-level="A.2" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-2entering-cleaning-data-1-updated-for-2019"><i class="fa fa-check"></i><b>A.2</b> Quiz 2—Entering / cleaning data #1 (Updated for 2019)</a></li>
+<li class="chapter" data-level="A.3" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-3-updated-for-2019"><i class="fa fa-check"></i><b>A.3</b> Quiz 3 (Updated for 2019)</a></li>
 <li class="chapter" data-level="A.4" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-4-updated-for-2018"><i class="fa fa-check"></i><b>A.4</b> Quiz 4 (Updated for 2018)</a></li>
-<li class="chapter" data-level="A.5" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-5-updated-for-2018-no-updates-since-last-week"><i class="fa fa-check"></i><b>A.5</b> Quiz 5 (Updated for 2018; no updates since last week)</a></li>
-<li class="chapter" data-level="A.6" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-6"><i class="fa fa-check"></i><b>A.6</b> Quiz 6</a></li>
-<li class="chapter" data-level="A.7" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-7"><i class="fa fa-check"></i><b>A.7</b> Quiz 7</a></li>
-<li class="chapter" data-level="A.8" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-8"><i class="fa fa-check"></i><b>A.8</b> Quiz 8</a></li>
 </ul></li>
 <li class="chapter" data-level="B" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html"><i class="fa fa-check"></i><b>B</b> Appendix B: Homework</a><ul>
-<li class="chapter" data-level="B.1" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#homework-1-updated-for-2018"><i class="fa fa-check"></i><b>B.1</b> Homework #1 (Updated for 2018)</a><ul>
+<li class="chapter" data-level="B.1" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#homework-1"><i class="fa fa-check"></i><b>B.1</b> Homework #1</a><ul>
 <li class="chapter" data-level="B.1.1" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#option-1"><i class="fa fa-check"></i><b>B.1.1</b> Option 1</a></li>
 <li class="chapter" data-level="B.1.2" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#option-2"><i class="fa fa-check"></i><b>B.1.2</b> Option 2</a></li>
 <li class="chapter" data-level="B.1.3" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#special-swirl-commands"><i class="fa fa-check"></i><b>B.1.3</b> Special swirl commands</a></li>
 </ul></li>
-<li class="chapter" data-level="B.2" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#homework-2-updated-for-2018"><i class="fa fa-check"></i><b>B.2</b> Homework #2 (Updated for 2018)</a></li>
-<li class="chapter" data-level="B.3" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#homework-3-updated-for-2018"><i class="fa fa-check"></i><b>B.3</b> Homework #3 (Updated for 2018)</a></li>
-<li class="chapter" data-level="B.4" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#homework-4"><i class="fa fa-check"></i><b>B.4</b> Homework #4</a></li>
-<li class="chapter" data-level="B.5" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#homework-5"><i class="fa fa-check"></i><b>B.5</b> Homework #5</a></li>
-<li class="chapter" data-level="B.6" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#homework-6"><i class="fa fa-check"></i><b>B.6</b> Homework #6</a></li>
+<li class="chapter" data-level="B.2" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#homework-2"><i class="fa fa-check"></i><b>B.2</b> Homework #2</a></li>
 </ul></li>
 <li class="divider"></li>
-<li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
 </ul>
 
@@ -530,10 +506,10 @@ data(nepali)
 </tbody>
 </table>
 <p>Other chunk options take values other than TRUE / FALSE. Some you might want to include are:</p>
-<table style="width:92%;">
+<table style="width:93%;">
 <colgroup>
 <col width="20%" />
-<col width="70%" />
+<col width="72%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -544,11 +520,13 @@ data(nepali)
 <tbody>
 <tr class="odd">
 <td align="center"><code>results</code></td>
-<td align="left">How to print results (e.g., <code>hide</code> runs the code, but doesn’t print the results)</td>
+<td align="left">How to print results (e.g., <code>hide</code> runs the code,
+but doesn’t print the results)</td>
 </tr>
 <tr class="even">
 <td align="center"><code>fig.width</code></td>
-<td align="left">Width to print your figure, in inches (e.g., <code>fig.width = 4</code>)</td>
+<td align="left">Width to print your figure, in inches (e.g.,
+<code>fig.width = 4</code>)</td>
 </tr>
 <tr class="odd">
 <td align="center"><code>fig.height</code></td>
@@ -644,13 +622,13 @@ head(nepali, 1)
 <h3><span class="header-section-number">5.4.1</span> Line length</h3>
 <p>Google: <strong>Keep lines to 80 characters or less</strong> </p>
 <p>To set your script pane to be limited to 80 characters, go to “RStudio” -&gt; “Preferences” -&gt; “Code” -&gt; “Display”, and set “Margin Column” to 80.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Do</span>
-my_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">n =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,
-                    <span class="dt">letter =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),
-                    <span class="dt">cap_letter =</span> <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))
-
-<span class="co"># Don&#39;t</span>
-my_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">n =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">letter =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), <span class="dt">cap_letter =</span> <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</code></pre></div>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb496-1" title="1"><span class="co"># Do</span></a>
+<a class="sourceLine" id="cb496-2" title="2">my_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">n =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</a>
+<a class="sourceLine" id="cb496-3" title="3">                    <span class="dt">letter =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</a>
+<a class="sourceLine" id="cb496-4" title="4">                    <span class="dt">cap_letter =</span> <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</a>
+<a class="sourceLine" id="cb496-5" title="5"></a>
+<a class="sourceLine" id="cb496-6" title="6"><span class="co"># Don&#39;t</span></a>
+<a class="sourceLine" id="cb496-7" title="7">my_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">n =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">letter =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), <span class="dt">cap_letter =</span> <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</a></code></pre></div>
 <p>This guideline helps ensure that your code is formatted in a way that you can see all of the code without scrolling horizontally (left and right).</p>
 </div>
 <div id="spacing" class="section level3">
@@ -661,25 +639,25 @@ my_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cla
 <li>Colons should not have a space on either side.</li>
 <li>Put spaces before and after <code>=</code> when assigning parameter arguments</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Do</span>
-shots_per_min &lt;-<span class="st"> </span>worldcup<span class="op">$</span>Shots <span class="op">/</span><span class="st"> </span>worldcup<span class="op">$</span>Time
-<span class="co">#Don&#39;t </span>
-shots_per_min&lt;-worldcup<span class="op">$</span>Shots<span class="op">/</span>worldcup<span class="op">$</span>Time
-
-<span class="co">#Do</span>
-ave_time &lt;-<span class="st"> </span><span class="kw">mean</span>(worldcup[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span> , <span class="st">&quot;Time&quot;</span>])
-<span class="co">#Don&#39;t</span>
-ave_time&lt;-<span class="kw">mean</span>(worldcup[<span class="dv">1</span> <span class="op">:</span><span class="st"> </span><span class="dv">10</span> ,<span class="st">&quot;Time&quot;</span>])</code></pre></div>
+<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb497-1" title="1"><span class="co"># Do</span></a>
+<a class="sourceLine" id="cb497-2" title="2">shots_per_min &lt;-<span class="st"> </span>worldcup<span class="op">$</span>Shots <span class="op">/</span><span class="st"> </span>worldcup<span class="op">$</span>Time</a>
+<a class="sourceLine" id="cb497-3" title="3"><span class="co">#Don&#39;t </span></a>
+<a class="sourceLine" id="cb497-4" title="4">shots_per_min&lt;-worldcup<span class="op">$</span>Shots<span class="op">/</span>worldcup<span class="op">$</span>Time</a>
+<a class="sourceLine" id="cb497-5" title="5"></a>
+<a class="sourceLine" id="cb497-6" title="6"><span class="co">#Do</span></a>
+<a class="sourceLine" id="cb497-7" title="7">ave_time &lt;-<span class="st"> </span><span class="kw">mean</span>(worldcup[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span> , <span class="st">&quot;Time&quot;</span>])</a>
+<a class="sourceLine" id="cb497-8" title="8"><span class="co">#Don&#39;t</span></a>
+<a class="sourceLine" id="cb497-9" title="9">ave_time&lt;-<span class="kw">mean</span>(worldcup[<span class="dv">1</span> <span class="op">:</span><span class="st"> </span><span class="dv">10</span> ,<span class="st">&quot;Time&quot;</span>])</a></code></pre></div>
 </div>
 <div id="semicolons" class="section level3">
 <h3><span class="header-section-number">5.4.3</span> Semicolons</h3>
 <p>Although you can use a semicolon to put two lines of code on the same line, you should avoid it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Do</span>
-a &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>
-b &lt;-<span class="st"> </span><span class="dv">3</span>
-
-<span class="co"># Don&#39;t</span>
-a &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>; b &lt;-<span class="st"> </span><span class="dv">3</span></code></pre></div>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb498-1" title="1"><span class="co"># Do</span></a>
+<a class="sourceLine" id="cb498-2" title="2">a &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb498-3" title="3">b &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb498-4" title="4"></a>
+<a class="sourceLine" id="cb498-5" title="5"><span class="co"># Don&#39;t</span></a>
+<a class="sourceLine" id="cb498-6" title="6">a &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>; b &lt;-<span class="st"> </span><span class="dv">3</span></a></code></pre></div>
 </div>
 <div id="commenting" class="section level3">
 <h3><span class="header-section-number">5.4.4</span> Commenting</h3>
@@ -688,9 +666,9 @@ a &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</spa
 <li>You can put a short comment at the end of a line of R code. In this case, put two spaces after the end of the code, one <code>#</code>, and one more space before the comment.</li>
 <li>If it helps make it easier to read your code, separate sections using a comment character followed by many hyphens (e.g., <code>#------------</code>). Anything after the comment character is “muted”.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Read in health data ---------------------------</span>
-
-<span class="co"># Clean exposure data ---------------------------</span></code></pre></div>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb499-1" title="1"><span class="co"># Read in health data ---------------------------</span></a>
+<a class="sourceLine" id="cb499-2" title="2"></a>
+<a class="sourceLine" id="cb499-3" title="3"><span class="co"># Clean exposure data ---------------------------</span></a></code></pre></div>
 </div>
 <div id="indentation" class="section level3">
 <h3><span class="header-section-number">5.4.5</span> Indentation</h3>
@@ -699,10 +677,10 @@ a &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</spa
 <li>Within function calls, line up new lines with first letter after opening parenthesis for parameters to function calls:</li>
 </ul>
 <p>Example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Relabel sex variable</span>
-nepali<span class="op">$</span>sex &lt;-<span class="st"> </span><span class="kw">factor</span>(nepali<span class="op">$</span>sex, 
-                     <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),
-                     <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>))</code></pre></div>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb500-1" title="1"><span class="co"># Relabel sex variable</span></a>
+<a class="sourceLine" id="cb500-2" title="2">nepali<span class="op">$</span>sex &lt;-<span class="st"> </span><span class="kw">factor</span>(nepali<span class="op">$</span>sex, </a>
+<a class="sourceLine" id="cb500-3" title="3">                     <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb500-4" title="4">                     <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>))</a></code></pre></div>
 </div>
 <div id="code-grouping" class="section level3">
 <h3><span class="header-section-number">5.4.6</span> Code grouping</h3>
@@ -710,14 +688,14 @@ nepali<span class="op">$</span>sex &lt;-<span class="st"> </span><span class="kw
 <li>Group related pieces of code together.</li>
 <li>Separate blocks of code by empty spaces.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load data</span>
-<span class="kw">library</span>(faraway)
-<span class="kw">data</span>(nepali)
-
-<span class="co"># Relabel sex variable</span>
-nepali<span class="op">$</span>sex &lt;-<span class="st"> </span><span class="kw">factor</span>(nepali<span class="op">$</span>sex, 
-                     <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),
-                     <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>))</code></pre></div>
+<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb501-1" title="1"><span class="co"># Load data</span></a>
+<a class="sourceLine" id="cb501-2" title="2"><span class="kw">library</span>(faraway)</a>
+<a class="sourceLine" id="cb501-3" title="3"><span class="kw">data</span>(nepali)</a>
+<a class="sourceLine" id="cb501-4" title="4"></a>
+<a class="sourceLine" id="cb501-5" title="5"><span class="co"># Relabel sex variable</span></a>
+<a class="sourceLine" id="cb501-6" title="6">nepali<span class="op">$</span>sex &lt;-<span class="st"> </span><span class="kw">factor</span>(nepali<span class="op">$</span>sex, </a>
+<a class="sourceLine" id="cb501-7" title="7">                     <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb501-8" title="8">                     <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>))</a></code></pre></div>
 <p>Note that this grouping often happens naturally when using tidyverse functions, since they encourage piping (<code>%&gt;%</code> and <code>+</code>).</p>
 </div>
 <div id="broader-guidelines" class="section level3">
@@ -753,8 +731,8 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 <h3><span class="header-section-number">5.5.2</span> Figures from file</h3>
 <p>You can include not only figures that you create with R, but also figures that you have saved on your computer.</p>
 <p>The best way to do that is with the <code>include_graphics</code> function in <code>knitr</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
-<span class="kw">include_graphics</span>(<span class="st">&quot;figures/CSU_ram.png&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb504-1" title="1"><span class="kw">library</span>(knitr)</a>
+<a class="sourceLine" id="cb504-2" title="2"><span class="kw">include_graphics</span>(<span class="st">&quot;figures/CSU_ram.png&quot;</span>)</a></code></pre></div>
 <p><img src="figures/CSU_ram.png" width="0.3\textwidth" style="display: block; margin: auto;" /></p>
 <p>This example would include a figure with the filename “MyFigure.png” that is saved in the “figures” sub-directory of the parent directory of the directory where your .Rmd is saved. Don’t forget that you will need to give an absolute pathway or the relative pathway <strong>from the directory where the .Rmd file is saved</strong>.</p>
 </div>
@@ -768,16 +746,16 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 <p>To make your research more reproducible, use the second choice.</p>
 <p>To use code export a figure you created in R, take three steps:</p>
 <ol style="list-style-type: decimal">
-<li>Open a graphics device (e.g., <code>pdf(&quot;MyFile.pdf&quot;)</code>).</li>
+<li>Open a graphics device (e.g., <code>pdf("MyFile.pdf")</code>).</li>
 <li>Write the code to print your plot.</li>
 <li>Close the graphics device using <code>dev.off()</code>.</li>
 </ol>
 <p>For example, the following code would save a scatterplot of time versus passes as a pdf named “MyFigure” in the “figures” subdirectory of the current working directory:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pdf</span>(<span class="st">&quot;figures/MyFigure.pdf&quot;</span>, <span class="dt">width =</span> <span class="dv">8</span>, <span class="dt">height =</span> <span class="dv">6</span>)
-<span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes)) <span class="op">+</span><span class="st"> </span>
-<span class="st">        </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> Position)) <span class="op">+</span><span class="st"> </span>
-<span class="st">        </span><span class="kw">theme_bw</span>()
-<span class="kw">dev.off</span>()</code></pre></div>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb505-1" title="1"><span class="kw">pdf</span>(<span class="st">&quot;figures/MyFigure.pdf&quot;</span>, <span class="dt">width =</span> <span class="dv">8</span>, <span class="dt">height =</span> <span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb505-2" title="2"><span class="kw">ggplot</span>(worldcup, <span class="kw">aes</span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> Passes)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb505-3" title="3"><span class="st">        </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> Position)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb505-4" title="4"><span class="st">        </span><span class="kw">theme_bw</span>()</a>
+<a class="sourceLine" id="cb505-5" title="5"><span class="kw">dev.off</span>()</a></code></pre></div>
 <p>If you create multiple plots before you close the device, they’ll all save to different pages of the same pdf file.</p>
 <p>You can open a number of different graphics devices. Here are some of the functions you can use to open graphics devices:</p>
 <ul>
@@ -794,9 +772,9 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 <div id="tables-in-r-markdown" class="section level3">
 <h3><span class="header-section-number">5.5.4</span> Tables in R Markdown</h3>
 <p>If you want to create a nice, formatted table from an R dataframe, you can do that using <code>kable</code> from the <code>knitr</code> package.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">letters =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),
-                    <span class="dt">numbers =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)
-<span class="kw">kable</span>(my_df)</code></pre></div>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb506-1" title="1">my_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">letters =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</a>
+<a class="sourceLine" id="cb506-2" title="2">                    <span class="dt">numbers =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb506-3" title="3"><span class="kw">kable</span>(my_df)</a></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -820,10 +798,10 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 </tbody>
 </table>
 <p>There are a few options for the <code>kable</code> function:</p>
-<table style="width:90%;">
+<table style="width:92%;">
 <colgroup>
 <col width="18%" />
-<col width="72%" />
+<col width="73%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -834,11 +812,13 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 <tbody>
 <tr class="odd">
 <td align="right"><code>colnames</code></td>
-<td align="left">Column names (default: column name in the dataframe)</td>
+<td align="left">Column names (default: column name in the
+dataframe)</td>
 </tr>
 <tr class="even">
 <td align="right"><code>align</code></td>
-<td align="left">A vector giving the alignment for each column (‘l’, ‘c’, ‘r’)</td>
+<td align="left">A vector giving the alignment for each column
+(‘l’, ‘c’, ‘r’)</td>
 </tr>
 <tr class="odd">
 <td align="right"><code>caption</code></td>
@@ -846,18 +826,20 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 </tr>
 <tr class="even">
 <td align="right"><code>digits</code></td>
-<td align="left">Number of digits to round to. If you want to round columns different amounts, use a vector with one element for each column.</td>
+<td align="left">Number of digits to round to. If you want to round
+columns different amounts, use a vector with one
+element for each column.</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">letters =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),
-                <span class="dt">numbers =</span> <span class="kw">rnorm</span>(<span class="dv">3</span>))
-<span class="kw">kable</span>(my.df, <span class="dt">digits =</span> <span class="dv">2</span>, <span class="dt">align =</span> <span class="kw">c</span>(<span class="st">&quot;r&quot;</span>, <span class="st">&quot;c&quot;</span>),
-      <span class="dt">caption =</span> <span class="st">&quot;My new table&quot;</span>, 
-      <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;First 3 letters&quot;</span>, 
-                    <span class="st">&quot;First 3 numbers&quot;</span>))</code></pre></div>
+<div class="sourceCode" id="cb507"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb507-1" title="1">my.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">letters =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</a>
+<a class="sourceLine" id="cb507-2" title="2">                <span class="dt">numbers =</span> <span class="kw">rnorm</span>(<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb507-3" title="3"><span class="kw">kable</span>(my.df, <span class="dt">digits =</span> <span class="dv">2</span>, <span class="dt">align =</span> <span class="kw">c</span>(<span class="st">&quot;r&quot;</span>, <span class="st">&quot;c&quot;</span>),</a>
+<a class="sourceLine" id="cb507-4" title="4">      <span class="dt">caption =</span> <span class="st">&quot;My new table&quot;</span>, </a>
+<a class="sourceLine" id="cb507-5" title="5">      <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;First 3 letters&quot;</span>, </a>
+<a class="sourceLine" id="cb507-6" title="6">                    <span class="st">&quot;First 3 numbers&quot;</span>))</a></code></pre></div>
 <table>
-<caption><span id="tab:unnamed-chunk-294">Table 5.1: </span>My new table</caption>
+<caption><span id="tab:unnamed-chunk-301">Table 5.1: </span>My new table</caption>
 <thead>
 <tr class="header">
 <th align="right">First 3 letters</th>
@@ -867,21 +849,22 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 <tbody>
 <tr class="odd">
 <td align="right">a</td>
-<td align="center">0.57</td>
+<td align="center">-0.66</td>
 </tr>
 <tr class="even">
 <td align="right">b</td>
-<td align="center">1.53</td>
+<td align="center">1.12</td>
 </tr>
 <tr class="odd">
 <td align="right">c</td>
-<td align="center">0.45</td>
+<td align="center">-0.09</td>
 </tr>
 </tbody>
 </table>
 <p>From Yihui:</p>
 <blockquote>
-<p>“<strong>Want more features?</strong> No, that is all I have. You should turn to other packages for help. I’m not going to reinvent their wheels.”</p>
+<p>“<strong>Want more features?</strong> No, that is all I have. You should turn to other packages for help. I’m not
+going to reinvent their wheels.”</p>
 </blockquote>
 <p>If you want to do fancier tables, you may want to explore the <code>xtable</code> and <code>pander</code> packages. As a note, these might both be more effective when compiling to pdf, rather than html.</p>
 </div>
@@ -913,7 +896,7 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 <h3><span class="header-section-number">5.6.2</span> Adding in R code</h3>
 <p>Now incorporate the R code from previous weeks’ exercises into your document. Once you get the document to render with some basic pieces of code in it, try the following:</p>
 <ul>
-<li>Try some different chunk options. For example, try setting <code>echo = FALSE</code> in some of your code chunks. Similarly, try using the options <code>results = &quot;hide&quot;</code> and <code>include = FALSE</code>.</li>
+<li>Try some different chunk options. For example, try setting <code>echo = FALSE</code> in some of your code chunks. Similarly, try using the options <code>results = "hide"</code> and <code>include = FALSE</code>.</li>
 <li>You should have at least one code chunk that generates figures. Try experimenting with the <code>fig.width</code> and <code>fig.height</code> options for the chunk to change the size of the figure.</li>
 <li>Try using the global commands. See if you can switch the <code>echo</code> default value for this document from TRUE (the usual default) to FALSE.</li>
 </ul>
@@ -945,7 +928,7 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
         </div>
       </div>
 <a href="reporting-data-results-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="entering-and-cleaning-data-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="appendix-a-vocabulary.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -965,7 +948,7 @@ gitbook.start({
 "google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
 "all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
@@ -975,10 +958,14 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/geanders/RProgrammingForResearch/edit/master/05-reproducibleresearch1.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/05-reproducibleresearch1.Rmd",
 "text": "Edit"
 },
-"download": ["RProgrammingForResearch.pdf", "RProgrammingForResearch.epub"],
+"history": {
+"link": null,
+"text": null
+},
+"download": ["RProgrammingForResearch.pdf"],
 "toc": {
 "collapse": "section"
 }
@@ -991,10 +978,11 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
