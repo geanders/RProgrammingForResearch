@@ -1,5 +1,9 @@
 ---
 title: "Exploring data #1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 output: 
   beamer_presentation:
     theme: "metropolis"
@@ -10,16 +14,437 @@ fontsize: 10pt
 options(width = 50)
 ```
 
-# Odds and ends
+## Exploring data
 
-## Next graded materials
+- How to explore depends on data type / class
+- Data exploration includes simple statistics (max, mean, min, standard deviation)
+- Data exploration include plots
 
-The next graded materials are: 
+## Example data---Beijing air quality
 
-- Homework #1: Due Sept. 12 (next Wednesday)
-- Quiz on Chapter 2: Sept. 10 (next Monday)
+```{r echo = FALSE, out.width = "4.5in"}
+knitr::include_graphics("../figures/mission_china_pm.png")
+```
 
-As a reminder, the material for Quiz 2 is covered through the online lectures. 
+Source: http://www.stateair.net/web/post/1/1.HTML
+
+## Example data---Beijing air quality
+
+```{r echo = FALSE, out.width = "4.5in"}
+knitr::include_graphics("../figures/crazy_bad.png")
+```
+
+Source: https://foreignpolicy.com/2010/11/19/beijing-air-crazy-bad/
+
+## Example data---Beijing air quality
+
+Find out more: 
+
+https://www.wired.com/2015/03/opinion-us-embassy-beijing-tweeted-clear-air/
+https://www.theguardian.com/environment/blog/2010/nov/19/crazy-bad-beijing-air-pollution
+https://www.sciencemag.org/news/2018/04/rooftop-sensors-us-embassies-are-warning-world-about-crazy-bad-air-pollution
+
+## Example data---Beijing air quality
+
+Download the data [here](https://raw.githubusercontent.com/geanders/RProgrammingForResearch/master/data/Beijing_2017_HourlyPM25.csv). 
+
+Then you can read this data into your R session: 
+
+```{r}
+library("readr")
+```
+```{r echo = FALSE, message = FALSE}
+beijing_pm_raw <- read_csv("../data/Beijing_2017_HourlyPM25.csv", 
+                       skip = 3)
+```
+```{r eval = FALSE}
+beijing_pm_raw <- read_csv("data/Beijing_2017_HourlyPM25.csv", 
+                       skip = 3)
+```
+
+## Example data---Beijing air quality
+
+```{r}
+head(beijing_pm_raw, n = 3)
+```
+
+## Example data---Beijing air quality
+
+Let's clean this up a bit: 
+
+```{r message = FALSE}
+library("dplyr")
+beijing_pm <- beijing_pm_raw %>% 
+  rename(sample_time = `Date (LST)`, 
+         value = Value,
+         qc = `QC Name`) %>% 
+  select(sample_time, value, qc)
+head(beijing_pm, n = 3)
+```
+
+## Example data---Beijing air quality
+
+This code will add the AQI categories:
+
+```{r}
+beijing_pm <- beijing_pm %>% 
+  mutate(aqi = cut(value, 
+                   breaks = c(0, 50, 100, 150, 200, 
+                              300, 500, Inf),
+                   labels = c("Good", "Moderate",
+                              "Unhealthy for Sensitive Groups",
+                              "Unhealthy", "Very Unhealthy", 
+                              "Hazardous", "Beyond Index")))
+head(beijing_pm, n = 2)
+```
+
+
+
+# Data types and vector classes
+
+## Data types and vector classes
+
+Here are a few common vector classes in R:
+
+Class        | Example
+------------ | -------------
+`character`  | "Chemistry", "Physics", "Mathematics"
+`numeric`    | 10, 20, 30, 40
+`factor`     | Male [underlying number: 1], Female [2]
+`Date`       | "2010-01-01" [underlying number: 14,610]
+`logical`    | TRUE, FALSE [underlying numbers: 1, 0]
+
+## Numeric vectors
+
+To explore numeric vectors, there are a few base R functions that 
+are very helpful. For example:
+
+Function  | Description
+--------- | -----------------
+`min()` | Minimum of values in the vector
+`max()` | Maximum of values in the vector
+`mean()` | Mean of values in the vector
+`median()` | Median of values in the vector
+
+## Simple statistic examples
+
+All of these take, as the main argument, the vector(s) for which you want the
+statistic. 
+
+```{r}
+mean(x = beijing_pm$value)
+min(x = beijing_pm$value)
+```
+
+If there are missing values in the vector, you'll need to add an
+option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`---see
+help files).
+
+## Simple statistic examples
+
+These functions require a **numeric vector** as input. 
+
+Remember that you can pull a column from a dataframe as a vector using
+either `$` or the `pluck` function from `purrr`. Therefore, you can use 
+either of these calls to get the mean weight of the children in the
+dataset: 
+
+```{r}
+mean(beijing_pm$value)
+
+library("purrr")
+beijing_pm %>% 
+  pluck("value") %>% 
+  mean()
+```
+
+## The `summarize` function
+
+Within a "tidy" workflow, you can use the `summarize` function from the `dplyr`
+package to create summary statistics for a dataframe. This function inputs a
+dataframe and outputs a dataframe with the specified summary measures.
+
+## The `summarize` function
+
+The basic format for using `summarize` is:
+
+```{r eval = FALSE}
+## Generic code
+summarize(dataframe, 
+          summary_column_1 = function(existing_columns),
+          summary_column_2 = function(existing_columns))
+```
+
+## The `summarize` function
+
+As an example, to summarize the `beijing_pm` dataset to get the minimum, mean,
+and maximum PM\textsubscript{2.5} concentrations, you could run:
+
+```{r}
+summarize(beijing_pm,
+          min_pm = min(value),
+          mean_pm = mean(value),
+          max_pm = max(value))
+```
+
+Notice that the output is one row (since the summary was on ungrouped data),
+with three columns (since we defined three summaries in the `summarize`
+function).
+
+## The `summarize` function
+
+Because the first input to the `summarize` function is a dataframe, you can
+"pipe into" a `summarize` call. For example, we could have written the code on
+the previous slide as:
+
+```{r eval = FALSE}
+beijing_pm %>% 
+  summarize(min_pm = min(value),
+            mean_pm = mean(value),
+            max_pm = max(value))
+```
+
+As another note, because the output from `summarize` is also a dataframe, we
+could also "pipe into" another tidyverse function after running `summarize`.
+
+<!-- ## The `summarize` function -->
+
+<!-- There are some special functions that are particularly useful to use with -->
+<!-- `summarize` and other functions from the `dplyr` package: -->
+
+<!-- Function | Description -->
+<!-- ---------------|------------- -->
+<!-- `n()`          | Number of elements in a vector -->
+<!-- `n_distinct()` | Number of unique elements in a vector -->
+<!-- `first()`      | First value in a vector -->
+<!-- `last()`       | Last value in a vector -->
+
+<!-- ## The `summarize` function -->
+
+<!-- For example, the following call would give you the total number of observations in the dataset, the number of distinct values of age measured across all children, the ID of the first child included in the dataset, and the weight of the last child included in the dataset:   -->
+
+<!-- ```{r} -->
+<!-- distinct_nepali %>% -->
+<!--   summarize(n_children = n(),  -->
+<!--             n_distinct_ages = n_distinct(age), -->
+<!--             first_id = first(id), -->
+<!--             last_weight = last(wt)) -->
+<!-- ``` -->
+
+<!-- ## Grouping and summarizing -->
+
+<!-- Often, you'll want to get summaries of the data stratified by groups within the data. For example, in the `nepali` dataset, you may want to get summaries by sex or by whether the child was short or tall.  -->
+
+<!-- To get grouped summaries of a dataframe, you can first use the `group_by` function from the `dplyr` package to "group" the dataset, and then when you run "summarize", it will be applied **by group** to the data.  -->
+
+<!-- Your final output from summarize will be a dataframe with:  -->
+
+<!-- - As many rows as there were unique groups in the grouping factor(s) -->
+<!-- - As many columns as you have defined summaries in the `summarize` function (the generic code above would result in two columns), plus columns for each of the grouping factors -->
+
+<!-- ## Grouping and summarizing -->
+
+<!-- Without piping, the use of `group_by` and `summarize` looks like this: -->
+
+<!-- ```{r eval = FALSE} -->
+<!-- # Generic code -->
+<!-- summarize(group_by(dataframe, -->
+<!--                    grouping_factor_1, grouping_factor_2),  -->
+<!--           summary_column_1 = function(existing_columns), -->
+<!--           summary_column_2 = function(existing_columns))  -->
+
+<!-- ``` -->
+
+<!-- You can see that `group_by` is nested within the `summarize` call, because `group_by` must be applied to the dataframe before `summarize` is run if you want to get summaries by group.  -->
+
+<!-- ## Grouping and summarizing -->
+
+<!-- This call tends to look much cleaner if you use piping. With piping, the generic call looks like:  -->
+
+<!-- ```{r eval = FALSE} -->
+<!-- # Generic code -->
+<!-- dataframe %>%  -->
+<!--   group_by(grouping_factor_1, grouping_factor_2) %>%  -->
+<!--   summarize(summary_column_1 = function(existing_columns), -->
+<!--             summary_column_2 = function(existing_columns)) -->
+<!-- ``` -->
+
+<!-- ## Grouping and summarizing -->
+
+<!-- For example, in the Nepali dataset, say you want to get summaries by sex. You want to get the total number of children in each group, the mean weight, and the ID of the first child. -->
+
+<!-- You can run: -->
+
+<!-- ```{r} -->
+<!-- distinct_nepali %>% -->
+<!--   group_by(sex) %>% -->
+<!--   summarize(n_children = n(),  -->
+<!--             mean_wt = mean(wt, na.rm = TRUE), -->
+<!--             first_id = first(id)) -->
+<!-- ``` -->
+
+<!-- ## Grouping and summarizing -->
+
+<!-- ```{r} -->
+<!-- distinct_nepali %>% -->
+<!--   group_by(sex) %>% -->
+<!--   summarize(n_children = n(),  -->
+<!--             mean_wt = mean(wt, na.rm = TRUE), -->
+<!--             first_id = first(id)) -->
+<!-- ``` -->
+
+<!-- Notice that the output is a dataframe with two rows (since there were two groups in the grouping factor) and four columns (one for the grouping factor, plus one for each of the summaries defined in the `summarize` function). -->
+
+<!-- ## Grouping and summarizing -->
+
+<!-- You can group by more than one variable. For example, to get summaries within groups divided by both sex and whether the child is tall (> 100 cm) or not, you could run: -->
+
+<!-- \small -->
+
+<!-- ```{r} -->
+<!-- distinct_nepali %>% -->
+<!--   mutate(tall = ht > 100) %>% -->
+<!--   filter(!is.na(tall)) %>%  -->
+<!--   group_by(sex, tall) %>% -->
+<!--   summarize(n_children = n(), -->
+<!--             mean_wt = mean(wt, na.rm = TRUE)) -->
+<!-- ``` -->
+
+
+## Factors in R
+
+Factor vectors are used in R for **categorical variables**, where more than 
+one observation can have the same category.
+
+```{r echo = FALSE, out.width="4.5in"}
+knitr::include_graphics("../figures/how_r_stores_figures.jpg")
+```
+
+Factor variables have one or more **levels**. While you will always see a 
+factor printed with its factor level labels, R "remembers" the variable
+with each level assigned a number.
+
+## Factors in R
+
+In tibbles, factors will be noted with "fctr" under the column name. 
+For example, look at the `aqi` column in the `beijing_pm` data:
+
+```{r}
+head(beijing_pm, n = 3)
+```
+
+## Factors in R
+
+You can use the `levels` function to see the levels of a factor vector, as well
+as the order those levels are recorded in R.
+
+```{r}
+levels(beijing_pm$aqi)
+```
+
+## Factors in R
+
+To explore a factor vector, you'll often want to **count** the number of 
+observations in each category. You can do that with two functions in the
+`dplyr` package, `group_by` and `count`. 
+
+Start with a dataframe that includes the factor variable as a column. 
+First `group_by` the factor, then pipe the output of that into the `count`
+function. 
+
+This will create a new summary dataframe, with a row for each level of the
+factor. A column called `n` will give the number of observations in the 
+original data that had that level of the factor.
+
+## Factors in R
+
+You can **count** how many observations have each level of a factor.
+
+```{r echo = FALSE, out.width="4.5in"}
+knitr::include_graphics("../figures/counting_factor.jpg")
+```
+
+## Factors in R
+
+```{r message = FALSE, warning = FALSE}
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  count()
+```
+
+## Factors in R
+
+You can jointly explore multiple columns in a dataframe. 
+
+For example, if one column is a factor and one is numeric, it can be
+useful to explore values of the numeric column within each level of 
+the factor column. 
+
+For the Beijing data, you may want to find out the mean comcentration of
+PM\textsubscript{2.5} within each AQI level.
+
+## Factors in R
+
+You can **summarize** a numeric column within levels of a factor column:
+
+```{r echo = FALSE, out.width="4in", fig.align='center'}
+knitr::include_graphics("../figures/factor_summarize.jpg")
+```
+
+## Factors in R
+
+To do this, pipe the dataframe into `group_by` (where you can group by the
+factor column) and then into `summarize`, where you can calculate summaries. 
+
+```{r message = FALSE, warning = FALSE}
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  summarize(mean_pm = mean(value))
+```
+
+
+## Factors in R
+
+You can create several summaries at once: 
+
+```{r message = FALSE, warning = FALSE}
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  summarize(min_pm = min(value), 
+            max_pm = max(value))
+```
+
+## Factors in R
+
+As a note, there's a function called `n()` that you can use inside
+summarize to replace `count`. For example, these two expressions
+give the same output: 
+
+```{r eval = FALSE}
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  count()
+
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  summarize(n = n())
+```
+
+
+## Factors in R
+
+If a column is in a character class, but you'd like it to be a 
+factor, you can use `as.factor`: 
+
+```{r}
+beijing_pm %>% 
+  mutate(qc = as.factor(qc))
+```
+
+## In-course exercise
+
+We'll take a break now to start the in-course exercise for this week (Sections
+1 and 2 for Week 3).
 
 # Data from R packages
 
@@ -34,16 +459,19 @@ Many R packages come with their own data, which is very easy to load and use.
 
 ## Data from R packages
 
-For example, the `faraway` package has a dataset called `worldcup` that you'll use today. To load it, use the `data()` function once you've loaded the package with the name of the dataset as its argument:
+For example, the `faraway` package has a dataset called `worldcup` that you'll
+use today. To load it, use the `data()` function once you've loaded the package
+with the name of the dataset as its argument:
 
 ```{r}
-library(faraway)
+library("faraway")
 data("worldcup")
 ```
 
 ## Data from R packages
 
-Unlike most data objects you'll work with, the data that comes with an R package will often have its own help file. You can access this using the `?` operator:
+Unlike most data objects you'll work with, the data that comes with an R package
+will often have its own help file. You can access this using the `?` operator:
 
 ```{r, eval = FALSE}
 ?worldcup
@@ -51,181 +479,334 @@ Unlike most data objects you'll work with, the data that comes with an R package
 
 ## Data from R packages
 
-To find out all the datasets that are available in the packages you currently have loaded, run `data()` without an option inside the parentheses:
+To find out all the datasets that are available in the packages you currently
+have loaded, run `data()` without an option inside the parentheses:
 
 ```{r, eval = FALSE}
 data()
 ```
 
-To find out all of the datasets available within a certain package, run `data` with the argument `package`:
+To find out all of the datasets available within a certain package, run `data`
+with the argument `package`:
 
 ```{r eval = FALSE}
 data(package = "faraway")
 ```
 
 
-As a note, you can similarly use `library()`, without the name of a package, to list all of the packages you have installed that you could call with `library()`:
+As a note, you can similarly use `library()`, without the name of a package, to
+list all of the packages you have installed that you could call with
+`library()`:
 
 ```{r, eval = FALSE}
 library()
 ```
 
-## `nepali` example data
 
-For the example plots, I'll use a dataset in the `faraway` package called `nepali`. This gives data from a study of the health of a group of Nepalese children. 
 
-```{r}
-library(faraway)
-data(nepali)
-```
+# Dates in R
 
-I'll be using functions from `dplyr` and `ggplot2` during the course, so I'll load those:
+## `Date` class
 
-```{r message = FALSE, warning = FALSE}
-library(dplyr)
-library(ggplot2)
-```
+A common task when changing or adding columns is to change the class of some of
+the columns. This is especially common for dates, which will often be read in as
+a character vector when reading data into R.
 
-## `nepali` example data
+## `lubridate` package 
 
-For the `nepali` dataset, each observation is a single measurement for a child; there can be multiple observations per child. \medskip 
+The `lubridate` package is helpful for working with vectors of dates or date-times.
 
-I'll limit it to the columns with the child's id, sex, weight, height, and age, and I'll limit to each child's first measurement. 
+You will see dates represented in many different ways. For example, October
+might be included in data as "October", "Oct", or "10". Further, the way the
+elements are separated can vary.
+
+Computers are very literal, so this ambiguity can be confusing for them.
+
+## `lubridate` package
+
+The `lubridate` package has a number of functions for converting character
+strings into dates (or date-times). To decide which one to use, you just need to
+know the order of the elements of the date in the character string.
+
+For example, here are some commonly-used `lubridate` functions:
+
+`lubridate` function | Order of date elements
+---------------------|-----------------------
+`ymd`                | year-month-day
+`dmy`                | day-month-year
+`mdy_hm`             | month-day-year-hour-minute
+`ymd_hms`            | year-month-day-hour-minute-second
+
+(Remember, you can use `vignette("lubridate")` and `?lubridate` to get help with
+the `lubridate` package.)
+
+## `lubridate` package
+
+In many cases you can use functions from the `lubridate` package to parse dates
+pretty easily. \medskip
+
+For example, if you have a character string with the date in the order of
+*year-month-day*, you can use the `ymd` function from `lubridate` to convert the
+character string to the `Date` class. For example:
 
 ```{r message = FALSE}
-nepali <- nepali %>%
-  # Limit to certain columns
-  select(id, sex, wt, ht, age) %>%
-  # Convert id and sex to factors
-  mutate(id = factor(id),
-         sex = factor(sex, levels = c(1, 2),
-                      labels = c("Male", "Female"))) %>%
-  # Limit to first obs. per child
-  distinct(id, .keep_all = TRUE)
+library("lubridate")
+my_date <- ymd("2008-10-13")
+class(my_date)
 ```
 
-## `nepali` example data
+## `lubridate` package
 
-The first few rows of the data now looks like:
+The functions in `lubridate` are pretty good at working with different ways of
+expressing date and time elements intelligently:
 
 ```{r}
-nepali %>% 
-  slice(1:4)
+mdy("10-31-2017")
+dmy("31 October 2017")
 ```
 
-# Logical vectors
+## `lubridate` package
 
-## Logical statements
+There are lubridate functions that can parse date-times, too:
 
-Last week, you learned some about logical statements and how to use them with the `filter` function. \medskip
+```{r}
+ymd_hms("2017/10/31--17:33:10")
+mdy_hm("Oct. 31, 2017 5:33PM", tz = "MST")
+```
 
-You can use *logical vectors*, created with these statements, for a lot of things. We'll review them and add some more details this week.
+
+## Converting to `Date` class
+
+We can use the `mdy_hms` function from `lubridate` to convert the `sample_time`
+column in the `beijing_pm` dataset to a date-time class ("POSIXct"):
+
+```{r}
+beijing_pm <- beijing_pm %>% 
+  mutate(sample_time = mdy_hm(sample_time))
+
+head(beijing_pm, 3)
+```
+
+## Converting to `Date` class
+
+Once you have an object in a date or date-time class, you can do things like plot by
+date, calculate the range of dates, and calculate the total number of days the
+dataset covers:
+
+```{r}
+range(beijing_pm$sample_time)
+diff(range(beijing_pm$sample_time))
+```
+
+## `lubridate` package
+
+The `lubridate` package also includes functions to pull out certain elements of
+a date. For example, we could use `wday` to create a new column with the weekday
+of each show:
+
+```{r}
+beijing_pm <- mutate(beijing_pm, 
+                     sample_weekday = wday(sample_time, 
+                                           label = TRUE))
+```
+## `lubridate` package
+
+```{r}
+beijing_pm %>% 
+  select(sample_time, sample_weekday) %>% 
+  sample_n(size = 3)
+```
+
+## `lubridate` package
+
+The `wday` function created an **ordered factor** ("ord" below the
+column name in the tibble print-out). You can use this like other
+factors. 
+
+## `lubridate` package
+
+```{r}
+beijing_pm %>% 
+  group_by(sample_weekday) %>% 
+  summarize(mean_pm = mean(value))
+```
+
+## `lubridate` package
+
+Other functions in `lubridate` for pulling elements from a date include: 
+
+- `mday`: Day of the month
+- `yday`: Day of the year
+- `month`: Month
+- `quarter`: Fiscal quarter
+- `year`: Year
+
+# Logical operators, vectors, and expressions
+
+## Logical operators, vectors, and expressions
+
+**Logical expressions** are operators that conduct a logical test based on 
+one or more vectors, while logical expressions are the full R expressions 
+that use these operators to conduct the test. The output is a **logical vector**. 
+
+```{r echo = FALSE, out.width="4.5in"}
+knitr::include_graphics("../figures/logical_expression.jpg")
+```
+
+## Logical expressions
+
+Last week, you learned some about logical expressions and how to use them with
+the `filter` function. \medskip
+
+You can use *logical vectors*, created with these expressions, for a lot data
+exploration tasks. We'll review them and add some more details this week.
 
 ## Logical vectors
 
-A logical statement outputs a *logical vector*. This logical vector will be the same length as the original vector tested by the logical statement:
+A logical expression outputs a *logical vector*. This logical vector will be the
+same length as the original vector tested by the logical statement:
 
 ```{r}
-length(nepali$sex)
-length(nepali$sex == "Male")
+length(beijing_pm$value)
+length(beijing_pm$value > 500)
 ```
 
 ## Logical vectors
 
-Each element of the logical vector can only have one of three values (`TRUE`, `FALSE`, `NA`). The logical vector will have the value `TRUE` at any position where the original vector met the logical condition you tested, and `FALSE` anywhere else:
+Each element of the logical vector can only have one of three values (`TRUE`,
+`FALSE`, `NA`). The logical vector will have the value `TRUE` at any position
+where the original vector met the logical condition you tested, and `FALSE`
+anywhere else:
 
 ```{r}
-head(nepali$sex)
-head(nepali$sex == "Male")
+head(beijing_pm$value)
+head(beijing_pm$value > 500)
 ```
 
 ## Logical vectors
 
-Because the logical vector is the same length as the vector it's testing, you can add logical vectors to dataframes with `mutate`:
+Because the logical vector is the same length as the vector it's testing, you
+can add logical vectors to dataframes with `mutate`:
 
 ```{r}
-nepali <- nepali %>% 
-  mutate(is_male = sex == "Male") # Add column. Is obs. male?
-nepali %>% 
+beijing_pm <- beijing_pm %>% 
+  mutate(beyond_index = value > 500)
+```
+
+## Logical vectors
+
+```{r}
+beijing_pm %>% 
+  select(sample_time, value, beyond_index)
+```
+
+
+## Logical vectors
+
+As another example, you could add a column that is a logical vector of whether
+a day was in the "heating season", which usually ends on March 15 each year:
+
+```{r}
+beijing_pm <- beijing_pm %>% 
+  mutate(heating = sample_time < ymd("2017-03-15")) 
+```
+
+## Common logical and relational operators in R
+
+The **bang operator** (`!`) negates (flips) a logical expression:
+
+```{r}
+c(1, 2, 3) == c(1, 2, 5)
+!(c(1, 2, 3) == c(1, 2, 5))
+```
+
+```{r}
+is.na(c(1, 2,  NA))
+!is.na(c(1, 2, NA))
+```
+
+## Common logical and relational operators in R
+
+The `%in%` operator will check each element of a 
+vector to see if it's a value that is included in a second 
+vector. 
+
+In this case, the two vectors don't have to have 
+the same length: 
+
+```{r}
+c(1, 2, 3) %in% c(1, 5)
+```
+
+This logical expressions is asking *Is the first element of the first vector, 1,
+in the set given by the second vector, 1 and 5? Is the second element of the
+first vector, 2, in the set given by the second vector? Etc.*
+
+## Logical vectors
+
+You can do a few cool things now with this vector. For example, you can use it
+with the `filter` function to pull out just the rows where `heating` is `TRUE`:
+
+```{r}
+beijing_pm %>% 
+  filter(heating) %>% 
   slice(1:3)
 ```
 
 ## Logical vectors
 
-As another example, you could add a column that is a logical vector of whether each child's first-measured height is over 100 centimeters:
+Or, with `!`, just the rows where `heating` is `FALSE`:
 
 ```{r}
-nepali %>% 
-  mutate(very_tall = ht > 100) %>% # Is height over 100 cm?
-  select(id, ht, very_tall) %>% 
+beijing_pm %>% 
+  filter(!heating) %>% 
   slice(1:3)
 ```
 
 ## Logical vectors
 
-You can "flip" a logical vector (i.e., change every `TRUE` to `FALSE` and vice-versa) using the bang operator (`!`):
+All of the values in a logical vector are saved, at a deeper level, with a
+number. Values of `TRUE` are saved as 1 and values of `FALSE` are saved as 0.
 
-```{r}
-nepali %>% 
-  mutate(very_tall = ht > 100,
-         not_tall = !very_tall) %>% 
-  select(id, ht, very_tall, not_tall) %>% 
-  slice(1:3)
+```{r echo = FALSE, out.width="4.5in"}
+knitr::include_graphics("../figures/how_r_saves_logical_vector.jpg")
 ```
 
 ## Logical vectors
 
-You can do a few cool things now with this vector. For example, you can use it with the `filter` function to pull out just the rows where `is_male` is `TRUE`:
-
 ```{r}
-nepali %>% 
-  filter(is_male) %>% 
-  select(id, ht, wt, sex) %>% 
-  slice(1:5)
-```
-
-## Logical vectors
-
-Or, with `!`, just the rows where `is_male` is `FALSE`:
-
-```{r}
-nepali %>% 
-  filter(!is_male) %>% 
-  select(id, ht, wt, sex) %>% 
-  slice(1:5)
-```
-
-## Logical vectors
-
-All of the values in a logical vector are saved, at a deeper level, with a number. Values of `TRUE` are saved as 1 and values of `FALSE` are saved as 0. 
-
-```{r}
-head(nepali$is_male)
+head(beijing_pm$beyond_index)
 ```
 
 ```{r}
-head(as.numeric(nepali$is_male))
+head(as.numeric(beijing_pm$beyond_index))
 ```
 
 
 ## Logical vectors
 
-Therefore, you can use `sum()` to get the sum of all values in a vector. Because logical vector values are linked with numerical values of 0 or 1, you can use `sum()` to find out how many males and females are in the dataset:
+Therefore, you can use `sum()` to get the sum of all values in a vector. Because
+logical vector values are linked with numerical values of 0 or 1, you can use
+`sum()` to find out how many males and females are in the dataset:
 
 ```{r}
-sum(nepali$is_male)
-sum(!nepali$is_male)
+sum(beijing_pm$beyond_index)
+sum(!beijing_pm$beyond_index)
 ```
 
 ## In-course exercise
 
-We'll take a break now to start the in-course exercise for this week (Sections 3.5.1 and 3.5.2).
+We'll take a break now to start the in-course exercise for this week (Section
+3 for Week 3).
+
 
 # Tidyverse and cheatsheets
 
 ## The "tidyverse"
 
-So far, we have used a number of packages that are part of the *tidyverse*. The tidyverse is a collection of recent and developing packages for R, many written by Hadley Wickham. \medskip
+So far, we have used a number of packages that are part of the *tidyverse*. The
+tidyverse is a collection of recent and developing packages for R, many written
+by Hadley Wickham. \medskip
 
 ```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
 knitr::include_graphics("../figures/tidyverse_hexbin.jpeg")
@@ -247,225 +828,20 @@ knitr::include_graphics("../figures/HadleyObama.png")
 
 ## Cheatsheets
 
-RStudio has several very helpful **cheatsheets**. These are one-page sheets (front and back) that cover many of the main functions for a certain topic or task in R. These cheatsheets cover a lot of the main "tidyverse" functions.
+RStudio has several very helpful **cheatsheets**. These are one-page sheets
+(front and back) that cover many of the main functions for a certain topic or
+task in R. These cheatsheets cover a lot of the main "tidyverse" functions.
 
-You can access these directly from RStudio. Go to "Help" -> "Cheatsheets" and select the cheatsheet on the topic of interest. 
+You can access these directly from RStudio. Go to "Help" -> "Cheatsheets" and
+select the cheatsheet on the topic of interest.
 
-You can find even more of these cheatsheets at https://www.rstudio.com/resources/cheatsheets/.
+You can find even more of these cheatsheets at
+https://www.rstudio.com/resources/cheatsheets/.
 
 ## Cheatsheets
 
 ```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = 'center'}
 knitr::include_graphics("../figures/rstudio_cheatsheet.png")
-```
-
-
-# Simple statistics
-
-## Simple statistics functions
-
-We've looked at how to subset, filter, arrange, and add to a dataframe. Next we'll look at how to summarize a dataframe. 
-
-We'll start by looking at some simple statistics functions from base R, and then we'll look at how some of those functions can be used with the `summarize` function from the `dplyr` package to quickly get interesting summaries of data.
-
-## Simple statistics functions
-
-Here are some simple statistics functions you will likely use often:
-
-Function  | Description
---------- | -----------------
-`min()` | Minimum of values in the vector
-`max()` | Maximum of values in the vector
-`mean()` | Mean of values in the vector
-`median()` | Median of values in the vector
-
-## Simple statistic examples
-
-All of these take, as the main argument, the vector(s) for which you want the statistic. If there are missing values in the vector, you'll need to add an option to say what to do when them (e.g., `na.rm` or `use="complete.obs"`---see help files).
-
-```{r}
-mean(nepali$wt, na.rm = TRUE)
-min(nepali$wt, na.rm = TRUE)
-```
-
-## Simple statistics functions
-
-There are also a collection of basic statistical functions that can input one or more vectors and that input more than one values: 
-
-Function  | Description
---------- | -----------------
-`summary()` | Provides summary statistics for values in the vector
-`range()` | Gives the minimum and maximum of values in the vector
-`cor()` | Gives the correlation(s) of different vectors
-
-For example, the `range()` function inputs a vector and then outputs two values---the minimum and maximum of values in the vector---in a vector of length 2.
-
-## Simple statistic examples
-
-The `cor` function can take two or more vectors. If you give it multiple values, it will give the correlation matrix for all the vectors.
-
-```{r}
-cor(nepali$wt, nepali$ht, use = "complete.obs")
-cor(nepali[ , c("wt", "ht", "age")], use = "complete.obs")
-```
-
-## `summary()`: A bit of OOP
-
-R supports object-oriented programming. This shows up with `summary()`. R looks to see what type of object it's dealing with, and then uses a method specific to that object type. 
-
-```{r}
-summary(nepali$wt)
-summary(nepali$sex)
-```
-
-## The `summarize` function
-
-Within a "tidy" workflow, you can use the `summarize` function from the `dplyr` package to create summary statistics for a dataframe. This function inputs a dataframe and outputs a dataframe with the specified summary measures. 
-
-## The `summarize` function
-
-The basic format for using `summarize` is:
-
-```{r eval = FALSE}
-## Generic code
-summarize(dataframe, 
-          summary_column_1 = function(existing_columns),
-          summary_column_2 = function(existing_columns))
-```
-
-The output from `summarize` will be a dataframe with: 
-
-- One row (later we will look at using `summarize` within groups of data, and that will result in more rows)
-- As many columns as you have defined summaries in the `summarize` function (the generic code above would result in two columns)
-
-## The `summarize` function
-
-As an example, to summarize the `nepali` dataset to get the mean weight, median height, and minimum and maximum ages of children, you could run: 
-
-```{r}
-summarize(nepali,
-          mean_wt = mean(wt, na.rm = TRUE),
-          median_ht = median(ht, na.rm = TRUE),
-          youngest = min(age, na.rm = TRUE),
-          oldest = max(age, na.rm = TRUE))
-```
-
-Notice that the output is one row (since the summary was on ungrouped data), with four columns (since we defined four summaries in the `summarize` function).
-
-## The `summarize` function
-
-Because the first input to the `summarize` function is a dataframe, you can "pipe into" a `summarize` call. For example, we could have written the code on the previous slide as: 
-
-```{r eval = FALSE}
-nepali %>% 
-  summarize(mean_wt = mean(wt, na.rm = TRUE),
-            median_ht = median(ht, na.rm = TRUE),
-            youngest = min(age, na.rm = TRUE),
-            oldest = max(age, na.rm = TRUE))
-```
-
-As another note, because the output from `summarize` is also a dataframe, we could also "pipe into" another tidyverse function after running `summarize`. 
-
-## The `summarize` function
-
-There are some special functions that are particularly useful to use with `summarize` and other functions from the `dplyr` package: 
-
-Function | Description
----------------|-------------
-`n()`          | Number of elements in a vector
-`n_distinct()` | Number of unique elements in a vector
-`first()`      | First value in a vector
-`last()`       | Last value in a vector
-
-## The `summarize` function
-
-For example, the following call would give you the total number of observations in the dataset, the number of distinct values of age measured across all children, the ID of the first child included in the dataset, and the weight of the last child included in the dataset:  
-
-```{r}
-nepali %>%
-  summarize(n_children = n(), 
-            n_distinct_ages = n_distinct(age),
-            first_id = first(id),
-            last_weight = last(wt))
-```
-
-## Grouping and summarizing
-
-Often, you'll want to get summaries of the data stratified by groups within the data. For example, in the `nepali` dataset, you may want to get summaries by sex or by whether the child was short or tall. 
-
-To get grouped summaries of a dataframe, you can first use the `group_by` function from the `dplyr` package to "group" the dataset, and then when you run "summarize", it will be applied **by group** to the data. 
-
-Your final output from summarize will be a dataframe with: 
-
-- As many rows as there were unique groups in the grouping factor(s)
-- As many columns as you have defined summaries in the `summarize` function (the generic code above would result in two columns), plus columns for each of the grouping factors
-
-## Grouping and summarizing
-
-Without piping, the use of `group_by` and `summarize` looks like this:
-
-```{r eval = FALSE}
-# Generic code
-summarize(group_by(dataframe,
-                   grouping_factor_1, grouping_factor_2), 
-          summary_column_1 = function(existing_columns),
-          summary_column_2 = function(existing_columns)) 
-          
-```
-
-You can see that `group_by` is nested within the `summarize` call, because `group_by` must be applied to the dataframe before `summarize` is run if you want to get summaries by group. 
-
-## Grouping and summarizing
-
-This call tends to look much cleaner if you use piping. With piping, the generic call looks like: 
-
-```{r eval = FALSE}
-# Generic code
-dataframe %>% 
-  group_by(grouping_factor_1, grouping_factor_2) %>% 
-  summarize(summary_column_1 = function(existing_columns),
-            summary_column_2 = function(existing_columns))
-```
-
-## Grouping and summarizing
-
-For example, in the Nepali dataset, say you want to get summaries by sex. You want to get the total number of children in each group, the mean weight, and the ID of the first child.
-
-You can run:
-
-```{r}
-nepali %>%
-  group_by(sex) %>%
-  summarize(n_children = n(), 
-            mean_wt = mean(wt, na.rm = TRUE),
-            first_id = first(id))
-```
-
-## Grouping and summarizing
-
-```{r}
-nepali %>%
-  group_by(sex) %>%
-  summarize(n_children = n(), 
-            mean_wt = mean(wt, na.rm = TRUE),
-            first_id = first(id))
-```
-
-Notice that the output is a dataframe with two rows (since there were two groups in the grouping factor) and four columns (one for the grouping factor, plus one for each of the summaries defined in the `summarize` function).
-
-## Grouping and summarizing
-
-You can group by more than one variable. For example, to get summaries within groups divided by both sex and whether the child is tall (> 100 cm) or not, you could run:
-
-\small
-
-```{r}
-nepali %>%
-  mutate(tall = ht > 100) %>%
-  filter(!is.na(tall)) %>% 
-  group_by(sex, tall) %>%
-  summarize(n_children = n(),
-            mean_wt = mean(wt, na.rm = TRUE))
 ```
 
 ## More reading / practice
@@ -476,9 +852,46 @@ As a reminder, that is available at:
 
 http://r4ds.had.co.nz
 
-## In-course exercise
+# Basic plotting
 
-We'll take a break now to continue the in-course exercise for this week (Section 3.5.3).
+## Example data---Beijing air quality
+
+Let's read the Beijing data in and clean up the "-999" values: 
+
+```{r}
+library("readr")
+```
+```{r echo = FALSE, message = FALSE}
+beijing_pm_raw <- read_csv("../data/Beijing_2017_HourlyPM25.csv", 
+                       skip = 3, na = "-999")
+```
+```{r eval = FALSE}
+beijing_pm_raw <- read_csv("data/Beijing_2017_HourlyPM25.csv", 
+                       skip = 3, na = "-999")
+```
+
+## Example data---Beijing air quality
+
+Clean up as before:
+
+\footnotesize
+
+```{r}
+beijing_pm <- beijing_pm_raw %>% 
+  rename(sample_time = `Date (LST)`, 
+         value = Value,
+         qc = `QC Name`) %>% 
+  select(sample_time, value, qc) %>% 
+  mutate(aqi = cut(value, 
+                   breaks = c(0, 50, 100, 150, 200, 
+                              300, 500, Inf),
+                   labels = c("Good", "Moderate",
+                              "Unhealthy for Sensitive Groups",
+                              "Unhealthy", "Very Unhealthy", 
+                              "Hazardous", "Beyond Index"))) %>% 
+  mutate(sample_time = mdy_hm(sample_time)) %>% 
+  mutate(heating = sample_time < mdy("03/15/2017"))
+```
 
 # Plots 
 
@@ -486,66 +899,82 @@ We'll take a break now to continue the in-course exercise for this week (Section
 
 Plots can be invaluable in exploring your data. \medskip
 
-Today, we will focus on **useful**, rather than **attractive** graphs, since we are focusing on exploring rather than presenting data. \medskip
+Today, we will focus on **useful**, rather than **attractive** graphs, since we
+are focusing on exploring rather than presenting data. \medskip
 
-Next lecture, we will talk more about customization, to help you make more attractive plots that would go into final reports. \medskip
+Next lecture, we will talk more about customization, to help you make more
+attractive plots that would go into final reports. \medskip
 
 ## `ggplot` conventions
 
 Here, we'll be using functions from the `ggplot2` library, so you'll need to install that package:
 
 ```{r}
-library(ggplot2)
+library("ggplot2")
 ```
 
 The basic steps behind creating a plot with `ggplot2` are:
 
-1. Create an object of the `ggplot` class, typically specifying the **data** to be shown in the plot; 
-2. Add on (using `+`) one or more **geoms**, specifying the **aesthetics** for each; and 
-3. Add on (using `+`) other elements to create and customize the plot (e.g., add layers to customize scales or themes or to add facets).
+1. Create an object of the `ggplot` class, typically specifying the **data** to
+be shown in the plot;
+2. Add on (using `+`) one or more **geoms**, specifying the **aesthetics** for
+each; and
+3. Add on (using `+`) other elements to create and customize the plot (e.g., add
+layers to customize scales or themes or to add facets).
 
 *Note*: To avoid errors, end lines with `+`, don't start lines with it. 
 
 ## Plot data
 
-The `ggplot` function requires you to input a dataframe with the data you will plot. All the columns in that dataframe can be mapped to specific aesthetics within the plot. 
+The `ggplot` function requires you to input a dataframe with the data you will
+plot. All the columns in that dataframe can be mapped to specific aesthetics
+within the plot.
 
 ```{r}
-nepali %>% 
+beijing_pm %>% 
   slice(1:3)
 ```
 
-For example, if we input the `nepali` dataframe, we would be able to create a scatterplot that shows each child's initial height on the x-axis, weight on the y-axis, and sex by the color of the point.
+For example, if we input the `beijing_pm` dataframe, we would be able to create
+a plot that shows each sample's sampling time on the x-axis,
+PM\textsubscript{2.5} concentration on the y-axis, and AQI by the color of the
+point.
 
 ## Plot aesthetics
 
-**Aesthetics** are plotting elements that can show certain elements of the data. \medskip
+**Aesthetics** are plotting elements that can show certain elements of the data.
+\medskip
 
-For example, you may want to create a scatterplot where color shows gender, x-position shows height, and y-position shows weight. \medskip
+For example, you may want to create a scatterplot where color shows AQI,
+x-position shows sampling time, and y-position shows PM\textsubscript{2.5}
+concentration. \medskip
 
-```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-nepali %>%
-  ggplot(aes(x = ht, y = wt, color = sex)) + 
+```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 8, fig.height = 3.5}
+beijing_pm %>%
+  ggplot(aes(x = sample_time, y = value, 
+             color = aqi)) + 
   geom_point() + 
-  xlab("Height (cm)") + ylab("Weight (kg)")
+  xlab("Sampling time") + ylab("PM2.5 concentration")
 ```
 
 ## Plot aesthetics
 
-In the previous graph, the mapped aesthetics are color, x, and y. In the `ggplot` code, all of these aesthetic mappings will be specified within an `aes` call, which will be nested in another call in the `ggplot` pipeline. \medskip
+In the previous graph, the mapped aesthetics are color, x, and y. In the
+`ggplot` code, all of these aesthetic mappings will be specified within an `aes`
+call, which will be nested in another call in the `ggplot` pipeline. \medskip
 
-Aesthetic       | `ggplot` abbreviation  | `nepali` column
+Aesthetic       | `ggplot` abbreviation  | `beijing_pm` column
 ----------------|------------------------|-----------------
-x-axis position | `x = `                 | `ht`
-y-axis position | `y = `                 | `wt`
-color           | `color = `             | `sex`
+x-axis position | `x = `                 | `sample_time`
+y-axis position | `y = `                 | `value`
+color           | `color = `             | `aqi`
 
 This is how these mappings will be specified in an `aes` call:
 
 ```{r eval = FALSE}
 # Note: This code should not be run by itself. 
 # It will eventually be nested in a ggplot call.
-aes(x = ht, y = wt, color = sex)
+aes(x = sample_time, y = value, color = aqi)
 ```
 
 
@@ -570,9 +999,12 @@ knitr::kable(aes_vals, col.names = c("Code", "Description"))
 
 ## Geoms
 
-You will add **geoms** that create the actual geometric objects on the plot. For example, a scatterplot has "points" geoms, since each observation is displayed as a point. 
+You will add **geoms** that create the actual geometric objects on the plot. For
+example, a scatterplot has "points" geoms, since each observation is displayed
+as a point.
 
-There are `geom_*` functions that can be used to add a variety of geoms. The function to add a "points" geom is `geom_point`. 
+There are `geom_*` functions that can be used to add a variety of geoms. The
+function to add a "points" geom is `geom_point`.
 
 We just covered three plotting elements: 
 
@@ -580,7 +1012,8 @@ We just covered three plotting elements:
 - Aesthetics
 - Geoms
 
-These are three elements that you will almost always specify when using `ggplot`, and they are sufficient to create a number of basic plots. 
+These are three elements that you will almost always specify when using
+`ggplot`, and they are sufficient to create a number of basic plots.
 
 ## Creating a ggplot object
 
@@ -596,23 +1029,31 @@ ggplot(data = dataframe) +
 \small 
 Notice that: 
 
-1. The `ggplot` call specifies the **dataframe** with the data you want to plot 
-2. A **geom** is added using the appropriate `geom_*` function for a scatterplot (`geom_point`). 
-3. The mappings between columns in the dataframe and **aesthetics** of the geom is specified within an `aes` call in the `mapping` argument of the `geom_*` function call.
-4. The `aes` call includes mappings to two aesthetics that are required from the `geom_point` geom (`x` and `y`) and one that is optional (`color`).
+1. The `ggplot` call specifies the **dataframe** with the data you want to plot
+2. A **geom** is added using the appropriate `geom_*` function for a scatterplot
+(`geom_point`).
+3. The mappings between columns in the dataframe and **aesthetics** of the geom
+is specified within an `aes` call in the `mapping` argument of the `geom_*`
+function call.
+4. The `aes` call includes mappings to two aesthetics that are required from the
+`geom_point` geom (`x` and `y`) and one that is optional (`color`).
 
 ## Creating a ggplot object
 
-Let's put these ideas together to write the code to create a scatterplot for our example data: 
+Let's put these ideas together to write the code to create a plot for our
+example data:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-  ggplot(data = nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt, color = sex)) 
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 8, fig.height = 3.5}
+  ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value, 
+                           color = aqi)) 
 ```
 
 ## Adding geoms
 
-There are a number of different `geom_*` functions you can use to add geoms to a plot. They are divided between geoms that directly map the data to an aesthetic and those that show some summary or statistic of the data. \medskip 
+There are a number of different `geom_*` functions you can use to add geoms to a
+plot. They are divided between geoms that directly map the data to an aesthetic
+and those that show some summary or statistic of the data. \medskip
 
 Some of the most common direct-mapping geoms are:
 
@@ -630,19 +1071,22 @@ Geom(s)                     | Description
 You can add several geoms to the same plot as layers:
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-  ggplot(data = nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt, color = sex)) + 
-  geom_line(mapping = aes(x = ht, y = wt, color = sex)) + 
-  geom_rug(mapping = aes(x = ht, y = wt, color = sex)) 
+  ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value)) + 
+  geom_line(mapping = aes(x = sample_time, y = value)) + 
+  geom_rug(mapping = aes(x = sample_time, y = value)) 
 ```
 
 ## Creating a ggplot object
 
-You may have noticed that all of these geoms use the same aesthetic mappings (height to x-axis position, weight to y-axis position, and sex to color). To save time, you can specify the aesthetic mappings in the first `ggplot` call. These mappings will then be the default for any of the added geoms. 
+You may have noticed that all of these geoms use the same aesthetic mappings
+(height to x-axis position, weight to y-axis position, and sex to color). To
+save time, you can specify the aesthetic mappings in the first `ggplot` call.
+These mappings will then be the default for any of the added geoms.
 
-```{r eval = FALSE}
-ggplot(data = nepali,
-       mapping = aes(x = ht, y = wt, color = sex)) + 
+```{r eval = FALSE, warning = FALSE}
+ggplot(data = beijing_pm,
+       mapping = aes(x = sample_time, y = value)) + 
   geom_point() + 
   geom_line() + 
   geom_rug() 
@@ -650,11 +1094,12 @@ ggplot(data = nepali,
 
 ## Creating a ggplot object
 
-Because the first argument of the `ggplot` call is a dataframe, you can also "pipe into" a `ggplot` call:
+Because the first argument of the `ggplot` call is a dataframe, you can also
+"pipe into" a `ggplot` call:
 
 ```{r eval = FALSE}
-nepali %>% 
-  ggplot(aes(x = ht, y = wt, color = sex)) + 
+beijing_pm %>% 
+  ggplot(aes(x = sample_time, y = value)) + 
   geom_point() + 
   geom_line() + 
   geom_rug() 
@@ -662,27 +1107,33 @@ nepali %>%
 
 ## In-course exercise
 
-We'll take a break now to continue the in-course exercise for this week (Section 3.5.4).
+We'll take a break now to continue the in-course exercise for this week (Section 4).
 
 ## Plot aesthetics
 
-Which aesthetics you must specify in the `aes` call depend on which geom you are adding to the plot. \medskip 
+Which aesthetics you must specify in the `aes` call depend on which geom you are
+adding to the plot. \medskip
 
-You can find out the aesthetics you can use for a geom in the "Aesthetics" section of the geom's help file (e.g., `?geom_point`). \medskip 
+You can find out the aesthetics you can use for a geom in the "Aesthetics"
+section of the geom's help file (e.g., `?geom_point`). \medskip
 
-Required aesthetics are in bold in this section of the help file and optional ones are not. 
+Required aesthetics are in bold in this section of the help file and optional
+ones are not.
 
 ## Constant aesthetics
 
-Instead of mapping an aesthetic to an element of your data, you can use a constant value for the aesthetic. For example, you may want to make all the points blue, rather than having color map to gender: 
+Instead of mapping an aesthetic to an element of your data, you can use a
+constant value for the aesthetic. For example, you may want to make all the
+points blue, rather than having color map to AQI:
 
 ```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-nepali %>%
-  ggplot(aes(x = ht, y = wt)) + 
+beijing_pm %>%
+  ggplot(aes(x = sample_time, y = value)) + 
   geom_point(color = "blue")
 ```
 
-In this case, you can define that aesthetic as a constant for the geom, outside of an `aes` statement.
+In this case, you can define that aesthetic as a constant for the geom,
+**outside** of an `aes` statement.
 
 ## Constant aesthetics
 
@@ -694,7 +1145,7 @@ In R, you can specify point shape with a number. Here are the shapes that corres
 x <- rep(1:5, 5)
 y <- rep(1:5, each = 5)
 shape <- 1:25
-to_plot <- data_frame(x = x, y = y, shape = shape)
+to_plot <- tibble(x = x, y = y, shape = shape)
 ggplot(to_plot, aes(x = x, y = y)) + 
   geom_point(shape = shape, size = 4, color = "black", fill = "red") + 
   geom_text(label = shape, nudge_x = -0.25) +
@@ -705,11 +1156,13 @@ ggplot(to_plot, aes(x = x, y = y)) +
 
 ## Constant aesthetics
 
-Here is an example of mapping point shape to a constant value other than the default:
+Here is an example of mapping point shape to a constant value other than the
+default:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt, color = sex),
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 8, fig.height = 3.5}
+ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value,
+                           color = aqi),
              shape = 9)
 ```
 
@@ -737,9 +1190,9 @@ Google "R colors" and search the images to find links to listings of different R
 
 Here is an example of mapping point shape and color to constant values other than the defaults:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt),
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 7, fig.height = 3}
+ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value),
              shape = 9, 
              color = "darkorchid")
 ```
@@ -763,17 +1216,17 @@ knitr::kable(plot_adds, col.names = c("Element", "Description"))
 ## Useful plot additions
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
-  geom_point(mapping = aes(x = ht, y = wt)) + 
-  labs(x = "Height", y = "Weight") + 
-  ggtitle("Height vs. weight for Nepali children",
-          subtitle = "Based on data from West et al. (1997)") + 
-  expand_limits(x = 0, y = 0)
+ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value)) + 
+  labs(x = "Sampling Date and Time", 
+       y = "PM2.5 Concentration") + 
+  ggtitle("Measurements of PM2.5 in Beijing, China, 2017",
+          subtitle = "Based on U.S. Embassy Monitor") 
 ```
 
 ## In-course exercise
 
-We’ll take a break now to continue the in-course exercise for this week (Section 3.5.5).
+We’ll take a break now to continue the in-course exercise for this week (Section 5 of Week 3).
 
 ## Adding geoms
 
@@ -791,37 +1244,39 @@ Geom(s)                        | Description
 
 ## Adding geoms
 
-These "statistical" geoms all input the original data and perform some calculations on that data to determine how to plot the final geom. Often, this calculation involves some kind of summarization. 
-
-For example, the geom for a hexagonal 2-D heatmap (`geom_hex`) divides the data into an evenly-sized set of hexagons and then calculates the number of points in each hexagon to provide a 2-D visualization of how the data is distributed. 
+These "statistical" geoms all input the original data and perform some
+calculations on that data to determine how to plot the final geom. Often, this
+calculation involves some kind of summarization.
 
 ## Adding geoms
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
-  geom_hex(aes(x = ht, y = wt))
+For example, the geom for a histogram (`geom_hist`) divides the data into an
+evenly-sized set of "bins" and then calculates the number of points in each bin
+to provide a visualization of how the data is distributed.
+
+```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/histogram_illustration.jpg")
 ```
 
 ## Adding geoms
 
-A histogram geom is a similar idea, but only gives the distribution across one variable: 
+To plot a histogram of PM_{2.5} concentrations in the Beijing data, run:
 
 ```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(data = nepali) + 
-  geom_histogram(aes(x = ht))
+ggplot(data = beijing_pm) + 
+  geom_histogram(aes(x = value))
 ```
 
 
 ## Histogram example
 
-You can add some elements to the histogram, like `ggtitle`, `labs`, and `xlim`:
+You can add some elements to the histogram, like `ggtitle`, and `labs`:
 
 ```{r, fig.width = 4, fig.height = 2.5, out.width="0.6\\textwidth", fig.align = "center", message = FALSE, warning = FALSE}
-ggplot(nepali, aes(x = ht)) + 
+ggplot(beijing_pm, aes(x = value)) + 
   geom_histogram(fill = "lightblue", color = "black") + 
-  ggtitle("Height of children") + 
-  labs(x = "Height (cm)", y = "Weight (kg)") + 
-  xlim(c(0, 120))
+  ggtitle("PM2.5 Concentrations in Beijing") + 
+  labs(x = "PM2.5 Concentration", y = "Number of samples") 
 ```
 
 ## Histogram example
@@ -829,25 +1284,36 @@ ggplot(nepali, aes(x = ht)) +
 `geom_histogram` also has its own special argument, `bins`. You can use this to change the number of bins that are used to make the histogram:
 
 ```{r, fig.width = 2.5, fig.height = 2, fig.align = "center", warning = FALSE, message = FALSE}
-ggplot(nepali, aes(x = ht)) + 
-  geom_histogram(bins = 40) 
+ggplot(beijing_pm, aes(x = value)) + 
+  geom_histogram(bins = 100) 
 ```
 
 ## Bar chart
 
 You can use the `geom_bar` geom to create a barchart:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(nepali, aes(x = sex, fill = ht > 100)) + 
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 7, fig.height = 2.5}
+ggplot(beijing_pm, aes(x = aqi)) + 
   geom_bar()
 ```
 
 ## Bar chart
 
-With the `geom_bar` geom, you can use the `position` argument to change how the bars for different groups are shown (`"stack"`, `"dodge"`, `"fill"`):
+You can use the `geom_bar` geom to show counts for two factors by using `x` for
+one and `fill` for the other:
 
-```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
-ggplot(nepali, aes(x = sex, fill = ht > 100)) + 
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 7, fig.height = 2.5}
+ggplot(beijing_pm, aes(x = aqi, fill = heating)) + 
+  geom_bar()
+```
+
+## Bar chart
+
+With the `geom_bar` geom, you can use the `position` argument to change how the
+bars for different groups are shown (`"stack"`, `"dodge"`, `"fill"`):
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 8, fig.height = 3}
+ggplot(beijing_pm, aes(x = aqi, fill = heating)) + 
   geom_bar(position = "dodge")
 ```
 
@@ -856,21 +1322,21 @@ ggplot(nepali, aes(x = sex, fill = ht > 100)) +
 To create a boxplot, you can use `geom_boxplot`: 
 
 ```{r, fig.height = 2, fig.width = 2, warning = FALSE, fig.align="center"}
-ggplot(nepali, aes(x = 1, y = ht)) + 
+ggplot(beijing_pm, aes(x = 1, y = value)) + 
   geom_boxplot() + 
-  labs(x = "", y = "Height (cm)")
+  labs(x = "", y = "PM2.5 Concentration")
 ```
 
 ## Boxplot example
 
 You can also do separate boxplots by a factor. In this case, you'll need to include two aesthetics (`x` and `y`) when you initialize the ggplot object. 
 
-```{r, fig.height = 2, fig.width = 2.5, fig.align = "center", warning = FALSE}
-ggplot(nepali, aes(x = sex, y = ht, group = sex)) + 
+```{r, fig.height = 3.8, fig.width = 8, fig.align = "center", warning = FALSE, out.width = "\\textwidth"}
+ggplot(beijing_pm, aes(x = aqi, y = value, group = aqi)) + 
   geom_boxplot() + 
-  labs(x = "Sex", y = "Height (cm)")
+  labs(x = "AQI Category", y = "PM2.5 Concentration")
 ```
 
 ## In-course exercise
 
-We'll take a break now to finish the in-course exercise for this week (Section 3.5.6).
+We'll take a break now to finish the in-course exercise for this week (Section 6 of Week 3).

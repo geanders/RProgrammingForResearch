@@ -1,5 +1,9 @@
 ---
 title: "Reporting data results #1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 output: 
   beamer_presentation:
     theme: "metropolis"
@@ -7,7 +11,7 @@ fontsize: 10pt
 ---
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-library(knitr)
+library("knitr")
 ```
 
 # Plot guidelines
@@ -43,11 +47,11 @@ The guidelines are:
 For the examples, I'll use `dplyr` for data cleaning and, for plotting, the packages `ggplot2`, `gridExtra`, and `ggthemes`.
 
 ```{r message = FALSE}
-library(dplyr)
+library("dplyr")
 
-library(ggplot2)
-library(gridExtra)
-library(ggthemes)
+library("ggplot2")
+library("gridExtra")
+library("ggthemes")
 ```
 
 ## Example data
@@ -55,15 +59,22 @@ library(ggthemes)
 You can load the data for today's examples with the following code: 
 
 ```{r message = FALSE}
-library(faraway)
-data(nepali)
-data(worldcup)
+library("faraway")
+data("worldcup")
+```
 
-library(dlnm)
-data(chicagoNMMAPS)
+## Example data
+
+```{r message = FALSE}
+library("dlnm")
+data("chicagoNMMAPS")
 chic <- chicagoNMMAPS
 chic_july <- chic %>%
   filter(month == 7 & year == 1995)
+```
+\footnotesize
+```{r}
+slice(chic_july, 1:3)
 ```
 
 ## High data density
@@ -231,6 +242,15 @@ There are a few strategies you can use to make labels clearer:
 - Include units of measurement in axis titles when relevant. If units are dollars or percent, check out the `scales` package, which allows you to add labels directly to axis elements by including arguments like `labels = percent` in `scale` elements.
 - If the x-variable requires longer labels (player positions in the example above), consider flipping the coordinates, rather than abbreviating or rotating the labels. You can use `coord_flip` to do this.
 
+## Meaningful labels
+
+```{r fig.height = 3, fig.width = 4, out.width = "0.6\\textwidth", fig.align = "center"}
+ggplot(worldcup, aes(Position)) + 
+       geom_bar(fill = "lightgray") + coord_flip() + 
+       labs(x = "", y = "Number of players") 
+```
+
+
 ## References
 
 Guideline 3: **Provide useful references.** \bigskip
@@ -326,16 +346,26 @@ Lines and polygons can also be useful for adding references. Useful geoms includ
 
 ## References
 
+```{r outwidth = "\\textwidth", fig.height = 3, fig.width = 6}
+ggplot(data = chic, aes(x = date, y = death)) + 
+  geom_point(color = "darkred", alpha = 0.3) + 
+  geom_hline(yintercept = c(77, 139),
+             linetype = 2)
+```
+
+
+## References
+
 When adding these references: 
 
-- Add reference elements first, so they will be plotted under the data, instead of on top of it. 
+- If you want them to go behind the main points, add reference elements first, so they will be plotted under the data, instead of on top of it. 
 - Use `alpha` to add transparency to these elements. 
 - Use colors that are unobtrusive (e.g., grays)
 - For lines, consider using non-solid line types (e.g., `linetype = 3`)
 
 ## In-course exercise 
 
-We'll take a break now to do Sections 4.10.1 and 4.10.2 of the In-Course Exercise.
+We'll take a break now to do Sections 1 and 2 of the In-Course Exercise (Chapter 4).
 
 ## Highlighting
 
@@ -430,25 +460,30 @@ One helpful way to annotate is with text, using `geom_text()`. For this, you'll 
 ```{r}
 hottest_day <- chic_july %>%
   filter(temp == max(temp))
-hottest_day[ , 1:6]
+hottest_day %>% select(date:dow)
 ```
 
 ## Highlighting
 
 ```{r fig.height = 3, fig.width = 4, out.width = "0.7\\textwidth", fig.align = "center"}
-chic_plot + geom_text(data = hottest_day, 
-                      label = "Max",
-                      size = 3)
+ggplot(data = chic_july, aes(x = date, y = death)) + 
+  geom_point(color = "red") + 
+  geom_text(data = hottest_day, 
+            label = "Max", size = 3)
 ```
 
 ## Highlighting
 
 With `geom_text`, you'll often want to use position adjustment (the `position` parameter) to move the text so it won't be right on top of the data points: 
 
+\footnotesize
+
 ```{r fig.height = 3, fig.width = 4, out.width = "0.5\\textwidth", fig.align = "center", message = FALSE}
-chic_plot + geom_text(data = hottest_day, 
-                      label = "Max",
-                      size = 3, hjust = 0, vjust = -1)
+ggplot(data = chic_july, aes(x = date, y = death)) + 
+  geom_point(color = "red") + 
+  geom_text(data = hottest_day, 
+            label = "Max", size = 3, 
+            hjust = 0, vjust = -1)
 ```
 
 
@@ -456,12 +491,14 @@ chic_plot + geom_text(data = hottest_day,
 
 You can also use lines to highlight. For this, it is often useful to create a new dataframe with data for the reference. To add a line for the Chicago heat wave, I've added a dataframe called `hw` with the relevant date range. I'm setting the y-value to be high enough (425) to ensure the line will be placed above the mortality data. 
 
-```{r}
-hw <- data.frame(date = c(as.Date("1995-07-12"), 
-                          as.Date("1995-07-16")),
+```{r message = FALSE, warning = FALSE}
+library(lubridate)
+hw <- data.frame(date = c(ymd("1995-07-12"), 
+                          ymd("1995-07-16")),
                  death = c(425, 425))
         
-b <- chic_plot + 
+b <- ggplot(data = chic_july, aes(x = date, y = death)) + 
+        geom_point(color = "red") + 
         geom_line(data = hw,
                   aes(x = date, y = death),
                   size = 2)
@@ -506,7 +543,34 @@ grid.arrange(a, b, ncol = 2)
 
 ## Order
 
-You can re-order factor variables in a graph by resetting the factor using the `factor` function and changing the order that levels are included in the `levels` parameter. 
+```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/alphabetical_rainbow.png")
+```
+
+
+## Order
+
+You can re-order factor variables in a graph by resetting the factor using several 
+functions from the `forcats` package. 
+
+The simplest is `fct_relevel`, which lets you change the levels "by hand". 
+
+See the "factors" cheatsheet for more `forcats` functions.
+
+## Changing factor levels
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/relevel_factor.jpg")
+```
+
+## Order
+
+> "And if you think that I'm going to miss even one
+opportunity to
+pick up half-a-mile boat speed, you're absolutely out of your mind. When it
+costs us
+nothing, when we give up nothing?! You're out of your mind." \newline
+Bruno, \underline{The West Wing}, "The Indians in the Lobby"
 
 ## Small multiples
 
@@ -529,8 +593,7 @@ ex$Team <- factor(ex$Team,
 a <- ggplot(ex, aes(x = Time, y = Shots)) + 
         geom_point() + 
         theme_few() + 
-        facet_wrap(~ Team, ncol = 8) + 
-        geom_smooth(method = "lm", se = FALSE)
+        facet_wrap(~ Team, ncol = 8) 
 a
 ```
 
@@ -543,15 +606,6 @@ The `facet` functions are:
 - `facet_grid()`
 - `facet_wrap()`
 
-## Small multiples
-
-For example, to create small multiples by sex for the Nepali dataset, when plotting height versus weight, you can call:
-
-```{r warning = FALSE, fig.width = 8, fig.height = 3}
-ggplot(nepali, aes(ht, wt)) + 
-        geom_point() + 
-        facet_grid(. ~ sex)
-```
 
 ## Small multiples
 
@@ -571,47 +625,45 @@ facet_wrap(~ [factor for faceting], ncol = [# of columns])
 
 ## Small multiples
 
-
-Often, when you do faceting, you'll want to re-name your factors levels or re-order them. For this, you'll need to use the `factor()` function on the original vector. For example, to rename the `sex` factor levels from "1" and "2" to "Male" and "Female", you can run:
-
-```{r}
-nepali <- nepali %>%
-  mutate(sex = factor(sex, levels = c(1, 2), 
-                      labels = c("Male", "Female")))
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/facet_grid.jpg")
 ```
 
 ## Small multiples
 
-Notice that the labels for the two graphs have now changed:
-
-```{r warning = FALSE, fig.width = 8, fig.height = 3}
-ggplot(nepali, aes(ht, wt)) + 
-        geom_point() + 
-        facet_wrap(~ sex, ncol = 2)
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/facet_wrap.jpg")
 ```
 
 ## Small multiples
 
-To re-order the factor, and show the plot for "Female" first, you can use `factor` to change the order of the levels:
+For example, to create small multiples of ozone concentration by day of week for the Chicago data, you can run:
 
-```{r}
-nepali <- nepali %>%
-  mutate(sex = factor(sex, levels = c("Female", "Male")))
+```{r message = FALSE, warning = FALSE, fig.height = 3, fig.width = 6, out.width = "0.95\\textwidth"}
+chic %>% 
+  ggplot(aes(x = o3)) + 
+  geom_histogram(fill = "skyblue1", color = "black") +
+  facet_wrap(~ dow)
 ```
 
 ## Small multiples
 
-Now notice that the order of the plots has changed:
+To change the order of the facets, change the order of the factor levels for the factor you're using to facet. For example, to move weekend days together, you could run:
 
-```{r warning = FALSE, fig.width = 8, fig.height = 3}
-ggplot(nepali, aes(ht, wt)) + 
-        geom_point() + 
-        facet_grid(. ~ sex)
+\footnotesize
+
+```{r message = FALSE, warning = FALSE, fig.height = 3, fig.width = 6, out.width = "0.95\\textwidth"}
+library(forcats)
+chic %>% 
+  mutate(dow = fct_relevel(dow, "Saturday")) %>% 
+  ggplot(aes(x = o3)) + 
+  geom_histogram(fill = "skyblue1", color = "black") +
+  facet_wrap(~ dow)
 ```
 
 ## In-course exercise 
 
-We'll now take a break to do Section 4.10.3 of the In-Course Exercise.
+We'll now take a break to do Section 3 of the In-Course Exercise (Chapter 4).
 
 # Advanced customization
 
@@ -714,7 +766,7 @@ Scale functions from `brewer` allow you to set colors using different palettes. 
 The Brewer palettes fall into three categories: sequential, divergent, and qualitative. You should use sequential or divergent for continuous data and qualitative for categorical data. Use `display.brewer.pal` to show the palette for a given number of colors.
 
 ```{r out.width = "0.32\\textwidth", fig.show='hold', fig.height = 3, fig.width = 4}
-library(RColorBrewer)
+library("RColorBrewer")
 display.brewer.pal(name = "Set1", n = 8)
 display.brewer.pal(name = "PRGn", n = 8)
 display.brewer.pal(name = "PuBuGn", n = 8)

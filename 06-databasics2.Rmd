@@ -772,13 +772,13 @@ ebola <- read_csv(ebola_url) %>%
 library(forcats)
 ggplot(ebola, aes(x = Date, y = Cases)) + 
         geom_line() + 
-        facet_wrap(~ fct_reorder(country, Cases, fun = max, .desc = TRUE),
+        facet_wrap(~ fct_reorder(country, Cases, .fun = max, .desc = TRUE),
                    ncol = 4) + 
         theme_classic() + 
   ggtitle("Deaths from Ebola") 
 ggplot(ebola, aes(x = Date, y = Deaths)) + 
         geom_line() + 
-        facet_wrap(~ fct_reorder(country, Deaths, fun = max, .desc = TRUE),
+        facet_wrap(~ fct_reorder(country, Deaths, .fun = max, .desc = TRUE),
                    ncol = 4) + 
         theme_classic() + 
   ggtitle("Cases of Ebola")
@@ -888,12 +888,12 @@ Use the `fct_reorder` function inside the `facet_wrap` function call to reorder 
 library(forcats)
 ggplot(ebola, aes(x = Date, y = Cases)) + 
         geom_line() + 
-        facet_wrap(~ fct_reorder(country, Cases, fun = max, .desc = TRUE),
+        facet_wrap(~ fct_reorder(country, Cases, .fun = max, .desc = TRUE),
                    ncol = 4) + 
         theme_classic()
 ggplot(ebola, aes(x = Date, y = Deaths)) + 
         geom_line() + 
-        facet_wrap(~ fct_reorder(country, Deaths, fun = max, .desc = TRUE),
+        facet_wrap(~ fct_reorder(country, Deaths, .fun = max, .desc = TRUE),
                    ncol = 4) + 
         theme_classic()
 ```
@@ -1075,7 +1075,7 @@ You could also show it as a figure:
 library(scales)
 top_my_year %>% 
   ungroup() %>% 
-  mutate(name = fct_reorder(name, prop, desc = TRUE),
+  mutate(name = fct_reorder(name, prop, .desc = TRUE),
          sex = fct_recode(sex, Male = "M", Female = "F")) %>% 
   ggplot(aes(x = name)) + 
   geom_bar(aes(weight = prop)) + 
@@ -1195,7 +1195,7 @@ a_or_k %>%
   group_by(a_or_k) %>% 
   count() %>% 
   ungroup() %>% 
-  mutate(prop = nn / sum(nn))
+  mutate(prop = n / sum(n))
 ```
 
 
@@ -1226,7 +1226,7 @@ a_or_k_80s90s %>%
   group_by(a_or_k) %>% 
   count() %>% 
   ungroup() %>% 
-  mutate(prop = nn / sum(nn))
+  mutate(prop = n / sum(n))
 ```
 
 Finally, how does the proportion change over the years in the dataframe? You can start
@@ -1245,7 +1245,7 @@ a_or_k_year
 a_or_k_year <- a_or_k_year %>% 
   ungroup() %>% 
   group_by(year) %>% 
-  mutate(prop = nn / sum(nn))
+  mutate(prop = n / sum(n))
 a_or_k_year
 
 a_or_k_year %>% 
