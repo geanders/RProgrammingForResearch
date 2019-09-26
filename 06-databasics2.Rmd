@@ -157,7 +157,7 @@ The following examples are show the effects of making a dataset longer or wider.
 Here is some simulated wide data:
 
 ```{r, include = FALSE}
-wide_stocks <- data.frame(
+wide_stocks <- tibble(
   time = as.Date('2009-01-01') + 0:9,
   X = rnorm(10, 0, 1),
   Y = rnorm(10, 0, 2),
@@ -185,7 +185,7 @@ long_stocks <- pivot_longer(data = wide_stocks,
 long_stocks[1:5, ]
 ```
 
-In this "long" dataframe, there is now one column that gives the identify of the stock (`stock`) and another column that gives the price of that stock that day (`price`):
+In this "longer" dataframe, there is now one column that gives the identify of the stock (`stock`) and another column that gives the price of that stock that day (`price`):
 
 ```{r}
 long_stocks[1:5, ]
@@ -212,7 +212,8 @@ Notice how easy it is, now that the data is longer, to use `stock` for aesthetic
 ```{r fig.width = 7, fig.height = 2.5}
 ggplot(long_stocks, aes(x = time, y = price)) + 
   geom_line() + 
-  facet_grid(. ~ stock)
+  facet_grid(. ~ stock) +
+  theme_bw()
 ```
 
 If you have data in a "longer" format and would like to make it "wider", you can use `pivot_wider` to do that:
