@@ -65,7 +65,7 @@ We're missing the dates without a fatal crash, so let's add those. First, create
 with all dates in 2016:
 
 ```{r}
-all_dates <- data_frame(date = seq(ymd("2016-01-01"), 
+all_dates <- tibble(date = seq(ymd("2016-01-01"), 
                                    ymd("2016-12-31"), by = 1))
 all_dates %>% 
   slice(1:5)
@@ -149,7 +149,7 @@ foo
 In certain situations, you might want to work with a matrix instead of a data frame (for example, in cases where you were concerned about speed -- a matrix is more memory efficient than the corresponding data frame). If you want to convert a data frame to a matrix, you can use the `as.matrix` function:
 
 ```{r cad}
-foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
+foo <- tibble(col_1 = 1:2, col_2 = 3:4,
                   col_3 = 5:6, col_4 = 7:8,
                   col_5 = 9:10)
 (foo <- as.matrix(foo))
@@ -300,7 +300,7 @@ You will use this type of structure in R fo a lot of different function calls, i
 There are some conventions that can be used in R formulas. Common ones include:
 
 ```{r echo = FALSE}
-for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
+for_convs <- tibble(Convention = c("`I()`", "`:`", "`*`", "`.`",
                                        "`1`", "`-`"),
                         Meaning = c("evaluate the formula inside `I()` before fitting (e.g., `I(x1 + x2)`)",
                                     "fit the interaction between `x1` and `x2` variables",
@@ -318,7 +318,7 @@ To fit a linear model, you can use the function `lm()`. This function is part of
 
 ```{r, echo=FALSE}
 library(forcats)
-nepali_fct <- as_data_frame(nepali) %>%
+nepali_fct <- as_tibble(nepali) %>%
               mutate(sex = fct_recode(factor(sex), Male = "1", Female = "2"))
 ```
 
@@ -363,7 +363,7 @@ is.list(mod_a)
 There are a number of functions that you can apply to an `lm` object. These include:
 
 ```{r echo = FALSE}
-mod_objects <- data.frame(Function = c("`summary`", "`coefficients`", 
+mod_objects <- tibble(Function = c("`summary`", "`coefficients`", 
                                    "`fitted`",
                                    "`plot`", "`residuals`"),
                           Description = c("Get a variety of information on the model, including coefficients and p-values for the coefficients",
@@ -508,7 +508,7 @@ coef(mod_a)
 Unlike the `lm` function, however, the `glm` function also allows you to fit other model types, including logistic and Poisson models. You can specify the model type using the `family` argument to the `glm` call:
 
 ```{r echo = FALSE}
-glm_types <- data.frame(type = c("Linear", "Logistic", "Poisson"),
+glm_types <- tibble(type = c("Linear", "Logistic", "Poisson"),
                         opt = c("`family = gaussian(link = 'identity')`",
                                 "`family = binomial(link = 'logit')`", 
                                 "`family = poisson(link = 'log')`"))
@@ -627,7 +627,7 @@ Here is a vector with names in our class:
 
 ```{r}
 library(stringr)
-student_list <- data_frame(name = c("Aeriel", "Rebecca", "Grant",
+student_list <- tibble(name = c("Aeriel", "Rebecca", "Grant",
                                     "Amy", "Jessy", "Alyssa",
                                     "Camron", "Anastasia", "Kyle",
                                     "Ana", "Amanda", "Kathleen", 
