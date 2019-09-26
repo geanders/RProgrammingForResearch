@@ -985,31 +985,31 @@ There is no example R code for this -- try to figure out the code yourselves. We
 - Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I'd like you to try to figure it out yourselves first.
 - Discuss which of the variables in this dataset could be used to merge the extracted with ...
 
-```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3}
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
 library(tidyverse)
 library(lubridate)
 library(ggthemes)
+library(microbiome)
 
-accident <- read_csv("data/accident.csv") %>%
-  select(DAY:MINUTE) %>%
-  select(-DAY_WEEK) %>%
-  unite(date, DAY:MINUTE, sep = "-", remove = FALSE) %>%
-  mutate(date = dmy_hm(date), 
-         yday = yday(date),
-         weekday = wday(date, label = TRUE, abbr = FALSE),
-         weekend = weekday %in% c("Saturday", "Sunday")) 
+data(atlas1006)
 
-accident %>% 
-  filter(!is.na(yday)) %>%
-  group_by(yday) %>%
-  summarize(accidents = n(),
-            weekend = first(weekend)) %>%
-  ggplot(aes(x = yday, y = accidents, color = weekend)) + 
-  geom_point(alpha = 0.5) + 
-  xlab("Day of the year in 2016") + 
-  ylab("# of fatal accidents") + 
-  theme_few() + 
-  geom_smooth(se = FALSE)
+diversity <- as_tibble(sample_data(atlas1006)) %>%
+  dplyr::select(gender, nationality, diversity, bmi_group)
+
+
+diversity %>% 
+  filter(!is.na(nationality) & !is.na(gender) & !is.na(bmi_group)) %>%
+  group_by(nationality, gender, bmi_group) %>%
+  summarize(mean_diveristy = mean(diversity, na.rm = TRUE),
+            sd_diveristy = sd(diversity, na.rm = TRUE)) %>%
+  ggplot(aes(x = nationality, y = mean_diveristy, color = gender)) +
+  geom_point(alpha = 0.25, size = 4) +
+  xlab("Nationality") +
+  ylab("Mean Diversity Score") +
+  facet_wrap(~bmi_group) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "top")
 ```
 
 ### Baby names
