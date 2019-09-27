@@ -60,7 +60,6 @@ add_one(number = -1)
 - Similarly, functions can output any type of R object
 - When defining a function, you can set default values for some of the parameters
 - You can explicitly specify the value to return from the function
-- There are ways to check for errors in the arguments a user inputs to the function
 
 For example, the following function inputs a data frame (`datafr`) and a one-element vector (`child_id`) and returns only rows in the data frame where it's `id` column matches `child_id`. It includes a default value for `datafr`, but not for `child_id`. 
 
@@ -133,42 +132,6 @@ subset_nepali <- function(datafr = nepali, child_id){
 }
 subset_nepali(child_id = "120011")
 ```
-
-You can use `stop` to stop execution of the function and give the user an error message. For example, the `subset_nepali` function will fail if the user inputs a data frame that does not have a column named "id":
-
-```{r eval = FALSE}
-subset_nepali(datafr = data.frame(wt = rnorm(10)),
-              child_id = "12011")
-```
-```
- Error: comparison (1) is possible only for 
- atomic and list types 
-```
-
-You can rewrite the function to stop if the input `datafr` does not have a column named "id":
-
-```{r eval = FALSE}
-subset_nepali <- function(datafr = nepali, child_id){
-  if(!("id" %in% colnames(datafr))){
-    stop("`datafr` must include a column named `id`")
-  }
-  datafr <- datafr %>%
-    filter(id == child_id)
-  return(datafr)
-}
-subset_nepali(datafr = data.frame(wt = rnorm(10)),
-              child_id = "12011")
-```
-
-```
-Error in subset_nepali(datafr = data.frame(wt = rnorm(10)),
-child_id = "12011") : 
-  `datafr` must include a column named `id`
-```
-
-The `stop` function is particularly important if the function would keep running with the wrong input, but would result in the wrong output. \bigskip
-
-You can also output warnings and messages using the functions `warning` and `message`.
 
 ---
 
