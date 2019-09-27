@@ -500,10 +500,16 @@ ggplot(nepali, aes(x = sex, y = ht, group = sex)) +
 
 ### Loading data from an R package
 
-The data we'll be using today is from a dataset called `worldcup` in the package `faraway`. Load that data so you can use it on your computer (note: you will need to load and install the `faraway` package to do this). Use the help file for the data to find out more about the dataset. Use some basic functions, like `head`, `tail`, `colnames`, `str`, and `summary` to check out the data a bit. See if you can figure out:
+The data we'll be using today is from a dataset called `worldcup` in the package
+`faraway`. Load that data so you can use it on your computer (note: you will
+need to load and install the `faraway` package to do this). Use the help file
+for the data to find out more about the dataset. Use some basic functions, like
+`head`, `tail`, `colnames`, `str`, and `summary` to check out the data a bit.
+See if you can figure out:
 
 - What variables are included in this dataset? (Check the column names.)
-- What class is each column currently? In particular, which are numbers and which are factors?
+- What class is each column currently? In particular, which are numbers and
+which are factors?
 
 #### Example R code:
 
@@ -516,7 +522,8 @@ library(faraway)
 data("worldcup")
 ```
 
-Check out the help file for the `worldcup` dataset to find out more about the data. (Note: Only datasets that are parts of packages will have help files.)
+Check out the help file for the `worldcup` dataset to find out more about the
+data. (Note: Only datasets that are parts of packages will have help files.)
 
 ```{r, eval = FALSE}
 ?worldcup
@@ -532,20 +539,121 @@ colnames(worldcup)
 summary(worldcup)
 ```
 
+
+### Exploring the data using simple statistics and `summarize`
+
+Next, try checking out the data using some basic commands for simple statistics,
+like `mean()`, `range()`, `max()`, and `min()`, as well as the `summarize` and
+`group_by` functions from the `dplyr` package. Try to answer the following
+questions:
+
+- What is the mean number of saves that players made? 
+- What is the mean number of saves just among the goalkeepers? 
+- Did players from any position other than goalkeeper make a save?
+- How many players were there in each position? 
+- How many forwards were there on each team? Which team had the most shots in total among all its forwards?
+- Which team(s) had the defender with the most tackles?
+
+If you have extra time, continuing using the ["Data Wrangling"
+cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+to come up with some other ideas for how you can explore this data, and write up
+and test code to do that.
+
+####  Example R code:
+
+To calculate the mean number of saves among all the players, use the `mean`
+function, either by itself or within a `summarize` call:
+
+```{r}
+mean(worldcup$Saves)
+
+worldcup %>%
+  summarize(mean_saves = mean(Saves))
+```
+
+There are a few ways to figure out the mean number of saves just among the
+goalkeepers. One way is to filter the dataset to only goalies and then use
+`summarize` to calculate the mean number of saves in this filtered subset of the
+data:
+
+```{r}
+worldcup %>%
+  filter(Position == "Goalkeeper") %>% 
+  summarize(mean_saves = mean(Saves))
+```
+
+The next question is if players from any position other than goalkeeper made a
+save. One way to figure this out is to group the data by position and then
+summarize the maximum number of saves. Based on this, it looks like there were
+not saves from players in any position except goalie:
+
+```{r}
+worldcup %>%
+  group_by(Position) %>% 
+  summarize(max_saves = max(Saves))
+```
+
+To figure out how many players were there in each position, you can can group
+the data by position and then use the `count` function from `dplyr` to count the
+number of observations in each group:
+
+```{r}
+worldcup %>%
+  group_by(Position) %>% 
+  count()
+```
+
+For the next set of questions, you can filter the data to only Forwards, then
+group by team to use `summarize` to count up the number of Forwards on each
+team. You can also use the same `summarize` call to figure out the total number
+of shots by all Forwards on each team. To figure out which team had the most
+shots in total among all its forwards, you can use the `arrange` function to
+re-order the data from the team with the most total shots to the least. It turns
+out that Uruguay had the most shots by forwards on its team, with a total of 46
+shots.
+
+```{r}
+worldcup %>% 
+  filter(Position == "Forward") %>% 
+  group_by(Team) %>% 
+  summarize(n_forwards = n(),
+            total_forward_shots = sum(Shots)) %>% 
+  arrange(desc(total_forward_shots))
+```
+
+To figure out which team(s) had the defender with the most tackles, you can
+filter to only defenders and then use the `top_n` function to identify the
+players with the top number of tackles. It turns out these players were on the
+England, Germany, and Chile teams.
+
+```{r}
+worldcup %>% 
+  filter(Position == "Defender") %>% 
+  top_n(n = 1, wt = Tackles)
+```
+
 ### Exploring the data using logical statements
 
-Next, try checking out the data using logical statements and some of the `dplyr` code we covered last week (`filter` and `arrange`, for example), to help you answer the following questions:
+Next, try checking out the data using logical statements and some of the `dplyr`
+code we covered last week (`filter` and `arrange`, for example), to help you
+answer the following questions:
 
 - What is the range of time that players spent in the game? 
 - Which player or players played the most time in this World Cup? 
 - How many players are goalies in this dataset?
-- Create a new R object named `brazil_players` that is limited to the players in this dataset that are (1) on the Brazil team and (2) not goalies. 
+- Create a new R object named `brazil_players` that is limited to the players in
+this dataset that are (1) on the Brazil team and (2) not goalies.
 
-If you have additional time, look over the "Data Manipulation" cheatsheet available in RStudio's Help section. Make a list of questions you would like to figure out from this example data, and start to plan out how you might be able to answer those questions using functions from `dplyr`. Write the related code and see if it works. 
+If you have additional time, look over the "Data Manipulation" cheatsheet
+available in RStudio's Help section. Make a list of questions you would like to
+figure out from this example data, and start to plan out how you might be able
+to answer those questions using functions from `dplyr`. Write the related code
+and see if it works.
 
 #### Example R code:
 
-To figure out the range of time, you could use `arrange` twice, once with `desc` and once without, to figure out the maximum and minimum values
+To figure out the range of time, you could use `arrange` twice, once with `desc`
+and once without, to figure out the maximum and minimum values
 
 ```{r}
 # Minimum time
@@ -560,7 +668,11 @@ arrange(worldcup, desc(Time)) %>%
 ```
 
 
-Later, we will learn about the `n()` function, which you can use within piped code to represent the total number of rows in the dataframe. If you'd like to get the full range of the `Time` column in one pipeline of code, you can use `n()` as a reference within `slice`, to pull both the first and last rows of the dataframe: 
+Later, we will learn about the `n()` function, which you can use within piped
+code to represent the total number of rows in the dataframe. If you'd like to
+get the full range of the `Time` column in one pipeline of code, you can use
+`n()` as a reference within `slice`, to pull both the first and last rows of the
+dataframe:
 
 ```{r}
 arrange(worldcup, Time) %>% 
@@ -568,13 +680,24 @@ arrange(worldcup, Time) %>%
   slice(c(1, n()))
 ```
 
-Finally, as a further hint at things you'll learn later in the lecture, you could also use `min()` and `max()` functions to get the minimum and maximum values of the `Time` column in the `worldcup` dataframe (remember that you can use the `dataframe$column_name` notation to pull a column from a dataframe). Similarly, you could use `range()` to find out the range of time these players played in the World Cup. 
+Finally, you could also use `min()` and `max()` functions to get the minimum and
+maximum values of the `Time` column in the `worldcup` dataframe (remember that
+you can use the `dataframe$column_name` notation to pull a column from a
+dataframe). Similarly, you there is a function called `range()` you could use to
+find out the range of time these players played in the World Cup.
 
 ```{r}
 range(worldcup$Time)
 ```
 
-To figure out which player or players played for the most time, there are a few approaches you can take. Here I'm showing two: (1) using `filter` from the `dplyr` package to filter down to rows where where the `Time` for that row equals the maximum play time that you determined from an earlier task (570 minutes); and (2) using the `top_n` function from `dplyr` to pick out the rows with the maximum value (`n = 1`) of the `Time` column (see the help file for `top_n` if you are unfamiliar with this function; we have not covered it in class yet). 
+To figure out which player or players played for the most time, there are a few
+approaches you can take. Here I'm showing two: (1) using `filter` from the
+`dplyr` package to filter down to rows where where the `Time` for that row
+equals the maximum play time that you determined from an earlier task (570
+minutes); and (2) using the `top_n` function from `dplyr` to pick out the rows
+with the maximum value (`n = 1`) of the `Time` column (see the help file for
+`top_n` if you are unfamiliar with this function; we have not covered it in
+class yet).
 
 ```{r}
 worldcup %>%
@@ -584,7 +707,13 @@ worldcup %>%
   top_n(n = 1, wt = Time)
 ```
 
-*Note*: You may have noticed that you lost the players names when you did this using the `dplyr` pipechain. That's because `dplyr` functions convert the data to a dataframe format that does not include rownames. If you want to keep players' names, you can use a function from the `tibble` package called `rownames_to_column` to move those names from the rownames of the data into a column in the dataframe. Use the `var` parameter of this function to specify what you want the new column to be named. For example:
+*Note*: You may have noticed that you lost the players names when you did this
+using the `dplyr` pipechain. That's because `dplyr` functions convert the data
+to a dataframe format that does not include rownames. If you want to keep
+players' names, you can use a function from the `tibble` package called
+`rownames_to_column` to move those names from the rownames of the data into a
+column in the dataframe. Use the `var` parameter of this function to specify
+what you want the new column to be named. For example:
 
 ```{r}
 library(tibble)
@@ -593,14 +722,19 @@ worldcup %>%
   filter(Time == 570)
 ```
 
-There are a few ways to figure out how many players are goalies in this dataset. One way is to use `sum()` on a logical vector of whether the player's position is "Goalkeeper": 
+There are a few ways to figure out how many players are goalies in this dataset.
+One way is to use `sum()` on a logical vector of whether the player's position
+is "Goalkeeper":
 
 ```{r}
 is_goalie <- worldcup$Position == "Goalkeeper"
 sum(is_goalie)
 ```
 
-Another way is to use `filter` from `dplyr`, along with a logical statement, to filter the data to only players with the position of "Goalkeeper", and then pipe that filtered subset into the `nrow` function to count the number of rows in the filtered dataframe:
+Another way is to use `filter` from `dplyr`, along with a logical statement, to
+filter the data to only players with the position of "Goalkeeper", and then pipe
+that filtered subset into the `nrow` function to count the number of rows in the
+filtered dataframe:
 
 ```{r}
 worldcup %>% 
@@ -608,7 +742,10 @@ worldcup %>%
   nrow()
 ```
 
-Next, create a new R object named `brazil_players` that is limited to the players in this dataset that are (1) on the Brazil team and (2) not goalies. You can use a logical statement to filter to rows that meet both these conditions by joing two logical statements in the `filter` function with an `&`:
+Next, create a new R object named `brazil_players` that is limited to the
+players in this dataset that are (1) on the Brazil team and (2) not goalies. You
+can use a logical statement to filter to rows that meet both these conditions by
+joing two logical statements in the `filter` function with an `&`:
 
 ```{r}
 brazil_players <- worldcup %>% 
@@ -616,72 +753,6 @@ brazil_players <- worldcup %>%
 head(brazil_players)
 ```
 
-### Exploring the data using simple statistics and `summarize`
-
-Next, try checking out the data using some basic commands for simple statistics, like `mean()`, `range()`, `max()`, and `min()`, as well as the `summarize` and `group_by` functions from the `dplyr` package. Try to answer the following questions:
-
-- What is the mean number of saves that players made? 
-- What is the mean number of saves just among the goalkeepers? 
-- Did players from any position other than goalkeeper make a save?
-- How many players were there in each position? 
-- How many forwards were there on each team? Which team had the most shots in total among all its forwards?
-- Which team(s) had the defender with the most tackles?
-
-If you have extra time, continuing using the "Data Wrangling" cheatsheet to come up with some other ideas for how you can explore this data, and write up and test code to do that. 
-
-####  Example R code:
-
-To calculate the mean number of saves among all the players, use the `mean` function, either by itself or within a `summarize` call:
-
-```{r}
-mean(worldcup$Saves)
-
-worldcup %>%
-  summarize(mean_saves = mean(Saves))
-```
-
-There are a few ways to figure out the mean number of saves just among the goalkeepers. One way is to filter the dataset to only goalies and then use `summarize` to calculate the mean number of saves in this filtered subset of the data: 
-
-```{r}
-worldcup %>%
-  filter(Position == "Goalkeeper") %>% 
-  summarize(mean_saves = mean(Saves))
-```
-
-The next question is if players from any position other than goalkeeper made a save. One way to figure this out is to group the data by position and then summarize the maximum number of saves. Based on this, it looks like there were not saves from players in any position except goalie:
-
-```{r}
-worldcup %>%
-  group_by(Position) %>% 
-  summarize(max_saves = max(Saves))
-```
-
-To figure out how many players were there in each position, you can can group the data by position and then use the `n` function from `dplyr` to count the number of observations in each group: 
-
-```{r}
-worldcup %>%
-  group_by(Position) %>% 
-  summarize(n_players = n())
-```
-
-For the next set of questions, you can filter the data to only forwards, then group by team to use `summarize` to count up the number of forwards on each team. You can also use the same `summarize` call to figure out the total number of shots by all forwards on each team. To figure out which team had the most shots in total among all its forwards, you can use the `arrange` function to re-order the data from the team with the most total shots to the least. It turns out that Uruguay had the most shots by forwards on its team, with a total of 46 shots.
-
-```{r}
-worldcup %>% 
-  filter(Position == "Forward") %>% 
-  group_by(Team) %>% 
-  summarize(n_forwards = n(),
-            total_forward_shots = sum(Shots)) %>% 
-  arrange(desc(total_forward_shots))
-```
-
-To figure out which team(s) had the defender with the most tackles, you can filter to only defenders and then use the `top_n` function to identify the players with the top number of tackles. It turns out these players were on the England, Germany, and Chile teams.
-
-```{r}
-worldcup %>% 
-  filter(Position == "Defender") %>% 
-  top_n(n = 1, wt = Tackles)
-```
 
 ### Exploring the data using basic plots #1
 
