@@ -575,6 +575,44 @@ For more on these patterns, see:
 - Chapter 14 of R For Data Science
 - http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
 
+## Tidy select
+
+There are [`tidyverse`](https://dplyr.tidyverse.org/reference/select.html) functions to make selecting variables more straightforwards. You can call these functions as arguments of the `select` function to streamline variable selection. Examples include: `starts_with()`, `ends_with()`, and `contains()`.
+
+Here we use `starts_with("t")` to select all variables that begin with `t`.
+
+```{r}
+titanic_train %>%
+  select(starts_with("t")) %>%
+  slice(1:3)
+```
+
+The are also tidyverse functions that allow us to easily operate on a selection of variables. These functions are called [`scoped varients`](https://dplyr.tidyverse.org/reference/scoped.html). You can identify these functions by these `_all`, `_at`, and `_if` suffixes.
+
+Here we use `select_if` to select all the numeric variables in a dataframe and covert their names to lower case (a handy function to tidy the variable names).
+
+```{r}
+titanic_train %>%
+  select_if(is.numeric, tolower) %>%
+  slice(1:3)
+```
+
+The `select_if` function takes the following form.
+
+```{r eval = FALSE}
+## Generic code
+new_df <- select_if(old_df,
+                    .predicate [selects the variable to keep], 
+                    .funs = [the function to apply to the selected columns])
+```
+
+Here we use `select_at` to select all the variables that contain `ss` in their name and then covert their names to lower case (a handy function to tidy the variable names).
+
+```{r}
+titanic_train %>%
+  select_at(vars(contains("ss")), tolower) %>%
+  slice(1:3)
+```
 
 ## In-course exercise 
 
@@ -937,41 +975,42 @@ ggplot(VADeaths, aes(x = age, y = mort_rate,
 
 There is no example R code for this -- try to figure out the code yourselves. We will go over a solution in class. You may find the RStudio Data Wrangling cheatsheet helpful for remembering which tidyverse functions do what. 
 
-### Exploring Fatality Analysis Reporting System (FARS) data
+### Exploring taxonomic profiling data
 
-- Explore the interactive visualization at http://metrocosm.com/10-years-of-traffic-accidents-mapped.html. This was created by Max Galka using this dataset. 
-- Go to [FARS web page](http://www.nhtsa.gov/FARS). We want to get the raw data on fatal accidents. Navigate this page to figure out how you can get this raw data for the whole county for 2016 (hint: you'll need to access the raw data using FTP, and you may have more success with some web browsers, like Chrome, than others). Save 2016 "National" data (csv format) to your computer. What is the structure of how this data is saved (e.g., directory structure, file structure)?
-- On the [FARS web page](http://www.nhtsa.gov/FARS), find the documentation describing this raw data. Look through both this documentation (*2016 Crash Report Sampling System (CRSS):Analytical User's Manual*) and the raw files you downloaded to figure out what information is included in the data. 
-- Read the `accident.csv` file for 2016 into R (this is one of the files you'll get if you download the raw data for 2016). Use the documentation to figure out what each column represents. 
-- Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format. (Hint: Functions from the `lubridate` package will be very helpful, including `yday` and `wday`).
-- Discuss which of the variables in this dataset could be used to merge the dataset with other appropriate data, either other datasets in the FARS raw data, or outside datasets. 
+- Learn about bioconductor at [bioconductor.org](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html). Bioconductor provides opensource software for bioinfomatics. The Bioconbductor provides an R package called `microbiome` that includes tools for exploring and analysing microbiome profiling data. We want to explore a dataset on genus-level microbiota profiling (atlas1006). Navigate this page to figure out how you can get this example raw data (hint: you'll need to follow the installation instructions on the bioconductor website, which are a little different compared to a regualr R package).
+- Create an object in your workspace containing the `atlas1006` data. How is the data structured in the object you just created?
+- On the [microbiome page](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html), find the documentation describing the `atlas1006` data. Look through this documentation to figure out what information is included in the data.
+- Use the `str` function to take a look at the structure of the `atlas1006` data. How many slots does the object contain?
+- Extract ...
+- Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format.
 - Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I'd like you to try to figure it out yourselves first.
+- Discuss which of the variables in this dataset could be used to merge the extracted with ...
 
-```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3}
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
 library(tidyverse)
 library(lubridate)
 library(ggthemes)
+library(microbiome)
 
-accident <- read_csv("data/accident.csv") %>%
-  select(DAY:MINUTE) %>%
-  select(-DAY_WEEK) %>%
-  unite(date, DAY:MINUTE, sep = "-", remove = FALSE) %>%
-  mutate(date = dmy_hm(date), 
-         yday = yday(date),
-         weekday = wday(date, label = TRUE, abbr = FALSE),
-         weekend = weekday %in% c("Saturday", "Sunday")) 
+data(atlas1006)
 
-accident %>% 
-  filter(!is.na(yday)) %>%
-  group_by(yday) %>%
-  summarize(accidents = n(),
-            weekend = first(weekend)) %>%
-  ggplot(aes(x = yday, y = accidents, color = weekend)) + 
-  geom_point(alpha = 0.5) + 
-  xlab("Day of the year in 2016") + 
-  ylab("# of fatal accidents") + 
-  theme_few() + 
-  geom_smooth(se = FALSE)
+diversity <- as_tibble(sample_data(atlas1006)) %>%
+  dplyr::select(gender, nationality, diversity, bmi_group)
+
+
+diversity %>% 
+  filter(!is.na(nationality) & !is.na(gender) & !is.na(bmi_group)) %>%
+  group_by(nationality, gender, bmi_group) %>%
+  summarize(mean_diveristy = mean(diversity, na.rm = TRUE),
+            sd_diveristy = sd(diversity, na.rm = TRUE)) %>%
+  ggplot(aes(x = nationality, y = mean_diveristy, color = gender)) +
+  geom_point(alpha = 0.25, size = 4) +
+  xlab("Nationality") +
+  ylab("Mean Diversity Score") +
+  facet_wrap(~bmi_group) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "top")
 ```
 
 ### Baby names

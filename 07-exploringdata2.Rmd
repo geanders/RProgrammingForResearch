@@ -65,7 +65,7 @@ We're missing the dates without a fatal crash, so let's add those. First, create
 with all dates in 2016:
 
 ```{r}
-all_dates <- data_frame(date = seq(ymd("2016-01-01"), 
+all_dates <- tibble(date = seq(ymd("2016-01-01"), 
                                    ymd("2016-12-31"), by = 1))
 all_dates %>% 
   slice(1:5)
@@ -149,7 +149,7 @@ foo
 In certain situations, you might want to work with a matrix instead of a data frame (for example, in cases where you were concerned about speed -- a matrix is more memory efficient than the corresponding data frame). If you want to convert a data frame to a matrix, you can use the `as.matrix` function:
 
 ```{r cad}
-foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
+foo <- tibble(col_1 = 1:2, col_2 = 3:4,
                   col_3 = 5:6, col_4 = 7:8,
                   col_5 = 9:10)
 (foo <- as.matrix(foo))
@@ -300,7 +300,7 @@ You will use this type of structure in R fo a lot of different function calls, i
 There are some conventions that can be used in R formulas. Common ones include:
 
 ```{r echo = FALSE}
-for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
+for_convs <- tibble(Convention = c("`I()`", "`:`", "`*`", "`.`",
                                        "`1`", "`-`"),
                         Meaning = c("evaluate the formula inside `I()` before fitting (e.g., `I(x1 + x2)`)",
                                     "fit the interaction between `x1` and `x2` variables",
@@ -318,7 +318,7 @@ To fit a linear model, you can use the function `lm()`. This function is part of
 
 ```{r, echo=FALSE}
 library(forcats)
-nepali_fct <- as_data_frame(nepali) %>%
+nepali_fct <- as_tibble(nepali) %>%
               mutate(sex = fct_recode(factor(sex), Male = "1", Female = "2"))
 ```
 
@@ -363,7 +363,7 @@ is.list(mod_a)
 There are a number of functions that you can apply to an `lm` object. These include:
 
 ```{r echo = FALSE}
-mod_objects <- data.frame(Function = c("`summary`", "`coefficients`", 
+mod_objects <- tibble(Function = c("`summary`", "`coefficients`", 
                                    "`fitted`",
                                    "`plot`", "`residuals`"),
                           Description = c("Get a variety of information on the model, including coefficients and p-values for the coefficients",
@@ -508,7 +508,7 @@ coef(mod_a)
 Unlike the `lm` function, however, the `glm` function also allows you to fit other model types, including logistic and Poisson models. You can specify the model type using the `family` argument to the `glm` call:
 
 ```{r echo = FALSE}
-glm_types <- data.frame(type = c("Linear", "Logistic", "Poisson"),
+glm_types <- tibble(type = c("Linear", "Logistic", "Poisson"),
                         opt = c("`family = gaussian(link = 'identity')`",
                                 "`family = binomial(link = 'logit')`", 
                                 "`family = poisson(link = 'log')`"))
@@ -627,7 +627,7 @@ Here is a vector with names in our class:
 
 ```{r}
 library(stringr)
-student_list <- data_frame(name = c("Aeriel", "Rebecca", "Grant",
+student_list <- tibble(name = c("Aeriel", "Rebecca", "Grant",
                                     "Amy", "Jessy", "Alyssa",
                                     "Camron", "Anastasia", "Kyle",
                                     "Ana", "Amanda", "Kathleen", 
@@ -889,77 +889,6 @@ tidy(mod_3, conf.int = TRUE) %>%
 
 ---
 
-### Exploring Fatality Analysis Reporting System (FARS) data
-
-- Visit http://metrocosm.com/10-years-of-traffic-accidents-mapped.html and explore the interactive visualization created by Max Galka using this public dataset on US fatal motor vehicle accidents.
-- Go to [FARS web page](http://www.nhtsa.gov/FARS). We want to get the raw data on fatal accidents. Navigate this page to figure out how you can get this raw data for the whole county for 2015 (hint: you'll need to access the raw data using FTP, and you may have more success with some web browsers that others). Save 2015 "National" data (csv format) to your computer. What is the structure of how this data is saved (e.g., directory structure, file structure)?
-- On the [FARS web page](http://www.nhtsa.gov/FARS), find the documentation describing this raw data. (The relevant documentation file is called *Fatality Analysis Reporting System (FARS) Analytical User's Manual 1975-2015*) Look through both this documentation and the raw files you downloaded to figure out what information is included in the data. 
-- Read the `accident.csv` file for 2015 into R (this is one of the files you'll get if you download the raw data for 2015). Use the documentation to figure out what each column represents. 
-- Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format. (Hint: Functions from the `lubridate` package will be very helpful, including `yday` and `wday`).
-- Discuss which of the variables in this dataset could be used to merge the dataset with other appropriate data, either other datasets in the FARS raw data, or outside datasets. 
-- Try to write the code to create the plot below. This will include some code for cleaning the data and some code for plotting. There is an example answer below, but I'd like you to try to figure it out yourselves first.
-
-```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
-library(tidyverse)
-library(lubridate)
-library(ggthemes)
-
-accident <- read_csv("data/accident.csv") %>%
-  select(DAY:MINUTE) %>%
-  select(-DAY_WEEK) %>%
-  unite(date, DAY:MINUTE, sep = "-", remove = FALSE) %>%
-  mutate(date = dmy_hm(date), 
-         yday = yday(date),
-         weekday = wday(date, label = TRUE, abbr = FALSE),
-         weekend = weekday %in% c("Saturday", "Sunday")) 
-
-accident %>% 
-  filter(!is.na(yday)) %>%
-  group_by(yday) %>%
-  summarize(accidents = n(),
-            weekend = first(weekend)) %>%
-  ggplot(aes(x = yday, y = accidents, color = weekend)) + 
-  geom_point(alpha = 0.5) + 
-  xlab("Day of the year in 2015") + 
-  ylab("# of fatal accidents") + 
-  theme_few() + 
-  geom_smooth(se = FALSE)
-```
-
----
-
-#### Example R code
-
-Here is example code for the section above:
-
-```{r check12, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3, fig.align = "center"}
-library(tidyverse)
-library(lubridate)
-library(ggthemes)
-
-accident <- read_csv("data/accident.csv") %>%
-  select(DAY:MINUTE) %>%
-  select(-DAY_WEEK) %>%
-  unite(date, DAY:MINUTE, sep = "-", remove = FALSE) %>%
-  mutate(date = dmy_hm(date), 
-         yday = yday(date),
-         weekday = wday(date, label = TRUE, abbr = FALSE),
-         weekend = weekday %in% c("Saturday", "Sunday")) 
-
-accident %>% 
-  filter(!is.na(yday)) %>%
-  group_by(yday) %>%
-  summarize(accidents = n(),
-            weekend = first(weekend)) %>%
-  ggplot(aes(x = yday, y = accidents, color = weekend)) + 
-  geom_point(alpha = 0.5) + 
-  xlab("Day of the year in 2015") + 
-  ylab("# of fatal accidents") + 
-  theme_few() + 
-  geom_smooth(se = FALSE)
-```
-
----
 
 <!-- ### Using a function and `purrr` to create state-specific plots -->
 
