@@ -244,6 +244,14 @@ Let's look at the list object from the statistical test we ran for Las Vegas:
 str(vegas_test)
 ```
 
+Using `str` to print out the list's structure doesn't produce the easiest to digest output. We can use the `???` function from the `listviewer` package to create a widget in the `viewer` pane to more esily explore our list.
+
+```{r, eval=FALSE}
+library(listviewer)
+jsonedit(vegas_test)
+```
+
+
 We can pull out an element using the `$` notation: 
 
 ```{r}
@@ -1180,7 +1188,7 @@ accident %>%
 <!--   summarize(accidents = n()) -->
 <!-- ``` -->
 
-<!-- As a note, you may want to create a table (for example, for a report) from the data at this stage. You could use `unite` then `spread` to do this pretty easily: -->
+<!-- As a note, you may want to create a table (for example, for a report) from the data at this stage. You could use `unite` then `pivot_wider` to do this pretty easily: -->
 
 <!-- ```{r check5} -->
 <!-- accident %>% -->
@@ -1192,7 +1200,7 @@ accident %>%
 <!--   summarize(accidents = n()) %>%  -->
 <!--   ungroup() %>%  -->
 <!--   unite(category, daytime, drunk_dr, sep = " / ") %>%  -->
-<!--   spread(key = category, value = accidents) %>%  -->
+<!--   pivot_wider(names_from = category, values_from = accidents) %>%  -->
 <!--   knitr::kable() -->
 <!-- ``` -->
 

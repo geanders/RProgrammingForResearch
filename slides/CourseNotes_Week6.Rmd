@@ -149,9 +149,9 @@ The functions include:
 In the examples, I'll use two datasets, `x` and `y`. Both datasets include the column `course`. The other column in `x` is `grade`, while the other column in `y` is `day`. Observations exist for courses `x` and `y` in both datasets, but for `w` and `z` in only one dataset.
 
 ```{r}
-x <- data.frame(course = c("x", "y", "z"),
+x <- tibble(course = c("x", "y", "z"),
                 grade = c(90, 82, 78))
-y <- data.frame(course = c("w", "x", "y"),
+y <- tibble(course = c("w", "x", "y"),
                 day = c("Tues", "Mon / Fri", "Tue"))
 ```
 
@@ -201,10 +201,10 @@ full_join(x, y)
 For some more complex examples of using join, I'll use these example datasets:
 
 ```{r echo = FALSE}
-x <- data_frame(course = c("x", "x", "y", "z"),
+x <- tibble(course = c("x", "x", "y", "z"),
                 grade = c(92, 90, 82, 78),
                 student = c("a", "b", "a", "b"))
-y <- data_frame(class = c("w", "x", "x", "y"),
+y <- tibble(class = c("w", "x", "x", "y"),
                 day = c("Tues", "Mon / Fri", "Mon / Fri", "Tue"), 
                 student = c("a", "a", "b", "a"))
 x
@@ -240,25 +240,26 @@ full_join(x, y, by = list(x = c("course", "student"),
 
 We'll take a break now to do the In-Course Exercise (Section 6.6.2).
 
-# Gathering
+# Longer and Wider data
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
-There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wide and long data: `gather` and `spread`. \bigskip
+There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wide and long data: `pivot_longer` and `pivot_wider`. \bigskip
 
 Here is a description of these two functions:
 
-- `gather`: Take several columns and gather them into two columns, one with the former column names, and one with the former cell values
-- `spread`: Take two columns and spread them into multiple columns. Column names for the new columns will come from one of the two original columns, while cell values will come from the other of the original columns.
+- `pivot_longer`: Takes several columns and pivots them down into two columns. One of the new columns contains the former column names and the other contains the former cell values.
+- `pivot_wider`: Takes two columns and pivots them up into multiple columns. Column names for the new columns will come from one column and the cell values from the other.
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
-The following examples are from `tidyr` help files and show the effects of gathering and spreading a dataset. \bigskip
+The following examples are show the effects of making a dataset longer or wider.
+\bigskip
 
-Here is some wide data:
+Here is some simulated wide data:
 
 ```{r, include = FALSE}
-wide_stocks <- data.frame(
+wide_stocks <- tibble(
   time = as.Date('2009-01-01') + 0:9,
   X = rnorm(10, 0, 1),
   Y = rnorm(10, 0, 2),
@@ -270,81 +271,87 @@ wide_stocks <- data.frame(
 wide_stocks[1:3, ]
 ```
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
-In the `wide_stocks` dataset, there are separate columns for three different stocks (`X`, `Y`, and `Z`). Each cell gives the value for a certain stock on a certain day. \bigskip
+In the `wide_stocks` dataset, there are separate columns for three different stocks (`X`, `Y`, and `Z`). Each cell gives the value for a certain stock on a certain day. This data isn't "tidy", because the identify of the stock (`X`, `Y`, or `Z`) is a variable, and you'll probably want to include it as a variable in modeling. 
 
-This data isn't "tidy", because the identify of the stock (`X`, `Y`, or `Z`) is a variable, and you'll probably want to include it as a variable in modeling. 
 
 ```{r}
 wide_stocks[1:3, ]
 ```
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
-If you want to convert the dataframe to have all stock values in a single column, you can use `gather` to convert wide data to long data: 
+If you want to convert the dataframe to have all stock values in a single column, you can use `pivot_longer` to convert wide data to long data: 
 
 ```{r}
-long_stocks <- gather(wide_stocks, key = stock,
-                      value = price, -time)
+long_stocks <- pivot_longer(data = wide_stocks,
+                            cols = -time,
+                            names_to = "stock",
+                            values_to = "price")
 long_stocks[1:5, ]
 ```
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
-In this "long" dataframe, there is now one column that gives the identify of the stock (`stock`) and another column that gives the price of that stock that day (`price`):
+In this "longer" dataframe, there is now one column that gives the identify of the stock (`stock`) and another column that gives the price of that stock that day (`price`):
 
 ```{r}
 long_stocks[1:5, ]
 ```
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
-The format for a `gather` call is: 
+The format for a `pivots_longer` call is: 
 
 ```{r eval = FALSE}
 ## Generic code
-new_df <- gather(old_df,
-                 key = [name of column with old column names],
-                 value = [name of column with cell values],
-                 - [name of column(s) you want to 
-                    exclude from gather])
+new_df <- pivot_longer(old_df,
+                       cols = [name(s) of the columns you want to make longer],
+                       names_to = [name of new column to store the old column names],
+                       values_to = [name of new column to store the old values])
 ```
 
-Three important notes: 
+Three important notes:
 
-- Everything is gathered into one of two columns-- one column with the old column names, and one column with the old cell values
-- With the `key` and `value` arguments, you are just providing column names for the two columns that everything's gathered into.
-- If there is a column you don't want to gather (`date` in the example), use `-` to exclude it in the `gather` call.
+- Everything is pivoted into one of two columns -- one column with the old column names, and one column with the old cell values
+- With the `names_to` and `values_to` arguments, you are just providing column names for the two columns that everything's pivoted into.
+- If there is a column you don't want to include in the pivot (`date` in the example), use `-` to exclude it in the `cols` argument.
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
 Notice how easy it is, now that the data is gathered, to use `stock` for aesthetics of faceting in a `ggplot2` call:
+
+Notice how easy it is, now that the data is longer, to use `stock` for aesthetics of faceting in a `ggplot2` call:
 
 ```{r fig.width = 7, fig.height = 2.5}
 ggplot(long_stocks, aes(x = time, y = price)) + 
   geom_line() + 
-  facet_grid(. ~ stock)
+  facet_grid(. ~ stock) +
+  theme_bw()
 ```
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
-If you have data in a "long" format and would like to spread it out, you can use `spread` to do that:
+If you have data in a "longer" format and would like to make it "wider", you can use `pivot_wider` to do that:
 
 ```{r}
-stocks <- spread(long_stocks, key = stock, value = price)
+stocks <- pivot_wider(long_stocks,
+                      names_from = "stock",
+                      values_from = price)
 stocks[1:5, ]
 ```
 
-Notice that this reverses the action of `gather`. 
+Notice that this reverses the action of `pivot_longer`.
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
-"Spread" data is typically not tidy, so you often won't want to use `spread` when you are preparing data for analysis. However, `spread` can be very helpful in creating clean tables for final reports and presentations. \bigskip 
+The "wider" your data the less likely it is to be tidy, so won't use `pivot_wider` frequently when you are preparing data for analysis. However, `pivot_wider` can be very helpful in creating tables for final reports and presentations.
+\bigskip 
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
-For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use `spread` to rearrange the final summary to create an attractive table. 
+For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use `pivot_wider` to rearrange the final summary to create an attractive table.
 
 ```{r}
 stock_summary <- long_stocks %>% 
@@ -353,21 +360,24 @@ stock_summary <- long_stocks %>%
 stock_summary
 ```
 
-## `gather` / `spread`
+## `pivot_longer` / `pivot_wider`
 
 ```{r}
 stock_summary %>%
   mutate("Mean (Std.dev.)" = paste0(round(mean, 2), " (",
                                     round(sd, 2), ")")) %>%
-  select(- mean, - sd) %>%
-  gather(key = "Statistic", value = "Value", -stock) %>%
-  spread(key = stock, value = Value) %>%
+  dplyr::select(- mean, - sd) %>%
+  mutate(N = as.character(N)) %>% # might be able to deal with this in pivot_longer call
+  pivot_longer(cols = -stock, names_to = "Statistic", values_to = "Value") %>%
+  pivot_wider(names_from = "stock", values_from = "Value") %>%
   knitr::kable()
 ```
 
 ## Further reading
 
-Chapters 12 and 13 of "R for Data Science" are an excellent supplemental resource if you'd like extra practice on tidy data, gathering / spreading, and joining different datasets. 
+Chapters 12 and 13 of "R for Data Science" are an excellent supplemental resource if you'd like extra practice on tidy data, pivoting, and joining different datasets.
+
+*note at this time "R for Data Science" uses the `gather` and `spread` instead of `pivot_*`. These are older functions, you should use `pivot_*`.
 
 # More with `dplyr`
 
@@ -393,7 +403,7 @@ Some other useful `dplyr` functions to add to your toolbox are:
 Sometimes, you want to take one column and split it into two columns. For example, you may have information for two variables in one column: 
 
 ```{r echo = FALSE}
-ebola <- data_frame(ebola_key = c("Liberia_Cases", "Liberia_Deaths", 
+ebola <- tibble(ebola_key = c("Liberia_Cases", "Liberia_Deaths", 
                               "Spain_Cases", "Spain_Deaths"))
 ```
 
@@ -443,7 +453,7 @@ You can use the `fill` argument (`fill = "right"` or `fill = "left"`) to control
 For example, say your original column looked like this:
 
 ```{r echo = FALSE}
-ebola <- data_frame(ebola_key = c("Liberia_Cases", "Liberia", 
+ebola <- tibble(ebola_key = c("Liberia_Cases", "Liberia", 
                               "Spain_Cases", "Spain_Deaths"))
 ebola
 ```
@@ -467,7 +477,7 @@ We'll take a break now to do the In-Course Exercise (Section 6.6.3).
 The `unite` function does the reverse of the `separate` function: it lets you join several columns into a single column. For example, say you have data where year, month, and day are split into different columns: 
 
 ```{r echo = FALSE}
-date_example <- data_frame(year = 2016, month = 10, day = 1:4)
+date_example <- tibble(year = 2016, month = 10, day = 1:4)
 date_example
 ```
 
@@ -560,9 +570,9 @@ I'll show examples with the `x` and `y` dataframes defined before:
 \small
 
 ```{r echo = 5:6}
-x <- data.frame(course = c("x", "y", "z"),
+x <- tibble(course = c("x", "y", "z"),
                 grade = c(90, 82, 78))
-y <- data.frame(course = c("w", "x", "y"),
+y <- tibble(course = c("w", "x", "y"),
                 day = c("Tues", "Mon / Fri", "Tue"))
 x
 y
@@ -622,7 +632,7 @@ To fix this, we need to convert the row names into a new column. We can do this 
 ```{r echo = 2:4}
 library(tibble)
 VADeaths %>%
-  as.data.frame() %>% ## Convert from matrix to dataframe
+  as_tibble() %>% ## Convert from matrix to dataframe
   rownames_to_column(var = "age")
 ```
 
@@ -634,7 +644,7 @@ Gather the data to convert column names to a new column:
 
 ```{r}
 VADeaths %>%
-  as.data.frame() %>% 
+  as_tibble() %>% 
   rownames_to_column(var = "age") %>%
   gather(key = gender_loc, value = mort_rate, - age) %>%
   slice(1:4)
@@ -648,7 +658,7 @@ Separate the column into two separate columns for "gender" and "loc" (rural / ur
 
 ```{r}
 VADeaths %>%
-  as.data.frame() %>% 
+  as_tibble() %>% 
   rownames_to_column(var = "age") %>%
   gather(key = gender_loc, value = mort_rate, - age) %>%
   separate(col = gender_loc, into = c("gender", "loc"),
@@ -662,7 +672,7 @@ Now that the data is tidy, it's much easier to plot:
 
 ```{r echo = FALSE}
 VADeaths <- VADeaths %>%
-  as.data.frame() %>% 
+  as_tibble() %>% 
   rownames_to_column(var = "age") %>%
   gather(key = gender_loc, value = mort_rate, - age) %>%
   separate(col = gender_loc, into = c("loc", "gender"),
@@ -678,35 +688,22 @@ ggplot(VADeaths, aes(x = age, y = mort_rate,
   theme_minimal()
 ```
 
-# FARS data
+# Bioconductor software
 
-## FARS data
+## Biodiversity data
 
-The US Department of Transportation runs the Fatality Analysis Reporting System (FARS), which gathers data on all fatal motor vehicle accidents. Here is a description from their documentation:
+Bioconductor provides opensource software for bioinfomatics. Bioconductor provides an R package called `microbiome` that includes tools for exploring and analysing microbiome profiling data. The package provides sample datasets.
 
-- Motor vehicle on a public road
-- Resulted in a death within 30 days of the crash
-- Includes crashes in the 50 states, DC, and Puerto Rico
+## Biodiversity data
 
-## FARS data
-
-```{r echo = FALSE, out.width = "\\textwidth"}
-knitr::include_graphics("../figures/FARSdata.png")
+```{r echo = FALSE, out.width = "0.75\\textwidth"}
+knitr::include_graphics("../figures/bioconductor.png")
 ```
 
-Source: Max Galka 
+Source: Ramos et al. Cancer Research 2017.
 
-http://metrocosm.com/10-years-of-traffic-accidents-mapped.html
+https://cancerres.aacrjournals.org/content/77/21/e39
 
-## FARS data
-
-```{r echo = FALSE, out.width = "\\textwidth"}
-knitr::include_graphics("../figures/FARSdata2.png")
-```
-
-Source: Max Galka 
-
-http://metrocosm.com/10-years-of-traffic-accidents-mapped.html
 
 ## In-course exercise
 
@@ -1094,7 +1091,7 @@ titanic_train %>%
 Some useful regular expression operators include: 
 
 ```{r echo = FALSE}
-reg_exp <- data_frame("Operator" = c(".",
+reg_exp <- tibble("Operator" = c(".",
                                      "*",
                                      "*?",
                                      "+",
@@ -1111,6 +1108,55 @@ reg_exp <- data_frame("Operator" = c(".",
                                     "Ends with",
                                     "Character classes"))
 knitr::kable(reg_exp)
+```
+
+## Tidy select
+
+There are [`tidyverse`](https://dplyr.tidyverse.org/reference/select.html) functions to make selecting variables more straightforwards. You can call these functions as arguments of the `select` function to streamline variable selection. Examples include: `starts_with()`, `ends_with()`, and `contains()`.
+
+## Tidy select (helpers)
+
+Here we use `starts_with("t")` to select all variables that begin with `t`.
+
+```{r}
+titanic_train %>%
+  select(starts_with("t")) %>%
+  slice(1:3)
+```
+
+## Tidy select
+
+The are also tidyverse functions that allow us to easily operate on a selection of variables. These functions are called [`scoped varients`](https://dplyr.tidyverse.org/reference/scoped.html). You can identify these functions by these `_all`, `_at`, and `_if` suffixes.
+
+## Tidy select (*_if)
+
+Here we use `select_if` to select all the numeric variables in a dataframe and covert their names to lower case (a handy function to tidy the variable names).
+
+```{r}
+titanic_train %>%
+  select_if(is.numeric, tolower) %>%
+  slice(1:3)
+```
+
+## Tidy select (*_if)
+
+The `select_if` function takes the following form.
+
+```{r eval = FALSE}
+## Generic code
+new_df <- select_if(old_df,
+                    .predicate [selects the variable to keep], 
+                    .funs = [the function to apply to the selected columns])
+```
+
+## Tidy select (*_at)
+
+Here we use `select_at` to select all the variables that contain `ss` in their name and then covert their names to lower case (a handy function to tidy the variable names).
+
+```{r}
+titanic_train %>%
+  select_at(vars(contains("ss")), tolower) %>%
+  slice(1:3)
 ```
 
 ## Regular expressions

@@ -145,19 +145,19 @@ Example: exposure and outcome data stored in different files:
 - File 1: Daily mortality counts
 - File 2: Daily air pollution measurements
 
-## Gathering
+## Longer data
 
-There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wide and long data: `gather` and `spread`. Here is a description of these two functions:
+There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wider and longr data: `pivot_longer` and `pivot_wider`. Here is a description of these two functions:
 
-- `gather`: Take several columns and gather them into two columns, one with the former column names, and one with the former cell values.
-- `spread`: Take two columns and spread them into multiple columns. Column names for the new columns will come from one of the two original columns, while cell values will come from the other of the original columns.
+- `pivot_longer`: Takes several columns and pivots them down into two columns. One of the new columns contains the former column names and the other contains the former cell values.
+- `pivot_wider`: Takes two columns and pivots them up into multiple columns. Column names for the new columns will come from one column and the cell values from the other.
 
-The following examples are from `tidyr` help files and show the effects of gathering and spreading a dataset. 
+The following examples are show the effects of making a dataset longer or wider.
 
 Here is some simulated wide data:
 
 ```{r, include = FALSE}
-wide_stocks <- data.frame(
+wide_stocks <- tibble(
   time = as.Date('2009-01-01') + 0:9,
   X = rnorm(10, 0, 1),
   Y = rnorm(10, 0, 2),
@@ -175,57 +175,61 @@ In the `wide_stocks` dataset, there are separate columns for three different sto
 wide_stocks[1:3, ]
 ```
 
-If you want to convert the dataframe to have all stock values in a single column, you can use `gather` to convert wide data to long data: 
+If you want to convert the dataframe to have all stock values in a single column, you can use `pivot_longer` to convert wide data to long data: 
 
 ```{r}
-long_stocks <- gather(wide_stocks, key = stock,
-                      value = price, -time)
+long_stocks <- pivot_longer(data = wide_stocks,
+                            cols = -time,
+                            names_to = "stock",
+                            values_to = "price")
 long_stocks[1:5, ]
 ```
 
-In this "long" dataframe, there is now one column that gives the identify of the stock (`stock`) and another column that gives the price of that stock that day (`price`):
+In this "longer" dataframe, there is now one column that gives the identify of the stock (`stock`) and another column that gives the price of that stock that day (`price`):
 
 ```{r}
 long_stocks[1:5, ]
 ```
 
-The format for a `gather` call is: 
+The format for a `pivots_longer` call is: 
 
 ```{r eval = FALSE}
 ## Generic code
-new_df <- gather(old_df,
-                 key = [name of column with old column names],
-                 value = [name of column with cell values],
-                 - [name of column(s) you want to 
-                    exclude from gather])
+new_df <- pivot_longer(old_df,
+                       cols = [name(s) of the columns you want to make longer],
+                       names_to = [name of new column to store the old column names],
+                       values_to = [name of new column to store the old values])
 ```
 
-Three important notes: 
+Three important notes:
 
-- Everything is gathered into one of two columns -- one column with the old column names, and one column with the old cell values
-- With the `key` and `value` arguments, you are just providing column names for the two columns that everything's gathered into.
-- If there is a column you don't want to gather (`date` in the example), use `-` to exclude it in the `gather` call.
+- Everything is pivoted into one of two columns -- one column with the old column names, and one column with the old cell values
+- With the `names_to` and `values_to` arguments, you are just providing column names for the two columns that everything's pivoted into.
+- If there is a column you don't want to include in the pivot (`date` in the example), use `-` to exclude it in the `cols` argument.
 
-Notice how easy it is, now that the data is gathered, to use `stock` for aesthetics of faceting in a `ggplot2` call:
+Notice how easy it is, now that the data is longer, to use `stock` for aesthetics of faceting in a `ggplot2` call:
 
 ```{r fig.width = 7, fig.height = 2.5}
 ggplot(long_stocks, aes(x = time, y = price)) + 
   geom_line() + 
-  facet_grid(. ~ stock)
+  facet_grid(. ~ stock) +
+  theme_bw()
 ```
 
-If you have data in a "long" format and would like to spread it out, you can use `spread` to do that:
+If you have data in a "longer" format and would like to make it "wider", you can use `pivot_wider` to do that:
 
 ```{r}
-stocks <- spread(long_stocks, key = stock, value = price)
+stocks <- pivot_wider(long_stocks,
+                      names_from = "stock",
+                      values_from = price)
 stocks[1:5, ]
 ```
 
-Notice that this reverses the action of `gather`. 
+Notice that this reverses the action of `pivot_longer`.
 
-"Spread" data is typically not tidy, so you often won't want to use `spread` when you are preparing data for analysis. However, `spread` can be very helpful in creating clean tables for final reports and presentations. 
+The "wider" your data the less likely it is to be tidy, so won't use `pivot_wider` frequently when you are preparing data for analysis. However, `pivot_wider` can be very helpful in creating tables for final reports and presentations.
 
-For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use `spread` to rearrange the final summary to create an attractive table. 
+For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use `pivot_wider` to rearrange the final summary to create an attractive table.
 
 ```{r}
 stock_summary <- long_stocks %>% 
@@ -238,9 +242,10 @@ stock_summary
 stock_summary %>%
   mutate("Mean (Std.dev.)" = paste0(round(mean, 2), " (",
                                     round(sd, 2), ")")) %>%
-  select(- mean, - sd) %>%
-  gather(key = "Statistic", value = "Value", -stock) %>%
-  spread(key = stock, value = Value) %>%
+  dplyr::select(- mean, - sd) %>%
+  mutate(N = as.character(N)) %>% # might be able to deal with this in pivot_longer call
+  pivot_longer(cols = -stock, names_to = "Statistic", values_to = "Value") %>%
+  pivot_wider(names_from = "stock", values_from = "Value") %>%
   knitr::kable()
 ```
 
@@ -570,6 +575,44 @@ For more on these patterns, see:
 - Chapter 14 of R For Data Science
 - http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
 
+## Tidy select
+
+There are [`tidyverse`](https://dplyr.tidyverse.org/reference/select.html) functions to make selecting variables more straightforwards. You can call these functions as arguments of the `select` function to streamline variable selection. Examples include: `starts_with()`, `ends_with()`, and `contains()`.
+
+Here we use `starts_with("t")` to select all variables that begin with `t`.
+
+```{r}
+titanic_train %>%
+  select(starts_with("t")) %>%
+  slice(1:3)
+```
+
+The are also tidyverse functions that allow us to easily operate on a selection of variables. These functions are called [`scoped varients`](https://dplyr.tidyverse.org/reference/scoped.html). You can identify these functions by these `_all`, `_at`, and `_if` suffixes.
+
+Here we use `select_if` to select all the numeric variables in a dataframe and covert their names to lower case (a handy function to tidy the variable names).
+
+```{r}
+titanic_train %>%
+  select_if(is.numeric, tolower) %>%
+  slice(1:3)
+```
+
+The `select_if` function takes the following form.
+
+```{r eval = FALSE}
+## Generic code
+new_df <- select_if(old_df,
+                    .predicate [selects the variable to keep], 
+                    .funs = [the function to apply to the selected columns])
+```
+
+Here we use `select_at` to select all the variables that contain `ss` in their name and then covert their names to lower case (a handy function to tidy the variable names).
+
+```{r}
+titanic_train %>%
+  select_at(vars(contains("ss")), tolower) %>%
+  slice(1:3)
+```
 
 ## In-course exercise 
 
@@ -718,7 +761,9 @@ ggplot(data = mexico) +
 ebola_url <- paste0("https://github.com/geanders/RProgrammingForResearch/",
               "raw/master/data/country_timeseries.csv")
 ebola <- read_csv(ebola_url) %>% 
-  gather(key = variable, value = count, -Date, -Day)
+  pivot_longer(cols = c(-Date, -Day),
+               names_to = "variable",
+               values_to = "count")
 ebola %>% slice(1:6)
 ```
 
@@ -732,27 +777,27 @@ ebola <- ebola %>%
 ebola %>% slice(1:6)
 ```
 
-- Use the `spread` function to convert the data so you have separate columns for the two variables of numbers of `Cases` and `Deaths`. At this point, the dataframe should look like this: 
+- Use the `pivot_wider` function to convert the data so you have separate columns for the two variables of numbers of `Cases` and `Deaths`. At this point, the dataframe should look like this: 
 
 ```{r echo = FALSE}
-ebola <- spread(ebola, key = type, value = count)
-ebola %>% slice(1:6)
+ebola_wider <- pivot_wider(ebola, names_from = type, values_from = count)
+ebola_wider %>% slice(1:6)
 ```
 
 - Remove any observations where counts of both cases and deaths are missing for that country on that date.
 - Now that your data is tidy, create one plot showing Ebola cases by date, faceted by country, and one showing Ebola deaths by date, also faceted by country. Try using the option `scales = "free_y"` in the `facet_wrap` function and see how that changes these graphs. Discuss with your group the advantages and disadvantages of using this option when creating these small multiple plots. The plots should look something like this (if you're using the `scales = "free_y"` option): 
 
 ```{r echo = FALSE, fig.width = 8, fig.height = 4, message = FALSE, warning = FALSE}
-ebola <- filter(ebola, !is.na(Cases) & !is.na(Deaths))
+ebola_filtered <- filter(ebola_wider, !is.na(Cases) & !is.na(Deaths))
 
-ggplot(ebola, aes(x = Date, y = Cases)) + 
-        geom_line() + 
-        facet_wrap(~ country, ncol = 4, scales = "free_y") + 
-        theme_classic()
-ggplot(ebola, aes(x = Date, y = Deaths)) + 
-        geom_line() + 
-        facet_wrap(~ country, ncol = 4, scales = "free_y") + 
-        theme_classic()
+ggplot(ebola_filtered, aes(x = Date, y = Cases)) + 
+       geom_line() + 
+       facet_wrap(~ country, ncol = 4, scales = "free_y") + 
+       theme_classic()
+ggplot(ebola_filtered, aes(x = Date, y = Deaths)) + 
+       geom_line() + 
+       facet_wrap(~ country, ncol = 4, scales = "free_y") + 
+       theme_classic()
 ```
 
 - Based on these plots, what would your next questions be about this data before you used it for an analysis?
@@ -763,11 +808,11 @@ ggplot(ebola, aes(x = Date, y = Deaths)) +
 ebola_url <- paste0("https://github.com/geanders/RProgrammingForResearch/",
               "raw/master/data/country_timeseries.csv")
 ebola <- read_csv(ebola_url) %>%
-        gather(key = variable, value = count, -Date, -Day) %>%
-        mutate(Date = mdy(Date)) %>%
-        separate(variable, c("type", "country"), sep = "_") %>% 
-        spread(type, count) %>%
-        filter(!is.na(Cases) & !is.na(Deaths))
+         pivot_longer(cols = c(-Date, -Day), names_to = "variable", values_to = "count") %>%
+         mutate(Date = mdy(Date)) %>%
+         separate(variable, c("type", "country"), sep = "_") %>%
+         pivot_wider(names_from = type, values_from = count) %>%
+         filter(!is.na(Cases) & !is.na(Deaths))
 
 library(forcats)
 ggplot(ebola, aes(x = Date, y = Cases)) + 
@@ -797,11 +842,11 @@ ebola <- read_csv(ebola_url)
 head(ebola)
 ```
 
-Change the data to long data using the `gather()` function from `dplyr`:
+Change the data to long data using the `pivoter_longer` function from `tidyr`:
 
 ```{r}
-ebola <- ebola %>% 
-  gather(key = variable, value = count, -Date, -Day)
+ebola <- ebola %>%
+  pivot_longer(cols = c(-Date, -Day), names_to = "variable", values_to = "count")
 head(ebola)
 ```
 
@@ -825,7 +870,7 @@ head(ebola)
 Convert the data so you have separate columns for the two variables of numbers of `Cases` and `Deaths`:
 
 ```{r}
-ebola <- spread(ebola, key = type, value = count)
+ebola <- pivot_wider(ebola, names_from = type, values_from = count)
 head(ebola)
 ```
 
@@ -866,11 +911,11 @@ Put all of the steps of this cleaning process into just a few "chaining" calls.
 
 ```{r, message = FALSE, fig.width = 8, fig.height = 4}
 ebola <- read_csv(ebola_url) %>%
-        gather(variable, count, -Date, -Day) %>%
-        mutate(Date = mdy(Date)) %>%
-        separate(variable, c("type", "country"), sep = "_") %>% 
-        spread(type, count) %>%
-        filter(!is.na(Cases) & !is.na(Deaths))
+         pivot_longer(cols = c(-Date, -Day), names_to = "variable", values_to = "count") %>%
+         mutate(Date = mdy(Date)) %>%
+         separate(variable, c("type", "country"), sep = "_") %>%
+         pivot_wider(names_from = type, values_from = count) %>%
+         filter(!is.na(Cases) & !is.na(Deaths))
 
 ggplot(ebola, aes(x = Date, y = Cases)) + 
         geom_line() + 
@@ -911,11 +956,15 @@ R comes with a dataset called `VADeaths` that gives death rates per 1,000 people
 library(datasets)
 data(VADeaths)
 VADeaths <- VADeaths %>%
-  as.data.frame() %>% 
+  as_tibble() %>% 
   mutate(age = rownames(VADeaths)) %>%
-  gather(key = gender_loc, value = mort_rate, - age) %>%
-  separate(col = gender_loc, into = c("loc", "gender"),
+  pivot_longer(cols = -age,
+               names_to = "gender_loc",
+               values_to = "mort_rate") %>%
+  separate(col = gender_loc,
+           into = c("loc", "gender"),
            sep = " ")
+
 ggplot(VADeaths, aes(x = age, y = mort_rate,
                      color = gender)) + 
   geom_point() + 
@@ -926,41 +975,42 @@ ggplot(VADeaths, aes(x = age, y = mort_rate,
 
 There is no example R code for this -- try to figure out the code yourselves. We will go over a solution in class. You may find the RStudio Data Wrangling cheatsheet helpful for remembering which tidyverse functions do what. 
 
-### Exploring Fatality Analysis Reporting System (FARS) data
+### Exploring taxonomic profiling data
 
-- Explore the interactive visualization at http://metrocosm.com/10-years-of-traffic-accidents-mapped.html. This was created by Max Galka using this dataset. 
-- Go to [FARS web page](http://www.nhtsa.gov/FARS). We want to get the raw data on fatal accidents. Navigate this page to figure out how you can get this raw data for the whole county for 2016 (hint: you'll need to access the raw data using FTP, and you may have more success with some web browsers, like Chrome, than others). Save 2016 "National" data (csv format) to your computer. What is the structure of how this data is saved (e.g., directory structure, file structure)?
-- On the [FARS web page](http://www.nhtsa.gov/FARS), find the documentation describing this raw data. Look through both this documentation (*2016 Crash Report Sampling System (CRSS):Analytical User's Manual*) and the raw files you downloaded to figure out what information is included in the data. 
-- Read the `accident.csv` file for 2016 into R (this is one of the files you'll get if you download the raw data for 2016). Use the documentation to figure out what each column represents. 
-- Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format. (Hint: Functions from the `lubridate` package will be very helpful, including `yday` and `wday`).
-- Discuss which of the variables in this dataset could be used to merge the dataset with other appropriate data, either other datasets in the FARS raw data, or outside datasets. 
+- Learn about bioconductor at [bioconductor.org](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html). Bioconductor provides opensource software for bioinfomatics. Bioconductor provides an R package called `microbiome` that includes tools for exploring and analysing microbiome profiling data. We want to explore a dataset on genus-level microbiota profiling (atlas1006). Navigate this page to figure out how you can get this example raw data (hint: you'll need to follow the installation instructions on the bioconductor website, which are a little different compared to a regualr R package).
+- Create an object in your workspace containing the `atlas1006` data. How is the data structured in the object you just created?
+- On the [microbiome page](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html), find the documentation describing the `atlas1006` data. Look through this documentation to figure out what information is included in the data.
+- Use the `str` function to take a look at the structure of the `atlas1006` data. How many slots does the object contain?
+- Extract ...
+- Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format.
 - Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I'd like you to try to figure it out yourselves first.
+- Discuss which of the variables in this dataset could be used to merge the extracted with ...
 
-```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3}
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
 library(tidyverse)
 library(lubridate)
 library(ggthemes)
+library(microbiome)
 
-accident <- read_csv("data/accident.csv") %>%
-  select(DAY:MINUTE) %>%
-  select(-DAY_WEEK) %>%
-  unite(date, DAY:MINUTE, sep = "-", remove = FALSE) %>%
-  mutate(date = dmy_hm(date), 
-         yday = yday(date),
-         weekday = wday(date, label = TRUE, abbr = FALSE),
-         weekend = weekday %in% c("Saturday", "Sunday")) 
+data(atlas1006)
 
-accident %>% 
-  filter(!is.na(yday)) %>%
-  group_by(yday) %>%
-  summarize(accidents = n(),
-            weekend = first(weekend)) %>%
-  ggplot(aes(x = yday, y = accidents, color = weekend)) + 
-  geom_point(alpha = 0.5) + 
-  xlab("Day of the year in 2016") + 
-  ylab("# of fatal accidents") + 
-  theme_few() + 
-  geom_smooth(se = FALSE)
+diversity <- as_tibble(sample_data(atlas1006)) %>%
+  dplyr::select(gender, nationality, diversity, bmi_group)
+
+
+diversity %>% 
+  filter(!is.na(nationality) & !is.na(gender) & !is.na(bmi_group)) %>%
+  group_by(nationality, gender, bmi_group) %>%
+  summarize(mean_diveristy = mean(diversity, na.rm = TRUE),
+            sd_diveristy = sd(diversity, na.rm = TRUE)) %>%
+  ggplot(aes(x = nationality, y = mean_diveristy, color = gender)) +
+  geom_point(alpha = 0.25, size = 4) +
+  xlab("Nationality") +
+  ylab("Mean Diversity Score") +
+  facet_wrap(~bmi_group) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "top")
 ```
 
 ### Baby names
