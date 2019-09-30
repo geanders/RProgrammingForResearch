@@ -485,19 +485,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode" id="cb525"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb525-1" title="1">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time           X         Y      Z
-##   &lt;date&gt;     &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
-## 1 2009-01-01 -1.35 -0.664    -4.44 
-## 2 2009-01-02 -1.25 -1.16     -3.15 
-## 3 2009-01-03  1.04 -0.000642  0.113</code></pre>
+##   time            X      Y     Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 2009-01-01 -0.640 -1.83  -2.75
+## 2 2009-01-02  0.638  0.766  4.67
+## 3 2009-01-03  0.445 -1.47   1.57</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb527-1" title="1">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time           X         Y      Z
-##   &lt;date&gt;     &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
-## 1 2009-01-01 -1.35 -0.664    -4.44 
-## 2 2009-01-02 -1.25 -1.16     -3.15 
-## 3 2009-01-03  1.04 -0.000642  0.113</code></pre>
+##   time            X      Y     Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 2009-01-01 -0.640 -1.83  -2.75
+## 2 2009-01-02  0.638  0.766  4.67
+## 3 2009-01-03  0.445 -1.47   1.57</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>pivot_longer</code> to convert wide data to long data:</p>
 <div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb529-1" title="1">long_stocks &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dt">data =</span> wide_stocks,</a>
 <a class="sourceLine" id="cb529-2" title="2">                            <span class="dt">cols =</span> <span class="op">-</span>time,</a>
@@ -507,21 +507,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X     -1.35 
-## 2 2009-01-01 Y     -0.664
-## 3 2009-01-01 Z     -4.44 
-## 4 2009-01-02 X     -1.25 
-## 5 2009-01-02 Y     -1.16</code></pre>
+## 1 2009-01-01 X     -0.640
+## 2 2009-01-01 Y     -1.83 
+## 3 2009-01-01 Z     -2.75 
+## 4 2009-01-02 X      0.638
+## 5 2009-01-02 Y      0.766</code></pre>
 <p>In this “longer” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb531-1" title="1">long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X     -1.35 
-## 2 2009-01-01 Y     -0.664
-## 3 2009-01-01 Z     -4.44 
-## 4 2009-01-02 X     -1.25 
-## 5 2009-01-02 Y     -1.16</code></pre>
+## 1 2009-01-01 X     -0.640
+## 2 2009-01-01 Y     -1.83 
+## 3 2009-01-01 Z     -2.75 
+## 4 2009-01-02 X      0.638
+## 5 2009-01-02 Y      0.766</code></pre>
 <p>The format for a <code>pivots_longer</code> call is:</p>
 <div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb533-1" title="1"><span class="co">## Generic code</span></a>
 <a class="sourceLine" id="cb533-2" title="2">new_df &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(old_df,</a>
@@ -546,13 +546,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb535-3" title="3">                      <span class="dt">values_from =</span> price)</a>
 <a class="sourceLine" id="cb535-4" title="4">stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
-##   time            X         Y      Z
-##   &lt;date&gt;      &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
-## 1 2009-01-01 -1.35  -0.664    -4.44 
-## 2 2009-01-02 -1.25  -1.16     -3.15 
-## 3 2009-01-03  1.04  -0.000642  0.113
-## 4 2009-01-04  1.70  -3.22     -2.18 
-## 5 2009-01-05 -0.739 -0.507    -6.77</code></pre>
+##   time            X      Y     Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 2009-01-01 -0.640 -1.83  -2.75
+## 2 2009-01-02  0.638  0.766  4.67
+## 3 2009-01-03  0.445 -1.47   1.57
+## 4 2009-01-04  1.12  -0.197 -2.29
+## 5 2009-01-05 -0.459  2.10  -1.63</code></pre>
 <p>Notice that this reverses the action of <code>pivot_longer</code>.</p>
 <p>The “wider” your data the less likely it is to be tidy, so won’t use <code>pivot_wider</code> frequently when you are preparing data for analysis. However, <code>pivot_wider</code> can be very helpful in creating tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>pivot_wider</code> to rearrange the final summary to create an attractive table.</p>
@@ -563,9 +563,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## # A tibble: 3 x 4
 ##   stock     N    mean    sd
 ##   &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10 -0.0535  1.51
-## 2 Y        10 -0.103   2.30
-## 3 Z        10 -1.34    3.49</code></pre>
+## 1 X        10  0.165   1.16
+## 2 Y        10 -0.107   1.74
+## 3 Z        10 -0.0873  3.28</code></pre>
 <div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb539-1" title="1">stock_summary <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb539-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</a>
 <a class="sourceLine" id="cb539-3" title="3">                                    <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span></a>
@@ -592,9 +592,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="even">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">-0.05 (1.51)</td>
-<td align="left">-0.1 (2.3)</td>
-<td align="left">-1.34 (3.49)</td>
+<td align="left">0.17 (1.16)</td>
+<td align="left">-0.11 (1.74)</td>
+<td align="left">-0.09 (3.28)</td>
 </tr>
 </tbody>
 </table>

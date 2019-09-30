@@ -15,7 +15,6 @@ library(tidyverse)
 library(knitr)
 library(faraway)
 data(worldcup)
-data(nepali)
 ```
 
 # Tidy data
@@ -203,7 +202,7 @@ knitr::include_graphics("../figures/right_join.jpg")
 
 ## `*_join` functions
 
-For some more complex examples of using join, I'll use these example datasets:
+For some more complex examples of using join, I'll use these example datasets (`x` and `y`):
 
 ```{r echo = FALSE}
 x <- tibble(course = c("x", "x", "y", "z"),
@@ -276,7 +275,7 @@ knitr::include_graphics("../figures/pivot_functions.jpg")
 
 ## `pivot_longer` / `pivot_wider`
 
-The following examples are show the effects of making a dataset longer or wider.
+The following examples show the effects of making a dataset longer or wider.
 \bigskip
 
 Here is some example wide data:
@@ -524,43 +523,42 @@ For example, if you wanted to add the mean height and weight by sex to the `nepa
 ## Grouping with `mutate` versus `summarize`
 
 ```{r}
-nepali %>%
-  group_by(sex) %>%
-  mutate(mean_ht = mean(ht, na.rm = TRUE),
-         mean_wt = mean(wt, na.rm = TRUE)) %>%
-  slice(1:3) %>% select(id, sex, wt, ht, mean_ht, mean_wt)
+worldcup %>%
+  group_by(Position) %>%
+  mutate(mean_time = mean(Time)) %>%
+  slice(1:2) %>% select(Team:Time, mean_time)
 ```
 
-## More on `mutate` 
+<!-- ## More on `mutate`  -->
 
-There are also some special functions that work well with `mutate`: 
+<!-- There are also some special functions that work well with `mutate`:  -->
 
-- `lead`: Measured value for following observation
-- `lag`: Measured value for previous observation
-- `cumsum`: Sum of all values up to this point
-- `cummax`: Highest value up to this point
-- `cumany`: For TRUE / FALSE, have any been TRUE up to this point
+<!-- - `lead`: Measured value for following observation -->
+<!-- - `lag`: Measured value for previous observation -->
+<!-- - `cumsum`: Sum of all values up to this point -->
+<!-- - `cummax`: Highest value up to this point -->
+<!-- - `cumany`: For TRUE / FALSE, have any been TRUE up to this point -->
 
-## More on `mutate` 
+<!-- ## More on `mutate`  -->
 
-Here is an example of using `lead` and `lag` with mutate:
+<!-- Here is an example of using `lead` and `lag` with mutate: -->
 
-```{r message = FALSE}
-library(lubridate)
-date_example %>% 
-  unite(col = date, year:day, sep = "-") %>%
-  mutate(date = ymd(date),
-         yesterday = lag(date),
-         tomorrow = lead(date))
-```
+<!-- ```{r message = FALSE} -->
+<!-- library(lubridate) -->
+<!-- date_example %>%  -->
+<!--   unite(col = date, year:day, sep = "-") %>% -->
+<!--   mutate(date = ymd(date), -->
+<!--          yesterday = lag(date), -->
+<!--          tomorrow = lead(date)) -->
+<!-- ``` -->
 
 ## `slice`
 
 You can also group by a factor first using `group_by`. Then, when you use `slice`, you will get the first few rows for each level of the group.  
 
 ```{r}
-nepali %>%
-  group_by(sex) %>%
+worldcup %>% 
+  group_by(Position) %>% 
   slice(1:2)
 ```
 
@@ -569,50 +567,45 @@ nepali %>%
 You can also group by a factor before arranging. In this case, all data for the first level of the factor will show up first, in the order given in `arrange`, then all data from the second level will show up in the specified order, etc.
 
 ```{r}
-nepali %>% 
-  group_by(sex) %>%
-  arrange(desc(ht)) %>% 
-  slice(1:2)
+worldcup %>% 
+  group_by(Team) %>% 
+  arrange(desc(Saves)) %>% 
+  slice(1) %>% 
+  head(n = 4)
 ```
 
 ## `semi_join` and `anti_join`
+
+There are two more `*_join` functions we'll look at.
 
 These functions allow you to filter one dataframe on only values that **do** have a match in a second dataframe (`semi_join`) or **do not** have a match in a second dataframe (`anti_join`).
 
-I'll show examples with the `x` and `y` dataframes defined before:
+These functions do **not** bring in columns from the second dataset. Instead, 
+they check the second dataset to decide whether or not to keep certain rows 
+in the first dataset.
 
-\small
+## `semi_join`
 
-```{r echo = 5:6}
-x <- tibble(course = c("x", "y", "z"),
-                grade = c(90, 82, 78))
-y <- tibble(course = c("w", "x", "y"),
-                day = c("Tues", "Mon / Fri", "Tue"))
-x
-y
+```{r out.width = "0.98\\textwidth", echo = FALSE}
+knitr::include_graphics("../figures/semi_join.jpg")
 ```
 
-## `semi_join` and `anti_join`
+The `semi_join` function filters to observations that **do**
+have a match in a second dataframe.
 
-The `semi_join` function filters: one dataframe on only values that **do** have a match in a second dataframe:
+## `anti_join`
 
-```{r message = FALSE, warning = FALSE}
-x %>% 
-  semi_join(y)
+```{r out.width = "0.98\\textwidth", echo = FALSE}
+knitr::include_graphics("../figures/anti_join.jpg")
 ```
 
-## `semi_join` and `anti_join`
-
-The `anti_join` function filters one dataframe on only values that **do not** have a match in a second dataframe:
-
-```{r message = FALSE, warning = FALSE}
-y %>% 
-  anti_join(x)
-```
+The `anti_join` function filters to observations that **do not**
+have a match in a second dataframe.
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 4 of the In-course Exercise for Chapter 6).
+We'll take a break now to do the In-Course Exercise (Section 4 of the In-course
+Exercise for Chapter 6).
 
 # Tidying with `dplyr` 
 
