@@ -1,5 +1,9 @@
 ---
 title: "Getting / cleaning data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 output: 
   beamer_presentation:
     theme: "metropolis"
@@ -18,7 +22,9 @@ data(nepali)
 
 ## Tidy data
 
-All of the material in this section comes directly from Hadley Wickham's [paper on tidy data](http://vita.had.co.nz/papers/tidy-data.pdf). You will need to read this paper to prepare for the quiz on this section.
+All of the material in this section comes directly from Hadley Wickham's [paper
+on tidy data](http://vita.had.co.nz/papers/tidy-data.pdf). You will need to read
+this paper to prepare for the quiz on this section.
 
 ## Characteristics of tidy data
 
@@ -28,11 +34,14 @@ Characteristics of tidy data are:
 2. Each observation forms a row.
 3. Each type of observational unit forms a table.
 
-Getting your data into a "tidy" format makes it easier to model and plot. By taking the time to tidy your data at the start of an analysis, you will save yourself time, and make it easier to plan out, later steps. 
+Getting your data into a "tidy" format makes it easier to model and plot. By
+taking the time to tidy your data at the start of an analysis, you will save
+yourself time, and make it easier to plan out, later steps.
 
 ## Five common problems
 
-Here are five common problems that Hadley Wickham has identified that keep data from being tidy:
+Here are five common problems that Hadley Wickham has identified that keep data
+from being tidy:
 
 1. Column headers are values, not variable names.
 2. Multiple variables are stored in one column.
@@ -117,16 +126,20 @@ Example: exposure and outcome data stored in different files:
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.6.1).
+We'll take a break now to do the In-Course Exercise (Section 1 of the In-course Exercise for Chapter 6).
 
 
 # Joining datasets
 
 ## Joining datasets
 
-So far, you have only worked with a single data source at a time. When you work on your own projects, however, you typically will need to merge together two or more datasets to create the a data frame to answer your research question. \bigskip
+So far, you have only worked with a single data source at a time. When you work
+on your own projects, however, you typically will need to merge together two or
+more datasets to create the a data frame to answer your research question.
+\bigskip
 
-For example, for air pollution epidemiology, you will often have to join several datasets: 
+For example, for air pollution epidemiology, you will often have to join several
+datasets:
 
 - Health outcome data (e.g., number of deaths per day)
 - Air pollution concentrations
@@ -135,65 +148,57 @@ For example, for air pollution epidemiology, you will often have to join several
 
 ## `*_join` functions
 
-The `dplyr` package has a family of different functions to join two dataframes together, the `*_join` family of functions. All combine two dataframes, which I'll call `x` and `y` here. \medskip
+The `dplyr` package has a family of different functions to join two dataframes
+together, the `*_join` family of functions. These include: 
 
-The functions include:
+- `inner_join`
+- `full_join`
+- `left_join`
+- `right_join`
 
-- `inner_join(x, y)`: Keep only rows where there are observations in both `x` and `y`.
-- `left_join(x, y)`: Keep all rows from `x`, whether they have a match in `y` or not. 
-- `right_join(x, y)`: Keep all rows from `y`, whether they have a match in `x` or not. 
-- `full_join(x, y)`: Keep all rows from both `x` and `y`, whether they have a match in the other dataset or not.
+All combine two dataframes, which I'll call `course_grades` and `course_days`
+here.
+
+<!-- The functions include: -->
+
+<!-- - `inner_join(course_grades, course_days)`: Keep only rows where there are -->
+<!-- observations in both `course_grades` and `course_days`. -->
+<!-- - `left_join(course_grades, course_days)`: Keep all rows from `course_grades`, -->
+<!-- whether they have a match in `course_days` or not. -->
+<!-- - `right_join(course_grades, course_days)`: Keep all rows from `course_days`, -->
+<!-- whether they have a match in `course_grades` or not. -->
+<!-- - `full_join(course_grades, course_days)`: Keep all rows from both -->
+<!-- `course_grades` and `course_days`, whether they have a match in the other -->
+<!-- dataset or not. -->
 
 ## `*_join` functions
 
-In the examples, I'll use two datasets, `x` and `y`. Both datasets include the column `course`. The other column in `x` is `grade`, while the other column in `y` is `day`. Observations exist for courses `x` and `y` in both datasets, but for `w` and `z` in only one dataset.
-
-```{r}
-x <- tibble(course = c("x", "y", "z"),
-                grade = c(90, 82, 78))
-y <- tibble(course = c("w", "x", "y"),
-                day = c("Tues", "Mon / Fri", "Tue"))
+```{r, out.width = "\\textwidth", echo = FALSE}
+knitr::include_graphics("../figures/join_functions.jpg")
 ```
 
-## `*_join` functions
+## `inner_join`
 
-Here is what these two example datasets look like:
-
-```{r}
-x
-y
+```{r, out.width = "\\textwidth", echo = FALSE}
+knitr::include_graphics("../figures/inner_join.jpg")
 ```
 
-## `*_join` functions
+## `full_join`
 
-With `inner_join`, you'll only get the observations that show up in both datasets. That means you'll lose data on `z` (only in the first dataset) and `w` (only in the second dataset). 
-
-```{r warning = FALSE}
-inner_join(x, y)
+```{r, out.width = "\\textwidth", echo = FALSE}
+knitr::include_graphics("../figures/full_join.jpg")
 ```
 
-## `*_join` functions
+## `left_join`
 
-With `left_join`, you'll keep everything in `x` (the "left" dataset), but not keep things in `y` that don't match something in `x`. That means that, here, you'll lose `w`:
-
-```{r, warning = FALSE}
-left_join(x, y)
+```{r, out.width = "\\textwidth", echo = FALSE}
+knitr::include_graphics("../figures/left_join.jpg")
 ```
 
-## `*_join` functions
+## `right_join`
 
-`right_join` is the opposite-- you keep all observations in the "right" dataframe, but only matching ones in the "left" dataframe:
-
-```{r, warning = FALSE}
-right_join(x, y)
-```
-
-## `*_join` functions
-
-`full_join` keeps everything from both datasets:
-
-```{r warning = FALSE}
-full_join(x, y)
+```{r, out.width = "\\textwidth", echo = FALSE}
+knitr::include_graphics("../figures/right_join.jpg")
 ```
 
 ## `*_join` functions
@@ -238,13 +243,25 @@ full_join(x, y, by = list(x = c("course", "student"),
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.6.2).
+We'll take a break now to do the In-Course Exercise (Section 2 of the In-course Exercise for Chapter 6).
 
-# Longer and Wider data
+# Longer and wider data
 
 ## `pivot_longer` / `pivot_wider`
 
-There are two functions from the `tidyr` package (another member of the tidyverse) that you can use to change between wide and long data: `pivot_longer` and `pivot_wider`. \bigskip
+There are two functions from the `tidyr` package (another member of the
+tidyverse) that you can use to change between wide and long data: `pivot_longer`
+and `pivot_wider`. \bigskip
+
+These are brand new, and they replace the older `gather` and `spread` functions. 
+To use the new functions, you many need to install the development version
+of the `tidyr` package. You can do that with: 
+
+```{r eval = FALSE}
+devtools::install_github("tidyverse/tidyr")
+```
+
+## `pivot_longer` / `pivot_wider`
 
 Here is a description of these two functions:
 
@@ -253,51 +270,66 @@ Here is a description of these two functions:
 
 ## `pivot_longer` / `pivot_wider`
 
-The following examples are show the effects of making a dataset longer or wider.
-\bigskip
-
-Here is some simulated wide data:
-
-```{r, include = FALSE}
-wide_stocks <- tibble(
-  time = as.Date('2009-01-01') + 0:9,
-  X = rnorm(10, 0, 1),
-  Y = rnorm(10, 0, 2),
-  Z = rnorm(10, 0, 4)
-)
-```
-
-```{r}
-wide_stocks[1:3, ]
+```{r out.width = "\\textwidth", echo = FALSE}
+knitr::include_graphics("../figures/pivot_functions.jpg")
 ```
 
 ## `pivot_longer` / `pivot_wider`
 
-In the `wide_stocks` dataset, there are separate columns for three different stocks (`X`, `Y`, and `Z`). Each cell gives the value for a certain stock on a certain day. This data isn't "tidy", because the identify of the stock (`X`, `Y`, or `Z`) is a variable, and you'll probably want to include it as a variable in modeling. 
+The following examples are show the effects of making a dataset longer or wider.
+\bigskip
+
+Here is some example wide data:
+
+```{r, include = FALSE, message = FALSE}
+library(dplyr)
+hogwarts_wide <- tibble(
+  student = c("Harry", "Hermione"),
+  math = c(89, 100),
+  english = c(92, 99), 
+  science = c(93, 98)
+)
+```
+
+```{r}
+hogwarts_wide
+```
+
+## `pivot_longer` / `pivot_wider`
+
+In the `hogwarts_wide` dataset, there are separate columns for three different
+courses (`math`, `english`, and `science`). Each cell gives the value for a
+certain stock on a certain day. 
 
 
 ```{r}
-wide_stocks[1:3, ]
+hogwarts_wide
 ```
+
+This data isn't "tidy", because the identify of the course (`math`, `english`,
+or `science`) is a variable, and you'll probably want to include it as a
+variable in modeling.
 
 ## `pivot_longer` / `pivot_wider`
 
 If you want to convert the dataframe to have all stock values in a single column, you can use `pivot_longer` to convert wide data to long data: 
 
 ```{r}
-long_stocks <- pivot_longer(data = wide_stocks,
-                            cols = -time,
-                            names_to = "stock",
-                            values_to = "price")
-long_stocks[1:5, ]
+library("tidyr")
+hogwarts_long <- pivot_longer(data = hogwarts_wide,
+                              cols = math:science,
+                              names_to = "subject",
+                              values_to = "grade")
 ```
 
 ## `pivot_longer` / `pivot_wider`
 
-In this "longer" dataframe, there is now one column that gives the identify of the stock (`stock`) and another column that gives the price of that stock that day (`price`):
+In this "longer" dataframe, there is now one column that gives the identify of
+the course (`subject`) and another column that gives the grade a student got 
+for that course (`grade`):
 
 ```{r}
-long_stocks[1:5, ]
+hogwarts_long
 ```
 
 ## `pivot_longer` / `pivot_wider`
@@ -307,77 +339,59 @@ The format for a `pivots_longer` call is:
 ```{r eval = FALSE}
 ## Generic code
 new_df <- pivot_longer(old_df,
-                       cols = [name(s) of the columns you want to make longer],
-                       names_to = [name of new column to store the old column names],
-                       values_to = [name of new column to store the old values])
+                       cols = [name(s) of the columns you want 
+                               to make longer],
+                       names_to = [name of new column to store 
+                                   the old column names],
+                       values_to = [name of new column to store 
+                                    the old values])
 ```
-
-Three important notes:
-
-- Everything is pivoted into one of two columns -- one column with the old column names, and one column with the old cell values
-- With the `names_to` and `values_to` arguments, you are just providing column names for the two columns that everything's pivoted into.
-- If there is a column you don't want to include in the pivot (`date` in the example), use `-` to exclude it in the `cols` argument.
 
 ## `pivot_longer` / `pivot_wider`
 
-Notice how easy it is, now that the data is gathered, to use `stock` for aesthetics of faceting in a `ggplot2` call:
+Three important notes:
 
-Notice how easy it is, now that the data is longer, to use `stock` for aesthetics of faceting in a `ggplot2` call:
+- Everything is pivoted into one of two columns---one column with the old
+column names, and one column with the old cell values
+- With the `names_to` and `values_to` arguments, you are just providing column
+names for the two columns that everything's pivoted into. When you are pivoting
+from "wide" to "long", you get to pick these names.
+- If there is a column you don't want to include in the pivot (`date` in the
+example), use `-` to exclude it in the `cols` argument.
+
+## `pivot_longer` / `pivot_wider`
+
+Notice how easy it is, now that the data is gathered, to use `subject` for
+aesthetics of faceting in a `ggplot2` call:
 
 ```{r fig.width = 7, fig.height = 2.5}
-ggplot(long_stocks, aes(x = time, y = price)) + 
-  geom_line() + 
-  facet_grid(. ~ stock) +
+ggplot(hogwarts_long, aes(x = student, y = grade)) + 
+  geom_point() + 
+  facet_wrap(~ subject) +
   theme_bw()
 ```
 
 ## `pivot_longer` / `pivot_wider`
 
-If you have data in a "longer" format and would like to make it "wider", you can use `pivot_wider` to do that:
+If you have data in a "longer" format and would like to make it "wider", you can
+use `pivot_wider` to do that:
 
 ```{r}
-stocks <- pivot_wider(long_stocks,
-                      names_from = "stock",
-                      values_from = price)
-stocks[1:5, ]
+hogwarts <- pivot_wider(hogwarts_long, 
+                        names_from = "subject", 
+                        values_from = "grade")
 ```
 
 Notice that this reverses the action of `pivot_longer`.
 
-## `pivot_longer` / `pivot_wider`
-
-The "wider" your data the less likely it is to be tidy, so won't use `pivot_wider` frequently when you are preparing data for analysis. However, `pivot_wider` can be very helpful in creating tables for final reports and presentations.
-\bigskip 
-
-## `pivot_longer` / `pivot_wider`
-
-For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use `pivot_wider` to rearrange the final summary to create an attractive table.
-
-```{r}
-stock_summary <- long_stocks %>% 
-  group_by(stock) %>%
-  summarize(N = n(), mean = mean(price), sd = sd(price))
-stock_summary
-```
-
-## `pivot_longer` / `pivot_wider`
-
-```{r}
-stock_summary %>%
-  mutate("Mean (Std.dev.)" = paste0(round(mean, 2), " (",
-                                    round(sd, 2), ")")) %>%
-  dplyr::select(- mean, - sd) %>%
-  mutate(N = as.character(N)) %>% # might be able to deal with this in pivot_longer call
-  pivot_longer(cols = -stock, names_to = "Statistic", values_to = "Value") %>%
-  pivot_wider(names_from = "stock", values_from = "Value") %>%
-  knitr::kable()
-```
-
 ## Further reading
 
-Chapters 12 and 13 of "R for Data Science" are an excellent supplemental resource if you'd like extra practice on tidy data, pivoting, and joining different datasets.
+Chapters 12 and 13 of "R for Data Science" are an excellent supplemental
+resource if you'd like extra practice on tidy data, pivoting, and joining
+different datasets.
 
-*note at this time "R for Data Science" uses the `gather` and `spread` instead of `pivot_*`. These are older functions, you should use `pivot_*`.
+**Note:** At this time "R for Data Science" uses the `gather` and `spread`
+instead of `pivot_*`. These are older functions, you should use `pivot_*`.
 
 # More with `dplyr`
 
@@ -470,7 +484,7 @@ ebola %>%
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.6.3).
+We'll take a break now to do the In-Course Exercise (Section 3 of the In-course Exercise for Chapter 6).
 
 ## `unite`
 
@@ -598,7 +612,7 @@ y %>%
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.6.4).
+We'll take a break now to do the In-Course Exercise (Section 4 of the In-course Exercise for Chapter 6).
 
 # Tidying with `dplyr` 
 
@@ -696,7 +710,7 @@ Bioconductor provides opensource software for bioinfomatics. Bioconductor provid
 
 ## Biodiversity data
 
-```{r echo = FALSE, out.width = "0.75\\textwidth"}
+```{r echo = FALSE, out.width = "0.75\\textwidth", eval = FALSE}
 knitr::include_graphics("../figures/bioconductor.png")
 ```
 
@@ -707,7 +721,7 @@ https://cancerres.aacrjournals.org/content/77/21/e39
 
 ## In-course exercise
 
-We'll take a break now to do the In-Course Exercise (Section 6.6.5).
+We'll take a break now to do the In-Course Exercise (Section 5 of the In-course Exercise for Chapter 6).
 
 # `forcats`
 
@@ -788,7 +802,7 @@ levels(worldcup$Position)
 
 ## In-course exercise
 
-We'll now take a break to do Section 6.6.6 of the In-Course Exercise. 
+We'll now take a break to do Section 6 of the In-course Exercise for Chapter 6. 
 
 # String operations
 
@@ -1169,4 +1183,4 @@ For more on these patterns, see:
 
 ## In-course exercise
 
-We'll now take a break to do Section 6.6.7 of the In-Course Exercise. 
+We'll now take a break to do Section 7 of the In-course Exercise for Chapter 6. 

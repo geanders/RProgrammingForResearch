@@ -995,19 +995,19 @@ library(microbiome)
 data(atlas1006)
 
 diversity <- as_tibble(sample_data(atlas1006)) %>%
-  dplyr::select(gender, nationality, diversity, bmi_group)
+  dplyr::select(sex, nationality, diversity, bmi_group)
 
 
 diversity %>% 
-  filter(!is.na(nationality) & !is.na(gender) & !is.na(bmi_group)) %>%
-  group_by(nationality, gender, bmi_group) %>%
+  filter(!is.na(nationality) & !is.na(sex) & !is.na(bmi_group)) %>%
+  group_by(nationality, sex, bmi_group) %>%
   summarize(mean_diveristy = mean(diversity, na.rm = TRUE),
             sd_diveristy = sd(diversity, na.rm = TRUE)) %>%
-  ggplot(aes(x = nationality, y = mean_diveristy, color = gender)) +
+  ggplot(aes(x = nationality, y = mean_diveristy, color = sex)) +
   geom_point(alpha = 0.25, size = 4) +
   xlab("Nationality") +
   ylab("Mean Diversity Score") +
-  facet_wrap(~bmi_group) +
+  facet_wrap(~ bmi_group) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "top")
