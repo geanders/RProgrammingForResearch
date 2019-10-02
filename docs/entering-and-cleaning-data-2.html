@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2019-09-29" />
+<meta name="date" content="2019-10-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -306,9 +306,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.7.2" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#easier-data-wrangling"><i class="fa fa-check"></i><b>6.7.2</b> Easier data wrangling</a></li>
 <li class="chapter" data-level="6.7.3" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#more-extensive-data-wrangling"><i class="fa fa-check"></i><b>6.7.3</b> More extensive data wrangling</a></li>
 <li class="chapter" data-level="6.7.4" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#tidying-vadeaths-data"><i class="fa fa-check"></i><b>6.7.4</b> Tidying <code>VADeaths</code> data</a></li>
-<li class="chapter" data-level="6.7.5" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#exploring-taxonomic-profiling-data"><i class="fa fa-check"></i><b>6.7.5</b> Exploring taxonomic profiling data</a></li>
-<li class="chapter" data-level="6.7.6" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#baby-names"><i class="fa fa-check"></i><b>6.7.6</b> Baby names</a></li>
-<li class="chapter" data-level="6.7.7" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#more-with-baby-names"><i class="fa fa-check"></i><b>6.7.7</b> More with baby names</a></li>
+<li class="chapter" data-level="6.7.5" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#baby-names"><i class="fa fa-check"></i><b>6.7.5</b> Baby names</a></li>
+<li class="chapter" data-level="6.7.6" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#more-with-baby-names"><i class="fa fa-check"></i><b>6.7.6</b> More with baby names</a></li>
+<li class="chapter" data-level="6.7.7" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#exploring-taxonomic-profiling-data"><i class="fa fa-check"></i><b>6.7.7</b> Exploring taxonomic profiling data</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="exploring-data-2.html"><a href="exploring-data-2.html"><i class="fa fa-check"></i><b>7</b> Exploring data #2</a><ul>
@@ -508,19 +508,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode" id="cb525"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb525-1" title="1">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01  0.794  0.248 -2.83
-## 2 2009-01-02  0.396 -1.87  -3.42
-## 3 2009-01-03 -1.04   1.38  -3.20</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01  0.625 -0.885  1.15 
+## 2 2009-01-02 -0.721  1.52  -3.21 
+## 3 2009-01-03  0.641 -0.666  0.402</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb527-1" title="1">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01  0.794  0.248 -2.83
-## 2 2009-01-02  0.396 -1.87  -3.42
-## 3 2009-01-03 -1.04   1.38  -3.20</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01  0.625 -0.885  1.15 
+## 2 2009-01-02 -0.721  1.52  -3.21 
+## 3 2009-01-03  0.641 -0.666  0.402</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>pivot_longer</code> to convert wide data to long data:</p>
 <div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb529-1" title="1">long_stocks &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dt">data =</span> wide_stocks,</a>
 <a class="sourceLine" id="cb529-2" title="2">                            <span class="dt">cols =</span> <span class="op">-</span>time,</a>
@@ -530,21 +530,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X      0.794
-## 2 2009-01-01 Y      0.248
-## 3 2009-01-01 Z     -2.83 
-## 4 2009-01-02 X      0.396
-## 5 2009-01-02 Y     -1.87</code></pre>
+## 1 2009-01-01 X      0.625
+## 2 2009-01-01 Y     -0.885
+## 3 2009-01-01 Z      1.15 
+## 4 2009-01-02 X     -0.721
+## 5 2009-01-02 Y      1.52</code></pre>
 <p>In this “longer” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb531-1" title="1">long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X      0.794
-## 2 2009-01-01 Y      0.248
-## 3 2009-01-01 Z     -2.83 
-## 4 2009-01-02 X      0.396
-## 5 2009-01-02 Y     -1.87</code></pre>
+## 1 2009-01-01 X      0.625
+## 2 2009-01-01 Y     -0.885
+## 3 2009-01-01 Z      1.15 
+## 4 2009-01-02 X     -0.721
+## 5 2009-01-02 Y      1.52</code></pre>
 <p>The format for a <code>pivots_longer</code> call is:</p>
 <div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb533-1" title="1"><span class="co">## Generic code</span></a>
 <a class="sourceLine" id="cb533-2" title="2">new_df &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(old_df,</a>
@@ -569,13 +569,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb535-3" title="3">                      <span class="dt">values_from =</span> price)</a>
 <a class="sourceLine" id="cb535-4" title="4">stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01  0.794  0.248 -2.83
-## 2 2009-01-02  0.396 -1.87  -3.42
-## 3 2009-01-03 -1.04   1.38  -3.20
-## 4 2009-01-04 -0.493 -2.69  -1.02
-## 5 2009-01-05 -0.230 -0.770 -4.10</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01  0.625 -0.885  1.15 
+## 2 2009-01-02 -0.721  1.52  -3.21 
+## 3 2009-01-03  0.641 -0.666  0.402
+## 4 2009-01-04  0.997 -2.72  -4.26 
+## 5 2009-01-05 -1.25   0.890 -5.52</code></pre>
 <p>Notice that this reverses the action of <code>pivot_longer</code>.</p>
 <p>The “wider” your data the less likely it is to be tidy, so won’t use <code>pivot_wider</code> frequently when you are preparing data for analysis. However, <code>pivot_wider</code> can be very helpful in creating tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>pivot_wider</code> to rearrange the final summary to create an attractive table.</p>
@@ -584,11 +584,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb537-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">N =</span> <span class="kw">n</span>(), <span class="dt">mean =</span> <span class="kw">mean</span>(price), <span class="dt">sd =</span> <span class="kw">sd</span>(price))</a>
 <a class="sourceLine" id="cb537-4" title="4">stock_summary</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   stock     N    mean    sd
-##   &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10 -0.0277 0.895
-## 2 Y        10 -0.500  1.54 
-## 3 Z        10 -2.13   3.57</code></pre>
+##   stock     N     mean    sd
+##   &lt;chr&gt; &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt;
+## 1 X        10 -0.00627  1.02
+## 2 Y        10  0.142    1.78
+## 3 Z        10  0.0209   3.60</code></pre>
 <div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb539-1" title="1">stock_summary <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb539-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</a>
 <a class="sourceLine" id="cb539-3" title="3">                                    <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span></a>
@@ -615,9 +615,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="even">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">-0.03 (0.89)</td>
-<td align="left">-0.5 (1.54)</td>
-<td align="left">-2.13 (3.57)</td>
+<td align="left">-0.01 (1.02)</td>
+<td align="left">0.14 (1.78)</td>
+<td align="left">0.02 (3.6)</td>
 </tr>
 </tbody>
 </table>
@@ -1298,22 +1298,8 @@ If you want to use these data further, you should go back and pull them from the
 <p><img src="RProgrammingForResearch_files/figure-html/tidying_vadeaths-1.png" width="768" /></p>
 <p>There is no example R code for this – try to figure out the code yourselves. We will go over a solution in class. You may find the RStudio Data Wrangling cheatsheet helpful for remembering which tidyverse functions do what.</p>
 </div>
-<div id="exploring-taxonomic-profiling-data" class="section level3">
-<h3><span class="header-section-number">6.7.5</span> Exploring taxonomic profiling data</h3>
-<ul>
-<li>Learn about bioconductor at <a href="https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html">bioconductor.org</a>. Bioconductor provides opensource software for bioinfomatics. Bioconductor provides an R package called <code>microbiome</code> that includes tools for exploring and analysing microbiome profiling data. We want to explore a dataset on genus-level microbiota profiling (atlas1006). Navigate this page to figure out how you can get this example raw data (hint: you’ll need to follow the installation instructions on the bioconductor website, which are a little different compared to a regualr R package).</li>
-<li>Create an object in your workspace containing the <code>atlas1006</code> data. How is the data structured in the object you just created?</li>
-<li>On the <a href="https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html">microbiome page</a>, find the documentation describing the <code>atlas1006</code> data. Look through this documentation to figure out what information is included in the data.</li>
-<li>Use the <code>str</code> function to take a look at the structure of the <code>atlas1006</code> data. How many slots does the object contain?</li>
-<li>Extract …</li>
-<li>Discuss what steps you would need to take to create the following plot. To start, don’t write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format.</li>
-<li>Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I’d like you to try to figure it out yourselves first.</li>
-<li>Discuss which of the variables in this dataset could be used to merge the extracted with …</li>
-</ul>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-377-1.png" width="768" /></p>
-</div>
 <div id="baby-names" class="section level3">
-<h3><span class="header-section-number">6.7.6</span> Baby names</h3>
+<h3><span class="header-section-number">6.7.5</span> Baby names</h3>
 <p>In the Fall 2018 session, we seem to have an unusually high percent of the class
 with names that start with an “A” or “K”. In this part of the exercise, we’ll see
 if we can figure out whether the proportion of “A” and “K” names is unusual.</p>
@@ -1332,7 +1318,7 @@ and females? Try to come up with some attractive ways (figures and tables) to
 show this.</li>
 </ul>
 <div id="example-r-code-12" class="section level4">
-<h4><span class="header-section-number">6.7.6.1</span> Example R code</h4>
+<h4><span class="header-section-number">6.7.5.1</span> Example R code</h4>
 <p>Install and load the <code>babynames</code> package and its “babynames” dataframe:</p>
 <div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb644-1" title="1"><span class="co"># install.packages(&quot;babynames&quot;)</span></a>
 <a class="sourceLine" id="cb644-2" title="2"><span class="kw">library</span>(babynames)</a>
@@ -1382,7 +1368,7 @@ x-, y-, and color scales.</p>
 <a class="sourceLine" id="cb649-5" title="5"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb649-6" title="6"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Proportion of babies</span><span class="ch">\n</span><span class="st">of each sex named &#39;Brooke&#39;&quot;</span>,</a>
 <a class="sourceLine" id="cb649-7" title="7">       <span class="dt">color =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-381-1.png" width="576" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-380-1.png" width="576" /></p>
 <p>In the year you were born, what were the 5 most popular baby names for males
 and females?</p>
 <div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb650-1" title="1">top_my_year &lt;-<span class="st"> </span>babynames <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -1503,11 +1489,11 @@ and females?</p>
 <a class="sourceLine" id="cb653-11" title="11"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> percent) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb653-12" title="12"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>sex, <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb653-13" title="13"><span class="st">  </span><span class="kw">theme_classic</span>()</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-384-1.png" width="576" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-383-1.png" width="576" /></p>
 </div>
 </div>
 <div id="more-with-baby-names" class="section level3">
-<h3><span class="header-section-number">6.7.7</span> More with baby names</h3>
+<h3><span class="header-section-number">6.7.6</span> More with baby names</h3>
 <p>Now let’s look at baby names based on the letter they start with.</p>
 <ul>
 <li>For the full dataframe, what proportion of baby names start with each letter?
@@ -1518,7 +1504,7 @@ about for the years from 1980 to 1995? Finally, how does the proportion change
 over the years in the dataframe?</li>
 </ul>
 <div id="example-r-code-13" class="section level4">
-<h4><span class="header-section-number">6.7.7.1</span> Example R code</h4>
+<h4><span class="header-section-number">6.7.6.1</span> Example R code</h4>
 <p>For the full dataframe, what proportion of baby names start with “A” or “K”?</p>
 <p>To start, create a column with the first letter of each name. You can use
 functions in the <code>stringr</code> package to do this. The easiest might be to
@@ -1571,7 +1557,7 @@ to divide this by the total number of names:</p>
 <a class="sourceLine" id="cb658-5" title="5"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb658-6" title="6"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> percent) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb658-7" title="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Percent of names that start with ...&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-387-1.png" width="384" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-386-1.png" width="384" /></p>
 <p>Create the same plot using the names of people in our class. First, create a
 vector with the names of people in our class:</p>
 <div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb659-1" title="1">student_list &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;Aeriel&quot;</span>, <span class="st">&quot;Rebecca&quot;</span>, <span class="st">&quot;Grant&quot;</span>,</a>
@@ -1609,7 +1595,7 @@ vector with the names of people in our class:</p>
 <a class="sourceLine" id="cb661-9" title="9"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb661-10" title="10"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> percent) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb661-11" title="11"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Percent of students with</span><span class="ch">\n</span><span class="st">a name that starts with ...&quot;</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-388-1.png" width="288" /></p>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-387-1.png" width="288" /></p>
 <p>What proportion of names start with “A” or “K” across the full dataset? You can
 create a dataframe that (1) pulls out the first letter of each name (just like
 we did for the last part of the question) and (2) tests whether that first letter
@@ -1721,9 +1707,23 @@ is true and plot how this changes over the years:</p>
 <a class="sourceLine" id="cb675-5" title="5"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">name =</span> <span class="st">&quot;Percent of baby&#39;s with names</span><span class="ch">\n</span><span class="st">that start with &#39;A&#39; or &#39;K&#39;&quot;</span>,</a>
 <a class="sourceLine" id="cb675-6" title="6">                     <span class="dt">labels =</span> percent) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb675-7" title="7"><span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">y =</span> <span class="dv">0</span>)</a></code></pre></div>
-<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-394-1.png" width="576" /></p>
-
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-393-1.png" width="576" /></p>
 </div>
+</div>
+<div id="exploring-taxonomic-profiling-data" class="section level3">
+<h3><span class="header-section-number">6.7.7</span> Exploring taxonomic profiling data</h3>
+<ul>
+<li>Learn about bioconductor at <a href="https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html">bioconductor.org</a>. Bioconductor provides opensource software for bioinfomatics. Bioconductor provides an R package called <code>microbiome</code> that includes tools for exploring and analysing microbiome profiling data. We want to explore a dataset on genus-level microbiota profiling (atlas1006). Navigate this page to figure out how you can get this example raw data (hint: you’ll need to follow the installation instructions on the bioconductor website, which are a little different compared to a regualr R package).</li>
+<li>Create an object in your workspace containing the <code>atlas1006</code> data. How is the data structured in the object you just created?</li>
+<li>On the <a href="https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html">microbiome page</a>, find the documentation describing the <code>atlas1006</code> data. Look through this documentation to figure out what information is included in the data.</li>
+<li>Use the <code>str</code> function to take a look at the structure of the <code>atlas1006</code> data. How many slots does the object contain?</li>
+<li>Extract …</li>
+<li>Discuss what steps you would need to take to create the following plot. To start, don’t write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format.</li>
+<li>Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I’d like you to try to figure it out yourselves first.</li>
+<li>Discuss which of the variables in this dataset could be used to merge the extracted with …</li>
+</ul>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-394-1.png" width="768" /></p>
+
 </div>
 </div>
 </div>
