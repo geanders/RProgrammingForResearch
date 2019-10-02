@@ -290,7 +290,7 @@ Often, we don't want to just apply a statistical test to our entire data set.
 
 Let's look at an example from the `microbiome package`.
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 library(microbiome)
 data(peerj32)
 print(names(peerj32))
@@ -304,8 +304,10 @@ peerj32_tibble <- (psmelt(peerj32$phyloseq)) %>%
   dplyr::select(-Sample) %>%
   rename_all(tolower) %>%
   as_tibble()
+```
 
-peerj32_tibble
+```{r, echo=FALSE}
+slice(peerj32_tibble, 1:3)
 ```
 
 We can make a plot from the resulting tibble to help us explore the data.
@@ -321,21 +323,20 @@ ggplot(peerj32_tibble, aes(x = subject, y = abundance, color = gender)) +
   xlab("Subject ID")
 ```
 
-We can then group the data by `phylum` and `group` and use the `nest` function to create a new dataframe containing the nested data:
+We can group the data by `phylum` and `group` and then use the `nest` function from the `tidyr` package to create a new dataframe containing the nested data:
 
 ```{r}
 library(tidyr)
-
 nested_data <- peerj32_tibble %>%
   group_by(phylum, group) %>%
   nest()
-
-nested_data
 ```
 
-We can then use the `map` function from the `purrr` package to apply functions to each nested dataframe. Let's start by counting the rows in each nested dataframe and filtering out dataframe with less than 25 rows:
+```{r}
+slice(nested_data, 1:3)
+```
 
-We can then apply functions such as the `t.test` function to each nested dataframe.
+We can then use the `map` function from the `purrr` package to apply functions to each nested dataframe. Let's start by counting the rows in each nested dataframe and filtering out dataframes with less than 25 rows.
 
 ```{r}
 library(purrr)
@@ -350,28 +351,37 @@ Now let's perform a t-test on each out the nested dataframes. Remember, each nes
 ```{r}
 t_tests <- filtered_data %>%
   mutate(t_test = map(data, ~t.test(abundance ~ gender, data = .x)))
+```
+
+```{r}
 t_tests
 ```
 
-The resulting dataframe contains a new column containing the model objects. Just as we mapped the `t.test` function, we can map the `tidying` functions from the `broom` package to extract the information we need from the nested model objects.
+The resulting dataframe contains a new column, which contains the model objects. Just as we mapped the `t.test` function, we can map the *tidying* functions from the `broom` package to extract the information we want from the nested model objects.
 
 ```{r}
 summary <- t_tests %>%
   mutate(summary = map(t_test, broom::glance))
 ```
 
-The final step is to return a tidy dataframe, we can do this usiing the `unnest` function. Note: its always wise to `ungroup` after you are done operating on your grouped variables - you may run into problems if you forget your dataframe is grouped later on!
+```{r}
+summary
+```
+
+The final step is to return a tidy dataframe, we can do this using the `unnest` function from the `tidyr` package. Note: it is also wise to `ungroup` after you are done operating on your grouped variables - you may run into problems if you forget your dataframe is grouped later on!
 
 ```{r}
 unnested <- summary %>%
   unnest(summary, .drop = TRUE) %>%
   ungroup() %>%
   dplyr::select(group, phylum, p.value)
+```
 
+```{r}
 unnested
 ```
 
-We can then plot the results for the "LGG" (non-placebo) group.
+We can then plot the results. Let's do this for the "LGG" (non-placebo) group, using our principles for good graphics.
 
 ```{r}
 p_data <- unnested %>%
