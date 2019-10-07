@@ -1274,38 +1274,136 @@ a_or_k_year %>%
 
 ### Exploring taxonomic profiling data
 
-- Learn about bioconductor at [bioconductor.org](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html). Bioconductor provides opensource software for bioinfomatics. Bioconductor provides an R package called `microbiome` that includes tools for exploring and analysing microbiome profiling data. We want to explore a dataset on genus-level microbiota profiling (atlas1006). Navigate this page to figure out how you can get this example raw data (hint: you'll need to follow the installation instructions on the bioconductor website, which are a little different compared to a regualr R package).
-- Create an object in your workspace containing the `atlas1006` data. How is the data structured in the object you just created?
-- On the [microbiome page](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html), find the documentation describing the `atlas1006` data. Look through this documentation to figure out what information is included in the data.
-- Use the `str` function to take a look at the structure of the `atlas1006` data. How many slots does the object contain?
-- Extract ...
+- We'll be using a package on Bioconductor called `microbiome`. You'll need to install that package from Bioconductor. This uses code that's different from the default you use to download a package from CRAN. Go to [the Bioconductor page for the microbiome package](https://bioconductor.org/packages/release/bioc/html/microbiome.html) and figure out how to install this package based on instructions on that page. 
+- The `microbiome` that includes tools for exploring and analysing microbiome profiling data. This package has a website with tutorial information [here](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html#installation). We want to explore a dataset on genus-level microbiota profiling (`atlas1006`). Navigate to the tutorial webpage to figure out how you can get this example raw data loaded in your R session. Use the `class` and `str` functions to start exploring this data. Is it in a dataframe (tibble)? Is it in a tidy format? How is the data structured?
+- On the [microbiome page](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html), find the documentation describing the `atlas1006` data. Look through this documentation to figure out what information is included in the data. Also, check the helpfile for this dataset and look up the original article describing the data (you can find the article information in the help resources).
+- The `atlas1006` data is stored in a special object class called a "phyloseq" object (you should have seen this when you used `class` with the object). You can pull certain parts of this data using special functions called "accessors". One is `get_variable`. Try running `get_variable` with the `atlas1006` data. What do you think this data is showing?
+- Which different nationalities are represented by the study subjects, based on the dataframe you extracted in the last step? How many samples have each nationality? Which different BMI groups are included? Does it look like the study was balanced among these groups? 
+- Based on the data you extracted, does it look like diversity varies much between males and females? Across BMI groups?
 - Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format.
 - Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I'd like you to try to figure it out yourselves first.
-- Discuss which of the variables in this dataset could be used to merge the extracted with ...
+
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
 library(tidyverse)
-library(lubridate)
 library(ggthemes)
 library(microbiome)
 
 data(atlas1006)
 
-diversity <- as_tibble(sample_data(atlas1006)) %>%
-  dplyr::select(sex, nationality, diversity, bmi_group)
-
-
-diversity %>% 
-  filter(!is.na(nationality) & !is.na(sex) & !is.na(bmi_group)) %>%
-  group_by(nationality, sex, bmi_group) %>%
-  summarize(mean_diveristy = mean(diversity, na.rm = TRUE),
-            sd_diveristy = sd(diversity, na.rm = TRUE)) %>%
-  ggplot(aes(x = nationality, y = mean_diveristy, color = sex)) +
-  geom_point(alpha = 0.25, size = 4) +
-  xlab("Nationality") +
-  ylab("Mean Diversity Score") +
-  facet_wrap(~ bmi_group) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "top")
+atlas1006 %>% 
+  get_variable() %>% 
+  ggplot(aes(x = bmi_group, y = diversity, color = sex)) + 
+  geom_boxplot(alpha = 0.2) + 
+  facet_wrap(~ nationality)
 ```
+
+
+#### Example R code
+
+Install the `microbiome` package from Bioconductor: 
+
+```{r eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("microbiome")
+```
+
+Load the `atlas1006` example data in the `microbiome` package and explore it with `str` and `class`: 
+
+```{r}
+library(microbiome)
+data(atlas1006)
+
+class(atlas1006)
+str(atlas1006)
+```
+
+Pull out the data frame that contains information on each study subject in the `atlas1006` data by using the `get_variable` accessor function:
+
+```{r}
+get_variable(atlas1006)
+```
+
+**Note:** Since the first argument to `get_variable` is the phyloseq object (here, the `atlas1006` data object), you can pipe into the function, like this: 
+
+```{r eval = FALSE}
+atlas1006 %>% 
+  get_variable()
+```
+
+Find out the different nationalities included in the data: 
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% # Change output from a data.frame to a tibble
+  group_by(nationality) %>% 
+  count()
+```
+
+It looks like most subjects were from Central Europe, with the next-largest group from 
+Scandinavia. **Note:** If you wanted to rearrange this summary to give the nationalities
+in order of the number of subjects in each, you could add on a `forcats` function: 
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% # Change output from a data.frame to a tibble
+  mutate(nationality = fct_infreq(nationality)) %>% 
+  group_by(nationality) %>% 
+  count() 
+```
+
+Find out the different BMI groups included in the data and if the study seemed to be balanced across those groups: 
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% # Change output from a data.frame to a tibble
+  group_by(bmi_group) %>% 
+  count()
+```
+
+There were six different BMI groups. Over 100 study subjects had this information missing. 
+The samples were not evenly distributed across these BMI groups. Instead, the most common (lean) had
+almost 500 subjects, while the smaller BMI-group samples were around 20 people. 
+
+See if it look like diversity varies much between males and females:
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% 
+  group_by(sex) %>% 
+  summarize(mean_diversity = mean(diversity))
+```
+
+See if it look like diversity varies much across BMI groups:
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% 
+  group_by(bmi_group) %>% 
+  summarize(mean_diversity = mean(diversity))
+```
+
+
+Here is the code for the plot: 
+
+```{r}
+library(tidyverse)
+library(ggthemes)
+library(microbiome)
+
+data(atlas1006)
+
+atlas1006 %>% 
+  get_variable() %>% 
+  ggplot(aes(x = bmi_group, y = diversity, color = sex)) + 
+  geom_boxplot(alpha = 0.2) + 
+  facet_wrap(~ nationality)
+```
+

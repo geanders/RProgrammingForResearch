@@ -1,5 +1,9 @@
 ---
 title: "Exploring data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 output:
   beamer_presentation:
     theme: metropolis
@@ -19,6 +23,13 @@ data(nepali)
 
 # Simple statistical tests in R
 
+## Example data
+
+We'll use a dataset for the first example that you can download [here](https://raw.githubusercontent.com/geanders/RProgrammingForResearch/master/data/accident.csv).
+
+This data gives ever fatal motor vehicle accident that occurred in the US in 2016. 
+The data originally came from the Federal Accident Reporting System (FARS).
+
 ## Example: Probability of fatal crashes in Las Vegas
 
 Let's pull the fatal accident data just for the county that includes Las Vegas, NV. 
@@ -32,6 +43,8 @@ Therefore, we can filter down to Clark County data in the FARS data we collected
 ```{r message = FALSE, error = FALSE}
 library(readr)
 library(dplyr)
+# Adjust the following for the filepath of the data on 
+# your own
 clark_co_accidents <- read_csv("../data/accident.csv") %>% 
   filter(STATE == 32 & COUNTY == 3)
 ```
@@ -85,15 +98,15 @@ We're missing the dates without a fatal crash, so let's add those. First, create
 with all dates in 2016:
 
 ```{r}
-all_dates <- data_frame(date = seq(ymd("2016-01-01"), 
-                                   ymd("2016-12-31"), by = 1))
+all_dates <- tibble(date = seq(ymd("2016-01-01"), 
+                               ymd("2016-12-31"), by = 1))
 all_dates %>% 
   slice(1:5)
 ```
 
 ## Example: Probability of fatal crashes in Las Vegas
 
-Then merge this with the original dataset on Las Vegas fatal crashes and make any day missing from the fatal crashes dataset have a "0" for number of fatal accidents (`n`):
+Then merge this with the dataset on Las Vegas fatal crashes and make any day missing from the fatal crashes dataset have a "0" for number of fatal accidents (`n`):
 
 ```{r}
 clark_co_accidents <- clark_co_accidents %>% 
@@ -313,7 +326,7 @@ library(listviewer)
 jsonedit(a_list)
 ```
 
-```{r echo = FALSE, out.width = "\\textwidth"}
+```{r echo = FALSE, out.width = "\\textwidth", eval = FALSE}
 include_graphics("figures/listviewer_pane.png")
 ```
 
