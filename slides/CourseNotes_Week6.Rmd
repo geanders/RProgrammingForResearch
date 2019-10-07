@@ -639,7 +639,7 @@ To fix this, we need to convert the row names into a new column. We can do this 
 ```{r echo = 2:4}
 library(tibble)
 VADeaths %>%
-  as_tibble() %>% ## Convert from matrix to dataframe
+  as.data.frame() %>% ## Convert from matrix to dataframe
   rownames_to_column(var = "age")
 ```
 
@@ -651,9 +651,9 @@ Gather the data to convert column names to a new column:
 
 ```{r}
 VADeaths %>%
-  as_tibble() %>% 
+  as.data.frame() %>%
   rownames_to_column(var = "age") %>%
-  gather(key = gender_loc, value = mort_rate, - age) %>%
+  pivot_longer(- age, names_to = "gender_loc", values_to = "mort_rate") %>%
   slice(1:4)
 ```
 
@@ -665,9 +665,9 @@ Separate the column into two separate columns for "gender" and "loc" (rural / ur
 
 ```{r}
 VADeaths %>%
-  as_tibble() %>% 
+  as.data.frame() %>%
   rownames_to_column(var = "age") %>%
-  gather(key = gender_loc, value = mort_rate, - age) %>%
+  pivot_longer(- age, names_to = "gender_loc", values_to = "mort_rate") %>%
   separate(col = gender_loc, into = c("gender", "loc"),
            sep = " ") %>%
   slice(1)
@@ -679,9 +679,9 @@ Now that the data is tidy, it's much easier to plot:
 
 ```{r echo = FALSE}
 VADeaths <- VADeaths %>%
-  as_tibble() %>% 
+  as.data.frame() %>%
   rownames_to_column(var = "age") %>%
-  gather(key = gender_loc, value = mort_rate, - age) %>%
+  pivot_longer(- age, names_to = "gender_loc", values_to = "mort_rate") %>%
   separate(col = gender_loc, into = c("loc", "gender"),
            sep = " ")
 ```
