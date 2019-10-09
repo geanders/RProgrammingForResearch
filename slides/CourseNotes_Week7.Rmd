@@ -85,8 +85,8 @@ Most lists are not "tidy" data. However, we'll cover some ways that you can easi
 
 ```{r}
 example_list <- list(a = sample(1:10, 5), 
-                     b = data_frame(letters = letters[1:3], 
-                                    numbers = 1:3))
+                     b = tibble(letters = letters[1:3], 
+                                numbers = 1:3))
 example_list
 ```
 
@@ -153,34 +153,46 @@ str(a_list)
 
 ## Exploring lists
 
-Using `str` to print out the list's structure doesn't produce the easiest to digest output. We can use the `???` function from the `listviewer` package to create a widget in the `viewer` pane to more esily explore our list.
+Using `str` to print out the list's structure doesn't produce the easiest to digest output. We can use the `jsonedit` function from the `listviewer` package to create a widget in the Viewer pane to more esily explore our list.
 
 ```{r, eval=FALSE}
 library(listviewer)
 jsonedit(a_list)
 ```
 
-```{r echo = FALSE, out.width = "\\textwidth", eval = FALSE}
-include_graphics("figures/listviewer_pane.png")
+```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = "center"}
+include_graphics("../figures/listviewer_pane.png")
 ```
 
-## Exploring lists
+<!-- ## Exploring lists -->
 
-Sometimes you'll see unnecessary lists-of-lists, perhaps when importing data into R created. Or a list with multiple elements that you would like to combine. You can remove a level of hierarchy from a list using the `flatten` function from the `purrr` package:
+<!-- Sometimes you'll see unnecessary lists-of-lists, perhaps when importing data into R created. Or a list with multiple elements that you would like to combine.  -->
 
-```{r cakl, warning = FALSE}
-library(purrr)
-a_list
-flatten(a_list)
-```
+<!-- \footnotesize -->
+
+<!-- ```{r cakl, warning = FALSE} -->
+<!-- library(purrr) -->
+<!-- a_list -->
+<!-- ``` -->
+
+<!-- ## Exploring lists -->
+
+<!-- You can remove a level of hierarchy from a list using the `flatten` function from the `purrr` package: -->
+
+<!-- \footnotesize -->
+
+<!-- ```{r} -->
+<!-- flatten(a_list) -->
+<!-- ``` -->
+
 
 ## Lists versus dataframes
 
 As a note, a dataframe is actually just a very special type of list. It is a list where every element (column in the dataframe) is a vector of the same length, and the object has a special attribute specifying that it is a dataframe. 
 
 ```{r}
-example_df <- data_frame(letters = letters[1:3], 
-                         number = 1:3)
+example_df <- tibble(letters = letters[1:3], 
+                     number = 1:3)
 class(example_df)
 is.list(example_df)
 ```
@@ -323,6 +335,8 @@ We'll create a very simple dataframe with only this column:
 
 ```{r}
 ex_df <- tibble(norm_vector = normal_ex_vector)
+ex_df %>% 
+  slice(1:3)
 ```
 
 ## Statistical tests
