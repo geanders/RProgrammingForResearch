@@ -21,173 +21,7 @@ data(worldcup)
 data(nepali)
 ```
 
-# Simple statistical tests in R
-
-## Example data
-
-We'll use a dataset for the first example that you can download [here](https://raw.githubusercontent.com/geanders/RProgrammingForResearch/master/data/accident.csv).
-
-This data gives ever fatal motor vehicle accident that occurred in the US in 2016. 
-The data originally came from the Federal Accident Reporting System (FARS).
-
-## Example: Probability of fatal crashes in Las Vegas
-
-Let's pull the fatal accident data just for the county that includes Las Vegas, NV. 
-
-Each US county has a unique identifier (FIPS code), composed of a two-digit state FIPS and a three-digit county FIPS code. The state FIPS for Nevada is 32; the county FIPS for Clark County is 003.
-
-## Example: Probability of fatal crashes in Las Vegas
-
-Therefore, we can filter down to Clark County data in the FARS data we collected with the following code:
-
-```{r message = FALSE, error = FALSE}
-library(readr)
-library(dplyr)
-# Adjust the following for the filepath of the data on 
-# your own
-clark_co_accidents <- read_csv("../data/accident.csv") %>% 
-  filter(STATE == 32 & COUNTY == 3)
-```
-
-We can also check the number of accidents: 
-
-```{r}
-clark_co_accidents %>% 
-  count()
-```
-
-## Example: Probability of fatal crashes in Las Vegas
-
-We want to test if the probability, on a Friday or Saturday, of a fatal accident occurring is higher than on other days of the week. Let's clean the data up a bit as a start: 
-
-```{r message = FALSE, warning = FALSE}
-library(tidyr)
-library(lubridate)
-clark_co_accidents <- clark_co_accidents %>% 
-  select(DAY, MONTH, YEAR) %>% 
-  unite(date, DAY, MONTH, YEAR, sep = "-") %>% 
-  mutate(date = dmy(date))
-```
-
-## Example: Probability of fatal crashes in Las Vegas
-
-Here's what the data looks like now: 
-
-```{r}
-clark_co_accidents %>% 
-  slice(1:5)
-```
-
-## Example: Probability of fatal crashes in Las Vegas
-
-Next, let's get the count of accidents by date: 
-
-```{r}
-clark_co_accidents <- clark_co_accidents %>% 
-  group_by(date) %>% 
-  count() %>% 
-  ungroup()
-clark_co_accidents %>% 
-  slice(1:3)
-```
-
-
-## Example: Probability of fatal crashes in Las Vegas
-
-We're missing the dates without a fatal crash, so let's add those. First, create a dataframe
-with all dates in 2016:
-
-```{r}
-all_dates <- tibble(date = seq(ymd("2016-01-01"), 
-                               ymd("2016-12-31"), by = 1))
-all_dates %>% 
-  slice(1:5)
-```
-
-## Example: Probability of fatal crashes in Las Vegas
-
-Then merge this with the dataset on Las Vegas fatal crashes and make any day missing from the fatal crashes dataset have a "0" for number of fatal accidents (`n`):
-
-```{r}
-clark_co_accidents <- clark_co_accidents %>% 
-  right_join(all_dates, by = "date") %>% 
-  # If `n` is missing, set to 0. Otherwise keep value.
-  mutate(n = ifelse(is.na(n), 0, n))
-clark_co_accidents %>% 
-  slice(1:3)
-```
-
-## Example: Probability of fatal crashes in Las Vegas
-
-Next, let's add some information about day of week and weekend: 
-
-```{r}
-clark_co_accidents <- clark_co_accidents %>% 
-  mutate(weekday = wday(date, label = TRUE), 
-         weekend = weekday %in% c("Fri", "Sat"))
-clark_co_accidents %>% 
-  slice(1:3)
-```
-
-
-## Example: Probability of fatal crashes in Las Vegas
-
-Now let's calculate the probability that a day has at least one fatal crash, separately for weekends and weekdays: 
-
-```{r}
-clark_co_accidents <- clark_co_accidents %>% 
-  mutate(any_crash = n > 0)
-crash_prob <- clark_co_accidents %>% 
-  group_by(weekend) %>% 
-  summarize(n_days = n(),
-            crash_days = sum(any_crash)) %>% 
-  mutate(prob_crash_day = crash_days / n_days)
-crash_prob
-```
-
-## Example: Probability of fatal crashes in Las Vegas
-
-In R, you can use `prop.test` to test if two proportions are equal. Inputs include the total number of trials in each group (`n =`) and the number of "successes"" (`x = `):
-
-\footnotesize
-
-```{r}
-prop.test(x = crash_prob$crash_days, 
-          n = crash_prob$n_days)
-```
-
-## Find out more about statistical tests in R
-
-I won't be teaching in this course how to find the correct statistical test. That's 
-something you'll hopefully learn in a statistics course. 
-
-There are also a variety of books that can help you with this, including some that you 
-can access free online through CSU's library. One servicable introduction is "Statistical 
-Analysis with R for Dummies".
-
-## In-course exercise
-
-We'll take a break now to do the first part of the in-course exercise.
-
-## Output of statistical tests: List objects
-
-You can create an object from the output of any statistical test in R. Typically, this will be (at least at some level) in an object class called a "list":
-
-```{r}
-vegas_test <- prop.test(x = crash_prob$crash_days, 
-                        n = crash_prob$n_days)
-is.list(vegas_test)
-```
-
-## Output of statistical tests: List objects
-
-So far, we've mostly worked with two object types in R, **dataframes** and **vectors**.
-
-In the next subsection we'll look more at two object classes we haven't looked at much,
-**matrices** and **lists**. Both have important roles once you start applying more
-advanced methods to analyze your data. 
-
-# Matrices
+# Other R objects: Matrices and lists
 
 ## Matrices
 
@@ -351,57 +185,508 @@ class(example_df)
 is.list(example_df)
 ```
 
-## List object from a statistical test
+## In-course Exercise
 
-Let's look at the list object from the statistical test we ran for Las Vegas: 
+We'll take a break now to do section 1 of the In-course Exercise for Chapter 7.
 
-\footnotesize
+# Simple statistical tests in R
+
+## Statistical tests
+
+R has many different functions for different statistical tests. 
+
+So far, I have not found a statistical test I wanted to perform that did not
+have a function to do it in R.
+
+## Statistical tests
+
+We'll start with a pretty simple test called the "Shapiro-Wilk test of normality."
+
+The **null hypothesis** for this test is that the data follow a normal distribution. 
+If the p-value from running the test is lower than a specified threshold (often 0.05),
+then you reject the null hypothesis.
+
+## Statistical tests
+
+Often, a parametric test will require the assumption that one or more 
+variables follow a normal distribution. This test can help check that assumption.
+
+If you find that the distribution does not seem to be normal, you can make
+adjustments, like transforming the variable or using a non-parametric test
+(see [here](https://www.sheffield.ac.uk/polopoly_fs/1.579191!/file/stcp-karadimitriou-normalR.pdf) 
+for a nice overview). 
+
+## Statistical tests
+
+We'll use this test as an example, but it has two characteristics that are 
+common to most simple statistical tests functions in R: 
+
+1. It inputs a vector (or vectors, for some tests), rather than a tidy dataframe.
+2. It outputs a list object, rather than a dataframe.
+
+We'll talk about both of these characteristics and how we can still 
+work statistical tests into a "tidy" workflow, where we're keeping the 
+data in a tidy dataframe format most of the time.
+
+## Statistical tests
+
+To show how this test works, let's simulate some data that we know are normal. 
+
+There are several functions in R that let you simulate a vector of data
+from a specified distribution. For a normal distribution, the function is 
+`rnorm`. 
+
+For this function, you'll specify how many values you want in the vector (`n`) and
+the values of the mean (`mean`) and standard deviation (`sd`) of the normal 
+distribution.
+
+## Statistical tests
+
+For example, you can run this to create a vector with a random sample of 
+1,000 values from a normal distribution with mean 200 and standard deviation 50:
 
 ```{r}
-str(vegas_test)
+normal_ex_vector <- rnorm(n = 1000, mean = 200, sd = 50)
+head(normal_ex_vector)
 ```
 
-## List object from statistical test
+## Statistical tests
 
-We can pull out an element using the `$` notation: 
+Let's check the histogram of this data. Since this data in in a vector, not a 
+dataframe, we should use `qplot` from `ggplot2` instead of `ggplot`:
+
+```{r out.width = "0.8\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center", message = FALSE}
+qplot(normal_ex_vector, geom = "histogram")
+```
+
+## Statistical tests
+
+It looks pretty normal, but let's run the test. The function to run the test 
+is `shapiro.test`. Its only argument is `x`, the vector that you want to check. 
 
 ```{r}
-vegas_test$p.value
+shapiro.test(x = normal_ex_vector)
 ```
 
-Or using the `[[` notation:
+## Statistical tests
+
+The default for this function is to print out the results in a way that's easy to 
+read on the screen. However, you can also save the results from the test in a new object:
 
 ```{r}
-vegas_test[[4]]
+ex_sw_result <- shapiro.test(x = normal_ex_vector)
 ```
 
-## Broom package
+## Statistical tests
 
-You may have noticed, though, that this output is not a tidy dataframe. 
+This object has a special class called "htest":
 
-Ack! That means we can't use all the tidyverse tricks we've learned so far in the course!
+```{r}
+class(ex_sw_result)
+```
 
-Fortunately, David Robinson noticed this problem and came up with a package called `broom` that can "tidy up" a lot of these kinds of objects.
+Really, though, this is just a special kind of list:
 
-## Broom package
+```{r}
+is.list(ex_sw_result)
+```
 
-The `broom` package has three main functions: 
+## Statistical tests
 
-- `glance`: Return a one-row, tidy dataframe from a model or other R object
-- `tidy`: Return a tidy dataframe from a model or other R object
-- `augment`: "Augment" the dataframe you input to the statistical function
+If you run `str` on the object, you can see it has all the information that
+is usually printed by the function tucked away in different slots of the list:
 
-## Broom package
+```{r}
+str(ex_sw_result)
+```
 
-Here is the output for `tidy` for the `vegas_test` object (`augment`
-won't work for this type of object, and `glance` gives the same thing as `tidy`): 
+## Statistical tests
 
-\footnotesize
+There is a package called `broom` that can pull this information out
+and format it as a tidy dataframe. For example:
 
 ```{r}
 library(broom)
-tidy(vegas_test)
+tidy(ex_sw_result)
 ```
+
+This seems unexciting for this example, but trust me, it turns out that being
+able to do this is **very** exciting. 
+
+## Statistical tests
+
+Now, let's look at how this process would work if you were starting with a vector
+that was a column in a tidy dataframe. Since you're using tidyverse tools, you'll 
+probably find you want to do this often. 
+
+We'll create a very simple dataframe with only this column:
+
+```{r}
+ex_df <- tibble(norm_vector = normal_ex_vector)
+```
+
+## Statistical tests
+
+Now you can use `ggplot` to make the histogram:
+
+```{r out.width = "0.8\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center", message = FALSE}
+ggplot(ex_df, aes(x = norm_vector)) + 
+  geom_histogram()
+```
+
+## Statistical tests
+
+To fit the test, you'll need to be able to pull this vector out of the dataframe. To 
+do that, you can use the `pluck` function from the `purrr` package in a pipeline. That
+function "plucks" out a single column as a vector. For example:
+
+```{r}
+library(purrr)
+ex_df %>% 
+  pluck("norm_vector") %>% 
+  head()
+```
+
+## Statistical tests
+
+With that function, you can pipe right into the Shapiro-Wilk test function: 
+
+```{r}
+ex_df %>% 
+  pluck("norm_vector") %>% 
+  shapiro.test()
+```
+
+## Statistical tests
+
+Now just add on the `tidy` function to get the test output in a tidy dataframe, and you're
+back to your typical format!
+
+```{r}
+ex_df %>% 
+  pluck("norm_vector") %>% 
+  shapiro.test() %>% 
+  tidy()
+```
+
+## Statistical tests
+
+Now let's look at some real data. The variable dataframe of the `atlas1006`
+dataset in the `microbiome` library has a column on `diversity`.
+
+We might want
+to test if diversity is different by gender, nationality, or other factors. To 
+pick which statistical tests to use to check those questions, though, it will 
+help to know if this variable is normally distributed. 
+
+## Statistical tests
+
+The `atlas1006` data is stored in a `phyloseq` object (think of it as a fancy type 
+of list). To extract a dataframe with characteristics of the samples, you'll need to 
+use `get_variable` (which we can pipe into if we want):
+
+```{r message = FALSE, warning = FALSE}
+library(microbiome)
+data(atlas1006)
+atlas1006 %>%  
+  get_variable() %>% 
+  slice(1:3)
+```
+
+## Statistical tests
+
+There are a few people that they measure several times, so there are more rows than the number 
+of people they measure:
+
+```{r}
+atlas1006 %>%  
+  get_variable() %>% 
+  nrow()
+```
+
+## Statistical tests
+
+We probably just want to work with the first measurement from each person, so let's use `filter`
+to filter to samples with a "time" value of 0 (first measurement): 
+
+```{r}
+atlas1006 %>%  
+  get_variable() %>% 
+  filter(time == 0) %>% 
+  nrow() 
+```
+
+This looks right.
+
+## Statistical tests
+
+We can use a histogram to visually check the normality: 
+
+```{r out.width = "0.5\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center", message = FALSE}
+atlas1006 %>%  
+  get_variable() %>% 
+  filter(time == 0) %>% 
+  ggplot(aes(x = diversity)) + 
+  geom_histogram()
+```
+
+
+## Statistical tests
+
+To extract the column on `diversity` as a vector, we can use `pluck`: 
+
+```{r}
+atlas1006 %>%  
+  get_variable() %>% 
+  filter(time == 0) %>% 
+  pluck("diversity") %>% 
+  head()
+```
+
+## Statistical tests
+
+Now add on the Shapiro test function: 
+
+```{r}
+atlas1006 %>%  
+  get_variable() %>% 
+  filter(time == 0) %>% 
+  pluck("diversity") %>% 
+  shapiro.test()
+```
+
+## Statistical tests
+
+And finally add on the `tidy` function: 
+
+```{r}
+atlas1006 %>%  
+  get_variable() %>% 
+  filter(time == 0) %>% 
+  pluck("diversity") %>% 
+  shapiro.test() %>% 
+  tidy()
+```
+
+
+<!-- ## Example data -->
+
+<!-- We'll use a dataset for the first example that you can download [here](https://raw.githubusercontent.com/geanders/RProgrammingForResearch/master/data/accident.csv). -->
+
+<!-- This data gives ever fatal motor vehicle accident that occurred in the US in 2016.  -->
+<!-- The data originally came from the Federal Accident Reporting System (FARS). -->
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- Let's pull the fatal accident data just for the county that includes Las Vegas, NV.  -->
+
+<!-- Each US county has a unique identifier (FIPS code), composed of a two-digit state FIPS and a three-digit county FIPS code. The state FIPS for Nevada is 32; the county FIPS for Clark County is 003. -->
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- Therefore, we can filter down to Clark County data in the FARS data we collected with the following code: -->
+
+<!-- ```{r message = FALSE, error = FALSE} -->
+<!-- library(readr) -->
+<!-- library(dplyr) -->
+<!-- # Adjust the following for the filepath of the data on  -->
+<!-- # your own -->
+<!-- clark_co_accidents <- read_csv("../data/accident.csv") %>%  -->
+<!--   filter(STATE == 32 & COUNTY == 3) -->
+<!-- ``` -->
+
+<!-- We can also check the number of accidents:  -->
+
+<!-- ```{r} -->
+<!-- clark_co_accidents %>%  -->
+<!--   count() -->
+<!-- ``` -->
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- We want to test if the probability, on a Friday or Saturday, of a fatal accident occurring is higher than on other days of the week. Let's clean the data up a bit as a start:  -->
+
+<!-- ```{r message = FALSE, warning = FALSE} -->
+<!-- library(tidyr) -->
+<!-- library(lubridate) -->
+<!-- clark_co_accidents <- clark_co_accidents %>%  -->
+<!--   select(DAY, MONTH, YEAR) %>%  -->
+<!--   unite(date, DAY, MONTH, YEAR, sep = "-") %>%  -->
+<!--   mutate(date = dmy(date)) -->
+<!-- ``` -->
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- Here's what the data looks like now:  -->
+
+<!-- ```{r} -->
+<!-- clark_co_accidents %>%  -->
+<!--   slice(1:5) -->
+<!-- ``` -->
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- Next, let's get the count of accidents by date:  -->
+
+<!-- ```{r} -->
+<!-- clark_co_accidents <- clark_co_accidents %>%  -->
+<!--   group_by(date) %>%  -->
+<!--   count() %>%  -->
+<!--   ungroup() -->
+<!-- clark_co_accidents %>%  -->
+<!--   slice(1:3) -->
+<!-- ``` -->
+
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- We're missing the dates without a fatal crash, so let's add those. First, create a dataframe -->
+<!-- with all dates in 2016: -->
+
+<!-- ```{r} -->
+<!-- all_dates <- tibble(date = seq(ymd("2016-01-01"),  -->
+<!--                                ymd("2016-12-31"), by = 1)) -->
+<!-- all_dates %>%  -->
+<!--   slice(1:5) -->
+<!-- ``` -->
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- Then merge this with the dataset on Las Vegas fatal crashes and make any day missing from the fatal crashes dataset have a "0" for number of fatal accidents (`n`): -->
+
+<!-- ```{r} -->
+<!-- clark_co_accidents <- clark_co_accidents %>%  -->
+<!--   right_join(all_dates, by = "date") %>%  -->
+<!--   # If `n` is missing, set to 0. Otherwise keep value. -->
+<!--   mutate(n = ifelse(is.na(n), 0, n)) -->
+<!-- clark_co_accidents %>%  -->
+<!--   slice(1:3) -->
+<!-- ``` -->
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- Next, let's add some information about day of week and weekend:  -->
+
+<!-- ```{r} -->
+<!-- clark_co_accidents <- clark_co_accidents %>%  -->
+<!--   mutate(weekday = wday(date, label = TRUE),  -->
+<!--          weekend = weekday %in% c("Fri", "Sat")) -->
+<!-- clark_co_accidents %>%  -->
+<!--   slice(1:3) -->
+<!-- ``` -->
+
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- Now let's calculate the probability that a day has at least one fatal crash, separately for weekends and weekdays:  -->
+
+<!-- ```{r} -->
+<!-- clark_co_accidents <- clark_co_accidents %>%  -->
+<!--   mutate(any_crash = n > 0) -->
+<!-- crash_prob <- clark_co_accidents %>%  -->
+<!--   group_by(weekend) %>%  -->
+<!--   summarize(n_days = n(), -->
+<!--             crash_days = sum(any_crash)) %>%  -->
+<!--   mutate(prob_crash_day = crash_days / n_days) -->
+<!-- crash_prob -->
+<!-- ``` -->
+
+<!-- ## Example: Probability of fatal crashes in Las Vegas -->
+
+<!-- In R, you can use `prop.test` to test if two proportions are equal. Inputs include the total number of trials in each group (`n =`) and the number of "successes"" (`x = `): -->
+
+<!-- \footnotesize -->
+
+<!-- ```{r} -->
+<!-- prop.test(x = crash_prob$crash_days,  -->
+<!--           n = crash_prob$n_days) -->
+<!-- ``` -->
+
+
+## Find out more about statistical tests in R
+
+I won't be teaching in this course how to find the correct statistical test. That's 
+something you'll hopefully learn in a statistics course. 
+
+There are also a variety of books that can help you with this, including some that you 
+can access free online through CSU's library. One servicable introduction is "Statistical 
+Analysis with R for Dummies".
+
+<!-- ## Output of statistical tests: List objects -->
+
+<!-- You can create an object from the output of any statistical test in R. Typically, this will be (at least at some level) in an object class called a "list": -->
+
+<!-- ```{r} -->
+<!-- vegas_test <- prop.test(x = crash_prob$crash_days,  -->
+<!--                         n = crash_prob$n_days) -->
+<!-- is.list(vegas_test) -->
+<!-- ``` -->
+
+<!-- ## Output of statistical tests: List objects -->
+
+<!-- So far, we've mostly worked with two object types in R, **dataframes** and **vectors**. -->
+
+<!-- In the next subsection we'll look more at two object classes we haven't looked at much, -->
+<!-- **matrices** and **lists**. Both have important roles once you start applying more -->
+<!-- advanced methods to analyze your data.  -->
+
+<!-- ## List object from a statistical test -->
+
+<!-- Let's look at the list object from the statistical test we ran for Las Vegas:  -->
+
+<!-- \footnotesize -->
+
+<!-- ```{r} -->
+<!-- str(vegas_test) -->
+<!-- ``` -->
+
+<!-- ## List object from statistical test -->
+
+<!-- We can pull out an element using the `$` notation:  -->
+
+<!-- ```{r} -->
+<!-- vegas_test$p.value -->
+<!-- ``` -->
+
+<!-- Or using the `[[` notation: -->
+
+<!-- ```{r} -->
+<!-- vegas_test[[4]] -->
+<!-- ``` -->
+
+<!-- ## Broom package -->
+
+<!-- You may have noticed, though, that this output is not a tidy dataframe.  -->
+
+<!-- Ack! That means we can't use all the tidyverse tricks we've learned so far in the course! -->
+
+<!-- Fortunately, David Robinson noticed this problem and came up with a package called `broom` that can "tidy up" a lot of these kinds of objects. -->
+
+<!-- ## Broom package -->
+
+<!-- The `broom` package has three main functions:  -->
+
+<!-- - `glance`: Return a one-row, tidy dataframe from a model or other R object -->
+<!-- - `tidy`: Return a tidy dataframe from a model or other R object -->
+<!-- - `augment`: "Augment" the dataframe you input to the statistical function -->
+
+<!-- ## Broom package -->
+
+<!-- Here is the output for `tidy` for the `vegas_test` object (`augment` -->
+<!-- won't work for this type of object, and `glance` gives the same thing as `tidy`):  -->
+
+<!-- \footnotesize -->
+
+<!-- ```{r} -->
+<!-- library(broom) -->
+<!-- tidy(vegas_test) -->
+<!-- ``` -->
+
+
+## In-course exercise
+
+We'll take a break now to do sections 2 and 3 of the In-course Exercise for Chapter 7.
+
 
 # Regression models 
 
@@ -595,7 +880,7 @@ follows a distribution other than the normal distribution.
 
 ## In-course exercise
 
-We'll take a break now to do the second part of the In-Course Exercise.
+We'll take a break now to do section 4 of the In-Course Exercise for Chapter 7.
 
 ## Fitting a model with a factor
 
@@ -725,5 +1010,5 @@ If you want all the details about fitting linear models and GLMs in R, Faraway's
 
 ## In-course exercise
 
-We'll take a break now to do the third part of the In-Course Exercise.
+We'll take a break now to do section 5 of the In-Course Exercise for Chapter 7.
 

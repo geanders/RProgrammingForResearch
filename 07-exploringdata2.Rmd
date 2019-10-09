@@ -314,7 +314,7 @@ We can make a plot from the resulting tibble to help us explore the data.
 
 ```{r, fig.height=8, fig.width=10}
 library(ggplot2)
-ggplot(peerj32_tibble, aes(x = subject, y = abundance, color = gender)) +
+ggplot(peerj32_tibble, aes(x = subject, y = abundance, color = sex)) +
   geom_point() +
   theme_bw() +
   facet_wrap(~phylum, ncol = 4, scales = "free") +
@@ -350,7 +350,7 @@ Now let's perform a t-test on each out the nested dataframes. Remember, each nes
 
 ```{r}
 t_tests <- filtered_data %>%
-  mutate(t_test = map(data, ~t.test(abundance ~ gender, data = .x)))
+  mutate(t_test = map(data, ~t.test(abundance ~ sex, data = .x)))
 ```
 
 ```{r}
@@ -372,7 +372,7 @@ The final step is to return a tidy dataframe, we can do this using the `unnest` 
 
 ```{r}
 unnested <- summary %>%
-  unnest(summary, .drop = TRUE) %>%
+  unnest(summary) %>%
   ungroup() %>%
   dplyr::select(group, phylum, p.value)
 ```
@@ -667,22 +667,263 @@ If you want all the details about fitting linear models and GLMs in R, Julian Fa
 
 ## In-course exercise
 
+### Exploring taxonomic profiling data
+
+- We'll be using a package on Bioconductor called `microbiome`. You'll need to install that package from Bioconductor. This uses code that's different from the default you use to download a package from CRAN. Go to [the Bioconductor page for the microbiome package](https://bioconductor.org/packages/release/bioc/html/microbiome.html) and figure out how to install this package based on instructions on that page. 
+- The `microbiome` that includes tools for exploring and analysing microbiome profiling data. This package has a website with tutorial information  [here](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html#installation). We want to explore a dataset on genus-level microbiota profiling (`atlas1006`). Navigate to the tutorial webpage to figure out how you can get this example raw data loaded in your R session. Use the `class` and `str` functions to start exploring this data. Is it in a dataframe (tibble)? Is it in a tidy format? How is the data structured?
+- On the [microbiome page](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html), find the documentation describing the `atlas1006` data. Look through this documentation to figure out what information is included in the data. Also, check the helpfile for this dataset and look up the original article describing the data (you can find the article information in the help resources).
+- The `atlas1006` data is stored in a special object class called a "phyloseq" object (you should have seen this when you used `class` with the object). You can pull certain parts of this data using special functions called "accessors". One is `get_variable`. Try running `get_variable` with the `atlas1006` data. What do you think this data is showing?
+- Which different nationalities are represented by the study subjects, based on the dataframe you extracted in the last step? How many samples have each nationality? Which different BMI groups are included? Does it look like the study was balanced among these groups? 
+- Based on the data you extracted, does it look like diversity varies much between males and females? Across BMI groups?
+- Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format.
+- Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I'd like you to try to figure it out yourselves first.
+
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
+library(tidyverse)
+library(ggthemes)
+library(microbiome)
+
+data(atlas1006)
+
+atlas1006 %>% 
+  get_variable() %>% 
+  ggplot(aes(x = bmi_group, y = diversity, color = sex)) + 
+  geom_boxplot(alpha = 0.2) + 
+  facet_wrap(~ nationality)
+```
+
+
+#### Example R code
+
+Install the `microbiome` package from Bioconductor: 
+
+```{r eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("microbiome")
+```
+
+Load the `atlas1006` example data in the `microbiome` package and explore it with `str` and `class`: 
+
+```{r}
+library(microbiome)
+data(atlas1006)
+
+class(atlas1006)
+str(atlas1006)
+```
+
+Pull out the data frame that contains information on each study subject in the `atlas1006` data by using the `get_variable` accessor function:
+
+```{r}
+get_variable(atlas1006) %>% head()
+```
+
+**Note:** Since the first argument to `get_variable` is the phyloseq object (here, the `atlas1006` data object), you can pipe into the function, like this: 
+
+```{r eval = FALSE}
+atlas1006 %>% 
+  get_variable() %>% 
+  head()
+```
+
+Find out the different nationalities included in the data: 
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% # Change output from a data.frame to a tibble
+  group_by(nationality) %>% 
+  count()
+```
+
+It looks like most subjects were from Central Europe, with the next-largest group from 
+Scandinavia. **Note:** If you wanted to rearrange this summary to give the nationalities
+in order of the number of subjects in each, you could add on a `forcats` function: 
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% # Change output from a data.frame to a tibble
+  mutate(nationality = fct_infreq(nationality)) %>% 
+  group_by(nationality) %>% 
+  count() 
+```
+
+Find out the different BMI groups included in the data and if the study seemed to be balanced across those groups: 
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% # Change output from a data.frame to a tibble
+  group_by(bmi_group) %>% 
+  count()
+```
+
+There were six different BMI groups. Over 100 study subjects had this information missing. 
+The samples were not evenly distributed across these BMI groups. Instead, the most common (lean) had
+almost 500 subjects, while the smaller BMI-group samples were around 20 people. 
+
+See if it looks like diversity varies much between males and females:
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% 
+  group_by(sex) %>% 
+  summarize(mean_diversity = mean(diversity))
+```
+
+See if it looks like diversity varies much across BMI groups:
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% 
+  group_by(bmi_group) %>% 
+  summarize(mean_diversity = mean(diversity))
+```
+
+
+Here is the code for the plot: 
+
+```{r}
+library(tidyverse)
+library(ggthemes)
+library(microbiome)
+
+data(atlas1006)
+
+atlas1006 %>% 
+  get_variable() %>% 
+  ggplot(aes(x = bmi_group, y = diversity, color = sex)) + 
+  geom_boxplot(alpha = 0.2) + 
+  facet_wrap(~ nationality)
+```
+
+### More with baby names
+
+Let's look at baby names that we started looking at last class, based on the letter they start with. 
+
+- For the full dataframe, what proportion of baby names start with each letter?
+See if you can create a figure to help show this. Create the same plot 
+using the names of people from our class. 
+- What proportion of names start with "C" or "S" across the full dataset? 
+
+#### Example R code
+
+For the full dataframe, what proportion of baby names start with "S"?
+
+To start, create a column with the first letter of each name. You can use 
+functions in the `stringr` package to do this. The easiest might be to 
+use the position of the first letter to pull that information.
+
+```{r}
+library(babynames)
+library(stringr)
+top_letters <- babynames %>% 
+  mutate(first_letter = str_sub(name, 1, 1))
+
+top_letters %>% 
+  select(name, first_letter) %>% 
+  slice(1:5)
+```
+
+Now we can group by letter and figure out these proportions. First, while the data is
+grouped, count the number of names with each letter. Then, ungroup and use mutate
+to divide this by the total number of names:
+
+```{r}
+top_letters <- top_letters %>% 
+  group_by(first_letter) %>% 
+  summarize(n = sum(n)) %>% 
+  ungroup() %>% 
+  mutate(prop = n / sum(n)) %>% 
+  arrange(desc(prop))
+
+top_letters
+```
+
+Here's one way to visualize this: 
+
+```{r fig.height = 5, fig.width = 4}
+top_letters %>% 
+  mutate(first_letter = fct_reorder(first_letter, prop)) %>% 
+  ggplot(aes(x = first_letter)) + 
+  geom_bar(aes(weight = prop)) + 
+  coord_flip() + 
+  scale_y_continuous(labels = percent) + 
+  labs(x = "", y = "Percent of names that start with ...")
+```
+
+Create the same plot using the names of people in our class. First, create a 
+vector with the names of people in our class: 
+
+```{r fig.width = 3, fig.height = 4}
+student_list <- data_frame(name = c("Burton", "Caroline", "Chaoyu", "Collin",
+                                    "Daniel", "Eric", "Erin", "Heather",
+                                    "Jacob", "Jessica", "Khum", "Kyle",
+                                    "Matthew", "Molly", "Nikki", "Rachel",
+                                    "Sere",  "Shayna", "Sherry", "Sunny"))
+student_list <- student_list %>% 
+  mutate(first_letter = str_sub(name, 1, 1))
+student_list
+
+library(scales)
+student_list %>% 
+  group_by(first_letter) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate(prop = n / sum(n)) %>% 
+  mutate(first_letter = fct_reorder(first_letter, prop)) %>% 
+  ggplot(aes(x = first_letter)) + 
+  geom_bar(aes(weight = prop)) + 
+  coord_flip() + 
+  scale_y_continuous(labels = percent) + 
+  labs(x = "", y = "Percent of students with\na name that starts with ...")
+```
+
+What proportion of names start with "C" or "S" across the full dataset? You can 
+create a dataframe that (1) pulls out the first letter of each name (just like 
+we did for the last part of the question) and (2) tests whether that first letter
+is an "A" or a "K" (using a logical statement):
+
+```{r}
+c_or_s <- babynames %>% 
+  mutate(first_letter = str_sub(name, 1, 1),
+         c_or_s = first_letter %in% c("C", "S"))
+
+c_or_s %>% 
+  select(name, first_letter, c_or_s) %>% 
+  slice(1:5)
+```
+
+Next, group by this logical column (`c_or_s`) and figure out the number of 
+baby names for each group. Then, to get the proportion of the total, ungroup
+and mutate to divide by the total number across the data: 
+
+```{r}
+c_or_s %>% 
+  group_by(c_or_s) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate(prop = n / sum(n))
+```
+
 ### Running a simple statistical test
 
-In last week's in-course exercise, we found out that about 17% of babies born in the 
-United States between 1980 and 1995 had names that started with an "A" or "K" (60,893
-babies out of 359,011). 
+In the last part of the in-course exercise, we found out that about 14% of babies born in the 
+United States between 1980 and 1995 had names that started with an "C" or "S" (268,910
+babies out of 1,924,665). 
 
-- What is the proportion of people with names that start with an "A" or "K" in our class?
+- What is the proportion of people with names that start with an "C" or "S" in our class?
 - Use a simple statistical test to test the hypothesis that the class comes from a 
-binomial distribution with the same distribution as babies born in the US between 1980 and 
-1995, in terms of chance of having a name that starts with "A" or "K".
+binomial distribution with the same distribution as babies born in the US over the time tracked by this data, in terms of chance of having a name that starts with "C" or "S". (Hint: You will be comparing two proportions. Try googling for a statistical test in R that does that.)
+- See if you can figure out a way to make a single "tidy" pipeline for the whole analysis (and output the result as a tidy dataframe). Does the `tidy` function from `broom` give different information from this test than the output we got for the Shapiro-Wilk test?
 - You may get the warning "Chi-squared approximation may be incorrect". See if you can 
-figure out this warning.
-- If you are able to figure out and run a statistical test, go back to your notes from 
-last week and write a full script, starting from loading the `babynames` data and creating
-your own vector of the names in this class, all the way through to running the statistical 
-test you picked. 
+figure out this warning if you get it with the test you used.
 
 ---
 
@@ -692,13 +933,11 @@ Here is a vector with names in our class:
 
 ```{r}
 library(stringr)
-student_list <- tibble(name = c("Aeriel", "Rebecca", "Grant",
-                                    "Amy", "Jessy", "Alyssa",
-                                    "Camron", "Anastasia", "Kyle",
-                                    "Ana", "Amanda", "Kathleen", 
-                                    "Kyle", "Ana", "Amanda", "Kathleen",
-                                    "Kayla", "Nichole", "Randy", "Katy",
-                                    "Devin"))
+student_list <- tibble(name = c("Burton", "Caroline", "Chaoyu", "Collin",
+                                    "Daniel", "Eric", "Erin", "Heather",
+                                    "Jacob", "Jessica", "Khum", "Kyle",
+                                    "Matthew", "Molly", "Nikki", "Rachel",
+                                    "Sere",  "Shayna", "Sherry", "Sunny"))
 student_list <- student_list %>% 
   mutate(first_letter = str_sub(name, 1, 1))
 student_list %>% 
@@ -706,54 +945,60 @@ student_list %>%
 ```
 
 Let's get the total number of students, and then the total number with a name that 
-starts with "A" or "K": 
+starts with "C" or "S": 
 
 ```{r}
 tot_students <- student_list %>% 
   count()
 tot_students
 
-a_or_k_students <- student_list %>% 
-  mutate(a_or_k = first_letter %in% c("A", "K")) %>% 
-  group_by(a_or_k) %>% 
+c_or_s_students <- student_list %>% 
+  mutate(c_or_s = first_letter %in% c("C", "S")) %>% 
+  group_by(c_or_s) %>% 
   count()
-a_or_k_students
+c_or_s_students
 ```
 
-The proportion of students with names starting with "A" or "K" are `r a_or_k_students$n[2]` / 
-`r tot_students$n[1]` = `r round(a_or_k_students$n[2] / tot_students$n[1], 2)`.
+The proportion of students with names starting with "A" or "K" are `r c_or_s_students$n[2]` / 
+`r tot_students$n[1]` = `r round(c_or_s_students$n[2] / tot_students$n[1], 2)`.
 
-You could run a statistical test comparing these two proportions:
+You could run a statistical test comparing these two proportions (check the help file for the 
+function to figure out where to include each piece):
 
 ```{r}
-prop.test(x = c(60893, 14), n = c(359011, 21))
+prop.test(x = c(268910, 7), n = c(1924665, 20))
 ```
 
-You could also test whether the proportion in our class is consistent with the null
-hypothesis that you were drawn from a binomial distribution with a proportion of 0.17
+There are a few different ways you could run this test. 
+For example, you could also test whether the proportion in our class is consistent with the null
+hypothesis that you were drawn from a binomial distribution with a proportion of 0.14
 (in-line with the national values):
 
 ```{r}
-prop.test(x = 14, n = 21, p = 0.17)
+prop.test(x = 7, n = 20, p = 0.14)
 ```
+
+You can also see if we can pipe into `prop.test` by summing up the number of successes ("1": the person's name starts with "C" or "S"). Because this is using an unsummarized
+form of the data, it lets us use some of the tidyverse tools more easily: 
+
+```{r}
+library(purrr)
+library(broom)
+student_list %>% 
+  mutate(c_or_s = first_letter %in% c("C", "S")) %>% 
+  pluck("c_or_s") %>% 
+  sum() %>% 
+  prop.test(n = 20, p = 0.14) %>% 
+  tidy()
+```
+
 
 Finally, when we run this test, we get the warning that "Chi-squared approximation may be incorrect". Based on googling 'r prop.test "Chi-squared approximation may be incorrect"', 
 it sounds like we might be getting this error because we have a pretty low number of 
-people in the class. One recommendation is to instead run a Chi-square contingency table test, which you can do with `chisq.test`, while setting `simulate.p.values` to TRUE. This requires
-a slightly different set-up for the data (which you can figure out by trying out the
-examples in the helpfile for `chisq.test`):
+people in the class. One recommendation is to use `binom.test`, which will run as an exact binomial test:
 
 ```{r}
-a_or_k_names <- matrix(c(14, 60893, 7, 298118), 
-                       nrow = 2)
-a_or_k_names
-chisq.test(a_or_k_names, simulate.p.value = TRUE) 
-```
-
-You could also use `binom.test`, which will run as an exact binomial test:
-
-```{r}
-binom.test(x = 14, n = 21, p = 0.17)
+binom.test(x = 7, n = 20, p = 0.14)
 ```
 
 ### Using regression models to explore data #1
