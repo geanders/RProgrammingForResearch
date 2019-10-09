@@ -244,7 +244,7 @@ Let's look at the list object from the statistical test we ran for Las Vegas:
 str(vegas_test)
 ```
 
-Using `str` to print out the list's structure doesn't produce the easiest to digest output. We can use the `???` function from the `listviewer` package to create a widget in the `viewer` pane to more esily explore our list.
+Using `str` to print out the list's structure doesn't produce the easiest to digest output. We can use the `jsonedit` function from the `listviewer` package to create a widget in the `viewer` pane to more esily explore our list.
 
 ```{r, eval=FALSE}
 library(listviewer)
@@ -284,7 +284,120 @@ tidy(vegas_test)
 
 ---
 
-## Regression models 
+## Apply a test multiple times
+
+Often, we don't want to just apply a statistical test to our entire data set.
+
+Let's look at an example from the `microbiome package`.
+
+```{r, warning = FALSE, message = FALSE}
+library(microbiome)
+data(peerj32)
+print(names(peerj32))
+```
+
+Like we saw before, the list-like `phyloseq` objects require a little tidying before we can use them easiliy.
+
+```{r}
+library(dplyr)
+peerj32_tibble <- (psmelt(peerj32$phyloseq)) %>%
+  dplyr::select(-Sample) %>%
+  rename_all(tolower) %>%
+  as_tibble()
+```
+
+```{r, echo=FALSE}
+slice(peerj32_tibble, 1:3)
+```
+
+We can make a plot from the resulting tibble to help us explore the data.
+
+```{r, fig.height=8, fig.width=10}
+library(ggplot2)
+ggplot(peerj32_tibble, aes(x = subject, y = abundance, color = gender)) +
+  geom_point() +
+  theme_bw() +
+  facet_wrap(~phylum, ncol = 4, scales = "free") +
+  theme(axis.text.x = element_blank(),
+        legend.position = "top") +
+  xlab("Subject ID")
+```
+
+We can group the data by `phylum` and `group` and then use the `nest` function from the `tidyr` package to create a new dataframe containing the nested data:
+
+```{r}
+library(tidyr)
+nested_data <- peerj32_tibble %>%
+  group_by(phylum, group) %>%
+  nest()
+```
+
+```{r}
+slice(nested_data, 1:3)
+```
+
+We can then use the `map` function from the `purrr` package to apply functions to each nested dataframe. Let's start by counting the rows in each nested dataframe and filtering out dataframes with less than 25 rows.
+
+```{r}
+library(purrr)
+
+filtered_data <- nested_data %>%
+  mutate(n_rows = map(data, ~nrow(.x))) %>%
+  filter(n_rows > 25)
+```
+
+Now let's perform a t-test on each out the nested dataframes. Remember, each nested dataframe is one unique combination of phylum and group.
+
+```{r}
+t_tests <- filtered_data %>%
+  mutate(t_test = map(data, ~t.test(abundance ~ gender, data = .x)))
+```
+
+```{r}
+t_tests
+```
+
+The resulting dataframe contains a new column, which contains the model objects. Just as we mapped the `t.test` function, we can map the *tidying* functions from the `broom` package to extract the information we want from the nested model objects.
+
+```{r}
+summary <- t_tests %>%
+  mutate(summary = map(t_test, broom::glance))
+```
+
+```{r}
+summary
+```
+
+The final step is to return a tidy dataframe, we can do this using the `unnest` function from the `tidyr` package. Note: it is also wise to `ungroup` after you are done operating on your grouped variables - you may run into problems if you forget your dataframe is grouped later on!
+
+```{r}
+unnested <- summary %>%
+  unnest(summary, .drop = TRUE) %>%
+  ungroup() %>%
+  dplyr::select(group, phylum, p.value)
+```
+
+```{r}
+unnested
+```
+
+We can then plot the results. Let's do this for the "LGG" (non-placebo) group, using our principles for good graphics.
+
+```{r}
+p_data <- unnested %>%
+  filter(group == "LGG") %>%
+  mutate(phylum = fct_reorder(phylum, p.value))
+  
+ggplot(p_data, aes(y = p.value, x = phylum)) +
+  facet_wrap(~group) +
+  geom_bar(stat="identity", fill = "grey90", color = "grey20") +
+  coord_flip() +
+  theme_bw() +
+  ggtitle("Difference in abundance by gender") +
+  xlab("") + ylab("p-value from t-test")
+```
+
+## Regression models
 
 ### Formula structure
 
@@ -491,62 +604,6 @@ For example, the model fit above tells us that the estimated mean weight of male
 <!-- ``` -->
 
 <!-- Now, `(Intercept)` gives the estimated mean weight for females, while the second estimated coefficient gives the estimated mean difference for males compared to the expected value for females. -->
-
----
-
-### Generalized linear models (GLMs)
-
-You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). \medskip
-
-For linear models, the only difference between `lm` and `glm` are the mechanics of how they estimate the model coefficients (`lm` uses least squares while `glm` uses maximum likelihood). You will (almost always) get exactly the same estimated coefficients regardless of whether you use `glm` or `lm` to fit a linear regression. 
-
-For example, here is the code to fit a linear regression model for weight regressed on height from the `nepali` dataset:
-
-```{r}
-mod_c <- glm(wt ~ ht, data = nepali)
-```
-
-This call fits the same regression model I fit earlier with the `lm` function and saved as `mod_a`. You can see that the two methods give exactly the same coefficient estimates:
-
-```{r}
-coef(mod_c)
-coef(mod_a)
-```
-
-Unlike the `lm` function, however, the `glm` function also allows you to fit other model types, including logistic and Poisson models. You can specify the model type using the `family` argument to the `glm` call:
-
-```{r echo = FALSE}
-glm_types <- tibble(type = c("Linear", "Logistic", "Poisson"),
-                        opt = c("`family = gaussian(link = 'identity')`",
-                                "`family = binomial(link = 'logit')`", 
-                                "`family = poisson(link = 'log')`"))
-knitr::kable(glm_types, col.names = c("Model type", "`family` argument"))
-```
-
-For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability of a child weighing more than 13 kg is associated with the child's sex. 
-
-First, create a binary variable in the `nepali` dataset, `wt_over_13`, that is `TRUE` if a child weighed more than 13 kilograms and FALSE otherwise. You can use the `mutate` function from `dplyr` to add this new column (which, as a note, is a logical vector):
-
-```{r}
-nepali <- nepali %>% 
-  mutate(wt_over_13 = wt > 13)
-head(nepali)
-```
-
-Now you can fit a logistic regression of `wt_over_13` regressed on sex, using a logistic model:
-
-```{r}
-mod_d <- glm(wt_over_13 ~ sex, data = nepali,
-             family = binomial(link = "logit"))
-```
-
-Elements of a GLM can be pulled out in the same way that we looked at elements from the linear model fit with `lm`. For example, to see a table of estimated model coefficients, you can run:
-
-```{r}
-summary(mod_d)$coef
-```
-
-Because this model was a logistic model, fit with a log link, here the model coefficient estimate for `sexFemale` gives an estimate of the **log odds** of weight higher than 13 kg associated with females versus males. The p-value for this estimate (`Pr(>|z|)` = `r round(summary(mod_d)$coef[2, 4], 2)`) isn't very small, suggesting that the difference between male and female children in the odds of weighing more than 13 kg is not statistically significant. 
 
 ---
 
