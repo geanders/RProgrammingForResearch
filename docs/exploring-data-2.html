@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2019-10-08" />
+<meta name="date" content="2019-10-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -343,6 +343,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="A.4" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-4-updated-for-2019"><i class="fa fa-check"></i><b>A.4</b> Quiz 4 (Updated for 2019)</a></li>
 <li class="chapter" data-level="A.5" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-5-updated-for-2019"><i class="fa fa-check"></i><b>A.5</b> Quiz 5 (Updated for 2019)</a></li>
 <li class="chapter" data-level="A.6" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-6"><i class="fa fa-check"></i><b>A.6</b> Quiz 6</a></li>
+<li class="chapter" data-level="A.7" data-path="appendix-a-vocabulary.html"><a href="appendix-a-vocabulary.html#quiz-7"><i class="fa fa-check"></i><b>A.7</b> Quiz 7</a></li>
 </ul></li>
 <li class="chapter" data-level="B" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html"><i class="fa fa-check"></i><b>B</b> Appendix B: Homework</a><ul>
 <li class="chapter" data-level="B.1" data-path="appendix-b-homework.html"><a href="appendix-b-homework.html#homework-1"><i class="fa fa-check"></i><b>B.1</b> Homework #1</a><ul>
@@ -575,7 +576,7 @@ advanced methods to analyze your data.</p>
 <pre><code>## [1] &quot;coefficients&quot;  &quot;residuals&quot;     &quot;fitted.values&quot;</code></pre>
 <div class="sourceCode" id="cb699"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb699-1" title="1">my_mod[[<span class="st">&quot;coefficients&quot;</span>]]</a></code></pre></div>
 <pre><code>## (Intercept)     c(1:10) 
-##  0.77147055 -0.05472542</code></pre>
+## -0.80064230  0.05664108</code></pre>
 <p>A list can even contain other lists. We can use the <code>str</code> function to see the structure of a list:</p>
 <div class="sourceCode" id="cb701"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb701-1" title="1">a_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">list</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="kw">list</span>(<span class="dv">1</span>, <span class="dv">2</span>))</a>
 <a class="sourceLine" id="cb701-2" title="2"></a>
@@ -1702,7 +1703,6 @@ dewpoint temperature linearly associated with the independent variable of temper
 <li>Based on this regression, does there seem to be a relationship between temperature and dewpoint temperature in Chicago? (Hint: Try using <code>glance</code> and <code>tidy</code> from the <code>broom</code> package on the model object to get more information about the model you fit.) What is the coefficient for temperature (in other words, for every 1 degree increase in temperature, how much do we expect the dewpoint temperature to change?)? What is the p-value for the coefficient for temperature?</li>
 <li>Plot temperature (x-axis) versus dewpoint temperature (y-axis) for Chicago. Add in the regression line from the model you fit by using the results from <code>augment</code>.</li>
 <li>Use <code>autoplot</code> on the model object to generate some model diagnostic plots (make sure you have the <code>ggfortify</code> package loaded and installed).</li>
-<li>Try fitting the regression as a GLM, using <code>glm()</code> (but still assuming the outcome variable is normally distributed). Are your coefficients different?</li>
 </ul>
 <hr />
 <div id="example-r-code-16" class="section level4">
@@ -1761,7 +1761,21 @@ Y_t \sim \beta_0 + \beta_1 X_t
 <p>Plot some plots to check model assumptions for the model you fit using the <code>autoplot</code> function on your model object:</p>
 <div class="sourceCode" id="cb832"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb832-1" title="1"><span class="kw">autoplot</span>(mod_<span class="dv">1</span>)</a></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-465-1.png" width="576" /></p>
-<p>Try fitting the model using <code>glm()</code>. Call it <code>mod_1a</code>. Compare the coefficients for the two models. You can use the <code>tidy</code> function on an <code>lm</code> or <code>glm</code> object to pull out just the model coefficients and associated model results. Here, I’ve used a pipeline of code to create a tidy data frame that merges these “tidy” coefficient outputs (from the two models) into a single data frame):</p>
+<hr />
+</div>
+</div>
+<div id="using-regression-models-to-explore-data-2" class="section level3">
+<h3><span class="header-section-number">7.7.5</span> Using regression models to explore data #2</h3>
+<ul>
+<li>Try fitting the regression from the last part of the in-course exercise as a GLM, using <code>glm()</code> (but still assuming the outcome variable is normally distributed). Are your coefficients different?</li>
+<li>Does <span class="math inline">\(PM_{10}\)</span> vary by day of the week? (Hint: The <code>dow</code> variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable. Some of the overall model summaries will compare this model to an intercept-only model.) What day of the week is <span class="math inline">\(PM_{10}\)</span> generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you’re fitting.</li>
+<li>Try using <code>glm()</code> to run a Poisson regression of respiratory deaths (<code>resp</code>) on temperature during summer days. Start by creating a subset with just summer days called <code>summer</code>. (Hint: Use the <code>month</code> function with the argument <code>label = TRUE</code> from <code>lubridate</code> to do this—just pull out the subset where the month June, July, or August.) Try to write out the regression equation for the model you’re fitting.</li>
+<li>The coefficient for the temperature variable in this model is our best estimate (based on this model) of the <strong>log relative risk</strong> for a one degree Celcius increase in temperature. What is the <strong>relative risk</strong> associated with a one degree Celsius increase?</li>
+</ul>
+<hr />
+<div id="example-r-code-17" class="section level4">
+<h4><span class="header-section-number">7.7.5.1</span> Example R code:</h4>
+<p>Try fitting the model from the last part of the in-course exercise using <code>glm()</code>. Call it <code>mod_1a</code>. Compare the coefficients for the two models. You can use the <code>tidy</code> function on an <code>lm</code> or <code>glm</code> object to pull out just the model coefficients and associated model results. Here, I’ve used a pipeline of code to create a tidy data frame that merges these “tidy” coefficient outputs (from the two models) into a single data frame):</p>
 <div class="sourceCode" id="cb833"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb833-1" title="1">mod_1a &lt;-<span class="st"> </span><span class="kw">glm</span>(dptp <span class="op">~</span><span class="st"> </span>temp, <span class="dt">data =</span> chic)</a>
 <a class="sourceLine" id="cb833-2" title="2"></a>
 <a class="sourceLine" id="cb833-3" title="3"><span class="kw">tidy</span>(mod_<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -1788,19 +1802,6 @@ Y_t \sim \beta_0 + \beta_1 X_t
 ##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
 ## 1 (Intercept)    24.0    0.113        213.       0
 ## 2 temp            1.62   0.00763      212.       0</code></pre>
-<hr />
-</div>
-</div>
-<div id="using-regression-models-to-explore-data-2" class="section level3">
-<h3><span class="header-section-number">7.7.5</span> Using regression models to explore data #2</h3>
-<ul>
-<li>Does <span class="math inline">\(PM_{10}\)</span> vary by day of the week? (Hint: The <code>dow</code> variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable. Some of the overall model summaries will compare this model to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you’re fitting.</li>
-<li>Try using <code>glm()</code> to run a Poisson regression of respiratory deaths (<code>resp</code>) on temperature during summer days. Start by creating a subset with just summer days called <code>summer</code>. (Hint: Use the <code>month</code> function with the argument <code>label = TRUE</code> from <code>lubridate</code> to do this– just pull out the subset where the month is 6, 7, or 8, for “Jun”, “Jul”, and “Aug”.) Try to write out the regression equation for the model you’re fitting.</li>
-<li>The coefficient for the temperature variable in this model is our best estimate (based on this model) of the <strong>log relative risk</strong> for a one degree Celcius increase in temperature. What is the <strong>relative risk</strong> associated with a one degree Celsius increase?</li>
-</ul>
-<hr />
-<div id="example-r-code-17" class="section level4">
-<h4><span class="header-section-number">7.7.5.1</span> Example R code:</h4>
 <p>Fit a model of <span class="math inline">\(PM_{10}\)</span> regressed on day of week, where day of week is a factor.</p>
 <div class="sourceCode" id="cb839"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb839-1" title="1">mod_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(pm10 <span class="op">~</span><span class="st"> </span>dow, <span class="dt">data =</span> chic)</a>
 <a class="sourceLine" id="cb839-2" title="2"><span class="kw">tidy</span>(mod_<span class="dv">2</span>)</a></code></pre></div>
