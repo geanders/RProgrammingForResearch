@@ -1200,7 +1200,255 @@ tidy(mod_3, conf.int = TRUE) %>%
   mutate_at(vars(estimate:conf.high), funs(exp(.)))
 ```
 
+### Trying out nesting and mapping
+
+- We'll be using data that's in an R package called "nycflights13". This data package can be installed from CRAN. Install the package and then load the package and its "flights" dataset. 
+So that this data will be easier to work with, remove all columns except for those for 
+the departure delay (`dep_delay`), the carrier (`carrier`), the hour the flight was 
+supposed to leave (`hour`), and the airport the flight left from (`origin`). Also, 
+limit the dataset to only flights that left from LaGuardia Airport ("LGA").
+- We want to figure out if the probability of a flight leaving 15 minutes late or more
+increases over the day for flights leaving LaGuardia. Filter out all the rows where the 
+departure delay is missing and then create a new column called
+`late_dep` that is true if the flight left 15 minutes or more late and false otherwise. 
+What proportion of all flights leaving from LaGuardia leave 15 minutes late or later?
+- Next, determine what proportion of all flights are delayed base on the hour that the
+flight was scheduled to depart (`hour`). Create a plot showing how the probability of 
+leaving 15 minutes or more late changes by hour.
+- Fit a generalized linear model for the association between the binary variable of whether
+the flight was 15 minutes or more late (`late_dep`) and the hour the flight was 
+scheduled to leave (`hour`). Use a binomial model (add `family = binomial(link = "logit")`
+in the `glm` call). The estimate from the model for `hour` will be an estimate
+of the log odds ratio for a one-hour increase in scheduled departure time. Take the
+exponent of this estimate with `exp` to get an estimated odds ratio for a one-hour
+increase in scheduled departure time. Is this estimate larger than 1.0?
+- Next, we want to see if this association is similar across airlines. First, create a 
+dataframe called `nested_flights` where the `flights`
+data is grouped by airline (`carrier`) and then nest the data, so that there is a "data" list-column
+where each item is a dataframe of flight delay data for a specific carrier.
+- Use the `map` function from `purrr` inside a `mutate` statement to apply the `glm` code you used earlier for the
+whole dataset, but in this case for the data for each airline character. Then use the `map` 
+function inside a `mutate` statement again to "tidy" the data. 
+- Clean the data up a bit. Remove the columns for `data` and
+`glm_result` and then `unnest` the dataframe list-column with the tidy version of the model
+results. Filter to get only the estimates for the "hour" term. Then calculate an odds ratio
+(`or`) by taking the exponent (check out the `exp` function) of the original estimate. 
+- The package has a dataframe with the full name of each carrier (`airlines`). Join this data
+into the data you've been working with, so you have the full names of airlines.
+- Finally, create the following plot with each airline's odds ratio for the change in the chance of a delay per one-hour increase in the scheduled hour of departure: 
+
+```{r echo = FALSE}
+library(purrr)
+library(tidyr)
+library(dplyr)
+library(forcats)
+library(broom)
+library(ggplot2)
+library(nycflights13)
+data(flights)
+data(airlines)
+
+flights %>% 
+  select(dep_delay, carrier, hour, origin) %>% 
+  filter(origin == "LGA") %>% 
+  filter(!is.na(dep_delay)) %>% 
+  mutate(late_dep = dep_delay > 15) %>% 
+  group_by(carrier) %>% 
+  nest() %>% 
+  mutate(glm_result = map(data, ~ glm(late_dep ~ hour, 
+                                      data = .x, family = binomial(link = "logit")))) %>% 
+  mutate(glm_tidy = map(glm_result, ~ tidy(.x))) %>% 
+  select(-data, -glm_result) %>% 
+  unnest(glm_tidy) %>% 
+  filter(term == "hour") %>% 
+  mutate(or = exp(estimate)) %>% 
+  left_join(airlines, by = "carrier") %>% 
+  ungroup() %>% 
+  mutate(name = fct_reorder(name, or)) %>% 
+  ggplot(aes(x = or, y = name)) + 
+  geom_point() + 
+  geom_vline(xintercept = 1, linetype = 3) + 
+  labs(x = "Odds ratio for one-hour increase\nin scheduled deparature time", y = "")
+```
+
+
 ---
+
+#### Example R code:
+
+Install the "nycflights13" package from CRAN. Load the package and its "flights" dataset.
+
+```{r}
+library(ggplot2)
+library(nycflights13)
+data(flights)
+```
+
+So that this data will be easier to work with, remove all columns except for those for 
+the departure dealy (`dep_delay`), the carrier (`carrier`), the hour the flight was 
+supposed to leave (`hour`), and the airport the flight left from (`origin`). 
+
+```{r}
+flights <- flights %>% 
+  select(dep_delay, carrier, hour, origin) %>% 
+  filter(origin == "LGA")
+
+flights
+```
+
+Filter out all the rows where the 
+departure delay is missing and then create a new column called
+`late_dep` that is true if the flight left 15 minutes or more late and false otherwise. 
+
+```{r}
+flights <- flights %>% 
+  filter(!is.na(dep_delay)) %>% 
+  mutate(late_dep = dep_delay > 15)
+
+flights
+```
+
+What proportion of all flights leaving from LaGuardia leave 15 minutes late or later? To 
+check this, remember that `TRUE` is saved as a "1" and `FALSE` is saved as a "0". That means that
+we can take the mean of a logical vector to get the proportion of trials that are true.
+
+```{r}
+flights %>% purrr::pluck("late_dep") %>% mean()
+```
+
+Determine what proportion of all flights are delayed base on the hour that the
+flight was scheduled to depart (`hour`). Create a plot showing how the probability of 
+leaving 15 minutes or more late changes by hour.
+
+```{r}
+flights_late <- flights %>% 
+  group_by(hour) %>% 
+  summarize(prob_late = mean(late_dep))
+
+flights_late
+
+flights_late %>% 
+  ggplot(aes(x = hour, y = prob_late)) + 
+  geom_line()
+```
+
+Fit a generalized linear model for the association between the binary variable of whether
+the flight was 15 minutes or more late (`late_dep`) and the hour the flight was 
+scheduled to leave (`hour`). Use a binomial model (add `family = binomial(link = "logit")`
+in the `glm` call). The estimate from the model for `hour` will be an estimate
+of the log odds ratio for a one-hour increase in scheduled departure time. Take the
+exponent of this estimate with `exp` to get an estimated odds ratio for a one-hour
+increase in scheduled departure time. Is this estimate larger than 1.0?
+
+```{r}
+glm(late_dep ~ hour, data = flights, family = binomial(link = "logit")) 
+
+library(broom)
+glm(late_dep ~ hour, data = flights, family = binomial(link = "logit")) %>% 
+  tidy() %>%                 # Tidy the model results
+  filter(term == "hour") %>% # Only look at the estimate for `hour`
+  mutate(or = exp(estimate)) # Estimate is log odds ratio. Take exponent for odds ratio
+```
+
+Next, we want to see if this association is similar across airlines. First, create a 
+dataframe called `nested_flights` where the `flights`
+data is grouped by airline (`carrier`) and then nest the data, so that there is a "data" list-column
+where each item is a dataframe of flight delay data for a specific carrier: 
+
+```{r}
+nested_flights <- flights %>% 
+  group_by(carrier) %>% 
+  nest()
+
+nested_flights
+```
+
+To check the contents of the list-column, try: 
+
+```{r}
+nested_flights$data[[1]] %>% # Get the first element of the "data" column
+  head()
+```
+
+Use the `map` function from `purrr` inside a `mutate` statement to apply the `glm` code you used earlier for the
+whole dataset, but in this case for the data for each airline character: 
+
+```{r}
+library(purrr)
+library(tidyr)
+
+prob_late <- nested_flights %>% 
+  mutate(glm_result = map(data, ~ glm(late_dep ~ hour, 
+                                      data = .x, family = binomial(link = "logit")))) 
+
+# Check the results for the first element of the "glm_result" column: 
+prob_late$glm_result[[1]]
+```
+
+Then use the `map` 
+function inside a `mutate` statement again to "tidy" the data. 
+
+```{r}
+prob_late <- prob_late %>% 
+  mutate(glm_tidy = map(glm_result, ~ tidy(.x)))
+```
+
+Remove the columns for `data` and
+`glm_result`:
+
+```{r}
+prob_late <- prob_late %>% 
+  select(-data, -glm_result)
+```
+
+Then ``unnest` the dataframe list-column with the tidy version of the model
+results: 
+
+```{r}
+prob_late <- prob_late %>% 
+  unnest(glm_tidy)
+```
+
+Filter to get only the estimates for the "hour" term: 
+
+```{r}
+prob_late <- prob_late %>% 
+  filter(term == "hour")
+```
+
+Then calculate an odds ratio
+(`or`) by taking the exponent (check the `exp` function) of the original estimate. 
+
+```{r}
+prob_late <- prob_late %>% 
+  mutate(or = exp(estimate))
+head(prob_late)
+```
+
+The package has a dataframe with the full name of each carrier (`airlines`). Join this data
+into the data you've been working with, so you have the full names of airlines: 
+
+```{r}
+prob_late <- left_join(prob_late, airlines, by = "carrier")
+```
+
+Finally, create the following plot with each airline's association between hour in the 
+day and the chance of a delay: 
+
+
+```{r}
+library(forcats)
+data(airlines)
+prob_late %>% 
+  ungroup() %>% 
+  mutate(estimate = exp(estimate)) %>% 
+  mutate(name = fct_reorder(name, estimate)) %>% 
+  ggplot(aes(x = estimate, y = name)) + 
+  geom_point() + 
+  geom_vline(xintercept = 1, linetype = 3) + 
+  labs(x = "Odds ratio for one-hour increase in scheduled deparature time", y = "")
+```
+
 
 
 <!-- ### Using a function and `purrr` to create state-specific plots -->

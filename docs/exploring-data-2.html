@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2019-10-14" />
+<meta name="date" content="2019-10-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -333,6 +333,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.7.3" data-path="exploring-data-2.html"><a href="exploring-data-2.html#running-a-simple-statistical-test"><i class="fa fa-check"></i><b>7.7.3</b> Running a simple statistical test</a></li>
 <li class="chapter" data-level="7.7.4" data-path="exploring-data-2.html"><a href="exploring-data-2.html#using-regression-models-to-explore-data-1"><i class="fa fa-check"></i><b>7.7.4</b> Using regression models to explore data #1</a></li>
 <li class="chapter" data-level="7.7.5" data-path="exploring-data-2.html"><a href="exploring-data-2.html#using-regression-models-to-explore-data-2"><i class="fa fa-check"></i><b>7.7.5</b> Using regression models to explore data #2</a></li>
+<li class="chapter" data-level="7.7.6" data-path="exploring-data-2.html"><a href="exploring-data-2.html#trying-out-nesting-and-mapping"><i class="fa fa-check"></i><b>7.7.6</b> Trying out nesting and mapping</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
@@ -576,7 +577,7 @@ advanced methods to analyze your data.</p>
 <pre><code>## [1] &quot;coefficients&quot;  &quot;residuals&quot;     &quot;fitted.values&quot;</code></pre>
 <div class="sourceCode" id="cb699"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb699-1" title="1">my_mod[[<span class="st">&quot;coefficients&quot;</span>]]</a></code></pre></div>
 <pre><code>## (Intercept)     c(1:10) 
-## -0.80064230  0.05664108</code></pre>
+##  -0.7560228   0.1020819</code></pre>
 <p>A list can even contain other lists. We can use the <code>str</code> function to see the structure of a list:</p>
 <div class="sourceCode" id="cb701"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb701-1" title="1">a_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">list</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="kw">list</span>(<span class="dv">1</span>, <span class="dv">2</span>))</a>
 <a class="sourceLine" id="cb701-2" title="2"></a>
@@ -1908,7 +1909,270 @@ Y_t \sim \beta_0 + \beta_1 X_t
 ##   term  estimate conf.low conf.high
 ##   &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 temp      1.01     1.00      1.01</code></pre>
+</div>
+</div>
+<div id="trying-out-nesting-and-mapping" class="section level3">
+<h3><span class="header-section-number">7.7.6</span> Trying out nesting and mapping</h3>
+<ul>
+<li>We’ll be using data that’s in an R package called “nycflights13”. This data package can be installed from CRAN. Install the package and then load the package and its “flights” dataset.
+So that this data will be easier to work with, remove all columns except for those for
+the departure delay (<code>dep_delay</code>), the carrier (<code>carrier</code>), the hour the flight was
+supposed to leave (<code>hour</code>), and the airport the flight left from (<code>origin</code>). Also,
+limit the dataset to only flights that left from LaGuardia Airport (“LGA”).</li>
+<li>We want to figure out if the probability of a flight leaving 15 minutes late or more
+increases over the day for flights leaving LaGuardia. Filter out all the rows where the
+departure delay is missing and then create a new column called
+<code>late_dep</code> that is true if the flight left 15 minutes or more late and false otherwise.
+What proportion of all flights leaving from LaGuardia leave 15 minutes late or later?</li>
+<li>Next, determine what proportion of all flights are delayed base on the hour that the
+flight was scheduled to depart (<code>hour</code>). Create a plot showing how the probability of
+leaving 15 minutes or more late changes by hour.</li>
+<li>Fit a generalized linear model for the association between the binary variable of whether
+the flight was 15 minutes or more late (<code>late_dep</code>) and the hour the flight was
+scheduled to leave (<code>hour</code>). Use a binomial model (add <code>family = binomial(link = "logit")</code>
+in the <code>glm</code> call). The estimate from the model for <code>hour</code> will be an estimate
+of the log odds ratio for a one-hour increase in scheduled departure time. Take the
+exponent of this estimate with <code>exp</code> to get an estimated odds ratio for a one-hour
+increase in scheduled departure time. Is this estimate larger than 1.0?</li>
+<li>Next, we want to see if this association is similar across airlines. First, create a
+dataframe called <code>nested_flights</code> where the <code>flights</code>
+data is grouped by airline (<code>carrier</code>) and then nest the data, so that there is a “data” list-column
+where each item is a dataframe of flight delay data for a specific carrier.</li>
+<li>Use the <code>map</code> function from <code>purrr</code> inside a <code>mutate</code> statement to apply the <code>glm</code> code you used earlier for the
+whole dataset, but in this case for the data for each airline character. Then use the <code>map</code>
+function inside a <code>mutate</code> statement again to “tidy” the data.</li>
+<li>Clean the data up a bit. Remove the columns for <code>data</code> and
+<code>glm_result</code> and then <code>unnest</code> the dataframe list-column with the tidy version of the model
+results. Filter to get only the estimates for the “hour” term. Then calculate an odds ratio
+(<code>or</code>) by taking the exponent (check out the <code>exp</code> function) of the original estimate.</li>
+<li>The package has a dataframe with the full name of each carrier (<code>airlines</code>). Join this data
+into the data you’ve been working with, so you have the full names of airlines.</li>
+<li>Finally, create the following plot with each airline’s odds ratio for the change in the chance of a delay per one-hour increase in the scheduled hour of departure:</li>
+</ul>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-478-1.png" width="672" /></p>
 <hr />
+<div id="example-r-code-18" class="section level4">
+<h4><span class="header-section-number">7.7.6.1</span> Example R code:</h4>
+<p>Install the “nycflights13” package from CRAN. Load the package and its “flights” dataset.</p>
+<div class="sourceCode" id="cb861"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb861-1" title="1"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb861-2" title="2"><span class="kw">library</span>(nycflights13)</a>
+<a class="sourceLine" id="cb861-3" title="3"><span class="kw">data</span>(flights)</a></code></pre></div>
+<p>So that this data will be easier to work with, remove all columns except for those for
+the departure dealy (<code>dep_delay</code>), the carrier (<code>carrier</code>), the hour the flight was
+supposed to leave (<code>hour</code>), and the airport the flight left from (<code>origin</code>).</p>
+<div class="sourceCode" id="cb862"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb862-1" title="1">flights &lt;-<span class="st"> </span>flights <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb862-2" title="2"><span class="st">  </span><span class="kw">select</span>(dep_delay, carrier, hour, origin) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb862-3" title="3"><span class="st">  </span><span class="kw">filter</span>(origin <span class="op">==</span><span class="st"> &quot;LGA&quot;</span>)</a>
+<a class="sourceLine" id="cb862-4" title="4"></a>
+<a class="sourceLine" id="cb862-5" title="5">flights</a></code></pre></div>
+<pre><code>## # A tibble: 104,662 x 4
+##    dep_delay carrier  hour origin
+##        &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt; 
+##  1         4 UA          5 LGA   
+##  2        -6 DL          6 LGA   
+##  3        -3 EV          6 LGA   
+##  4        -2 AA          6 LGA   
+##  5        -1 AA          6 LGA   
+##  6         0 B6          6 LGA   
+##  7         0 MQ          6 LGA   
+##  8        -8 DL          6 LGA   
+##  9        -3 MQ          6 LGA   
+## 10        13 AA          6 LGA   
+## # … with 104,652 more rows</code></pre>
+<p>Filter out all the rows where the
+departure delay is missing and then create a new column called
+<code>late_dep</code> that is true if the flight left 15 minutes or more late and false otherwise.</p>
+<div class="sourceCode" id="cb864"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb864-1" title="1">flights &lt;-<span class="st"> </span>flights <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb864-2" title="2"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(dep_delay)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb864-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">late_dep =</span> dep_delay <span class="op">&gt;</span><span class="st"> </span><span class="dv">15</span>)</a>
+<a class="sourceLine" id="cb864-4" title="4"></a>
+<a class="sourceLine" id="cb864-5" title="5">flights</a></code></pre></div>
+<pre><code>## # A tibble: 101,509 x 5
+##    dep_delay carrier  hour origin late_dep
+##        &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;lgl&gt;   
+##  1         4 UA          5 LGA    FALSE   
+##  2        -6 DL          6 LGA    FALSE   
+##  3        -3 EV          6 LGA    FALSE   
+##  4        -2 AA          6 LGA    FALSE   
+##  5        -1 AA          6 LGA    FALSE   
+##  6         0 B6          6 LGA    FALSE   
+##  7         0 MQ          6 LGA    FALSE   
+##  8        -8 DL          6 LGA    FALSE   
+##  9        -3 MQ          6 LGA    FALSE   
+## 10        13 AA          6 LGA    FALSE   
+## # … with 101,499 more rows</code></pre>
+<p>What proportion of all flights leaving from LaGuardia leave 15 minutes late or later? To
+check this, remember that <code>TRUE</code> is saved as a “1” and <code>FALSE</code> is saved as a “0”. That means that
+we can take the mean of a logical vector to get the proportion of trials that are true.</p>
+<div class="sourceCode" id="cb866"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb866-1" title="1">flights <span class="op">%&gt;%</span><span class="st"> </span>purrr<span class="op">::</span><span class="kw">pluck</span>(<span class="st">&quot;late_dep&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mean</span>()</a></code></pre></div>
+<pre><code>## [1] 0.1889685</code></pre>
+<p>Determine what proportion of all flights are delayed base on the hour that the
+flight was scheduled to depart (<code>hour</code>). Create a plot showing how the probability of
+leaving 15 minutes or more late changes by hour.</p>
+<div class="sourceCode" id="cb868"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb868-1" title="1">flights_late &lt;-<span class="st"> </span>flights <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb868-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(hour) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb868-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">prob_late =</span> <span class="kw">mean</span>(late_dep))</a>
+<a class="sourceLine" id="cb868-4" title="4"></a>
+<a class="sourceLine" id="cb868-5" title="5">flights_late</a></code></pre></div>
+<pre><code>## # A tibble: 18 x 2
+##     hour prob_late
+##    &lt;dbl&gt;     &lt;dbl&gt;
+##  1     5    0.0588
+##  2     6    0.0519
+##  3     7    0.0570
+##  4     8    0.0967
+##  5     9    0.105 
+##  6    10    0.128 
+##  7    11    0.159 
+##  8    12    0.163 
+##  9    13    0.200 
+## 10    14    0.207 
+## 11    15    0.236 
+## 12    16    0.273 
+## 13    17    0.292 
+## 14    18    0.298 
+## 15    19    0.314 
+## 16    20    0.331 
+## 17    21    0.309 
+## 18    22    0.391</code></pre>
+<div class="sourceCode" id="cb870"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb870-1" title="1">flights_late <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb870-2" title="2"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> hour, <span class="dt">y =</span> prob_late)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb870-3" title="3"><span class="st">  </span><span class="kw">geom_line</span>()</a></code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-483-1.png" width="672" /></p>
+<p>Fit a generalized linear model for the association between the binary variable of whether
+the flight was 15 minutes or more late (<code>late_dep</code>) and the hour the flight was
+scheduled to leave (<code>hour</code>). Use a binomial model (add <code>family = binomial(link = "logit")</code>
+in the <code>glm</code> call). The estimate from the model for <code>hour</code> will be an estimate
+of the log odds ratio for a one-hour increase in scheduled departure time. Take the
+exponent of this estimate with <code>exp</code> to get an estimated odds ratio for a one-hour
+increase in scheduled departure time. Is this estimate larger than 1.0?</p>
+<div class="sourceCode" id="cb871"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb871-1" title="1"><span class="kw">glm</span>(late_dep <span class="op">~</span><span class="st"> </span>hour, <span class="dt">data =</span> flights, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>)) </a></code></pre></div>
+<pre><code>## 
+## Call:  glm(formula = late_dep ~ hour, family = binomial(link = &quot;logit&quot;), 
+##     data = flights)
+## 
+## Coefficients:
+## (Intercept)         hour  
+##     -3.3643       0.1399  
+## 
+## Degrees of Freedom: 101508 Total (i.e. Null);  101507 Residual
+## Null Deviance:       98410 
+## Residual Deviance: 92810     AIC: 92810</code></pre>
+<div class="sourceCode" id="cb873"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb873-1" title="1"><span class="kw">library</span>(broom)</a>
+<a class="sourceLine" id="cb873-2" title="2"><span class="kw">glm</span>(late_dep <span class="op">~</span><span class="st"> </span>hour, <span class="dt">data =</span> flights, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb873-3" title="3"><span class="st">  </span><span class="kw">tidy</span>() <span class="op">%&gt;%</span><span class="st">                 </span><span class="co"># Tidy the model results</span></a>
+<a class="sourceLine" id="cb873-4" title="4"><span class="st">  </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;hour&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Only look at the estimate for `hour`</span></a>
+<a class="sourceLine" id="cb873-5" title="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">or =</span> <span class="kw">exp</span>(estimate)) <span class="co"># Estimate is log odds ratio. Take exponent for odds ratio</span></a></code></pre></div>
+<pre><code>## # A tibble: 1 x 6
+##   term  estimate std.error statistic p.value    or
+##   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 hour     0.140   0.00195      71.7       0  1.15</code></pre>
+<p>Next, we want to see if this association is similar across airlines. First, create a
+dataframe called <code>nested_flights</code> where the <code>flights</code>
+data is grouped by airline (<code>carrier</code>) and then nest the data, so that there is a “data” list-column
+where each item is a dataframe of flight delay data for a specific carrier:</p>
+<div class="sourceCode" id="cb875"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb875-1" title="1">nested_flights &lt;-<span class="st"> </span>flights <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb875-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(carrier) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb875-3" title="3"><span class="st">  </span><span class="kw">nest</span>()</a>
+<a class="sourceLine" id="cb875-4" title="4"></a>
+<a class="sourceLine" id="cb875-5" title="5">nested_flights</a></code></pre></div>
+<pre><code>## # A tibble: 13 x 2
+## # Groups:   carrier [13]
+##    carrier           data
+##    &lt;chr&gt;   &lt;list&lt;df[,4]&gt;&gt;
+##  1 UA         [7,837 × 4]
+##  2 DL        [22,857 × 4]
+##  3 EV         [8,255 × 4]
+##  4 AA        [15,063 × 4]
+##  5 B6         [5,925 × 4]
+##  6 MQ        [16,189 × 4]
+##  7 WN         [6,000 × 4]
+##  8 FL         [3,187 × 4]
+##  9 US        [12,574 × 4]
+## 10 F9           [682 × 4]
+## 11 9E         [2,372 × 4]
+## 12 YV           [545 × 4]
+## 13 OO            [23 × 4]</code></pre>
+<p>To check the contents of the list-column, try:</p>
+<div class="sourceCode" id="cb877"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb877-1" title="1">nested_flights<span class="op">$</span>data[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Get the first element of the &quot;data&quot; column</span></a>
+<a class="sourceLine" id="cb877-2" title="2"><span class="st">  </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   dep_delay  hour origin late_dep
+##       &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;lgl&gt;   
+## 1         4     5 LGA    FALSE   
+## 2        -4     6 LGA    FALSE   
+## 3         1     6 LGA    FALSE   
+## 4         9     7 LGA    FALSE   
+## 5        -4     7 LGA    FALSE   
+## 6         2     7 LGA    FALSE</code></pre>
+<p>Use the <code>map</code> function from <code>purrr</code> inside a <code>mutate</code> statement to apply the <code>glm</code> code you used earlier for the
+whole dataset, but in this case for the data for each airline character:</p>
+<div class="sourceCode" id="cb879"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb879-1" title="1"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb879-2" title="2"><span class="kw">library</span>(tidyr)</a>
+<a class="sourceLine" id="cb879-3" title="3"></a>
+<a class="sourceLine" id="cb879-4" title="4">prob_late &lt;-<span class="st"> </span>nested_flights <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb879-5" title="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">glm_result =</span> <span class="kw">map</span>(data, <span class="op">~</span><span class="st"> </span><span class="kw">glm</span>(late_dep <span class="op">~</span><span class="st"> </span>hour, </a>
+<a class="sourceLine" id="cb879-6" title="6">                                      <span class="dt">data =</span> .x, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>)))) </a>
+<a class="sourceLine" id="cb879-7" title="7"></a>
+<a class="sourceLine" id="cb879-8" title="8"><span class="co"># Check the results for the first element of the &quot;glm_result&quot; column: </span></a>
+<a class="sourceLine" id="cb879-9" title="9">prob_late<span class="op">$</span>glm_result[[<span class="dv">1</span>]]</a></code></pre></div>
+<pre><code>## 
+## Call:  glm(formula = late_dep ~ hour, family = binomial(link = &quot;logit&quot;), 
+##     data = .x)
+## 
+## Coefficients:
+## (Intercept)         hour  
+##     -3.4305       0.1551  
+## 
+## Degrees of Freedom: 7836 Total (i.e. Null);  7835 Residual
+## Null Deviance:       7601 
+## Residual Deviance: 7064  AIC: 7068</code></pre>
+<p>Then use the <code>map</code>
+function inside a <code>mutate</code> statement again to “tidy” the data.</p>
+<div class="sourceCode" id="cb881"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb881-1" title="1">prob_late &lt;-<span class="st"> </span>prob_late <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb881-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">glm_tidy =</span> <span class="kw">map</span>(glm_result, <span class="op">~</span><span class="st"> </span><span class="kw">tidy</span>(.x)))</a></code></pre></div>
+<p>Remove the columns for <code>data</code> and
+<code>glm_result</code>:</p>
+<div class="sourceCode" id="cb882"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb882-1" title="1">prob_late &lt;-<span class="st"> </span>prob_late <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb882-2" title="2"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>data, <span class="op">-</span>glm_result)</a></code></pre></div>
+<p>Then `<code>unnest</code> the dataframe list-column with the tidy version of the model
+results:</p>
+<div class="sourceCode" id="cb883"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb883-1" title="1">prob_late &lt;-<span class="st"> </span>prob_late <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb883-2" title="2"><span class="st">  </span><span class="kw">unnest</span>(glm_tidy)</a></code></pre></div>
+<p>Filter to get only the estimates for the “hour” term:</p>
+<div class="sourceCode" id="cb884"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb884-1" title="1">prob_late &lt;-<span class="st"> </span>prob_late <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb884-2" title="2"><span class="st">  </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;hour&quot;</span>)</a></code></pre></div>
+<p>Then calculate an odds ratio
+(<code>or</code>) by taking the exponent (check the <code>exp</code> function) of the original estimate.</p>
+<div class="sourceCode" id="cb885"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb885-1" title="1">prob_late &lt;-<span class="st"> </span>prob_late <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb885-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">or =</span> <span class="kw">exp</span>(estimate))</a>
+<a class="sourceLine" id="cb885-3" title="3"><span class="kw">head</span>(prob_late)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 7
+## # Groups:   carrier [6]
+##   carrier term  estimate std.error statistic   p.value    or
+##   &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+## 1 UA      hour    0.155    0.00705      22.0 2.88e-107  1.17
+## 2 DL      hour    0.148    0.00454      32.6 1.80e-232  1.16
+## 3 EV      hour    0.0952   0.00572      16.7 2.79e- 62  1.10
+## 4 AA      hour    0.146    0.00580      25.2 1.05e-139  1.16
+## 5 B6      hour    0.168    0.00702      23.9 7.13e-126  1.18
+## 6 MQ      hour    0.110    0.00468      23.5 2.23e-122  1.12</code></pre>
+<p>The package has a dataframe with the full name of each carrier (<code>airlines</code>). Join this data
+into the data you’ve been working with, so you have the full names of airlines:</p>
+<div class="sourceCode" id="cb887"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb887-1" title="1">prob_late &lt;-<span class="st"> </span><span class="kw">left_join</span>(prob_late, airlines, <span class="dt">by =</span> <span class="st">&quot;carrier&quot;</span>)</a></code></pre></div>
+<p>Finally, create the following plot with each airline’s association between hour in the
+day and the chance of a delay:</p>
+<div class="sourceCode" id="cb888"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb888-1" title="1"><span class="kw">library</span>(forcats)</a>
+<a class="sourceLine" id="cb888-2" title="2"><span class="kw">data</span>(airlines)</a>
+<a class="sourceLine" id="cb888-3" title="3">prob_late <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb888-4" title="4"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb888-5" title="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">estimate =</span> <span class="kw">exp</span>(estimate)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb888-6" title="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">name =</span> <span class="kw">fct_reorder</span>(name, estimate)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb888-7" title="7"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> estimate, <span class="dt">y =</span> name)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb888-8" title="8"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb888-9" title="9"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">1</span>, <span class="dt">linetype =</span> <span class="dv">3</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb888-10" title="10"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Odds ratio for one-hour increase in scheduled deparature time&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-494-1.png" width="672" /></p>
 <!-- ### Using a function and `purrr` to create state-specific plots -->
 <!-- Next, you will write a function to create state-specific plots from this data, then use it to create plots for the states of Colorado, Texas, California, and New York.  -->
 <!-- - The FARS data includes a column called `STATE`, but it gives state as a one- or two-digit code, rather than by name. These codes are the state Federal Information Processing Standard (FIPS) codes. A dataset with state names and FIPS codes is available at http://www2.census.gov/geo/docs/reference/state.txt. Read that data into an R object called `state_fips` and clean it so the first few lines look like this (hint: to change the `state` column to an integer class, you can use the function `as.integer`): -->
