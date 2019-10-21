@@ -584,7 +584,7 @@ advanced methods to analyze your data.</p>
 <pre><code>## [1] &quot;coefficients&quot;  &quot;residuals&quot;     &quot;fitted.values&quot;</code></pre>
 <div class="sourceCode" id="cb699"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb699-1" title="1">my_mod[[<span class="st">&quot;coefficients&quot;</span>]]</a></code></pre></div>
 <pre><code>## (Intercept)     c(1:10) 
-##  0.20953608 -0.02918766</code></pre>
+##  0.02870223 -0.03367026</code></pre>
 <p>A list can even contain other lists. We can use the <code>str</code> function to see the structure of a list:</p>
 <div class="sourceCode" id="cb701"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb701-1" title="1">a_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">list</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="kw">list</span>(<span class="dv">1</span>, <span class="dv">2</span>))</a>
 <a class="sourceLine" id="cb701-2" title="2"></a>
@@ -2515,11 +2515,11 @@ word list was used, but not when the Google top-10,000 words list was used.</p>
 <p>Try using these functions to solve the word puzzle problem in the last homework.</p>
 <div class="sourceCode" id="cb943"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb943-1" title="1">word_list <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb943-2" title="2"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">str_detect</span>(word, <span class="st">&quot;^m.{7}$&quot;</span>)) <span class="op">%&gt;%</span><span class="st">                        </span><span class="co"># This is using regular expressions</span></a>
-<a class="sourceLine" id="cb943-3" title="3"><span class="st">  </span><span class="kw">separate</span>(word, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;first_word&quot;</span>, <span class="st">&quot;second_word&quot;</span>),          <span class="co"># Note that you can use `separate`</span></a>
-<a class="sourceLine" id="cb943-4" title="4">           <span class="dt">sep =</span> <span class="dv">4</span>, <span class="dt">remove =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st">                          </span><span class="co">#   with a number to use position</span></a>
+<a class="sourceLine" id="cb943-3" title="3"><span class="st">  </span><span class="kw">separate</span>(word, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;first_word&quot;</span>, <span class="st">&quot;second_word&quot;</span>),          <span class="co"># Note that you can use `separate` with a number to use position</span></a>
+<a class="sourceLine" id="cb943-4" title="4">           <span class="dt">sep =</span> <span class="dv">4</span>, <span class="dt">remove =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st">                          </span></a>
 <a class="sourceLine" id="cb943-5" title="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">second_word =</span> <span class="kw">move_letter</span>(second_word)) <span class="op">%&gt;%</span><span class="st">             </span><span class="co"># Use the first function here</span></a>
 <a class="sourceLine" id="cb943-6" title="6"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">is_word</span>(first_word) <span class="op">&amp;</span><span class="st"> </span><span class="kw">is_word</span>(second_word)) <span class="op">%&gt;%</span><span class="st">         </span><span class="co"># Use the second function here</span></a>
-<a class="sourceLine" id="cb943-7" title="7"><span class="st">  </span><span class="kw">unite</span>(<span class="st">&quot;new_word&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;first_word&quot;</span>, <span class="st">&quot;second_word&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>)   <span class="co"># You can use `unite` to put the</span></a></code></pre></div>
+<a class="sourceLine" id="cb943-7" title="7"><span class="st">  </span><span class="kw">unite</span>(<span class="st">&quot;new_word&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;first_word&quot;</span>, <span class="st">&quot;second_word&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>)   <span class="co"># You can use `unite` to put the two new words in a phrase in one column.</span></a></code></pre></div>
 <pre><code>## # A tibble: 103 x 2
 ##    word     new_word 
 ##    &lt;chr&gt;    &lt;chr&gt;    
@@ -2534,20 +2534,18 @@ word list was used, but not when the Google top-10,000 words list was used.</p>
 ##  9 mandates mand sate
 ## 10 mangiest mang ties
 ## # … with 93 more rows</code></pre>
-<div class="sourceCode" id="cb945"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb945-1" title="1">                                                                 <span class="co">#   two new words in a phrase in</span></a>
-<a class="sourceLine" id="cb945-2" title="2">                                                                 <span class="co">#   one column.</span></a></code></pre></div>
 <p>You can get the choices down to even fewer options if you match the new words against
 the Google top-10,000 words list, by using the <code>real_word_list</code> option in the <code>is_word</code>
 function you wrote. (However, “maillots” is not a common enough word that you can
 also start from that shorter word list!)</p>
-<div class="sourceCode" id="cb946"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb946-1" title="1">word_list <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb946-2" title="2"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">str_detect</span>(word, <span class="st">&quot;^m.{7}$&quot;</span>)) <span class="op">%&gt;%</span><span class="st">                        </span></a>
-<a class="sourceLine" id="cb946-3" title="3"><span class="st">  </span><span class="kw">separate</span>(word, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;first_word&quot;</span>, <span class="st">&quot;second_word&quot;</span>),          </a>
-<a class="sourceLine" id="cb946-4" title="4">           <span class="dt">sep =</span> <span class="dv">4</span>, <span class="dt">remove =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st">                          </span></a>
-<a class="sourceLine" id="cb946-5" title="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">second_word =</span> <span class="kw">move_letter</span>(second_word)) <span class="op">%&gt;%</span><span class="st">             </span></a>
-<a class="sourceLine" id="cb946-6" title="6"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">is_word</span>(first_word, <span class="dt">real_word_list =</span> google_words) <span class="op">&amp;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb946-7" title="7"><span class="st">           </span><span class="kw">is_word</span>(second_word, <span class="dt">real_word_list =</span> google_words)) <span class="op">%&gt;%</span><span class="st">         </span></a>
-<a class="sourceLine" id="cb946-8" title="8"><span class="st">  </span><span class="kw">unite</span>(<span class="st">&quot;new_word&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;first_word&quot;</span>, <span class="st">&quot;second_word&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>)  </a></code></pre></div>
+<div class="sourceCode" id="cb945"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb945-1" title="1">word_list <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb945-2" title="2"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">str_detect</span>(word, <span class="st">&quot;^m.{7}$&quot;</span>)) <span class="op">%&gt;%</span><span class="st">                        </span></a>
+<a class="sourceLine" id="cb945-3" title="3"><span class="st">  </span><span class="kw">separate</span>(word, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;first_word&quot;</span>, <span class="st">&quot;second_word&quot;</span>),          </a>
+<a class="sourceLine" id="cb945-4" title="4">           <span class="dt">sep =</span> <span class="dv">4</span>, <span class="dt">remove =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st">                          </span></a>
+<a class="sourceLine" id="cb945-5" title="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">second_word =</span> <span class="kw">move_letter</span>(second_word)) <span class="op">%&gt;%</span><span class="st">             </span></a>
+<a class="sourceLine" id="cb945-6" title="6"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">is_word</span>(first_word, <span class="dt">real_word_list =</span> google_words) <span class="op">&amp;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb945-7" title="7"><span class="st">           </span><span class="kw">is_word</span>(second_word, <span class="dt">real_word_list =</span> google_words)) <span class="op">%&gt;%</span><span class="st">         </span></a>
+<a class="sourceLine" id="cb945-8" title="8"><span class="st">  </span><span class="kw">unite</span>(<span class="st">&quot;new_word&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;first_word&quot;</span>, <span class="st">&quot;second_word&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>)  </a></code></pre></div>
 <pre><code>## # A tibble: 43 x 2
 ##    word     new_word 
 ##    &lt;chr&gt;    &lt;chr&gt;    

@@ -1826,13 +1826,11 @@ Try using these functions to solve the word puzzle problem in the last homework.
 ```{r}
 word_list %>% 
   filter(str_detect(word, "^m.{7}$")) %>%                        # This is using regular expressions
-  separate(word, into = c("first_word", "second_word"),          # Note that you can use `separate`
-           sep = 4, remove = FALSE) %>%                          #   with a number to use position
+  separate(word, into = c("first_word", "second_word"),          # Note that you can use `separate` with a number to use position
+           sep = 4, remove = FALSE) %>%                          
   mutate(second_word = move_letter(second_word)) %>%             # Use the first function here
   filter(is_word(first_word) & is_word(second_word)) %>%         # Use the second function here
-  unite("new_word", c("first_word", "second_word"), sep = " ")   # You can use `unite` to put the
-                                                                 #   two new words in a phrase in
-                                                                 #   one column.
+  unite("new_word", c("first_word", "second_word"), sep = " ")   # You can use `unite` to put the two new words in a phrase in one column.
 ```
 
 You can get the choices down to even fewer options if you match the new words against
