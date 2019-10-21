@@ -1,13 +1,24 @@
-\frametitle{Nesting and mapping}
-\protect\hypertarget{nesting-and-mapping-11}{}
+\frametitle{Applying a function repeatedly}
+\protect\hypertarget{applying-a-function-repeatedly-13}{}
+
+You can unnest this list-column to get it back to a ``normal'' column:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{sample_norm_test }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{log10}\NormalTok{(p.value))) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{geom_histogram}\NormalTok{()}
+\NormalTok{df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{phrase =} \KeywordTok{map2}\NormalTok{(}\DataTypeTok{.x =}\NormalTok{ first_word,}
+                       \DataTypeTok{.y =}\NormalTok{ second_word,}
+                       \DataTypeTok{.f =}\NormalTok{ paste)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{unnest}\NormalTok{(phrase)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics[height=0.7\textheight]{CourseNotes_Week7_files/figure-beamer/unnamed-chunk-82-1} \end{center}
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   first_word second_word phrase
+##   <chr>      <chr>       <chr>
+## 1 open       source      open source
+## 2 ride       share       ride share
+## 3 moot       point       moot point
+\end{verbatim}
 
