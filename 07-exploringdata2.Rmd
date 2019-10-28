@@ -342,7 +342,7 @@ We can then use the `map` function from the `purrr` package to apply functions t
 library(purrr)
 
 filtered_data <- nested_data %>%
-  mutate(n_rows = map(data, ~nrow(.x))) %>%
+  mutate(n_rows = purrr::map(data, ~ nrow(.x))) %>%
   filter(n_rows > 25)
 ```
 
@@ -350,7 +350,7 @@ Now let's perform a t-test on each out the nested dataframes. Remember, each nes
 
 ```{r}
 t_tests <- filtered_data %>%
-  mutate(t_test = map(data, ~t.test(abundance ~ sex, data = .x)))
+  mutate(t_test = purrr::map(data, ~t.test(abundance ~ sex, data = .x)))
 ```
 
 ```{r}
@@ -361,7 +361,7 @@ The resulting dataframe contains a new column, which contains the model objects.
 
 ```{r}
 summary <- t_tests %>%
-  mutate(summary = map(t_test, broom::glance))
+  mutate(summary = purrr::map(t_test, broom::glance))
 ```
 
 ```{r}
@@ -1466,9 +1466,9 @@ flights %>%
   mutate(late_dep = dep_delay > 15) %>% 
   group_by(carrier) %>% 
   nest() %>% 
-  mutate(glm_result = map(data, ~ glm(late_dep ~ hour, 
+  mutate(glm_result = purrr::map(data, ~ glm(late_dep ~ hour, 
                                       data = .x, family = binomial(link = "logit")))) %>% 
-  mutate(glm_tidy = map(glm_result, ~ tidy(.x))) %>% 
+  mutate(glm_tidy = purrr::map(glm_result, ~ tidy(.x))) %>% 
   select(-data, -glm_result) %>% 
   unnest(glm_tidy) %>% 
   filter(term == "hour") %>% 
@@ -1589,7 +1589,7 @@ library(purrr)
 library(tidyr)
 
 prob_late <- nested_flights %>% 
-  mutate(glm_result = map(data, ~ glm(late_dep ~ hour, 
+  mutate(glm_result = purrr::map(data, ~ glm(late_dep ~ hour, 
                                       data = .x, family = binomial(link = "logit")))) 
 
 # Check the results for the first element of the "glm_result" column: 
@@ -1601,7 +1601,7 @@ function inside a `mutate` statement again to "tidy" the data.
 
 ```{r}
 prob_late <- prob_late %>% 
-  mutate(glm_tidy = map(glm_result, ~ tidy(.x)))
+  mutate(glm_tidy = purrr::map(glm_result, ~ tidy(.x)))
 ```
 
 Remove the columns for `data` and

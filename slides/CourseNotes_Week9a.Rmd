@@ -1,10 +1,12 @@
 ---
 title: 'Reporting data results #2'
-output:
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
   beamer_presentation:
-    theme: metropolis
-  ioslides_presentation: default
-  slidy_presentation: default
+    theme: "metropolis"
 fontsize: 10pt
 ---
 
@@ -57,9 +59,15 @@ Each row is a separate **event**. However, often several events are grouped toge
 within the same **episode**. 
 
 ```{r}
-nrow(storms_2017)
-length(unique(storms_2017$EVENT_ID))
-length(unique(storms_2017$EPISODE_ID))
+storms_2017 %>% nrow()
+storms_2017 %>% 
+  select(EVENT_ID) %>% 
+  distinct() %>% 
+  nrow()
+storms_2017 %>% 
+  select(EPISODE_ID) %>% 
+  distinct() %>% 
+  nrow()
 ```
 
 ## Example data
@@ -68,7 +76,9 @@ Some of the event types are listed by their county ID (FIPS code) ("C"), but som
 by a forecast zone ID ("Z"). Which ID is used is given in the column `CZ_TYPE`:
 
 ```{r}
-summary(factor(storms_2017$CZ_TYPE))
+storms_2017 %>% 
+  group_by(CZ_TYPE) %>% 
+  count()
 ```
 
 ## Example data
@@ -131,9 +141,9 @@ area, and region:
 
 ```{r}
 data("state")
-us_state_info <- data_frame(state = state.name, 
-                            area = state.area,
-                            region = state.region)
+us_state_info <- tibble(state = state.name, 
+                        area = state.area,
+                        region = state.region)
 ```
 
 
@@ -534,12 +544,10 @@ ggplot(storms_by_yday, aes(x = yday,
 
 ## Odds and ends
 
-Before Wednesday's class, be sure to do the following: 
+Before next week's class, be sure to do the following: 
 
 - Register for GitHub: https://github.com
 - Download and install git: https://git-scm.com 
-- Install LaTeX: MikTeX for Windows, MacTeX for Macs. If you have low memory on your computer, you 
-may want to start with "TinyTex" (https://yihui.name/tinytex/) instead
 
 
 # Mapping in the tidyverse
@@ -677,15 +685,13 @@ larimer
 
 ## Simple features
 
-\footnotesize
-
-Note: You may need the development version of `ggplot2` for this to work (`devtools::install_github("tidyverse/ggplot2")`).
 
 ```{r warning = FALSE, message = FALSE, fig.width = 6, fig.height = 4, out.width = "0.6\\textwidth", fig.align = "center"}
 ggplot() + 
   geom_sf(data = co_counties, color = "lightgray") + 
   geom_sf(data = larimer, fill = "darkcyan") + 
-  geom_sf_text(data = larimer, aes(label = NAME), color = "white") + 
+  geom_sf_text(data = larimer, aes(label = NAME), 
+               color = "white") + 
   theme_dark() + labs(x = "", y = "")
 ```
 
