@@ -10,115 +10,91 @@ fontsize: 10pt
 library(knitr)
 ```
 
-## Homeworks 
 
-Homeworks #4 and #5 are now up. Both: 
+<!-- # Templates -->
 
-- Use the same dataset (homicides in 50 U.S. cities)
-- Require submitting through GitHub
+<!-- ## Templates -->
 
-Homework #4 will be done individually, while Homework #5 will be done in groups. 
-Groups for Homework #5 will be assigned next Wednesday (Oct. 31).
+<!-- R Markdown **templates** can be used to change multiple elements of the style of a rendered document. You can think of these as being the document-level analog to the themes we've used with `ggplot` objects. \bigskip -->
 
-For today's and Monday's in-course exercise, we will start setting up your GitHub repository for 
-these homeworks. 
+<!-- To do this, some kind of style file is applied when rendering document. For HTML documents, Cascading Style Sheets (CSS) (`.css`) can be used to change the style of different elements. For pdf files, LaTeX package (style) files (`.sty`) are used.  -->
 
-## Group projects
+<!-- ## Templates -->
 
-This year, our topic for the group projects will be West Nile virus. 
+<!-- To open a new R Markdown file that uses a template, in RStudio, go to "File" -> "New File" -> "R Markdown" -> "From Template".  -->
 
-You will work in groups on the final project, and different groups can use different 
-sets of data related to this topic. 
+<!-- Different templates come with different R packages. A couple of templates come with the `rmarkdown` package, which you likely already have.  -->
 
-Between now and next Wednesday (Oct. 31), see what available data you can find related to
-West Nile virus. If you find data you would like to work with in a group, or a research 
-question you would like to explore, bring a few notes in on the data / idea for next
-Wednesday. 
+<!-- ## Templates -->
 
-# Templates
+<!-- Many of these templates will only render to pdf. \bigskip  -->
 
-## Templates
+<!-- To render a pdf from R Markdown, you need to have a version of TeX installed on your computer. Like R, TeX is open source software. RStudio recommends the following installations by system: -->
 
-R Markdown **templates** can be used to change multiple elements of the style of a rendered document. You can think of these as being the document-level analog to the themes we've used with `ggplot` objects. \bigskip
+<!-- - For Macs: MacTeX -->
+<!-- - For PCs: MiKTeX -->
 
-To do this, some kind of style file is applied when rendering document. For HTML documents, Cascading Style Sheets (CSS) (`.css`) can be used to change the style of different elements. For pdf files, LaTeX package (style) files (`.sty`) are used. 
+<!-- Links for installing both can be found at http://www.latex-project.org/ftp.html \bigskip -->
 
-## Templates
+<!-- Current version of TeX: 3.14159265. -->
 
-To open a new R Markdown file that uses a template, in RStudio, go to "File" -> "New File" -> "R Markdown" -> "From Template". 
+<!-- ## Templates -->
 
-Different templates come with different R packages. A couple of templates come with the `rmarkdown` package, which you likely already have. 
+<!-- The `tufte` package has templates for creating handouts typeset like Edward Tufte's books. \bigskip -->
 
-## Templates
+<!-- This package includes templates for creating both pdf and HTML documents in this style. \bigskip -->
 
-Many of these templates will only render to pdf. \bigskip 
+<!-- The package includes special functions like `newthought`, special chunk options like `fig.fullwidth`, and special knitr engines like `marginfigure`. Special features available in the tufte template include:  -->
 
-To render a pdf from R Markdown, you need to have a version of TeX installed on your computer. Like R, TeX is open source software. RStudio recommends the following installations by system:
+<!-- - Margin references -->
+<!-- - Margin figures -->
+<!-- - Side notes -->
+<!-- - Full width figures -->
 
-- For Macs: MacTeX
-- For PCs: MiKTeX
+<!-- ## Templates -->
 
-Links for installing both can be found at http://www.latex-project.org/ftp.html \bigskip
+<!-- The `rticles` package has templates for several journals:  -->
 
-Current version of TeX: 3.14159265.
+<!-- - *Journal of Statistical Software*  -->
+<!-- - *The R Journal* -->
+<!-- - *Association for Computing Machinery* -->
+<!-- - ACS publications (*Journal of the American Chemical Society*, *Environmental Science & Technology*)  -->
+<!-- - Elsevier publications -->
 
-## Templates
+<!-- ## Templates -->
 
-The `tufte` package has templates for creating handouts typeset like Edward Tufte's books. \bigskip
+<!-- Some of these templates create a whole directory, with several files besides the .Rmd file. For example, the template for *The R Journal* includes:  -->
 
-This package includes templates for creating both pdf and HTML documents in this style. \bigskip
+<!-- - The R Markdown file in which you write your article -->
+<!-- - "RJournal.sty": A LaTeX package (style) file specific to *The R Journal*. This file tells LaTeX how to render all the elements in your article in the style desired by this journal.  -->
+<!-- - "RJreferences.bib": A BibTeX file, where you can save citation information for all references in your article. -->
+<!-- - "Rlogo.png": An example figure (the R logo). -->
 
-The package includes special functions like `newthought`, special chunk options like `fig.fullwidth`, and special knitr engines like `marginfigure`. Special features available in the tufte template include: 
+<!-- ## Templates -->
 
-- Margin references
-- Margin figures
-- Side notes
-- Full width figures
+<!-- Once you render the R Markdown document from this template, you'll end up with some new files in the directory:  -->
 
-## Templates
+<!-- - "[your file name].tex": A TeX file with the content from your R Markdown file. This will be "wrapped" with some additional formatting input to create "RJwrapper.tex". -->
+<!-- - "RJwrapper.tex": A TeX file that includes both the content from your R Markdown file and additional formatting input. Typically, you will submit this file (along with the BibTeX, any figure and image files, and possibly the style file) to the journal. -->
+<!-- - "RJwrapper.pdf": The rendered pdf file (what the published article would look like) -->
 
-The `rticles` package has templates for several journals: 
+<!-- ## Templates -->
 
-- *Journal of Statistical Software* 
-- *The R Journal*
-- *Association for Computing Machinery*
-- ACS publications (*Journal of the American Chemical Society*, *Environmental Science & Technology*) 
-- Elsevier publications
+<!-- This template files will often require some syntax that looks more like LaTeX than Markdown. \bigskip -->
 
-## Templates
+<!-- For example, for the template for *The R Journal*, you need to use `\citep{}` and `\citet{}` to include citations. These details will depend on the style file of the template. \bigskip -->
 
-Some of these templates create a whole directory, with several files besides the .Rmd file. For example, the template for *The R Journal* includes: 
+<!-- As a note, you can always use raw LaTeX in R Markdown documents, not just in documents you're creating with a template. You just need to be careful not to mix the two. For example, if you use a LaTeX environment to begin an itemized list (e.g., with `begin{itemize}`), you must start each item with `item`, not `-`.  -->
 
-- The R Markdown file in which you write your article
-- "RJournal.sty": A LaTeX package (style) file specific to *The R Journal*. This file tells LaTeX how to render all the elements in your article in the style desired by this journal. 
-- "RJreferences.bib": A BibTeX file, where you can save citation information for all references in your article.
-- "Rlogo.png": An example figure (the R logo).
+<!-- ## Templates -->
 
-## Templates
+<!-- You can create your own template. You create it as part of a custom R package, and then will have access to the template once you've installed the package. This can be useful if you often write documents in a certain style, or if you ever work somewhere with certain formatting requirements for reports. \bigskip -->
 
-Once you render the R Markdown document from this template, you'll end up with some new files in the directory: 
+<!-- RStudio has full instructions for creating your own template: http://rmarkdown.rstudio.com/developer_document_templates.html -->
 
-- "[your file name].tex": A TeX file with the content from your R Markdown file. This will be "wrapped" with some additional formatting input to create "RJwrapper.tex".
-- "RJwrapper.tex": A TeX file that includes both the content from your R Markdown file and additional formatting input. Typically, you will submit this file (along with the BibTeX, any figure and image files, and possibly the style file) to the journal.
-- "RJwrapper.pdf": The rendered pdf file (what the published article would look like)
+<!-- ## In-course exercise -->
 
-## Templates
-
-This template files will often require some syntax that looks more like LaTeX than Markdown. \bigskip
-
-For example, for the template for *The R Journal*, you need to use `\citep{}` and `\citet{}` to include citations. These details will depend on the style file of the template. \bigskip
-
-As a note, you can always use raw LaTeX in R Markdown documents, not just in documents you're creating with a template. You just need to be careful not to mix the two. For example, if you use a LaTeX environment to begin an itemized list (e.g., with `begin{itemize}`), you must start each item with `item`, not `-`. 
-
-## Templates
-
-You can create your own template. You create it as part of a custom R package, and then will have access to the template once you've installed the package. This can be useful if you often write documents in a certain style, or if you ever work somewhere with certain formatting requirements for reports. \bigskip
-
-RStudio has full instructions for creating your own template: http://rmarkdown.rstudio.com/developer_document_templates.html
-
-## In-course exercise
-
-We'll now take a break to do the first part of the in-course exercise.
+<!-- We'll now take a break to do the first part of the in-course exercise. -->
 
 # R Projects
 
@@ -164,13 +140,13 @@ It saves information about all changes you make on all files in a repository. Th
 ## git
 
 ```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
-knitr::include_graphics("../_book/figures/GitCartoon1.png")
+knitr::include_graphics("../figures/GitCartoon1.png")
 ```
 
 ## git
 
 ```{r echo = FALSE, out.width = "0.5\\textwidth", fig.align = "center"}
-knitr::include_graphics("../_book/figures/FileSystemCartoon.jpg")
+knitr::include_graphics("../figures/FileSystemCartoon.jpg")
 ```
 Source: PhDComics
 
@@ -216,7 +192,7 @@ Once you initialize the project as a git repository, you should have a "Git" win
 As you make and save changes to files, they will show up in this window for you to commit. For example, this is what the Git window for our coursebook looks like when I have changes to the slides for week 9 that I need to commit: 
 
 ```{r echo = FALSE, out.width="0.8\\textwidth", fig.align="center"}
-knitr::include_graphics("../_book/figures/ExampleGitWindow.png")
+knitr::include_graphics("../figures/ExampleGitWindow.png")
 ```
 
 ## Committing
@@ -233,7 +209,7 @@ change to other remote repositories, you'll need to link with **remote** reposit
 To make a commit from RStudio, click on the "Commit" button in the Git window. That will open a separate commit window that looks like this: 
 
 ```{r echo = FALSE, out.width="0.8\\textwidth", fig.align="center"}
-knitr::include_graphics("../_book/figures/ExampleCommitWindow.png")
+knitr::include_graphics("../figures/ExampleCommitWindow.png")
 ```
 
 ## Committing
@@ -252,7 +228,7 @@ Once you commit changes to files, they will disappear from the Git window until 
 ## Committing
 
 ```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
-knitr::include_graphics("../_book/figures/git_commit.png")
+knitr::include_graphics("../figures/git_commit.png")
 ```
 Source: xkcd
 
@@ -262,7 +238,7 @@ Source: xkcd
 On the top left of the Commit window, you can toggle to "History". This window allows you to explore the history of commits for the repository.
 
 ```{r echo = FALSE, out.width="0.8\\textwidth", fig.align="center"}
-knitr::include_graphics("../_book/figures/ExampleHistoryWindow.png")
+knitr::include_graphics("../figures/ExampleHistoryWindow.png")
 ```
 
 ## In-course exercise
@@ -295,7 +271,7 @@ While R Projects have this additional information saved as an ".RProj" file, git
 ## GitHub
 
 ```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
-knitr::include_graphics("../_book/figures/GitHubDiagram.png")
+knitr::include_graphics("../figures/GitHubDiagram.png")
 ```
 Source: GitHub
 
@@ -353,7 +329,7 @@ git clone git@github.com:geanders/ex_repo.git
 Once you have linked a local R project with a GitHub repository, you can push and pull commits using the blue down arrow (pull from GitHub) and green up arrow (push to GitHub) in the Git window in RStudio. 
 
 ```{r echo = FALSE, out.width="0.8\\textwidth", fig.align="center"}
-knitr::include_graphics("../_book/figures/ExampleGitWindow.png")
+knitr::include_graphics("../figures/ExampleGitWindow.png")
 ```
 
 ## In-course exercise
@@ -458,7 +434,7 @@ http://r-pkgs.had.co.nz/git.html
 ## Final note on git
 
 ```{r echo = FALSE, out.width = "0.4\\textwidth", fig.align = "center"}
-knitr::include_graphics("../_book/figures/GitCartoon2.png")
+knitr::include_graphics("../figures/GitCartoon2.png")
 ```
 Source: xkcd
 
