@@ -244,7 +244,7 @@ Let's look at the list object from the statistical test we ran for Las Vegas:
 str(vegas_test)
 ```
 
-Using `str` to print out the list's structure doesn't produce the easiest to digest output. We can use the `???` function from the `listviewer` package to create a widget in the `viewer` pane to more esily explore our list.
+Using `str` to print out the list's structure doesn't produce the easiest to digest output. We can use the `jsonedit` function from the `listviewer` package to create a widget in the `viewer` pane to more esily explore our list.
 
 ```{r, eval=FALSE}
 library(listviewer)
@@ -284,7 +284,120 @@ tidy(vegas_test)
 
 ---
 
-## Regression models 
+## Apply a test multiple times
+
+Often, we don't want to just apply a statistical test to our entire data set.
+
+Let's look at an example from the `microbiome package`.
+
+```{r, warning = FALSE, message = FALSE}
+library(microbiome)
+data(peerj32)
+print(names(peerj32))
+```
+
+Like we saw before, the list-like `phyloseq` objects require a little tidying before we can use them easiliy.
+
+```{r}
+library(dplyr)
+peerj32_tibble <- (psmelt(peerj32$phyloseq)) %>%
+  dplyr::select(-Sample) %>%
+  rename_all(tolower) %>%
+  as_tibble()
+```
+
+```{r, echo=FALSE}
+slice(peerj32_tibble, 1:3)
+```
+
+We can make a plot from the resulting tibble to help us explore the data.
+
+```{r, fig.height=8, fig.width=10}
+library(ggplot2)
+ggplot(peerj32_tibble, aes(x = subject, y = abundance, color = sex)) +
+  geom_point() +
+  theme_bw() +
+  facet_wrap(~phylum, ncol = 4, scales = "free") +
+  theme(axis.text.x = element_blank(),
+        legend.position = "top") +
+  xlab("Subject ID")
+```
+
+We can group the data by `phylum` and `group` and then use the `nest` function from the `tidyr` package to create a new dataframe containing the nested data:
+
+```{r}
+library(tidyr)
+nested_data <- peerj32_tibble %>%
+  group_by(phylum, group) %>%
+  nest()
+```
+
+```{r}
+slice(nested_data, 1:3)
+```
+
+We can then use the `map` function from the `purrr` package to apply functions to each nested dataframe. Let's start by counting the rows in each nested dataframe and filtering out dataframes with less than 25 rows.
+
+```{r}
+library(purrr)
+
+filtered_data <- nested_data %>%
+  mutate(n_rows = purrr::map(data, ~ nrow(.x))) %>%
+  filter(n_rows > 25)
+```
+
+Now let's perform a t-test on each out the nested dataframes. Remember, each nested dataframe is one unique combination of phylum and group.
+
+```{r}
+t_tests <- filtered_data %>%
+  mutate(t_test = purrr::map(data, ~t.test(abundance ~ sex, data = .x)))
+```
+
+```{r}
+t_tests
+```
+
+The resulting dataframe contains a new column, which contains the model objects. Just as we mapped the `t.test` function, we can map the *tidying* functions from the `broom` package to extract the information we want from the nested model objects.
+
+```{r}
+summary <- t_tests %>%
+  mutate(summary = purrr::map(t_test, broom::glance))
+```
+
+```{r}
+summary
+```
+
+The final step is to return a tidy dataframe, we can do this using the `unnest` function from the `tidyr` package. Note: it is also wise to `ungroup` after you are done operating on your grouped variables - you may run into problems if you forget your dataframe is grouped later on!
+
+```{r}
+unnested <- summary %>%
+  unnest(summary) %>%
+  ungroup() %>%
+  dplyr::select(group, phylum, p.value)
+```
+
+```{r}
+unnested
+```
+
+We can then plot the results. Let's do this for the "LGG" (non-placebo) group, using our principles for good graphics.
+
+```{r}
+p_data <- unnested %>%
+  filter(group == "LGG") %>%
+  mutate(phylum = fct_reorder(phylum, p.value))
+  
+ggplot(p_data, aes(y = p.value, x = phylum)) +
+  facet_wrap(~group) +
+  geom_bar(stat="identity", fill = "grey90", color = "grey20") +
+  coord_flip() +
+  theme_bw() +
+  ggtitle("Difference in abundance by gender") +
+  xlab("") + ylab("p-value from t-test")
+```
+
+## Regression models
 
 ### Formula structure
 
@@ -494,62 +607,6 @@ For example, the model fit above tells us that the estimated mean weight of male
 
 ---
 
-### Generalized linear models (GLMs)
-
-You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). \medskip
-
-For linear models, the only difference between `lm` and `glm` are the mechanics of how they estimate the model coefficients (`lm` uses least squares while `glm` uses maximum likelihood). You will (almost always) get exactly the same estimated coefficients regardless of whether you use `glm` or `lm` to fit a linear regression. 
-
-For example, here is the code to fit a linear regression model for weight regressed on height from the `nepali` dataset:
-
-```{r}
-mod_c <- glm(wt ~ ht, data = nepali)
-```
-
-This call fits the same regression model I fit earlier with the `lm` function and saved as `mod_a`. You can see that the two methods give exactly the same coefficient estimates:
-
-```{r}
-coef(mod_c)
-coef(mod_a)
-```
-
-Unlike the `lm` function, however, the `glm` function also allows you to fit other model types, including logistic and Poisson models. You can specify the model type using the `family` argument to the `glm` call:
-
-```{r echo = FALSE}
-glm_types <- tibble(type = c("Linear", "Logistic", "Poisson"),
-                        opt = c("`family = gaussian(link = 'identity')`",
-                                "`family = binomial(link = 'logit')`", 
-                                "`family = poisson(link = 'log')`"))
-knitr::kable(glm_types, col.names = c("Model type", "`family` argument"))
-```
-
-For example, say we wanted to fit a logistic regression for the `nepali` data of whether the probability of a child weighing more than 13 kg is associated with the child's sex. 
-
-First, create a binary variable in the `nepali` dataset, `wt_over_13`, that is `TRUE` if a child weighed more than 13 kilograms and FALSE otherwise. You can use the `mutate` function from `dplyr` to add this new column (which, as a note, is a logical vector):
-
-```{r}
-nepali <- nepali %>% 
-  mutate(wt_over_13 = wt > 13)
-head(nepali)
-```
-
-Now you can fit a logistic regression of `wt_over_13` regressed on sex, using a logistic model:
-
-```{r}
-mod_d <- glm(wt_over_13 ~ sex, data = nepali,
-             family = binomial(link = "logit"))
-```
-
-Elements of a GLM can be pulled out in the same way that we looked at elements from the linear model fit with `lm`. For example, to see a table of estimated model coefficients, you can run:
-
-```{r}
-summary(mod_d)$coef
-```
-
-Because this model was a logistic model, fit with a log link, here the model coefficient estimate for `sexFemale` gives an estimate of the **log odds** of weight higher than 13 kg associated with females versus males. The p-value for this estimate (`Pr(>|z|)` = `r round(summary(mod_d)$coef[2, 4], 2)`) isn't very small, suggesting that the difference between male and female children in the odds of weighing more than 13 kg is not statistically significant. 
-
----
-
 ## Handling model objects
 
 The `broom` package contains tools for converting statistical objects into nice tidy data frames. The tools in the `broom` package make it easy to process statistical results in R using the tools of the `tidyverse`.
@@ -608,24 +665,476 @@ If you want all the details about fitting linear models and GLMs in R, Julian Fa
 
 ---
 
+## Functions
+
+As you move to larger projects, you will find yourself using the same code a lot. \bigskip
+
+Examples include: 
+
+- Reading in data from a specific type of equipment (air pollution monitor, accelerometer)
+- Running a specific type of analysis
+- Creating a specific type of plot or map
+
+\bigskip 
+
+If you find yourself cutting and pasting a lot, convert the code to a function.
+
+Advantages of writing functions include: 
+
+- Coding is more efficient
+- Easier to change your code (if you've cut and paste code and you want to change something, you have to change it everywhere - this is an easy way to accidentally create bugs in your code)
+- Easier to share code with others
+
+You can name a function anything you want (although try to avoid names of preexisting-existing functions). You then define any inputs (arguments; separate multiple arguments with commas) and put the code to run in braces:
+
+```{r, eval = FALSE}
+## Note: this code will not run
+[function name] <- function([any arguments]){
+        [code to run]
+}
+```
+
+Here is an example of a very basic function. This function takes a number as input and adds 1 to that number.
+
+```{r}
+add_one <- function(number){
+  out <- number + 1
+  return(out)
+}
+
+add_one(number = 3)
+add_one(number = -1)
+```
+
+- Functions can input any type of R object (for example, vectors, data frames, even other functions and ggplot objects)
+- Similarly, functions can output any type of R object
+- When defining a function, you can set default values for some of the parameters
+- You can explicitly specify the value to return from the function
+
+For example, the following function inputs a data frame (`datafr`) and a one-element vector (`child_id`) and returns only rows in the data frame where it's `id` column matches `child_id`. It includes a default value for `datafr`, but not for `child_id`. 
+
+```{r}
+subset_nepali <- function(datafr = nepali, child_id){
+  datafr <- datafr %>%
+            filter(id == child_id)
+  return(datafr)
+}
+```
+
+If an argument is not given for a parameter with a default, the function will run using the default value for that parameter. For example:
+
+```{r}
+subset_nepali(child_id = "120011")
+```
+
+
+If an argument is not given for a parameter without a default, the function call will result in an error. For example:
+
+```{r error = TRUE}
+subset_nepali(datafr = nepali)
+```
+
+By default, the function will return the last defined object, although the choice of using `return` can affect printing behavior when you run the function. For example, I could have written the `subset_nepali` function like this:
+
+```{r}
+subset_nepali <- function(datafr = nepali, child_id){
+  datafr <- datafr %>%
+            filter(id == child_id)
+}
+```
+
+In this case, the output will not automatically print out when you call the function without assigning it to an R object:
+
+```{r}
+subset_nepali(child_id = "120011")
+```
+
+However, the output can be assigned to an R object in the same way as when the function was defined without `return`:
+
+```{r}
+first_childs_data <- subset_nepali(child_id = "120011")
+first_childs_data
+```
+
+```{block, type = 'rmdwarning'}
+R is very "good" at running functions! It will look for (scope) the variables in your function in various places (environments). So your functions may run even when you don't expect them to, potentially, with unexpected results!
+```
+
+The `return` function can also be used to return an object other than the last defined object (although this doesn't tend to be something you need to do very often). If you did not use `return` in the following code, it will output "Test output":
+
+```{r}
+subset_nepali <- function(datafr = nepali, child_id){
+  datafr <- datafr %>%
+            filter(id == child_id)
+  a <- "Test output"
+}
+(subset_nepali(child_id = "120011"))
+```
+
+Conversely, you can use `return` to output `datafr`, even though it's not the last object defined:
+
+```{r}
+subset_nepali <- function(datafr = nepali, child_id){
+  datafr <- datafr %>%
+            filter(id == child_id)
+  a <- "Test output"
+  return(datafr)
+}
+subset_nepali(child_id = "120011")
+```
+
+---
+
+### if / else statements
+
+There are other control structures you can use in your R code. Two that you will commonly use within R functions are `if` and `ifelse` statements. \bigskip
+
+An `if` statement tells R that, **if** a certain condition is true, **do** run some code. For example, if you wanted to print out only odd numbers between 1 and 5, one way to do that is with an `if` statement: (Note: the `%%` operator in R returns the remainder of the first value (i) divided by the second value (2).) 
+
+```{r}
+for(i in 1:5){
+  if(i %% 2 == 1){
+    print(i)
+  }
+}
+```
+
+The `if` statement runs some code if a condition is true, but does nothing if it is false. If you'd like different code to run depending on whether the condition is true or false, you can us an if / else or an if / else if / else statement. 
+
+```{r}
+for(i in 1:5){
+  if(i %% 2 == 1){
+    print(i)
+  } else {
+    print(paste(i, "is even"))
+  }
+}
+```
+
+What would this code do? \bigskip 
+
+```{r eval = FALSE}
+for(i in 1:100){
+  if(i %% 3 == 0 & i %% 5 == 0){
+    print("FizzBuzz")
+  } else if(i %% 3 == 0){
+    print("Fizz")
+  } else if(i %% 5 == 0){
+    print("Buzz")
+  } else {
+    print(i)
+  }
+}
+```
+
+If / else statements are extremely useful in functions. \bigskip
+
+In R, the `if` statement evaluates everything in the parentheses and, if that evaluates to `TRUE`, runs everything in the braces. This means that you can trigger code in an `if` statement with a single-value logical vector: 
+
+```{r}
+weekend <- TRUE
+if(weekend){
+  print("It's the weekend!")
+}
+```
+
+This functionality can be useful with parameters you choose to include when writing your own functions (e.g., `print = TRUE`).
+
+### Some other control structures
+
+The control structure you are most likely to use in data analysis with R is the  "if / else" statement. However, there are a few other control structures you may occasionally find useful: 
+
+- `next`
+- `break`
+- `while`
+
+You can use the `next` structure to skip to the next round of a loop when a certain condition is met. For example, we could have used this code to print out odd numbers between 1 and 5:
+
+```{r}
+i <- 0
+while(i < 5){
+  i <- 1 + i
+  if(i %% 2 == 0){
+    next
+  }
+  print(i)
+}
+```
+
+You can use `break` to break out of a loop if a certain condition is met. For example, the final code will break out of the loop once `i` is over 2, so it will only print the numbers 1 through 3:
+
+```{r}
+i <- 0
+while(i <= 5){
+  if(i > 2){
+    break
+  }
+  i <- 1 + i
+  print(i)
+}
+```
+
+
 ## In-course exercise
+
+### Exploring taxonomic profiling data
+
+- We'll be using a package on Bioconductor called `microbiome`. You'll need to install that package from Bioconductor. This uses code that's different from the default you use to download a package from CRAN. Go to [the Bioconductor page for the microbiome package](https://bioconductor.org/packages/release/bioc/html/microbiome.html) and figure out how to install this package based on instructions on that page. 
+- The `microbiome` that includes tools for exploring and analysing microbiome profiling data. This package has a website with tutorial information  [here](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html#installation). We want to explore a dataset on genus-level microbiota profiling (`atlas1006`). Navigate to the tutorial webpage to figure out how you can get this example raw data loaded in your R session. Use the `class` and `str` functions to start exploring this data. Is it in a dataframe (tibble)? Is it in a tidy format? How is the data structured?
+- On the [microbiome page](https://bioconductor.org/packages/devel/bioc/vignettes/microbiome/inst/doc/vignette.html), find the documentation describing the `atlas1006` data. Look through this documentation to figure out what information is included in the data. Also, check the helpfile for this dataset and look up the original article describing the data (you can find the article information in the help resources).
+- The `atlas1006` data is stored in a special object class called a "phyloseq" object (you should have seen this when you used `class` with the object). You can pull certain parts of this data using special functions called "accessors". One is `get_variable`. Try running `get_variable` with the `atlas1006` data. What do you think this data is showing?
+- Which different nationalities are represented by the study subjects, based on the dataframe you extracted in the last step? How many samples have each nationality? Which different BMI groups are included? Does it look like the study was balanced among these groups? 
+- Based on the data you extracted, does it look like diversity varies much between males and females? Across BMI groups?
+- Discuss what steps you would need to take to create the following plot. To start, don't write any code, just develop a plan. Talk about what the dataset should look like right before you create the plot and what functions you could use to get the data from its current format to that format.
+- Try to write the code to create this plot. This will include some code for cleaning the data and some code for plotting. I will add one example answer after class, but I'd like you to try to figure it out yourselves first.
+
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
+library(tidyverse)
+library(ggthemes)
+library(microbiome)
+
+data(atlas1006)
+
+atlas1006 %>% 
+  get_variable() %>% 
+  ggplot(aes(x = bmi_group, y = diversity, color = sex)) + 
+  geom_boxplot(alpha = 0.2) + 
+  facet_wrap(~ nationality)
+```
+
+
+#### Example R code
+
+Install the `microbiome` package from Bioconductor: 
+
+```{r eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("microbiome")
+```
+
+Load the `atlas1006` example data in the `microbiome` package and explore it with `str` and `class`: 
+
+```{r}
+library(microbiome)
+data(atlas1006)
+
+class(atlas1006)
+str(atlas1006)
+```
+
+Pull out the data frame that contains information on each study subject in the `atlas1006` data by using the `get_variable` accessor function:
+
+```{r}
+get_variable(atlas1006) %>% head()
+```
+
+**Note:** Since the first argument to `get_variable` is the phyloseq object (here, the `atlas1006` data object), you can pipe into the function, like this: 
+
+```{r eval = FALSE}
+atlas1006 %>% 
+  get_variable() %>% 
+  head()
+```
+
+Find out the different nationalities included in the data: 
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% # Change output from a data.frame to a tibble
+  group_by(nationality) %>% 
+  count()
+```
+
+It looks like most subjects were from Central Europe, with the next-largest group from 
+Scandinavia. **Note:** If you wanted to rearrange this summary to give the nationalities
+in order of the number of subjects in each, you could add on a `forcats` function: 
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% # Change output from a data.frame to a tibble
+  mutate(nationality = fct_infreq(nationality)) %>% 
+  group_by(nationality) %>% 
+  count() 
+```
+
+Find out the different BMI groups included in the data and if the study seemed to be balanced across those groups: 
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% # Change output from a data.frame to a tibble
+  group_by(bmi_group) %>% 
+  count()
+```
+
+There were six different BMI groups. Over 100 study subjects had this information missing. 
+The samples were not evenly distributed across these BMI groups. Instead, the most common (lean) had
+almost 500 subjects, while the smaller BMI-group samples were around 20 people. 
+
+See if it looks like diversity varies much between males and females:
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% 
+  group_by(sex) %>% 
+  summarize(mean_diversity = mean(diversity))
+```
+
+See if it looks like diversity varies much across BMI groups:
+
+```{r}
+atlas1006 %>% 
+  get_variable() %>% 
+  as_tibble() %>% 
+  group_by(bmi_group) %>% 
+  summarize(mean_diversity = mean(diversity))
+```
+
+
+Here is the code for the plot: 
+
+```{r}
+library(tidyverse)
+library(ggthemes)
+library(microbiome)
+
+data(atlas1006)
+
+atlas1006 %>% 
+  get_variable() %>% 
+  ggplot(aes(x = bmi_group, y = diversity, color = sex)) + 
+  geom_boxplot(alpha = 0.2) + 
+  facet_wrap(~ nationality)
+```
+
+### More with baby names
+
+Let's look at baby names that we started looking at last class, based on the letter they start with. 
+
+- For the full dataframe, what proportion of baby names start with each letter?
+See if you can create a figure to help show this. Create the same plot 
+using the names of people from our class. 
+- What proportion of names start with "C" or "S" across the full dataset? 
+
+#### Example R code
+
+For the full dataframe, what proportion of baby names start with "S"?
+
+To start, create a column with the first letter of each name. You can use 
+functions in the `stringr` package to do this. The easiest might be to 
+use the position of the first letter to pull that information.
+
+```{r}
+library(babynames)
+library(stringr)
+top_letters <- babynames %>% 
+  mutate(first_letter = str_sub(name, 1, 1))
+
+top_letters %>% 
+  select(name, first_letter) %>% 
+  slice(1:5)
+```
+
+Now we can group by letter and figure out these proportions. First, while the data is
+grouped, count the number of names with each letter. Then, ungroup and use mutate
+to divide this by the total number of names:
+
+```{r}
+top_letters <- top_letters %>% 
+  group_by(first_letter) %>% 
+  summarize(n = sum(n)) %>% 
+  ungroup() %>% 
+  mutate(prop = n / sum(n)) %>% 
+  arrange(desc(prop))
+
+top_letters
+```
+
+Here's one way to visualize this: 
+
+```{r fig.height = 5, fig.width = 4}
+library(scales)
+top_letters %>% 
+  mutate(first_letter = fct_reorder(first_letter, prop)) %>% 
+  ggplot(aes(x = first_letter)) + 
+  geom_bar(aes(weight = prop)) + 
+  coord_flip() + 
+  scale_y_continuous(labels = percent) + 
+  labs(x = "", y = "Percent of names that start with ...")
+```
+
+Create the same plot using the names of people in our class. First, create a 
+vector with the names of people in our class: 
+
+```{r fig.width = 3, fig.height = 4}
+student_list <- data_frame(name = c("Burton", "Caroline", "Chaoyu", "Collin",
+                                    "Daniel", "Eric", "Erin", "Heather",
+                                    "Jacob", "Jessica", "Khum", "Kyle",
+                                    "Matthew", "Molly", "Nikki", "Rachel",
+                                    "Sere",  "Shayna", "Sherry", "Sunny"))
+student_list <- student_list %>% 
+  mutate(first_letter = str_sub(name, 1, 1))
+student_list
+
+library(scales)
+student_list %>% 
+  group_by(first_letter) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate(prop = n / sum(n)) %>% 
+  mutate(first_letter = fct_reorder(first_letter, prop)) %>% 
+  ggplot(aes(x = first_letter)) + 
+  geom_bar(aes(weight = prop)) + 
+  coord_flip() + 
+  scale_y_continuous(labels = percent) + 
+  labs(x = "", y = "Percent of students with\na name that starts with ...")
+```
+
+What proportion of names start with "C" or "S" across the full dataset? You can 
+create a dataframe that (1) pulls out the first letter of each name (just like 
+we did for the last part of the question) and (2) tests whether that first letter
+is an "A" or a "K" (using a logical statement):
+
+```{r}
+c_or_s <- babynames %>% 
+  mutate(first_letter = str_sub(name, 1, 1),
+         c_or_s = first_letter %in% c("C", "S"))
+
+c_or_s %>% 
+  select(name, first_letter, c_or_s) %>% 
+  slice(1:5)
+```
+
+Next, group by this logical column (`c_or_s`) and figure out the number of 
+baby names for each group. Then, to get the proportion of the total, ungroup
+and mutate to divide by the total number across the data: 
+
+```{r}
+c_or_s %>% 
+  group_by(c_or_s) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate(prop = n / sum(n))
+```
 
 ### Running a simple statistical test
 
-In last week's in-course exercise, we found out that about 17% of babies born in the 
-United States between 1980 and 1995 had names that started with an "A" or "K" (60,893
-babies out of 359,011). 
+In the last part of the in-course exercise, we found out that about 14% of babies born in the 
+United States between 1980 and 1995 had names that started with an "C" or "S" (268,910
+babies out of 1,924,665). 
 
-- What is the proportion of people with names that start with an "A" or "K" in our class?
+- What is the proportion of people with names that start with an "C" or "S" in our class?
 - Use a simple statistical test to test the hypothesis that the class comes from a 
-binomial distribution with the same distribution as babies born in the US between 1980 and 
-1995, in terms of chance of having a name that starts with "A" or "K".
+binomial distribution with the same distribution as babies born in the US over the time tracked by this data, in terms of chance of having a name that starts with "C" or "S". (Hint: You will be comparing two proportions. Try googling for a statistical test in R that does that.)
+- See if you can figure out a way to make a single "tidy" pipeline for the whole analysis (and output the result as a tidy dataframe). Does the `tidy` function from `broom` give different information from this test than the output we got for the Shapiro-Wilk test?
 - You may get the warning "Chi-squared approximation may be incorrect". See if you can 
-figure out this warning.
-- If you are able to figure out and run a statistical test, go back to your notes from 
-last week and write a full script, starting from loading the `babynames` data and creating
-your own vector of the names in this class, all the way through to running the statistical 
-test you picked. 
+figure out this warning if you get it with the test you used.
 
 ---
 
@@ -635,13 +1144,11 @@ Here is a vector with names in our class:
 
 ```{r}
 library(stringr)
-student_list <- tibble(name = c("Aeriel", "Rebecca", "Grant",
-                                    "Amy", "Jessy", "Alyssa",
-                                    "Camron", "Anastasia", "Kyle",
-                                    "Ana", "Amanda", "Kathleen", 
-                                    "Kyle", "Ana", "Amanda", "Kathleen",
-                                    "Kayla", "Nichole", "Randy", "Katy",
-                                    "Devin"))
+student_list <- tibble(name = c("Burton", "Caroline", "Chaoyu", "Collin",
+                                    "Daniel", "Eric", "Erin", "Heather",
+                                    "Jacob", "Jessica", "Khum", "Kyle",
+                                    "Matthew", "Molly", "Nikki", "Rachel",
+                                    "Sere",  "Shayna", "Sherry", "Sunny"))
 student_list <- student_list %>% 
   mutate(first_letter = str_sub(name, 1, 1))
 student_list %>% 
@@ -649,54 +1156,60 @@ student_list %>%
 ```
 
 Let's get the total number of students, and then the total number with a name that 
-starts with "A" or "K": 
+starts with "C" or "S": 
 
 ```{r}
 tot_students <- student_list %>% 
   count()
 tot_students
 
-a_or_k_students <- student_list %>% 
-  mutate(a_or_k = first_letter %in% c("A", "K")) %>% 
-  group_by(a_or_k) %>% 
+c_or_s_students <- student_list %>% 
+  mutate(c_or_s = first_letter %in% c("C", "S")) %>% 
+  group_by(c_or_s) %>% 
   count()
-a_or_k_students
+c_or_s_students
 ```
 
-The proportion of students with names starting with "A" or "K" are `r a_or_k_students$n[2]` / 
-`r tot_students$n[1]` = `r round(a_or_k_students$n[2] / tot_students$n[1], 2)`.
+The proportion of students with names starting with "A" or "K" are `r c_or_s_students$n[2]` / 
+`r tot_students$n[1]` = `r round(c_or_s_students$n[2] / tot_students$n[1], 2)`.
 
-You could run a statistical test comparing these two proportions:
+You could run a statistical test comparing these two proportions (check the help file for the 
+function to figure out where to include each piece):
 
 ```{r}
-prop.test(x = c(60893, 14), n = c(359011, 21))
+prop.test(x = c(268910, 7), n = c(1924665, 20))
 ```
 
-You could also test whether the proportion in our class is consistent with the null
-hypothesis that you were drawn from a binomial distribution with a proportion of 0.17
+There are a few different ways you could run this test. 
+For example, you could also test whether the proportion in our class is consistent with the null
+hypothesis that you were drawn from a binomial distribution with a proportion of 0.14
 (in-line with the national values):
 
 ```{r}
-prop.test(x = 14, n = 21, p = 0.17)
+prop.test(x = 7, n = 20, p = 0.14)
 ```
+
+You can also see if we can pipe into `prop.test` by summing up the number of successes ("1": the person's name starts with "C" or "S"). Because this is using an unsummarized
+form of the data, it lets us use some of the tidyverse tools more easily: 
+
+```{r}
+library(purrr)
+library(broom)
+student_list %>% 
+  mutate(c_or_s = first_letter %in% c("C", "S")) %>% 
+  pluck("c_or_s") %>% 
+  sum() %>% 
+  prop.test(n = 20, p = 0.14) %>% 
+  tidy()
+```
+
 
 Finally, when we run this test, we get the warning that "Chi-squared approximation may be incorrect". Based on googling 'r prop.test "Chi-squared approximation may be incorrect"', 
 it sounds like we might be getting this error because we have a pretty low number of 
-people in the class. One recommendation is to instead run a Chi-square contingency table test, which you can do with `chisq.test`, while setting `simulate.p.values` to TRUE. This requires
-a slightly different set-up for the data (which you can figure out by trying out the
-examples in the helpfile for `chisq.test`):
+people in the class. One recommendation is to use `binom.test`, which will run as an exact binomial test:
 
 ```{r}
-a_or_k_names <- matrix(c(14, 60893, 7, 298118), 
-                       nrow = 2)
-a_or_k_names
-chisq.test(a_or_k_names, simulate.p.value = TRUE) 
-```
-
-You could also use `binom.test`, which will run as an exact binomial test:
-
-```{r}
-binom.test(x = 14, n = 21, p = 0.17)
+binom.test(x = 7, n = 20, p = 0.14)
 ```
 
 ### Using regression models to explore data #1
@@ -717,7 +1230,7 @@ dewpoint temperature linearly associated with the independent variable of temper
 - Based on this regression, does there seem to be a relationship between temperature and dewpoint temperature in Chicago? (Hint: Try using `glance` and `tidy` from the `broom` package on the model object to get more information about the model you fit.) What is the coefficient for temperature (in other words, for every 1 degree increase in temperature, how much do we expect the dewpoint temperature to change?)? What is the p-value for the coefficient for temperature?
 - Plot temperature (x-axis) versus dewpoint temperature (y-axis) for Chicago. Add in the regression line from the model you fit by using the results from `augment`.
 - Use `autoplot` on the model object to generate some model diagnostic plots (make sure you have the `ggfortify` package loaded and installed).
-- Try fitting the regression as a GLM, using `glm()` (but still assuming the outcome variable is normally distributed). Are your coefficients different?
+
 
 ---
 
@@ -783,7 +1296,21 @@ Plot some plots to check model assumptions for the model you fit using the `auto
 autoplot(mod_1)
 ```
 
-Try fitting the model using `glm()`. Call it `mod_1a`. Compare the coefficients for the two models. You can use the `tidy` function on an `lm` or `glm` object to pull out just the model coefficients and associated model results. Here, I've used a pipeline of code to create a tidy data frame that merges these "tidy" coefficient outputs (from the two models) into a single data frame):
+
+---
+
+### Using regression models to explore data #2
+
+- Try fitting the regression from the last part of the in-course exercise as a GLM, using `glm()` (but still assuming the outcome variable is normally distributed). Are your coefficients different?
+- Does $PM_{10}$ vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable. Some of the overall model summaries will compare this model to an intercept-only model.) What day of the week is $PM_{10}$ generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you're fitting.
+- Try using `glm()` to run a Poisson regression of respiratory deaths (`resp`) on temperature during summer days. Start by creating a subset with just summer days called `summer`. (Hint: Use the `month` function with the argument `label = TRUE` from `lubridate` to do this---just pull out the subset where the month June, July, or August.) Try to write out the regression equation for the model you're fitting.
+- The coefficient for the temperature variable in this model is our best estimate (based on this model) of the **log relative risk** for a one degree Celcius increase in temperature. What is the **relative risk** associated with a one degree Celsius increase?
+
+---
+
+#### Example R code:
+
+Try fitting the model from the last part of the in-course exercise using `glm()`. Call it `mod_1a`. Compare the coefficients for the two models. You can use the `tidy` function on an `lm` or `glm` object to pull out just the model coefficients and associated model results. Here, I've used a pipeline of code to create a tidy data frame that merges these "tidy" coefficient outputs (from the two models) into a single data frame):
 
 ```{r}
 mod_1a <- glm(dptp ~ temp, data = chic)
@@ -804,17 +1331,6 @@ tidy(mod_1)
 tidy(mod_1a)
 ```
 
----
-
-### Using regression models to explore data #2
-
-- Does $PM_{10}$ vary by day of the week? (Hint: The `dow` variable is a factor that gives day of the week. You can do an ANOVA analysis by fitting a linear model using this variable as the independent variable. Some of the overall model summaries will compare this model to an intercept-only model.) What day of the week is PM10 generally highest? (Check the model coefficients to figure this out.) Try to write out (on paper) the regression equation for the model you're fitting.
-- Try using `glm()` to run a Poisson regression of respiratory deaths (`resp`) on temperature during summer days. Start by creating a subset with just summer days called `summer`. (Hint: Use the `month` function with the argument `label = TRUE` from `lubridate` to do this-- just pull out the subset where the month is 6, 7, or 8, for "Jun", "Jul", and "Aug".) Try to write out the regression equation for the model you're fitting.
-- The coefficient for the temperature variable in this model is our best estimate (based on this model) of the **log relative risk** for a one degree Celcius increase in temperature. What is the **relative risk** associated with a one degree Celsius increase?
-
----
-
-#### Example R code:
 
 Fit a model of $PM_{10}$ regressed on day of week, where day of week is a factor. 
 
@@ -895,7 +1411,443 @@ tidy(mod_3, conf.int = TRUE) %>%
   mutate_at(vars(estimate:conf.high), funs(exp(.)))
 ```
 
+### Trying out nesting and mapping
+
+- We'll be using data that's in an R package called "nycflights13". This data package can be installed from CRAN. Install the package and then load the package and its "flights" dataset. 
+So that this data will be easier to work with, remove all columns except for those for 
+the departure delay (`dep_delay`), the carrier (`carrier`), the hour the flight was 
+supposed to leave (`hour`), and the airport the flight left from (`origin`). Also, 
+limit the dataset to only flights that left from LaGuardia Airport ("LGA").
+- We want to figure out if the probability of a flight leaving 15 minutes late or more
+increases over the day for flights leaving LaGuardia. Filter out all the rows where the 
+departure delay is missing and then create a new column called
+`late_dep` that is true if the flight left 15 minutes or more late and false otherwise. 
+What proportion of all flights leaving from LaGuardia leave 15 minutes late or later?
+- Next, determine what proportion of all flights are delayed base on the hour that the
+flight was scheduled to depart (`hour`). Create a plot showing how the probability of 
+leaving 15 minutes or more late changes by hour.
+- Fit a generalized linear model for the association between the binary variable of whether
+the flight was 15 minutes or more late (`late_dep`) and the hour the flight was 
+scheduled to leave (`hour`). Use a binomial model (add `family = binomial(link = "logit")`
+in the `glm` call). The estimate from the model for `hour` will be an estimate
+of the log odds ratio for a one-hour increase in scheduled departure time. Take the
+exponent of this estimate with `exp` to get an estimated odds ratio for a one-hour
+increase in scheduled departure time. Is this estimate larger than 1.0?
+- Next, we want to see if this association is similar across airlines. First, create a 
+dataframe called `nested_flights` where the `flights`
+data is grouped by airline (`carrier`) and then nest the data, so that there is a "data" list-column
+where each item is a dataframe of flight delay data for a specific carrier.
+- Use the `map` function from `purrr` inside a `mutate` statement to apply the `glm` code you used earlier for the
+whole dataset, but in this case for the data for each airline character. Then use the `map` 
+function inside a `mutate` statement again to "tidy" the data. 
+- Clean the data up a bit. Remove the columns for `data` and
+`glm_result` and then `unnest` the dataframe list-column with the tidy version of the model
+results. Filter to get only the estimates for the "hour" term. Then calculate an odds ratio
+(`or`) by taking the exponent (check out the `exp` function) of the original estimate. 
+- The package has a dataframe with the full name of each carrier (`airlines`). Join this data
+into the data you've been working with, so you have the full names of airlines.
+- Finally, create the following plot with each airline's odds ratio for the change in the chance of a delay per one-hour increase in the scheduled hour of departure: 
+
+```{r echo = FALSE}
+library(purrr)
+library(tidyr)
+library(dplyr)
+library(forcats)
+library(broom)
+library(ggplot2)
+library(nycflights13)
+data(flights)
+data(airlines)
+
+flights %>% 
+  select(dep_delay, carrier, hour, origin) %>% 
+  filter(origin == "LGA") %>% 
+  filter(!is.na(dep_delay)) %>% 
+  mutate(late_dep = dep_delay > 15) %>% 
+  group_by(carrier) %>% 
+  nest() %>% 
+  mutate(glm_result = purrr::map(data, ~ glm(late_dep ~ hour, 
+                                      data = .x, family = binomial(link = "logit")))) %>% 
+  mutate(glm_tidy = purrr::map(glm_result, ~ tidy(.x))) %>% 
+  select(-data, -glm_result) %>% 
+  unnest(glm_tidy) %>% 
+  filter(term == "hour") %>% 
+  mutate(or = exp(estimate)) %>% 
+  left_join(airlines, by = "carrier") %>% 
+  ungroup() %>% 
+  mutate(name = fct_reorder(name, or)) %>% 
+  ggplot(aes(x = or, y = name)) + 
+  geom_point() + 
+  geom_vline(xintercept = 1, linetype = 3) + 
+  labs(x = "Odds ratio for one-hour increase\nin scheduled deparature time", y = "")
+```
+
+
 ---
+
+#### Example R code:
+
+Install the "nycflights13" package from CRAN. Load the package and its "flights" dataset.
+
+```{r}
+library(ggplot2)
+library(nycflights13)
+data(flights)
+```
+
+So that this data will be easier to work with, remove all columns except for those for 
+the departure dealy (`dep_delay`), the carrier (`carrier`), the hour the flight was 
+supposed to leave (`hour`), and the airport the flight left from (`origin`). 
+
+```{r}
+flights <- flights %>% 
+  select(dep_delay, carrier, hour, origin) %>% 
+  filter(origin == "LGA")
+
+flights
+```
+
+Filter out all the rows where the 
+departure delay is missing and then create a new column called
+`late_dep` that is true if the flight left 15 minutes or more late and false otherwise. 
+
+```{r}
+flights <- flights %>% 
+  filter(!is.na(dep_delay)) %>% 
+  mutate(late_dep = dep_delay > 15)
+
+flights
+```
+
+What proportion of all flights leaving from LaGuardia leave 15 minutes late or later? To 
+check this, remember that `TRUE` is saved as a "1" and `FALSE` is saved as a "0". That means that
+we can take the mean of a logical vector to get the proportion of trials that are true.
+
+```{r}
+flights %>% purrr::pluck("late_dep") %>% mean()
+```
+
+Determine what proportion of all flights are delayed base on the hour that the
+flight was scheduled to depart (`hour`). Create a plot showing how the probability of 
+leaving 15 minutes or more late changes by hour.
+
+```{r}
+flights_late <- flights %>% 
+  group_by(hour) %>% 
+  summarize(prob_late = mean(late_dep))
+
+flights_late
+
+flights_late %>% 
+  ggplot(aes(x = hour, y = prob_late)) + 
+  geom_line()
+```
+
+Fit a generalized linear model for the association between the binary variable of whether
+the flight was 15 minutes or more late (`late_dep`) and the hour the flight was 
+scheduled to leave (`hour`). Use a binomial model (add `family = binomial(link = "logit")`
+in the `glm` call). The estimate from the model for `hour` will be an estimate
+of the log odds ratio for a one-hour increase in scheduled departure time. Take the
+exponent of this estimate with `exp` to get an estimated odds ratio for a one-hour
+increase in scheduled departure time. Is this estimate larger than 1.0?
+
+```{r}
+glm(late_dep ~ hour, data = flights, family = binomial(link = "logit")) 
+
+library(broom)
+glm(late_dep ~ hour, data = flights, family = binomial(link = "logit")) %>% 
+  tidy() %>%                 # Tidy the model results
+  filter(term == "hour") %>% # Only look at the estimate for `hour`
+  mutate(or = exp(estimate)) # Estimate is log odds ratio. Take exponent for odds ratio
+```
+
+Next, we want to see if this association is similar across airlines. First, create a 
+dataframe called `nested_flights` where the `flights`
+data is grouped by airline (`carrier`) and then nest the data, so that there is a "data" list-column
+where each item is a dataframe of flight delay data for a specific carrier: 
+
+```{r}
+nested_flights <- flights %>% 
+  group_by(carrier) %>% 
+  nest()
+
+nested_flights
+```
+
+To check the contents of the list-column, try: 
+
+```{r}
+nested_flights$data[[1]] %>% # Get the first element of the "data" column
+  head()
+```
+
+Use the `map` function from `purrr` inside a `mutate` statement to apply the `glm` code you used earlier for the
+whole dataset, but in this case for the data for each airline character: 
+
+```{r}
+library(purrr)
+library(tidyr)
+
+prob_late <- nested_flights %>% 
+  mutate(glm_result = purrr::map(data, ~ glm(late_dep ~ hour, 
+                                      data = .x, family = binomial(link = "logit")))) 
+
+# Check the results for the first element of the "glm_result" column: 
+prob_late$glm_result[[1]]
+```
+
+Then use the `map` 
+function inside a `mutate` statement again to "tidy" the data. 
+
+```{r}
+prob_late <- prob_late %>% 
+  mutate(glm_tidy = purrr::map(glm_result, ~ tidy(.x)))
+```
+
+Remove the columns for `data` and
+`glm_result`:
+
+```{r}
+prob_late <- prob_late %>% 
+  select(-data, -glm_result)
+```
+
+Then ``unnest` the dataframe list-column with the tidy version of the model
+results: 
+
+```{r}
+prob_late <- prob_late %>% 
+  unnest(glm_tidy)
+```
+
+Filter to get only the estimates for the "hour" term: 
+
+```{r}
+prob_late <- prob_late %>% 
+  filter(term == "hour")
+```
+
+Then calculate an odds ratio
+(`or`) by taking the exponent (check the `exp` function) of the original estimate. 
+
+```{r}
+prob_late <- prob_late %>% 
+  mutate(or = exp(estimate))
+head(prob_late)
+```
+
+The package has a dataframe with the full name of each carrier (`airlines`). Join this data
+into the data you've been working with, so you have the full names of airlines: 
+
+```{r}
+prob_late <- left_join(prob_late, airlines, by = "carrier")
+```
+
+Finally, create the following plot with each airline's association between hour in the 
+day and the chance of a delay: 
+
+
+```{r}
+library(forcats)
+data(airlines)
+prob_late %>% 
+  ungroup() %>% 
+  mutate(estimate = exp(estimate)) %>% 
+  mutate(name = fct_reorder(name, estimate)) %>% 
+  ggplot(aes(x = estimate, y = name)) + 
+  geom_point() + 
+  geom_vline(xintercept = 1, linetype = 3) + 
+  labs(x = "Odds ratio for one-hour increase in scheduled deparature time", y = "")
+```
+
+### Writing functions
+
+- Say that you have a four-letter character string (e.g., "ling") and that you want
+to move the last letter to the front of the string to create a new four-letter
+character string (e.g., "glin"). Write some R code to do this.
+- Next, write a function named `move_letter` that does the same thing---takes a four-letter character string
+(e.g., "ling") and creates a new four-letter character string where the last
+letter in the original string has been moved to the front of the string (e.g.,
+"glin"). It should input one parameter (`word`, the original four-letter character
+string or a vector of four-letter character strings). 
+- Read the word list at https://raw.githubusercontent.com/dwyl/english-words/master/words.txt
+into an R dataframe called `word_list`. It will only have one column; name this column
+`word`. 
+- Write code that can take a vector of character strings (e.g., `c('ling', 'scat', 'soil')`)
+and return a logical vector that says whether that character string is a word in the 
+`word_list` dataframe you created in the last step (e.g., `c('FALSE', 'TRUE', 'TRUE')` for 
+a vector where the first value isn't a word but the second and third are). You may find 
+the `pluck` function in the `purrr` package useful in writing this code (to pull the 
+`word` column out of the `word_list` dataframe).
+- Write a function called `is_word` that inputs (1) a vector of character strings
+and (2) a dataframe with a column called "word" that lists real words. The
+function should return a logical vector saying whether each character string is
+a real word. The function should have two arguments: `words_to_check`, which is
+a vector of character strings (e.g., `c('ling', 'scat', 'soil')`), and `real_word_list`, which is a dataframe with a
+column called `words` of real English words (e.g., the `word_list` dataframe you created from the word list on GitHub). Set the `real_word_list` argument
+to have the default value of `words`, the dataframe you created earlier in this
+exercise by reading in the dataframe of English words from GitHub.
+- Try using the function with a different word list. As an example, you could read in 
+and use the word list of Google's top 10,000 English words from https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-no-swears.txt.
+- Try using these functions to solve the word puzzle problem in the last homework.
+
+----
+
+#### Example R code
+
+Say that you have a four-letter character string (e.g., "ling") and that you want
+to move the last letter to the front of the string to create a new four-letter
+character string (e.g., "glin"). You can use functions from the 
+`stringr` package to help with this.
+
+```{r}
+library(stringr)
+
+# Start with an example word. You can use the example word from 
+# the problem statement ('ling').
+word <- "ling"
+
+# Break the word into two parts
+first_three_letters <- str_sub(word, 1, 3)
+last_letter <- str_sub(word, 4, 4)
+
+first_three_letters
+last_letter
+
+# Put the parts back together in the right order
+new_word <- str_c(last_letter, first_three_letters) # You could also use `paste` or `paste0` here
+new_word
+```
+
+Write a function named `move_letter` that takes a four-letter character string
+(e.g., "ling") and creates a new four-letter character string where the last
+letter in the original string has been moved to the front of the string (e.g.,
+"glin"). It should input one parameter (`word`, the original four-letter character
+string or a vector of four-letter character strings). 
+
+To do this, take the code that you just wrote and put it inside a function named
+`move_letter`:
+
+```{r}
+move_letter <- function(word){
+  # Break the word into two parts
+  first_three_letters <- str_sub(word, 1, 3)
+  last_letter <- str_sub(word, 4, 4)
+  
+  # Put the parts back together in the right order
+  str_c(last_letter, first_three_letters)
+}
+
+# Check the function
+move_letter(word = "ling")
+
+# Try with some other four-letter strings
+move_letter(word = "cats")
+move_letter(word = "oils")
+
+# Check using with a vector of four-letter character strings
+move_letter(c("cats", "oils"))
+```
+
+Notice that now `word` is being used as an argument in the function. It's as if you
+assigned the string or vector of strings that you want to convert to the object
+name `word`, and then you run all the code. The output of the function is the
+last expression in the function code (`str_c(last_letter, first_three_letters)`).
+Also, note that you can add comments inside the function with `#`, just like you can
+with other R code. 
+
+Read the word list at https://raw.githubusercontent.com/dwyl/english-words/master/words.txt
+into an R dataframe called `words`. It will only have one column; name this column
+`word_list`. 
+
+```{r}
+library(readr)
+
+word_list <- read_csv("https://raw.githubusercontent.com/dwyl/english-words/master/words.txt",
+                  col_names = "word")
+```
+
+Write code that can take a vector of character strings (e.g., `c('ling', 'scat', 'soil')`)
+and return a logical vector that says whether that character string is a word in the 
+`word_list` dataframe you created in the last step (e.g., `c('TRUE', 'FALSE', 'TRUE')` for 
+a vector where the second value isn't a word but the first and third are).
+
+```{r}
+library(purrr)
+
+words_to_check <- c("ling", "scat", "soil")
+words_to_check %in% pluck(word_list, "word")
+```
+
+This code works because you can use `pluck` to extract a column (as a vector) from 
+a dataframe, and then you can use the `%in%` operator to see if each value in one vector
+(the `words_to_check` vector in this example) is one of the values in the second
+vector (the `word` column from the `words` dataframe in this example).
+
+Write a function called `is_word` that inputs (1) a vector of character strings
+and (2) a dataframe with a column called "word" that lists real words. The
+function should return a logical vector saying whether each character string is
+a real word. The function should have two arguments: `words_to_check`, which is
+a vector of character strings and `real_word_list` which is a dataframe with a
+column called `words` of real English words. Set the `real_word_list` argument
+to have the default value of `words`, the dataframe you created earlier in this
+exercise by reading in the dataframe of English words from GitHub.
+
+```{r}
+# Put the code you wrote inside a function
+is_word <- function(words_to_check, real_word_list = word_list){
+  words_to_check %in% pluck(real_word_list, "word")
+}
+
+# Check the function
+is_word(words_to_check = c("ling", "scat", "soil"))
+```
+
+Note that, if you want to use the `word_list` dataframe for your real word list, you 
+don't have to specify that when you call the `is_word` function, since you 
+set that as your default value. 
+
+If you wanted to use a different word list, you can specify a different value for 
+the `real_word_list` argument when you run the function. For example, to use Google's
+top 10,000 English word list from GitHub instead, use:
+
+```{r}
+google_words <- read_csv("https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-no-swears.txt", 
+                         col_names = "word")
+
+is_word(words_to_check = c("ling", "scat", "soil"), real_word_list = google_words)
+```
+
+In this case, there was a rarer word ("ling") that counted as a word when the original 
+word list was used, but not when the Google top-10,000 words list was used.
+
+Try using these functions to solve the word puzzle problem in the last homework.
+
+```{r}
+word_list %>% 
+  filter(str_detect(word, "^m.{7}$")) %>%                        # This is using regular expressions
+  separate(word, into = c("first_word", "second_word"),          # Note that you can use `separate` with a number to use position
+           sep = 4, remove = FALSE) %>%                          
+  mutate(second_word = move_letter(second_word)) %>%             # Use the first function here
+  filter(is_word(first_word) & is_word(second_word)) %>%         # Use the second function here
+  unite("new_word", c("first_word", "second_word"), sep = " ")   # You can use `unite` to put the two new words in a phrase in one column.
+```
+
+You can get the choices down to even fewer options if you match the new words against
+the Google top-10,000 words list, by using the `real_word_list` option in the `is_word`
+function you wrote. (However, "maillots" is not a common enough word that you can 
+also start from that shorter word list!)
+
+```{r}
+word_list %>% 
+  filter(str_detect(word, "^m.{7}$")) %>%                        
+  separate(word, into = c("first_word", "second_word"),          
+           sep = 4, remove = FALSE) %>%                          
+  mutate(second_word = move_letter(second_word)) %>%             
+  filter(is_word(first_word, real_word_list = google_words) & 
+           is_word(second_word, real_word_list = google_words)) %>%         
+  unite("new_word", c("first_word", "second_word"), sep = " ")  
+```
 
 
 <!-- ### Using a function and `purrr` to create state-specific plots -->

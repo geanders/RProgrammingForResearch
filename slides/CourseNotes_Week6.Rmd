@@ -639,7 +639,7 @@ To fix this, we need to convert the row names into a new column. We can do this 
 ```{r echo = 2:4}
 library(tibble)
 VADeaths %>%
-  as_tibble() %>% ## Convert from matrix to dataframe
+  as.data.frame() %>% ## Convert from matrix to dataframe
   rownames_to_column(var = "age")
 ```
 
@@ -651,9 +651,9 @@ Gather the data to convert column names to a new column:
 
 ```{r}
 VADeaths %>%
-  as_tibble() %>% 
+  as.data.frame() %>%
   rownames_to_column(var = "age") %>%
-  gather(key = gender_loc, value = mort_rate, - age) %>%
+  pivot_longer(- age, names_to = "gender_loc", values_to = "mort_rate") %>%
   slice(1:4)
 ```
 
@@ -665,9 +665,9 @@ Separate the column into two separate columns for "gender" and "loc" (rural / ur
 
 ```{r}
 VADeaths %>%
-  as_tibble() %>% 
+  as.data.frame() %>%
   rownames_to_column(var = "age") %>%
-  gather(key = gender_loc, value = mort_rate, - age) %>%
+  pivot_longer(- age, names_to = "gender_loc", values_to = "mort_rate") %>%
   separate(col = gender_loc, into = c("gender", "loc"),
            sep = " ") %>%
   slice(1)
@@ -679,9 +679,9 @@ Now that the data is tidy, it's much easier to plot:
 
 ```{r echo = FALSE}
 VADeaths <- VADeaths %>%
-  as_tibble() %>% 
+  as.data.frame() %>%
   rownames_to_column(var = "age") %>%
-  gather(key = gender_loc, value = mort_rate, - age) %>%
+  pivot_longer(- age, names_to = "gender_loc", values_to = "mort_rate") %>%
   separate(col = gender_loc, into = c("loc", "gender"),
            sep = " ")
 ```
@@ -713,31 +713,6 @@ knitr::include_graphics("../figures/what_are_factors.jpg")
 ```
 
 ## `fct_recode`
-=======
-# Bioconductor software
-
-## Biodiversity data
-
-Bioconductor provides opensource software for bioinfomatics. Bioconductor provides an R package called `microbiome` that includes tools for exploring and analysing microbiome profiling data. The package provides sample datasets.
-
-## Biodiversity data
-
-```{r echo = FALSE, out.width = "0.75\\textwidth"}
-knitr::include_graphics("../figures/bioconductor.png")
-```
-
-Source: Ramos et al. Cancer Research 2017.
-
-https://cancerres.aacrjournals.org/content/77/21/e39
-
-
-## In-course exercise
-
-We'll take a break now to do the In-Course Exercise (Section 6.6.5).
-
-# `forcats`
-
-## `forcats`
 
 ```{r echo = FALSE, out.width = "\\textwidth"}
 knitr::include_graphics("../figures/fct_recode.jpg")
@@ -843,7 +818,9 @@ library("stringr")
 
 ## String operations
 
-This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). Here are the first few values of "Name": 
+This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). 
+
+Here are the first few values of "Name": 
 
 ```{r}
 titanic_train %>% select(Name) %>% slice(1:3)
@@ -871,10 +848,9 @@ data(titanic_train)
 ```
 
 ```{r}
-titanic_train$Name[1]
-str_to_upper(titanic_train$Name[1])
-str_to_lower(titanic_train$Name[1])
-str_to_title(str_to_lower(titanic_train$Name[1]))
+str_to_upper("Braund, Mr. Owen Harris")
+str_to_lower("Braund, Mr. Owen Harris")
+str_to_title("braund, mr. owen harris")
 ```
 
 # Regular expressions
@@ -900,6 +876,106 @@ There are a variety of functions in R that can perform manipulations based on fi
 
 ```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
 knitr::include_graphics("../figures/regular_expressions.jpg")
+```
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_functions.jpg")
+```
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_1.jpg")
+```
+
+
+## Regular expression patterns
+
+The easiest regular expression patterns are literal text. For example, the regular expression
+pattern if you're trying to match "Mr" is just "Mr": 
+
+```{r}
+ex_names <- c("Braund, Mr. Owen Harris",
+              "Cumings, Mrs. John Bradley",
+              "Heikkinen, Miss. Laina")
+str_extract(ex_names, pattern = "Mr")
+```
+
+## Regular expression patterns
+
+Regular expression patterns are case sensitive, so you won't match "Mr" with the
+pattern "mr":
+
+```{r}
+ex_names <- c("Braund, Mr. Owen Harris",
+              "Cumings, Mrs. John Bradley",
+              "Heikkinen, Miss. Laina")
+str_extract(ex_names, pattern = "mr")
+```
+
+## Regular expression patterns
+
+There are a few characters called **metacharacters** that mean something special in 
+regular expression patterns. 
+
+To use any of these literally in a regular expression, you 
+need to "protect" them with two backslashes. 
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_2.jpg")
+```
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_3.jpg")
+```
+
+## Regular expression patterns
+
+For example, "." is a metacharacter, so to match "Mr.", you need to use the pattern `"Mr\\."`:
+
+```{r}
+ex_names <- c("Braund, Mr. Owen Harris",
+              "Cumings, Mrs. John Bradley",
+              "Heikkinen, Miss. Laina")
+str_extract(ex_names, pattern = "Mr\\.")
+```
+
+## Regular expression metacharacters
+
+```{r echo = FALSE, out.width = "0.9\\textwidth"}
+knitr::include_graphics("../figures/regexp_metachars.jpg")
+```
+
+## Regular expression patterns
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_4.jpg")
+```
+
+## Regular expression patterns
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_5.jpg")
+```
+
+## Regular expressions
+
+The last pattern used `[a-z]+` to match one or more lowercase letters. The `[a-z]`is a **character class**. \bigskip 
+
+You can also match digits (`[0-9]`), uppercase letters (`[A-Z]`), just some letters (`[aeiou]`), etc. \bigskip
+
+You can negate a character class by starting it with `^`. For example, `[^0-9]` will match anything that **isn't** a digit. 
+
+## Regular expression patterns
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_6.jpg")
 ```
 
 ## Regular expressions
@@ -933,26 +1009,6 @@ titanic_train %>%
 
 ## Regular expressions
 
-As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally: 
-
-```
-. * + ^ ? $ \ | ( ) [ ] { }
-```
-
-
-## Regular expressions
-
-There is an older, base R function called `grepl` that does something very similar (although note that the order of the arguments is reversed).
-
-```{r}
-titanic_train %>%
-  filter(grepl("Mrs\\.", Name)) %>%
-  select(Name) %>%
-  slice(1:3)
-```
-
-## Regular expressions
-
 The `str_extract` function can be used to extract a string (if it exists) from each value in a character vector. It follows similar conventions to `str_detect`:
 
 ```
@@ -976,31 +1032,16 @@ Notice that now we're creating a new column (`mrs`) that either has "Mrs." (if t
 
 ## Regular expressions
 
-For this first example, we were looking for an exact string ("Mrs"). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find "Mr." or "Mrs.": 
-
-\small
+For this first example, we were looking for an exact string ("Mrs"). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find "Mr." or "Mrs.":  
 
 ```{r}
 titanic_train %>%
-  mutate(title = str_extract(Name, "Mr\\.|Mrs\\.")) %>%
+  mutate(title = str_extract(Name, "Mr[s]*\\.")) %>%
   select(Name, title) %>%
   slice(1:3)
 ```
 
-Note that this pattern uses a special operator (`|`) to find one pattern **or** another. Double backslashs (`\\`) **escape** the special character ".". 
-
-## Regular expressions
-
-Notice that "Mr." and "Mrs." both start with "Mr", end with ".", and may or may not have an "s" in between. 
-
-```{r}
-titanic_train %>%
-  mutate(title = str_extract(Name, "Mr(s)*\\.")) %>%
-  select(Name, title) %>%
-  slice(1:3)
-```
-
-This pattern uses `(s)*` to match zero or more "s"s at this spot in the pattern. 
+This pattern uses `[s]*` to match zero or more "s"s at this spot in the pattern. 
 
 ## Regular expressions
 
@@ -1013,13 +1054,7 @@ titanic_train %>%
   slice(1:3)
 ```
 
-## Regular expressions
 
-The last pattern used `[a-z]+` to match one or more lowercase letters. The `[a-z]`is a **character class**. \bigskip 
-
-You can also match digits (`[0-9]`), uppercase letters (`[A-Z]`), just some letters (`[aeiou]`), etc. \bigskip
-
-You can negate a character class by starting it with `^`. For example, `[^0-9]` will match anything that **isn't** a digit. 
 
 ## Regular expressions 
 
@@ -1027,12 +1062,11 @@ Sometimes, you want to match a pattern, but then only subset a part of it. For e
 
 ```{r}
 titanic_train %>%
-  mutate(title = str_extract(Name, ",\\s[A-Za-z]*\\.\\s")) %>%
+  mutate(title = str_extract(Name, ", [A-Z][a-z]*\\.")) %>%
   select(title) %>%
   slice(1:3)
 ```
 
-As a note, in this pattern, `\\s` is used to match a space. 
 
 ## Regular expressions 
 
@@ -1040,7 +1074,7 @@ We are getting things like ", Mr. ", when we really want "Mr". We can use the `s
 
 ```{r}
 head(str_match(titanic_train$Name,
-          pattern = ",\\s([A-Za-z]*)\\.\\s"))
+          pattern = ", ([A-Z][a-z]*)\\."))
 ```
 
 ## Regular expressions 
@@ -1050,7 +1084,7 @@ To get just the title, then, we can run:
 ```{r}
 titanic_train %>%
   mutate(title = 
-           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
+           str_match(Name, ", ([A-Z][a-z]*)\\.")[ , 2]) %>%
   select(Name, title) %>%
   slice(1:3)
 ```
@@ -1064,7 +1098,7 @@ Here are some of the most common titles:
 ```{r}
 titanic_train %>%
   mutate(title = 
-           str_match(Name, ",\\s([A-Za-z]*)\\.\\s")[ , 2]) %>%
+           str_match(Name, ", ([A-Z][a-z]*)\\.")[ , 2]) %>%
   group_by(title) %>% summarize(n = n()) %>%
   arrange(desc(n)) %>% slice(1:5)
 ```
@@ -1125,29 +1159,48 @@ titanic_train %>%
   select(Name) 
 ```
 
-## Regular expression
 
-Some useful regular expression operators include: 
+## Regular expressions
 
-```{r echo = FALSE}
-reg_exp <- tibble("Operator" = c(".",
-                                     "*",
-                                     "*?",
-                                     "+",
-                                     "+?",
-                                     "^",
-                                     "$", 
-                                     "[...]"),
-                      "Meaning" = c("Any character", 
-                                    "Match 0 or more times (greedy)",
-                                    "Match 0 or more times (non-greedy)",
-                                    "Match 1 or more times (greedy)",
-                                    "Match 1 or more times (non-greedy)",
-                                    "Starts with (in brackets, negates)",
-                                    "Ends with",
-                                    "Character classes"))
-knitr::kable(reg_exp)
+There is a family of older, base R functions called `grep` that does something very similar.
+
+You may see these functions in example code.
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/xkcd_regex_1.png")
 ```
+
+\footnotesize
+Souce: xkcd
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/xkcd_regex_2.png")
+```
+
+\footnotesize
+Souce: xkcd
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/xkcd_regex_3.png")
+```
+
+\footnotesize
+Souce: xkcd
+
+## Regular expressions
+
+For more on these patterns, see: 
+
+- Help file for the `stringi-search-regex` function in the `stringi` package (which should install when you install `stringr`)
+- Chapter 14 of R For Data Science
+- http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
+
 
 ## Tidy select
 
@@ -1188,7 +1241,7 @@ The `select_if` function takes the following form.
 new_df <- select_if(old_df,
                     .predicate [selects the variable to keep], 
                     .funs = [the function to apply to 
-                             the selected columns])
+                             the selected column names])
 ```
 
 ## Tidy select (*_at)
@@ -1201,13 +1254,6 @@ titanic_train %>%
   slice(1:3)
 ```
 
-## Regular expressions
-
-For more on these patterns, see: 
-
-- Help file for the `stringi-search-regex` function in the `stringi` package (which should install when you install `stringr`)
-- Chapter 14 of R For Data Science
-- http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
 
 ## In-course exercise
 
@@ -1217,17 +1263,35 @@ We'll now take a break to do Section 6 of the In-course Exercise for Chapter 6.
 
 ## Biodiversity data
 
-Bioconductor provides opensource software for bioinfomatics. Bioconductor provides an R package called `microbiome` that includes tools for exploring and analysing microbiome profiling data. The package provides sample datasets.
+Bioconductor provides opensource software for bioinfomatics. 
+
+Bioconductor often uses some object types to store data that are different from the ones we've focused on so far (vectors and tibbles).
+
+## Bioconductor object classes
+
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/bioconductor_object.png")
+```
+
+Source: Huber et al. Nature Methods 2015.
 
 ## Biodiversity data
 
-```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
-knitr::include_graphics("../figures/bioconductor.png")
+Bioconductor provides an R package called `microbiome` that includes tools for exploring and analysing microbiome profiling data. The package provides sample datasets.
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/microbiome_data.png")
 ```
 
-Source: Ramos et al. Cancer Research 2017.
+Source: Lahti et al. Nature Communications 2014.
 
-https://cancerres.aacrjournals.org/content/77/21/e39
+## Biodiversity data
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/bioconductor_phyloseq.png")
+```
+
+Source: [phyloseq tutorial](https://www.bioconductor.org/packages/release/bioc/vignettes/phyloseq/inst/doc/phyloseq-basics.html).
 
 
 ## In-course exercise

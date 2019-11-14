@@ -1,10 +1,12 @@
 ---
 title: 'Reporting data results #2'
-output:
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
   beamer_presentation:
-    theme: metropolis
-  ioslides_presentation: default
-  slidy_presentation: default
+    theme: "metropolis"
 fontsize: 10pt
 ---
 
@@ -57,9 +59,15 @@ Each row is a separate **event**. However, often several events are grouped toge
 within the same **episode**. 
 
 ```{r}
-nrow(storms_2017)
-length(unique(storms_2017$EVENT_ID))
-length(unique(storms_2017$EPISODE_ID))
+storms_2017 %>% nrow()
+storms_2017 %>% 
+  select(EVENT_ID) %>% 
+  distinct() %>% 
+  nrow()
+storms_2017 %>% 
+  select(EPISODE_ID) %>% 
+  distinct() %>% 
+  nrow()
 ```
 
 ## Example data
@@ -68,7 +76,9 @@ Some of the event types are listed by their county ID (FIPS code) ("C"), but som
 by a forecast zone ID ("Z"). Which ID is used is given in the column `CZ_TYPE`:
 
 ```{r}
-summary(factor(storms_2017$CZ_TYPE))
+storms_2017 %>% 
+  group_by(CZ_TYPE) %>% 
+  count()
 ```
 
 ## Example data
@@ -131,9 +141,9 @@ area, and region:
 
 ```{r}
 data("state")
-us_state_info <- data_frame(state = state.name, 
-                            area = state.area,
-                            region = state.region)
+us_state_info <- tibble(state = state.name, 
+                        area = state.area,
+                        region = state.region)
 ```
 
 
@@ -170,34 +180,6 @@ storm_plot
 We'll now take a break to do the first part of the in-course exercise.
 
 # `ggplot2` extras and extensions
-
-## `scales` package
-
-The `scales` package gives you a few more options for labeling with 
-your `ggplot` scales. For example, if you wanted to change the notation
-for the axes in the plot of state area versus number of storm events, 
-you could use the `scales` package to add commas to the numeric axis values.
-
-For the rest of these slides, I've saved the `ggplot` object with out plot to
-the object named `storm_plot`, so we don't have to repeat that code every time.
-
-## `scales` package
-
-\small
-
-```{r warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3}
-library(scales)
-storm_plot + 
-  scale_x_continuous(labels = comma) + 
-  scale_y_continuous(labels = comma)
-```
-
-## `scales` package
-
-The `scales` package also includes labeling functions for: 
-
-- dollars (`labels = dollar`)
-- percent (`labels = percent`)
 
 ## `ggplot2` extensions
 
@@ -252,6 +234,116 @@ d <- storm_plot +
 grid.arrange(a, b, c, d, ncol = 2)
 ``` 
 
+## `scales` package
+
+The `scales` package gives you a few more options for labeling with 
+your `ggplot` scales. For example, if you wanted to change the notation
+for the axes in the plot of state area versus number of storm events, 
+you could use the `scales` package to add commas to the numeric axis values.
+
+For the rest of these slides, I've saved the `ggplot` object with out plot to
+the object named `storm_plot`, so we don't have to repeat that code every time.
+
+## `scales` package
+
+\small
+
+```{r warning = FALSE, message = FALSE, fig.width = 6, fig.height = 3}
+library(scales)
+storm_plot + 
+  scale_x_continuous(labels = comma) + 
+  scale_y_continuous(labels = comma)
+```
+
+## `scales` package
+
+The `scales` package also includes labeling functions for: 
+
+- dollars (`labels = dollar`)
+- percent (`labels = percent`)
+
+## `viridis` package
+
+The `viridis` package can be used to change to a better color scale 
+(see https://www.youtube.com/watch?v=xAoljeRJ3lU&feature=youtu.be for 
+more on this color scale).
+
+From the `viridis` helpfile: 
+
+\medskip
+
+> "This color map is designed in such a way that it will analytically be
+perfectly perceptually-uniform, both in regular form and also when converted to
+black-and-white. It is also designed to be perceived by readers with the most
+common form of color blindness."
+
+Also see the `viridis` package introduction vignette: 
+https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html
+
+## `viridis` package
+
+```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 2.2, fig.align = "center"}
+library(viridis)
+# Adapted from viridis helpfile
+n <- 200
+image(
+  1:n, 1, as.matrix(1:n),
+  col = viridis(n, option = "D"),
+  xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n", 
+  main = "Viridis"
+) 
+```
+```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 2.2, fig.align = "center"}
+image(
+  1:n, 1, as.matrix(1:n),
+  col = viridis(n, option = "A"),
+  xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n",
+  main = "Magma"
+)
+```
+
+```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 2.2, fig.align = "center"}
+image(
+  1:n, 1, as.matrix(1:n),
+  col = viridis(n, option = "B"),
+  xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n",
+  main = "Inferno"
+)
+```
+
+```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 2.2, fig.align = "center"}
+image(
+  1:n, 1, as.matrix(1:n),
+  col = viridis(n, option = "C"),
+  xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n",
+  main = "Plasma"
+)
+```
+
+
+## `viridis` package
+
+For example, here is a hexagonal heatmap showing the two-dimensional distribution 
+of state land area versus number of reported storm events:
+
+```{r out.height = "0.5\\textheight", fig.width = 6, fig.height = 4, fig.align = "center"}
+state_storms %>% 
+  ggplot(aes(x = area, y = n)) + 
+  geom_hex(bins = 10)
+```
+
+## `viridis` package
+
+Change to a viridis color scale with `scale_fill_viridis`:
+
+```{r out.height = "0.5\\textheight", message = FALSE, fig.width = 6, fig.height = 4, fig.align = "center"}
+library(viridis)
+state_storms %>% 
+  ggplot(aes(x = area, y = n)) + 
+  geom_hex(bins = 10) + 
+  scale_fill_viridis()
+```
+
 ## `ggplot2` extensions: Useful additions
 
 - Highlighting interesting points
@@ -288,35 +380,35 @@ storm_plot + facet_wrap(~ region) +
   gghighlight(area > 150000 | n > 1500, label_key = state)
 ```
 
-## `gghighlight` package
+<!-- ## `gghighlight` package -->
 
-The `gghighlight` package also works for things like histograms. For example, you could
-create a dataset with the count by day-of-year of certain types of events:
+<!-- The `gghighlight` package also works for things like histograms. For example, you could -->
+<!-- create a dataset with the count by day-of-year of certain types of events: -->
 
-\footnotesize
+<!-- \footnotesize -->
 
-```{r warning = FALSE, message = FALSE}
-storms_by_month <- storms_2017 %>% 
-  filter(event_type %in% c("Flood", "Flash Flood", "Heavy Rain")) %>% 
-  mutate(month = month(begin_date_time, label = TRUE)) %>% 
-  group_by(month, event_type) %>% 
-  count() %>% 
-  ungroup()
-storms_by_month %>% 
-  slice(1:4)
-```
+<!-- ```{r warning = FALSE, message = FALSE} -->
+<!-- storms_by_month <- storms_2017 %>%  -->
+<!--   filter(event_type %in% c("Flood", "Flash Flood", "Heavy Rain")) %>%  -->
+<!--   mutate(month = month(begin_date_time, label = TRUE)) %>%  -->
+<!--   group_by(month, event_type) %>%  -->
+<!--   count() %>%  -->
+<!--   ungroup() -->
+<!-- storms_by_month %>%  -->
+<!--   slice(1:4) -->
+<!-- ``` -->
 
-## `gghighlight` package
+<!-- ## `gghighlight` package -->
 
-\small
+<!-- \small -->
 
-```{r fig.width = 7, fig.height = 3}
-ggplot(storms_by_month, aes(x = month, y = n, group = event_type)) +  
-  geom_bar(stat = "identity") + 
-  labs(x = "Month", y = "# of events") + 
-  gghighlight(max(n) > 400, label_key = event_type) +
-  facet_wrap(~ event_type, ncol = 1)
-```
+<!-- ```{r fig.width = 7, fig.height = 3} -->
+<!-- ggplot(storms_by_month, aes(x = month, y = n, group = event_type)) +   -->
+<!--   geom_bar(stat = "identity") +  -->
+<!--   labs(x = "Month", y = "# of events") +  -->
+<!--   gghighlight(max(n) > 400, label_key = event_type) + -->
+<!--   facet_wrap(~ event_type, ncol = 1) -->
+<!-- ``` -->
 
 ## `ggplot2` extensions: Arranging plots
 
@@ -534,12 +626,10 @@ ggplot(storms_by_yday, aes(x = yday,
 
 ## Odds and ends
 
-Before Wednesday's class, be sure to do the following: 
+Before next week's class, be sure to do the following: 
 
 - Register for GitHub: https://github.com
 - Download and install git: https://git-scm.com 
-- Install LaTeX: MikTeX for Windows, MacTeX for Macs. If you have low memory on your computer, you 
-may want to start with "TinyTex" (https://yihui.name/tinytex/) instead
 
 
 # Mapping in the tidyverse
@@ -677,15 +767,13 @@ larimer
 
 ## Simple features
 
-\footnotesize
-
-Note: You may need the development version of `ggplot2` for this to work (`devtools::install_github("tidyverse/ggplot2")`).
 
 ```{r warning = FALSE, message = FALSE, fig.width = 6, fig.height = 4, out.width = "0.6\\textwidth", fig.align = "center"}
 ggplot() + 
   geom_sf(data = co_counties, color = "lightgray") + 
   geom_sf(data = larimer, fill = "darkcyan") + 
-  geom_sf_text(data = larimer, aes(label = NAME), color = "white") + 
+  geom_sf_text(data = larimer, aes(label = NAME), 
+               color = "white") + 
   theme_dark() + labs(x = "", y = "")
 ```
 

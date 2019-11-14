@@ -499,11 +499,11 @@ The `ggmap` package allows you to use tools from Google Maps directly from R.
 library(ggmap)
 ```
 
-This package uses the Google Maps API, so you should read their [terms of service](http://developers.google.com/maps/terms) and make sure you follow them. In particular, you are limited to just a certain number of queries per time. 
+This package uses the Google Maps API, so you should read their [terms of service](http://developers.google.com/maps/terms) and make sure you follow them. In particular, you are limited to just a certain number of queries per time.
 
 ## Google Maps API
 
-You can use the `get_map` function to get maps for different locations. \bigskip 
+You can use the `get_map` function to get maps for different locations. \bigskip
 
 You can either use the longitude and latitude of the center point of the map, along with the `zoom` option to say how much to zoom in (3: continent to 20: building) or you can use a character string to specify a location. \bigskip
 
@@ -551,7 +551,7 @@ c <- ggmap(beijing_c, extent = "device")
 ## Google Maps API
 
 ```{r fig.width = 7}
-grid.arrange(a, b, c, nrow = 1) 
+grid.arrange(a, b, c, nrow = 1)
 ```
 
 
@@ -561,7 +561,7 @@ As with the maps from `ggplot2`, you can add points to these maps:
 
 ```{r warning = FALSE, message = FALSE, echo = FALSE}
 library(tidyr)
-serial_phone <- read.csv("../data/serial_phone_data.csv") %>% 
+serial_phone <- read.csv("../data/serial_phone_data.csv") %>%
         mutate(Cell_Site = substring(Cell_Site, 1, 4),
                Call_Time = as.POSIXct(Call_Time, format = "%d/%m/%y %H:%M",
                                       tz = "EST")) %>%
@@ -575,7 +575,7 @@ serial_phone <- read.csv("../data/serial_phone_data.csv") %>%
 serial_map <- get_map(c(-76.7, 39.3), zoom = 12,
                       source = "stamen",
                       maptype = "toner")
-serial_map <- ggmap(serial_map, extent = "device") + 
+serial_map <- ggmap(serial_map, extent = "device") +
         geom_point(data = serial_phone,
                    aes(x = long, y = lat),
                    color = "red", size = 3,
@@ -614,7 +614,7 @@ geocode("1 First St NE, Washington, DC")
 
 ## Google Maps API
 
-You can get distances, too, using the `mapdist` function with two locations. This will give you distance and also time. 
+You can get distances, too, using the `mapdist` function with two locations. This will give you distance and also time.
 
 ```{r message = FALSE, warning = FALSE}
 mapdist("Fort Collins CO",
