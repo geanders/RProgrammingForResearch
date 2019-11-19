@@ -1545,10 +1545,12 @@ div.tocify {
 <div id="load-a-data-file" class="section level1">
 <h1>Load a data file</h1>
 <ul>
-<li>use the <code>list.files</code> function to create a vector of the <strong>.csv</strong> file names in the data, which does not contain the <code>elevation.csv</code> file</li>
+<li>use the <code>list.files()</code> function to create a vector of the <strong>.csv</strong> file names in the data, which does not contain the <code>elevation.csv</code> file</li>
 <li>write a function to load one of the running <strong>.csv</strong> files (note: you’ll need the <code>readr</code> package)</li>
 <li>set the function to load the all columns as class <strong>character</strong>.</li>
 </ul>
+<p>Try using:</p>
+<pre class="r"><code>col_types = cols(.default = &quot;c&quot;)</code></pre>
 <hr />
 </div>
 <div id="clean-the-data" class="section level1">
@@ -1582,7 +1584,7 @@ div.tocify {
 <div id="summarise-each-run" class="section level2">
 <h2>Summarise each run</h2>
 <ul>
-<li><p>Write a function to summarise each training run. Think about what some useful summary statsitics might be. Be sure to include the total distance of each run, average pace, and the file name in your summary.</p></li>
+<li><p>Write a function to summarize each training run. Think about what some useful summary statistics might be. Be sure to include the total distance of each run, average pace, and the file name in your summary.</p></li>
 <li><p>Use <code>map_df()</code> to create a dataframe summarizing each run.</p></li>
 <li><p>Add a variable for the total time each run takes</p></li>
 </ul>
@@ -1604,23 +1606,47 @@ div.tocify {
 <li><p>the first argument the <code>mfp</code> function requires in a <code>formula</code> object. The formula should contain all the candidate variables.</p></li>
 <li><p>look at the website link above to get an idea what the <code>mfp</code> function does.</p></li>
 </ul>
-<p>Example formula :</p>
-<pre class="r"><code>eqn &lt;- formula(duration ~ fp(distance) + fp(gain) + fp(loss) +
-                           fp(t_min)+ fp(t_max) + fp(t_mean) +
-                           fp(e_min) + fp(e_max) + fp(e_mean))</code></pre>
+<div id="create-a-formula-object" class="section level3">
+<h3>Create a formula object</h3>
+<p>Example formula:</p>
+<pre class="r"><code>eqn &lt;- formula(duration ~ fp(distance) + ...)</code></pre>
+</div>
+<div id="run-mfp" class="section level3">
+<h3>Run MFP</h3>
+<ul>
+<li>run the <code>mfp()</code> function on the data set</li>
+</ul>
+<pre class="r"><code># example `mfp` code:
+library(mfp)
+mfp_run &lt;- mfp(eqn,
+               data = run_data,
+               select = 0.05)</code></pre>
+</div>
+<div id="extract-the-best-model" class="section level3">
+<h3>Extract the best model</h3>
 <ul>
 <li>use the <code>summary</code> function to display the output from <code>mfp</code></li>
 <li>use the <code>$</code> operator to extract the model formula from the <code>mfp</code> object.</li>
 <li>use the model formula to fit a linear model to the running data</li>
 <li>print a summary of the linear model</li>
 </ul>
-<p>Example <code>mfp</code> code:</p>
-<pre class="r"><code>library(mfp)
-mfp_run &lt;- mfp(eqn,
-               data = run_data,
-               select = 0.05)</code></pre>
+</div>
+<div id="check-the-model-fit" class="section level3">
+<h3>Check the model fit</h3>
+<ul>
+<li>you can use the <code>autoplot</code> function to check the model diagnostics</li>
+</ul>
+<pre class="r"><code>library(ggfortify)
+autoplot(mod)</code></pre>
 <hr />
 </div>
+</div>
+</div>
+<div id="make-your-prediction" class="section level1">
+<h1>Make your prediction!</h1>
+<pre class="r"><code># e.g.
+predict.lm(run_mod, data_frame(distance = 10, ...))</code></pre>
+<hr />
 </div>
 
 
