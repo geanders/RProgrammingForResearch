@@ -1,0 +1,122 @@
+---
+title: "In-class exercise November 19th"
+output:
+  html_document:
+    theme: paper
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.path = 'figures/',
+  warning = FALSE,
+  message = FALSE,
+  echo = FALSE,
+  fig.width = 4, fig.height = 4,
+  cache = FALSE)
+```
+
+```{r}
+library(knitr)
+library(rmarkdown)
+```
+
+---
+
+# Getting started
+
+* create a new RMarkdown document for these exercises
+* download the data from [github](https://github.com/nickgood/RProgrammingForResearch/tree/master/data/running)
+* save the data in a sensible location
+* take a look at the data
+
+---
+
+# Load a data file
+
+
+* use the `list.files` function to create a vector of the **.csv** file names in the data, which does not contain the `elevation.csv` file
+* write a function to load one of the running **.csv** files (note: you'll need the `readr` package)
+* set the function to load the all columns as class **character**.
+
+---
+
+# Clean the data
+
+* take a look at the file you just loaded
+* write a function to tidy the column names
+
+Update your file loading function to:
+
+  + clean the column names
+  + filter only rows that contain data for complete miles
+  + convert the time strings to `hms` class using `lubridate`
+  + convert the remaining character columns to numeric class
+  + add a column containing the file name
+  + reload a data file using the updated function
+
+---
+
+# Load all the files
+
+* load all the .csv files from the running folder into a list using `map()` from the `purrr` package and `bind_rows()` from the `dplyr` package.
+* how many files were loaded?
+
+# Build a model to predict running times
+
+Use the dataset to fit a linear model to predict how long it takes to run...
+
+---
+
+## Summarise each run 
+
+* Write a function to summarise each training run. Think about what some useful summary statsitics might be. Be sure to include the total distance of each run, average pace, and the file name in your summary.
+
+* Use `map_df()` to create a dataframe summarizing each run.
+
+* Add a variable for the total time each run takes
+
+## Merge the elevation dataset
+
+The `elevation.csv` file contains the minimum, maximum, and mean elevation for each run.
+
+* read in the `elevation.csv` file
+* join the elevation data to the run summary file
+* remove the `file_name` column
+
+## MFP package
+
+The `mfp` package contains functions to identify variable combinations to include in linear models.
+
+* use the (http://mfp.imbi.uni-freiburg.de)[mfp] library to identify the best model to predict duration
+
+* the first argument the `mfp` function requires in a `formula` object. The formula should contain all the candidate variables.
+
+* look at the website link above to get an idea what the `mfp` function does.
+
+Example formula :
+
+```{r mfp_eqn, eval=FALSE, echo=TRUE}
+eqn <- formula(duration ~ fp(distance) + fp(gain) + fp(loss) +
+                           fp(t_min)+ fp(t_max) + fp(t_mean) +
+                           fp(e_min) + fp(e_max) + fp(e_mean))
+```
+
+* use the `summary` function to display the output from `mfp`
+* use the `$` operator to extract the model formula from the `mfp` object.
+* use the model formula to fit a linear model to the running data
+* print a summary of the linear model
+
+Example `mfp` code:
+
+```{r mfp, eval=FALSE, echo=TRUE}
+library(mfp)
+mfp_run <- mfp(eqn,
+               data = run_data,
+               select = 0.05)
+```
+
+
+---
