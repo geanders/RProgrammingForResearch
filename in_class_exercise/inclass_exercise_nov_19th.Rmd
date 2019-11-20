@@ -73,13 +73,14 @@ Update your file loading function to:
   + add a column containing the file name
   + reload a data file using the updated function
 
+The `rename_all()`, `filter()`, `mutate_if()`, `mutate()` functions might be useful.
+
 ---
 
 # Load all the files
 
 * load all the .csv files from the running folder into a list using `map()` from the `purrr` package
 * how many files were loaded?
-
 
 ---
 
@@ -88,8 +89,14 @@ Update your file loading function to:
 * Write a function to summarize each training run. Think about what some useful summary statistics might be. Be sure to include the total distance of each run, average pace, and the file name in your summary.
 
 * Use `map_df()` to create a dataframe summarizing each run.
-
 * Add a variable for the total time each run takes
+
+```{r, echo=TRUE}
+# e.g.
+run_sum <- function(x){
+  summarise(x, distance = sum(distance, na.rm = TRUE), ...)
+}
+```
 
 ## Merge the elevation dataset
 
@@ -131,7 +138,7 @@ mfp_run <- mfp(eqn,
 
 ### Extract the best model
 
-* use the `summary` function to display the output from `mfp`
+* use the `summary()` function to display the output from `mfp`
 * use the `$` operator to extract the model formula from the `mfp` object.
 * use the model formula to fit a linear model to the running data
 * print a summary of the linear model
