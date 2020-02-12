@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 6 Entering and cleaning data #2 | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 6 Entering and cleaning data #2 | R Programming for Research" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2019-12-01" />
+<meta name="date" content="2020-02-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -51,12 +51,12 @@
 
 
 <script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.9.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
 <link href="libs/bokehjs-0.12.2/bokeh.min.css" rel="stylesheet" />
 <link href="libs/bokehjs-0.12.2/loader.css" rel="stylesheet" />
 <script src="libs/bokehjs-0.12.2/bokeh.min.js"></script>
@@ -69,10 +69,19 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.9/datatables.js"></script>
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.12/datatables.js"></script>
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-36719749-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-36719749-2');
+</script>
 
 
 <style type="text/css">
@@ -668,17 +677,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## # A tibble: 3 x 4
 ##   time            X      Y       Z
 ##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-## 1 2009-01-01 -0.871 -1.78   0.0275
-## 2 2009-01-02 -0.289 -0.260  0.424 
-## 3 2009-01-03 -0.884 -0.648 -5.96</code></pre>
+## 1 2009-01-01  0.253  2.14   7.85  
+## 2 2009-01-02 -1.23  -2.43  -0.0507
+## 3 2009-01-03  0.591  0.869  4.16</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb527-1" title="1">wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
 ##   time            X      Y       Z
 ##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-## 1 2009-01-01 -0.871 -1.78   0.0275
-## 2 2009-01-02 -0.289 -0.260  0.424 
-## 3 2009-01-03 -0.884 -0.648 -5.96</code></pre>
+## 1 2009-01-01  0.253  2.14   7.85  
+## 2 2009-01-02 -1.23  -2.43  -0.0507
+## 3 2009-01-03  0.591  0.869  4.16</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>pivot_longer</code> to convert wide data to long data:</p>
 <div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb529-1" title="1">long_stocks &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dt">data =</span> wide_stocks,</a>
 <a class="sourceLine" id="cb529-2" title="2">                            <span class="dt">cols =</span> <span class="op">-</span>time,</a>
@@ -686,23 +695,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb529-4" title="4">                            <span class="dt">values_to =</span> <span class="st">&quot;price&quot;</span>)</a>
 <a class="sourceLine" id="cb529-5" title="5">long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
-##   time       stock   price
-##   &lt;date&gt;     &lt;chr&gt;   &lt;dbl&gt;
-## 1 2009-01-01 X     -0.871 
-## 2 2009-01-01 Y     -1.78  
-## 3 2009-01-01 Z      0.0275
-## 4 2009-01-02 X     -0.289 
-## 5 2009-01-02 Y     -0.260</code></pre>
+##   time       stock  price
+##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
+## 1 2009-01-01 X      0.253
+## 2 2009-01-01 Y      2.14 
+## 3 2009-01-01 Z      7.85 
+## 4 2009-01-02 X     -1.23 
+## 5 2009-01-02 Y     -2.43</code></pre>
 <p>In this “longer” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb531-1" title="1">long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
-##   time       stock   price
-##   &lt;date&gt;     &lt;chr&gt;   &lt;dbl&gt;
-## 1 2009-01-01 X     -0.871 
-## 2 2009-01-01 Y     -1.78  
-## 3 2009-01-01 Z      0.0275
-## 4 2009-01-02 X     -0.289 
-## 5 2009-01-02 Y     -0.260</code></pre>
+##   time       stock  price
+##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
+## 1 2009-01-01 X      0.253
+## 2 2009-01-01 Y      2.14 
+## 3 2009-01-01 Z      7.85 
+## 4 2009-01-02 X     -1.23 
+## 5 2009-01-02 Y     -2.43</code></pre>
 <p>The format for a <code>pivots_longer</code> call is:</p>
 <div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb533-1" title="1"><span class="co">## Generic code</span></a>
 <a class="sourceLine" id="cb533-2" title="2">new_df &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(old_df,</a>
@@ -729,11 +738,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## # A tibble: 5 x 4
 ##   time            X      Y       Z
 ##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-## 1 2009-01-01 -0.871 -1.78   0.0275
-## 2 2009-01-02 -0.289 -0.260  0.424 
-## 3 2009-01-03 -0.884 -0.648 -5.96  
-## 4 2009-01-04  0.300 -0.164  7.78  
-## 5 2009-01-05 -0.498  0.913  3.61</code></pre>
+## 1 2009-01-01  0.253  2.14   7.85  
+## 2 2009-01-02 -1.23  -2.43  -0.0507
+## 3 2009-01-03  0.591  0.869  4.16  
+## 4 2009-01-04 -0.249 -5.43   7.27  
+## 5 2009-01-05 -0.379 -1.89   2.81</code></pre>
 <p>Notice that this reverses the action of <code>pivot_longer</code>.</p>
 <p>The “wider” your data the less likely it is to be tidy, so won’t use <code>pivot_wider</code> frequently when you are preparing data for analysis. However, <code>pivot_wider</code> can be very helpful in creating tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>pivot_wider</code> to rearrange the final summary to create an attractive table.</p>
@@ -742,11 +751,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb537-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">N =</span> <span class="kw">n</span>(), <span class="dt">mean =</span> <span class="kw">mean</span>(price), <span class="dt">sd =</span> <span class="kw">sd</span>(price))</a>
 <a class="sourceLine" id="cb537-4" title="4">stock_summary</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   stock     N   mean    sd
-##   &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10 -0.198 0.845
-## 2 Y        10  0.863 2.43 
-## 3 Z        10  1.46  4.19</code></pre>
+##   stock     N  mean    sd
+##   &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 X        10 0.107 0.622
+## 2 Y        10 0.370 2.80 
+## 3 Z        10 3.50  2.95</code></pre>
 <div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb539-1" title="1">stock_summary <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb539-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</a>
 <a class="sourceLine" id="cb539-3" title="3">                                    <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span></a>
@@ -773,9 +782,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="even">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">-0.2 (0.85)</td>
-<td align="left">0.86 (2.43)</td>
-<td align="left">1.46 (4.19)</td>
+<td align="left">0.11 (0.62)</td>
+<td align="left">0.37 (2.8)</td>
+<td align="left">3.5 (2.95)</td>
 </tr>
 </tbody>
 </table>
@@ -1193,16 +1202,15 @@ If you want to use these data further, you should go back and pull them from the
 <a class="sourceLine" id="cb606-3" title="3">mex_exp &lt;-<span class="st"> </span><span class="kw">read_csv</span>(exposure_url)</a>
 <a class="sourceLine" id="cb606-4" title="4"><span class="kw">head</span>(mex_exp)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 14
-##   day   temp_min temp_max temp_mean humidity  wind      NO    NO2    NOX
-##   &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 1/1/…      7.8     17.8     11.8      53.5 2.66  0.00925 0.0187 0.0278
-## 2 1/2/…      2.6      9.8      6.64     61.7 3.35  0.00542 0.0187 0.0241
-## 3 1/3/…      1.1     15.6      7.04     59.9 1.89  0.0160  0.0381 0.0540
-## 4 1/4/…      3.1     20.6     10.9      57.5 1.20  0.0408  0.0584 0.0993
-## 5 1/5/…      6       21.3     13.4      45.7 0.988 0.0469  0.0602 0.107 
-## 6 1/6/…      7.2     22.1     14.3      40.8 0.854 0.0286  0.051  0.0795
-## # … with 5 more variables: O3 &lt;dbl&gt;, CO &lt;dbl&gt;, SO2 &lt;dbl&gt;, PM10 &lt;dbl&gt;,
-## #   PM25 &lt;dbl&gt;</code></pre>
+##   day   temp_min temp_max temp_mean humidity  wind      NO    NO2    NOX      O3
+##   &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1 1/1/…      7.8     17.8     11.8      53.5 2.66  0.00925 0.0187 0.0278 NA     
+## 2 1/2/…      2.6      9.8      6.64     61.7 3.35  0.00542 0.0187 0.0241  0.0201
+## 3 1/3/…      1.1     15.6      7.04     59.9 1.89  0.0160  0.0381 0.0540  0.0184
+## 4 1/4/…      3.1     20.6     10.9      57.5 1.20  0.0408  0.0584 0.0993  0.0215
+## 5 1/5/…      6       21.3     13.4      45.7 0.988 0.0469  0.0602 0.107   0.0239
+## 6 1/6/…      7.2     22.1     14.3      40.8 0.854 0.0286  0.051  0.0795  0.0249
+## # … with 4 more variables: CO &lt;dbl&gt;, SO2 &lt;dbl&gt;, PM10 &lt;dbl&gt;, PM25 &lt;dbl&gt;</code></pre>
 <p>Check if there are any values of the <code>day</code> column in <code>mex_deaths</code> that are not present in the <code>day</code> column of <code>mex_exp</code> and vice-versa.</p>
 <div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb608-1" title="1">mex_deaths <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb608-2" title="2"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span>(day <span class="op">%in%</span><span class="st"> </span>mex_exp<span class="op">$</span>day))</a></code></pre></div>
@@ -1678,12 +1686,11 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -1695,6 +1702,10 @@ gitbook.start({
 "text": "Edit"
 },
 "history": {
+"link": null,
+"text": null
+},
+"view": {
 "link": null,
 "text": null
 },

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 7 Exploring data #2 | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 7 Exploring data #2 | R Programming for Research" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2019-12-01" />
+<meta name="date" content="2020-02-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -51,12 +51,12 @@
 
 
 <script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.9.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
 <link href="libs/bokehjs-0.12.2/bokeh.min.css" rel="stylesheet" />
 <link href="libs/bokehjs-0.12.2/loader.css" rel="stylesheet" />
 <script src="libs/bokehjs-0.12.2/bokeh.min.js"></script>
@@ -69,10 +69,19 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.9/datatables.js"></script>
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.12/datatables.js"></script>
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-36719749-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-36719749-2');
+</script>
 
 
 <style type="text/css">
@@ -635,8 +644,7 @@ with all dates in 2016:</p>
 <div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb670-1" title="1"><span class="kw">prop.test</span>(<span class="dt">x =</span> crash_prob<span class="op">$</span>crash_days, </a>
 <a class="sourceLine" id="cb670-2" title="2">          <span class="dt">n =</span> crash_prob<span class="op">$</span>n_days)</a></code></pre></div>
 <pre><code>## 
-##  2-sample test for equality of proportions with continuity
-##  correction
+##  2-sample test for equality of proportions with continuity correction
 ## 
 ## data:  crash_prob$crash_days out of crash_prob$n_days
 ## X-squared = 1.5978e-30, df = 1, p-value = 1
@@ -730,7 +738,7 @@ advanced methods to analyze your data.</p>
 <pre><code>## [1] &quot;coefficients&quot;  &quot;residuals&quot;     &quot;fitted.values&quot;</code></pre>
 <div class="sourceCode" id="cb699"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb699-1" title="1">my_mod[[<span class="st">&quot;coefficients&quot;</span>]]</a></code></pre></div>
 <pre><code>## (Intercept)     c(1:10) 
-##    1.025994   -0.222162</code></pre>
+##   -1.150086    0.144085</code></pre>
 <p>A list can even contain other lists. We can use the <code>str</code> function to see the structure of a list:</p>
 <div class="sourceCode" id="cb701"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb701-1" title="1">a_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">list</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="kw">list</span>(<span class="dv">1</span>, <span class="dv">2</span>))</a>
 <a class="sourceLine" id="cb701-2" title="2"></a>
@@ -814,7 +822,7 @@ won’t work for this type of object, and <code>glance</code> gives the same thi
 <pre><code>## # A tibble: 1 x 9
 ##   estimate1 estimate2 statistic p.value parameter conf.low conf.high method
 ##       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; 
-## 1     0.412     0.406  1.60e-30   1.000         1   -0.111     0.123 2-sam…
+## 1     0.412     0.406  1.60e-30    1.00         1   -0.111     0.123 2-sam…
 ## # … with 1 more variable: alternative &lt;chr&gt;</code></pre>
 <hr />
 </div>
@@ -833,11 +841,11 @@ won’t work for this type of object, and <code>glance</code> gives the same thi
 <a class="sourceLine" id="cb718-4" title="4"><span class="st">  </span><span class="kw">rename_all</span>(tolower) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb718-5" title="5"><span class="st">  </span><span class="kw">as_tibble</span>()</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 10
-##   otu     abundance  time sex    subject sample  group phylum family genus 
-##   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;  &lt;fct&gt;   &lt;chr&gt;   &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt; 
-## 1 Bacter…      9734     1 male   S19     sample… LGG   Bacte… Bacte… Bacte…
-## 2 Bacter…      5883     1 female S14     sample… Plac… Bacte… Bacte… Bacte…
-## 3 Bacter…      5134     2 female S8      sample… LGG   Bacte… Bacte… Bacte…</code></pre>
+##   otu       abundance  time sex    subject sample group phylum  family  genus   
+##   &lt;chr&gt;         &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;  &lt;fct&gt;   &lt;chr&gt;  &lt;fct&gt; &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;   
+## 1 Bacteroi…      9734     1 male   S19     sampl… LGG   Bacter… Bacter… Bactero…
+## 2 Bacteroi…      5883     1 female S14     sampl… Plac… Bacter… Bacter… Bactero…
+## 3 Bacteroi…      5134     2 female S8      sampl… LGG   Bacter… Bacter… Bactero…</code></pre>
 <p>We can make a plot from the resulting tibble to help us explore the data.</p>
 <div class="sourceCode" id="cb720"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb720-1" title="1"><span class="kw">library</span>(ggplot2)</a>
 <a class="sourceLine" id="cb720-2" title="2"><span class="kw">ggplot</span>(peerj32_tibble, <span class="kw">aes</span>(<span class="dt">x =</span> subject, <span class="dt">y =</span> abundance, <span class="dt">color =</span> sex)) <span class="op">+</span></a>
@@ -856,24 +864,24 @@ won’t work for this type of object, and <code>glance</code> gives the same thi
 <div class="sourceCode" id="cb722"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb722-1" title="1"><span class="kw">slice</span>(nested_data, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 16 x 3
 ## # Groups:   group, phylum [16]
-##    group   phylum                    data
-##    &lt;fct&gt;   &lt;fct&gt;           &lt;list&lt;df[,8]&gt;&gt;
-##  1 LGG     Actinobacteria       [128 × 8]
-##  2 LGG     Bacteroidetes        [256 × 8]
-##  3 LGG     Cyanobacteria         [16 × 8]
-##  4 LGG     Firmicutes         [1,216 × 8]
-##  5 LGG     Fusobacteria          [16 × 8]
-##  6 LGG     Proteobacteria       [416 × 8]
-##  7 LGG     Spirochaetes          [16 × 8]
-##  8 LGG     Verrucomicrobia       [16 × 8]
-##  9 Placebo Actinobacteria       [224 × 8]
-## 10 Placebo Bacteroidetes        [448 × 8]
-## 11 Placebo Cyanobacteria         [28 × 8]
-## 12 Placebo Firmicutes         [2,128 × 8]
-## 13 Placebo Fusobacteria          [28 × 8]
-## 14 Placebo Proteobacteria       [728 × 8]
-## 15 Placebo Spirochaetes          [28 × 8]
-## 16 Placebo Verrucomicrobia       [28 × 8]</code></pre>
+##    group   phylum          data                
+##    &lt;fct&gt;   &lt;fct&gt;           &lt;list&gt;              
+##  1 LGG     Actinobacteria  &lt;tibble [128 × 8]&gt;  
+##  2 LGG     Bacteroidetes   &lt;tibble [256 × 8]&gt;  
+##  3 LGG     Cyanobacteria   &lt;tibble [16 × 8]&gt;   
+##  4 LGG     Firmicutes      &lt;tibble [1,216 × 8]&gt;
+##  5 LGG     Fusobacteria    &lt;tibble [16 × 8]&gt;   
+##  6 LGG     Proteobacteria  &lt;tibble [416 × 8]&gt;  
+##  7 LGG     Spirochaetes    &lt;tibble [16 × 8]&gt;   
+##  8 LGG     Verrucomicrobia &lt;tibble [16 × 8]&gt;   
+##  9 Placebo Actinobacteria  &lt;tibble [224 × 8]&gt;  
+## 10 Placebo Bacteroidetes   &lt;tibble [448 × 8]&gt;  
+## 11 Placebo Cyanobacteria   &lt;tibble [28 × 8]&gt;   
+## 12 Placebo Firmicutes      &lt;tibble [2,128 × 8]&gt;
+## 13 Placebo Fusobacteria    &lt;tibble [28 × 8]&gt;   
+## 14 Placebo Proteobacteria  &lt;tibble [728 × 8]&gt;  
+## 15 Placebo Spirochaetes    &lt;tibble [28 × 8]&gt;   
+## 16 Placebo Verrucomicrobia &lt;tibble [28 × 8]&gt;</code></pre>
 <p>We can then use the <code>map</code> function from the <code>purrr</code> package to apply functions to each nested dataframe. Let’s start by counting the rows in each nested dataframe and filtering out dataframes with less than 25 rows.</p>
 <div class="sourceCode" id="cb724"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb724-1" title="1"><span class="kw">library</span>(purrr)</a>
 <a class="sourceLine" id="cb724-2" title="2"></a>
@@ -886,40 +894,40 @@ won’t work for this type of object, and <code>glance</code> gives the same thi
 <div class="sourceCode" id="cb726"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb726-1" title="1">t_tests</a></code></pre></div>
 <pre><code>## # A tibble: 12 x 5
 ## # Groups:   group, phylum [12]
-##    group   phylum                    data n_rows    t_test 
-##    &lt;fct&gt;   &lt;fct&gt;           &lt;list&lt;df[,8]&gt;&gt; &lt;list&gt;    &lt;list&gt; 
-##  1 LGG     Bacteroidetes        [256 × 8] &lt;int [1]&gt; &lt;htest&gt;
-##  2 Placebo Bacteroidetes        [448 × 8] &lt;int [1]&gt; &lt;htest&gt;
-##  3 Placebo Firmicutes         [2,128 × 8] &lt;int [1]&gt; &lt;htest&gt;
-##  4 LGG     Firmicutes         [1,216 × 8] &lt;int [1]&gt; &lt;htest&gt;
-##  5 Placebo Verrucomicrobia       [28 × 8] &lt;int [1]&gt; &lt;htest&gt;
-##  6 LGG     Actinobacteria       [128 × 8] &lt;int [1]&gt; &lt;htest&gt;
-##  7 Placebo Actinobacteria       [224 × 8] &lt;int [1]&gt; &lt;htest&gt;
-##  8 Placebo Proteobacteria       [728 × 8] &lt;int [1]&gt; &lt;htest&gt;
-##  9 LGG     Proteobacteria       [416 × 8] &lt;int [1]&gt; &lt;htest&gt;
-## 10 Placebo Cyanobacteria         [28 × 8] &lt;int [1]&gt; &lt;htest&gt;
-## 11 Placebo Fusobacteria          [28 × 8] &lt;int [1]&gt; &lt;htest&gt;
-## 12 Placebo Spirochaetes          [28 × 8] &lt;int [1]&gt; &lt;htest&gt;</code></pre>
+##    group   phylum          data                 n_rows    t_test 
+##    &lt;fct&gt;   &lt;fct&gt;           &lt;list&gt;               &lt;list&gt;    &lt;list&gt; 
+##  1 LGG     Bacteroidetes   &lt;tibble [256 × 8]&gt;   &lt;int [1]&gt; &lt;htest&gt;
+##  2 Placebo Bacteroidetes   &lt;tibble [448 × 8]&gt;   &lt;int [1]&gt; &lt;htest&gt;
+##  3 Placebo Firmicutes      &lt;tibble [2,128 × 8]&gt; &lt;int [1]&gt; &lt;htest&gt;
+##  4 LGG     Firmicutes      &lt;tibble [1,216 × 8]&gt; &lt;int [1]&gt; &lt;htest&gt;
+##  5 Placebo Verrucomicrobia &lt;tibble [28 × 8]&gt;    &lt;int [1]&gt; &lt;htest&gt;
+##  6 LGG     Actinobacteria  &lt;tibble [128 × 8]&gt;   &lt;int [1]&gt; &lt;htest&gt;
+##  7 Placebo Actinobacteria  &lt;tibble [224 × 8]&gt;   &lt;int [1]&gt; &lt;htest&gt;
+##  8 Placebo Proteobacteria  &lt;tibble [728 × 8]&gt;   &lt;int [1]&gt; &lt;htest&gt;
+##  9 LGG     Proteobacteria  &lt;tibble [416 × 8]&gt;   &lt;int [1]&gt; &lt;htest&gt;
+## 10 Placebo Cyanobacteria   &lt;tibble [28 × 8]&gt;    &lt;int [1]&gt; &lt;htest&gt;
+## 11 Placebo Fusobacteria    &lt;tibble [28 × 8]&gt;    &lt;int [1]&gt; &lt;htest&gt;
+## 12 Placebo Spirochaetes    &lt;tibble [28 × 8]&gt;    &lt;int [1]&gt; &lt;htest&gt;</code></pre>
 <p>The resulting dataframe contains a new column, which contains the model objects. Just as we mapped the <code>t.test</code> function, we can map the <em>tidying</em> functions from the <code>broom</code> package to extract the information we want from the nested model objects.</p>
 <div class="sourceCode" id="cb728"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb728-1" title="1">summary &lt;-<span class="st"> </span>t_tests <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb728-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">summary =</span> purrr<span class="op">::</span><span class="kw">map</span>(t_test, broom<span class="op">::</span>glance))</a></code></pre></div>
 <div class="sourceCode" id="cb729"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb729-1" title="1">summary</a></code></pre></div>
 <pre><code>## # A tibble: 12 x 6
 ## # Groups:   group, phylum [12]
-##    group   phylum                    data n_rows    t_test summary         
-##    &lt;fct&gt;   &lt;fct&gt;           &lt;list&lt;df[,8]&gt;&gt; &lt;list&gt;    &lt;list&gt; &lt;list&gt;          
-##  1 LGG     Bacteroidetes        [256 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-##  2 Placebo Bacteroidetes        [448 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-##  3 Placebo Firmicutes         [2,128 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-##  4 LGG     Firmicutes         [1,216 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-##  5 Placebo Verrucomicrobia       [28 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-##  6 LGG     Actinobacteria       [128 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-##  7 Placebo Actinobacteria       [224 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-##  8 Placebo Proteobacteria       [728 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-##  9 LGG     Proteobacteria       [416 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-## 10 Placebo Cyanobacteria         [28 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-## 11 Placebo Fusobacteria          [28 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
-## 12 Placebo Spirochaetes          [28 × 8] &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…</code></pre>
+##    group   phylum          data                n_rows    t_test summary         
+##    &lt;fct&gt;   &lt;fct&gt;           &lt;list&gt;              &lt;list&gt;    &lt;list&gt; &lt;list&gt;          
+##  1 LGG     Bacteroidetes   &lt;tibble [256 × 8]&gt;  &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+##  2 Placebo Bacteroidetes   &lt;tibble [448 × 8]&gt;  &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+##  3 Placebo Firmicutes      &lt;tibble [2,128 × 8… &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+##  4 LGG     Firmicutes      &lt;tibble [1,216 × 8… &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+##  5 Placebo Verrucomicrobia &lt;tibble [28 × 8]&gt;   &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+##  6 LGG     Actinobacteria  &lt;tibble [128 × 8]&gt;  &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+##  7 Placebo Actinobacteria  &lt;tibble [224 × 8]&gt;  &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+##  8 Placebo Proteobacteria  &lt;tibble [728 × 8]&gt;  &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+##  9 LGG     Proteobacteria  &lt;tibble [416 × 8]&gt;  &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+## 10 Placebo Cyanobacteria   &lt;tibble [28 × 8]&gt;   &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+## 11 Placebo Fusobacteria    &lt;tibble [28 × 8]&gt;   &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…
+## 12 Placebo Spirochaetes    &lt;tibble [28 × 8]&gt;   &lt;int [1]&gt; &lt;htes… &lt;tibble [1 × 10…</code></pre>
 <p>The final step is to return a tidy dataframe, we can do this using the <code>unnest</code> function from the <code>tidyr</code> package. Note: it is also wise to <code>ungroup</code> after you are done operating on your grouped variables - you may run into problems if you forget your dataframe is grouped later on!</p>
 <div class="sourceCode" id="cb731"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb731-1" title="1">unnested &lt;-<span class="st"> </span>summary <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb731-2" title="2"><span class="st">  </span><span class="kw">unnest</span>(summary) <span class="op">%&gt;%</span></a>
@@ -1960,8 +1968,7 @@ function to figure out where to include each piece):</p>
 <pre><code>## Warning in prop.test(x = c(268910, 7), n = c(1924665, 20)): Chi-squared
 ## approximation may be incorrect</code></pre>
 <pre><code>## 
-##  2-sample test for equality of proportions with continuity
-##  correction
+##  2-sample test for equality of proportions with continuity correction
 ## 
 ## data:  c(268910, 7) out of c(1924665, 20)
 ## X-squared = 5.7121, df = 1, p-value = 0.01685
@@ -1976,8 +1983,8 @@ For example, you could also test whether the proportion in our class is consiste
 hypothesis that you were drawn from a binomial distribution with a proportion of 0.14
 (in-line with the national values):</p>
 <div class="sourceCode" id="cb842"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb842-1" title="1"><span class="kw">prop.test</span>(<span class="dt">x =</span> <span class="dv">7</span>, <span class="dt">n =</span> <span class="dv">20</span>, <span class="dt">p =</span> <span class="fl">0.14</span>)</a></code></pre></div>
-<pre><code>## Warning in prop.test(x = 7, n = 20, p = 0.14): Chi-squared approximation
-## may be incorrect</code></pre>
+<pre><code>## Warning in prop.test(x = 7, n = 20, p = 0.14): Chi-squared approximation may be
+## incorrect</code></pre>
 <pre><code>## 
 ##  1-sample proportions test with continuity correction
 ## 
@@ -2002,10 +2009,9 @@ form of the data, it lets us use some of the tidyverse tools more easily:</p>
 <pre><code>## Warning in prop.test(., n = 20, p = 0.14): Chi-squared approximation may be
 ## incorrect</code></pre>
 <pre><code>## # A tibble: 1 x 8
-##   estimate statistic p.value parameter conf.low conf.high method
-##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; 
-## 1     0.35      5.69  0.0171         1    0.163     0.591 1-sam…
-## # … with 1 more variable: alternative &lt;chr&gt;</code></pre>
+##   estimate statistic p.value parameter conf.low conf.high method     alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
+## 1     0.35      5.69  0.0171         1    0.163     0.591 1-sample … two.sided</code></pre>
 <p>Finally, when we run this test, we get the warning that “Chi-squared approximation may be incorrect”. Based on googling ‘r prop.test “Chi-squared approximation may be incorrect”’,
 it sounds like we might be getting this error because we have a pretty low number of
 people in the class. One recommendation is to use <code>binom.test</code>, which will run as an exact binomial test:</p>
@@ -2072,10 +2078,10 @@ Y_t \sim \beta_0 + \beta_1 X_t
 <p>You can also check overall model summaries using the <code>glance</code> function:</p>
 <div class="sourceCode" id="cb856"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb856-1" title="1"><span class="kw">glance</span>(mod_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 11
-##   r.squared adj.r.squared sigma statistic p.value    df  logLik    AIC
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-## 1     0.898         0.898  5.90    45108.       0     2 -16332. 32670.
-## # … with 3 more variables: BIC &lt;dbl&gt;, deviance &lt;dbl&gt;, df.residual &lt;int&gt;</code></pre>
+##   r.squared adj.r.squared sigma statistic p.value    df  logLik    AIC    BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1     0.898         0.898  5.90    45108.       0     2 -16332. 32670. 32690.
+## # … with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;</code></pre>
 <p>To create plots of the observations and the fit model, use the <code>augment</code> function to add model output (e.g., predictions, residuals) to the original data frame of observed temperatures and dew point temperatures:</p>
 <div class="sourceCode" id="cb858"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb858-1" title="1"><span class="kw">augment</span>(mod_<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb858-2" title="2"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a></code></pre></div>
@@ -2152,10 +2158,10 @@ Y_t \sim \beta_0 + \beta_1 X_t
 <p>Use <code>glance</code> to check some of the overall summaries of this model. The <code>statistic</code> column here is the F statistic from test comparing this model to an intercept-only model.</p>
 <div class="sourceCode" id="cb870"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb870-1" title="1"><span class="kw">glance</span>(mod_<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 11
-##   r.squared adj.r.squared sigma statistic  p.value    df  logLik    AIC
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-## 1    0.0259        0.0247  19.1      21.5 4.61e-25     7 -21234. 42484.
-## # … with 3 more variables: BIC &lt;dbl&gt;, deviance &lt;dbl&gt;, df.residual &lt;int&gt;</code></pre>
+##   r.squared adj.r.squared sigma statistic  p.value    df  logLik    AIC    BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1    0.0259        0.0247  19.1      21.5 4.61e-25     7 -21234. 42484. 42536.
+## # … with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;</code></pre>
 <p>As a note, you may have heard in previous statistics classes that you can use the <code>anova()</code> command to compare this model to a model with only an intercept (i.e., one that only fits a global mean and uses that as the expected value for all of the observations). Note that, in this case, the F value from <code>anova</code> for this model comparison is the same as the <code>statistic</code> you got in the overall summary statistics you get with <code>glance</code> in the previous code.</p>
 <div class="sourceCode" id="cb872"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb872-1" title="1"><span class="kw">anova</span>(mod_<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## Analysis of Variance Table
@@ -2184,14 +2190,14 @@ Y_t \sim \beta_0 + \beta_1 X_t
 <a class="sourceLine" id="cb877-4" title="4"><span class="st">  </span><span class="kw">filter</span>(month <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Jun&quot;</span>, <span class="st">&quot;Jul&quot;</span>, <span class="st">&quot;Aug&quot;</span>))</a>
 <a class="sourceLine" id="cb877-5" title="5">summer <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb877-6" title="6"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a></code></pre></div>
-<pre><code>##         date time year month doy       dow death cvd resp     temp  dptp
-## 1 1987-06-01  152 1987   Jun 152    Monday   112  60    5 23.61111 68.50
-## 2 1987-06-02  153 1987   Jun 153   Tuesday   111  57    7 22.22222 64.75
-## 3 1987-06-03  154 1987   Jun 154 Wednesday   120  59    9 20.55556 47.25
-##     rhum     pm10       o3
-## 1 71.875 22.95607 34.94623
-## 2 95.250 31.31339 18.96620
-## 3 47.125 34.95607 23.59270</code></pre>
+<pre><code>##         date time year month doy       dow death cvd resp     temp  dptp   rhum
+## 1 1987-06-01  152 1987   Jun 152    Monday   112  60    5 23.61111 68.50 71.875
+## 2 1987-06-02  153 1987   Jun 153   Tuesday   111  57    7 22.22222 64.75 95.250
+## 3 1987-06-03  154 1987   Jun 154 Wednesday   120  59    9 20.55556 47.25 47.125
+##       pm10       o3
+## 1 22.95607 34.94623
+## 2 31.31339 18.96620
+## 3 34.95607 23.59270</code></pre>
 <p>Use <code>glm()</code> to fit a Poisson model of respiratory deaths regressed on temperature. Since you want to fit a Poisson model, use the option <code>family = poisson(link = "log")</code>.</p>
 <div class="sourceCode" id="cb879"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb879-1" title="1">mod_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">glm</span>(resp <span class="op">~</span><span class="st"> </span>temp, <span class="dt">data =</span> summer,</a>
 <a class="sourceLine" id="cb879-2" title="2">             <span class="dt">family =</span> <span class="kw">poisson</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>))</a>
@@ -2411,21 +2417,21 @@ where each item is a dataframe of flight delay data for a specific carrier:</p>
 <a class="sourceLine" id="cb904-5" title="5">nested_flights</a></code></pre></div>
 <pre><code>## # A tibble: 13 x 2
 ## # Groups:   carrier [13]
-##    carrier           data
-##    &lt;chr&gt;   &lt;list&lt;df[,4]&gt;&gt;
-##  1 UA         [7,837 × 4]
-##  2 DL        [22,857 × 4]
-##  3 EV         [8,255 × 4]
-##  4 AA        [15,063 × 4]
-##  5 B6         [5,925 × 4]
-##  6 MQ        [16,189 × 4]
-##  7 WN         [6,000 × 4]
-##  8 FL         [3,187 × 4]
-##  9 US        [12,574 × 4]
-## 10 F9           [682 × 4]
-## 11 9E         [2,372 × 4]
-## 12 YV           [545 × 4]
-## 13 OO            [23 × 4]</code></pre>
+##    carrier data                 
+##    &lt;chr&gt;   &lt;list&gt;               
+##  1 UA      &lt;tibble [7,837 × 4]&gt; 
+##  2 DL      &lt;tibble [22,857 × 4]&gt;
+##  3 EV      &lt;tibble [8,255 × 4]&gt; 
+##  4 AA      &lt;tibble [15,063 × 4]&gt;
+##  5 B6      &lt;tibble [5,925 × 4]&gt; 
+##  6 MQ      &lt;tibble [16,189 × 4]&gt;
+##  7 WN      &lt;tibble [6,000 × 4]&gt; 
+##  8 FL      &lt;tibble [3,187 × 4]&gt; 
+##  9 US      &lt;tibble [12,574 × 4]&gt;
+## 10 F9      &lt;tibble [682 × 4]&gt;   
+## 11 9E      &lt;tibble [2,372 × 4]&gt; 
+## 12 YV      &lt;tibble [545 × 4]&gt;   
+## 13 OO      &lt;tibble [23 × 4]&gt;</code></pre>
 <p>To check the contents of the list-column, try:</p>
 <div class="sourceCode" id="cb906"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb906-1" title="1">nested_flights<span class="op">$</span>data[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Get the first element of the &quot;data&quot; column</span></a>
 <a class="sourceLine" id="cb906-2" title="2"><span class="st">  </span><span class="kw">head</span>()</a></code></pre></div>
@@ -2996,12 +3002,11 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -3013,6 +3018,10 @@ gitbook.start({
 "text": "Edit"
 },
 "history": {
+"link": null,
+"text": null
+},
+"view": {
 "link": null,
 "text": null
 },

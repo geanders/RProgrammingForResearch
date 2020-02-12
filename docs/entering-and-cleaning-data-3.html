@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 10 Entering and cleaning data #3 | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 10 Entering and cleaning data #3 | R Programming for Research" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2019-12-01" />
+<meta name="date" content="2020-02-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -51,12 +51,12 @@
 
 
 <script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.9.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
 <link href="libs/bokehjs-0.12.2/bokeh.min.css" rel="stylesheet" />
 <link href="libs/bokehjs-0.12.2/loader.css" rel="stylesheet" />
 <script src="libs/bokehjs-0.12.2/bokeh.min.js"></script>
@@ -69,10 +69,19 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.9/datatables.js"></script>
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.12/datatables.js"></script>
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-36719749-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-36719749-2');
+</script>
 
 
 <style type="text/css">
@@ -604,17 +613,17 @@ the data you want from the API:</p>
 <a class="sourceLine" id="cb1036-4" title="4">                          <span class="dt">date_end =</span> <span class="st">&quot;2016-06-30&quot;</span>)</a>
 <a class="sourceLine" id="cb1036-5" title="5">denver_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) </a></code></pre></div>
 <pre><code>## # A tibble: 3 x 31
-##   station valid                 lon   lat  tmpf  dwpf  relh  drct  sknt
-##   &lt;chr&gt;   &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 DEN     2016-06-01 00:00:00 -105.  39.8    NA    NA    NA    70     7
-## 2 DEN     2016-06-01 00:05:00 -105.  39.8    NA    NA    NA    80     8
-## 3 DEN     2016-06-01 00:10:00 -105.  39.8    NA    NA    NA    80     9
-## # … with 22 more variables: p01i &lt;dbl&gt;, alti &lt;dbl&gt;, mslp &lt;dbl&gt;,
-## #   vsby &lt;dbl&gt;, gust &lt;dbl&gt;, skyc1 &lt;chr&gt;, skyc2 &lt;chr&gt;, skyc3 &lt;chr&gt;,
-## #   skyc4 &lt;chr&gt;, skyl1 &lt;dbl&gt;, skyl2 &lt;dbl&gt;, skyl3 &lt;dbl&gt;, skyl4 &lt;dbl&gt;,
-## #   wxcodes &lt;chr&gt;, ice_accretion_1hr &lt;lgl&gt;, ice_accretion_3hr &lt;lgl&gt;,
-## #   ice_accretion_6hr &lt;lgl&gt;, peak_wind_gust &lt;dbl&gt;, peak_wind_drct &lt;dbl&gt;,
-## #   peak_wind_time &lt;chr&gt;, feel &lt;dbl&gt;, metar &lt;chr&gt;</code></pre>
+##   station valid                 lon   lat  tmpf  dwpf  relh  drct  sknt  p01i
+##   &lt;chr&gt;   &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 DEN     2016-06-01 00:00:00 -105.  39.8    NA    NA    NA    70     7    NA
+## 2 DEN     2016-06-01 00:05:00 -105.  39.8    NA    NA    NA    80     8    NA
+## 3 DEN     2016-06-01 00:10:00 -105.  39.8    NA    NA    NA    80     9    NA
+## # … with 21 more variables: alti &lt;dbl&gt;, mslp &lt;dbl&gt;, vsby &lt;dbl&gt;, gust &lt;dbl&gt;,
+## #   skyc1 &lt;chr&gt;, skyc2 &lt;chr&gt;, skyc3 &lt;chr&gt;, skyc4 &lt;chr&gt;, skyl1 &lt;dbl&gt;,
+## #   skyl2 &lt;dbl&gt;, skyl3 &lt;dbl&gt;, skyl4 &lt;dbl&gt;, wxcodes &lt;chr&gt;,
+## #   ice_accretion_1hr &lt;lgl&gt;, ice_accretion_3hr &lt;lgl&gt;, ice_accretion_6hr &lt;lgl&gt;,
+## #   peak_wind_gust &lt;dbl&gt;, peak_wind_drct &lt;dbl&gt;, peak_wind_time &lt;chr&gt;,
+## #   feel &lt;dbl&gt;, metar &lt;chr&gt;</code></pre>
 </div>
 </div>
 <div id="example-r-api-wrapper-packages" class="section level2">
@@ -808,20 +817,20 @@ This document includes advice on error handling within R code that accesses data
 ## [1,] &quot;AL031851&quot; &quot;            UNNAMED&quot; &quot;      1&quot; &quot;&quot;</code></pre>
 <div class="sourceCode" id="cb1061"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1061-1" title="1">hurr_obs[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a></code></pre></div>
 <pre><code>## [[1]]
-##      [,1]       [,2]    [,3] [,4]  [,5]     [,6]      [,7]   [,8]   
-## [1,] &quot;18510625&quot; &quot; 0000&quot; &quot;  &quot; &quot; HU&quot; &quot; 28.0N&quot; &quot;  94.8W&quot; &quot;  80&quot; &quot; -999&quot;
-##      [,9]    [,10]   [,11]   [,12]   [,13]   [,14]   [,15]   [,16]  
-## [1,] &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot;
-##      [,17]   [,18]   [,19]   [,20]   [,21]
-## [1,] &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot;&quot;   
+##      [,1]       [,2]    [,3] [,4]  [,5]     [,6]      [,7]   [,8]    [,9]   
+## [1,] &quot;18510625&quot; &quot; 0000&quot; &quot;  &quot; &quot; HU&quot; &quot; 28.0N&quot; &quot;  94.8W&quot; &quot;  80&quot; &quot; -999&quot; &quot; -999&quot;
+##      [,10]   [,11]   [,12]   [,13]   [,14]   [,15]   [,16]   [,17]   [,18]  
+## [1,] &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot;
+##      [,19]   [,20]   [,21]
+## [1,] &quot; -999&quot; &quot; -999&quot; &quot;&quot;   
 ## 
 ## [[2]]
-##      [,1]       [,2]    [,3] [,4]  [,5]     [,6]      [,7]   [,8]   
-## [1,] &quot;18510625&quot; &quot; 0600&quot; &quot;  &quot; &quot; HU&quot; &quot; 28.0N&quot; &quot;  95.4W&quot; &quot;  80&quot; &quot; -999&quot;
-##      [,9]    [,10]   [,11]   [,12]   [,13]   [,14]   [,15]   [,16]  
-## [1,] &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot;
-##      [,17]   [,18]   [,19]   [,20]   [,21]
-## [1,] &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot;&quot;</code></pre>
+##      [,1]       [,2]    [,3] [,4]  [,5]     [,6]      [,7]   [,8]    [,9]   
+## [1,] &quot;18510625&quot; &quot; 0600&quot; &quot;  &quot; &quot; HU&quot; &quot; 28.0N&quot; &quot;  95.4W&quot; &quot;  80&quot; &quot; -999&quot; &quot; -999&quot;
+##      [,10]   [,11]   [,12]   [,13]   [,14]   [,15]   [,16]   [,17]   [,18]  
+## [1,] &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot; &quot; -999&quot;
+##      [,19]   [,20]   [,21]
+## [1,] &quot; -999&quot; &quot; -999&quot; &quot;&quot;</code></pre>
 <p>Now, you can use <code>bind_rows</code> from <code>dplyr</code> to change the list of metadata into a dataframe. (You first need to use <code>as_tibble</code> with <code>map</code> to convert all elements of the list from matrices to dataframes.)</p>
 <div class="sourceCode" id="cb1063"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1063-1" title="1"><span class="kw">library</span>(dplyr); <span class="kw">library</span>(tibble)</a>
 <a class="sourceLine" id="cb1063-2" title="2">hurr_meta &lt;-<span class="st"> </span>hurr_meta <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -921,18 +930,15 @@ data relevant to West Nile virus.</li>
 </ul>
 <div id="example-r-code-23" class="section level4">
 <h4><span class="header-section-number">10.6.1.1</span> Example R code</h4>
-<div class="sourceCode" id="cb1079"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1079-1" title="1"><span class="kw">library</span>(rplos)</a></code></pre></div>
-<pre><code>## Registered S3 method overwritten by &#39;crul&#39;:
-##   method                 from
-##   as.character.form_file httr</code></pre>
-<div class="sourceCode" id="cb1081"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1081-1" title="1">wn_papers &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;West Nile&quot;</span>, </a>
-<a class="sourceLine" id="cb1081-2" title="2">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
-<a class="sourceLine" id="cb1081-3" title="3">                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb1079"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1079-1" title="1"><span class="kw">library</span>(rplos)</a>
+<a class="sourceLine" id="cb1079-2" title="2">wn_papers &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;West Nile&quot;</span>, </a>
+<a class="sourceLine" id="cb1079-3" title="3">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
+<a class="sourceLine" id="cb1079-4" title="4">                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</a></code></pre></div>
 <p>Confirm the structure of the returned object:</p>
-<div class="sourceCode" id="cb1082"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1082-1" title="1"><span class="kw">str</span>(wn_papers)</a></code></pre></div>
+<div class="sourceCode" id="cb1080"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1080-1" title="1"><span class="kw">str</span>(wn_papers)</a></code></pre></div>
 <pre><code>## List of 2
 ##  $ meta:Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    1 obs. of  2 variables:
-##   ..$ numFound: int 3136
+##   ..$ numFound: int 3181
 ##   ..$ start   : int 0
 ##  $ data:Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    10 obs. of  6 variables:
 ##   ..$ journal         : chr [1:10] &quot;PLOS Pathogens&quot; &quot;PLOS ONE&quot; &quot;PLOS Neglected Tropical Diseases&quot; &quot;PLOS ONE&quot; ...
@@ -941,68 +947,68 @@ data relevant to West Nile virus.</li>
 ##   ..$ abstract        : chr [1:10] &quot;\nIt has been 20 years since West Nile virus first emerged in the Americas, and since then, little progress has&quot;| __truncated__ &quot;\nWest Nile virus (WNV) is a mosquito-transmitted Flavivirus belonging to the Japanese encephalitis antigenic c&quot;| __truncated__ &quot;\nThe West Nile virus (WNV), isolated in 1937, is an arbovirus (arthropod-borne virus) that infects thousands o&quot;| __truncated__ &quot;\nThe structural risk of West Nile Disease results from the usual functioning of the socio-ecological system, w&quot;| __truncated__ ...
 ##   ..$ title           : chr [1:10] &quot;Twenty years of West Nile virus spread and evolution in the Americas visualized by Nextstrain&quot; &quot;Spatio-Temporal Identification of Areas Suitable for West Nile Disease in the Mediterranean Basin and Central Europe&quot; &quot;Biological and phylogenetic characteristics of West African lineages of West Nile virus&quot; &quot;Geographic variations of the bird-borne structural risk of West Nile virus circulation in Europe&quot; ...
 ##   ..$ subject         : chr [1:10] &quot;/Biology and life sciences/Biogeography/Phylogeography,/Biology and life sciences/Computational biology/Genome &quot;| __truncated__ &quot;/Biology and life sciences/Developmental biology/Life cycles/Larvae,/Biology and life sciences/Microbiology/Med&quot;| __truncated__ &quot;/Biology and life sciences/Evolutionary biology/Evolutionary systematics/Phylogenetics/Phylogenetic analysis,/B&quot;| __truncated__ &quot;/Biology and life sciences/Behavior/Animal behavior/Animal migration,/Biology and life sciences/Behavior/Animal&quot;| __truncated__ ...
-##   ..- attr(*, &quot;numFound&quot;)= int 3136
+##   ..- attr(*, &quot;numFound&quot;)= int 3181
 ##   ..- attr(*, &quot;start&quot;)= int 0</code></pre>
 <p>Look at the meta data:</p>
-<div class="sourceCode" id="cb1084"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1084-1" title="1">wn_papers<span class="op">$</span>meta</a></code></pre></div>
+<div class="sourceCode" id="cb1082"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1082-1" title="1">wn_papers<span class="op">$</span>meta</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1     3136     0</code></pre>
+## 1     3181     0</code></pre>
 <p>Query for just articles with “West Nile” in the title:</p>
-<div class="sourceCode" id="cb1086"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1086-1" title="1">wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </a>
-<a class="sourceLine" id="cb1086-2" title="2">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
-<a class="sourceLine" id="cb1086-3" title="3">                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb1084"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1084-1" title="1">wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </a>
+<a class="sourceLine" id="cb1084-2" title="2">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
+<a class="sourceLine" id="cb1084-3" title="3">                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</a></code></pre></div>
 <p>Look at the metadata:</p>
-<div class="sourceCode" id="cb1087"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1087-1" title="1">wn_papers_titles<span class="op">$</span>meta</a></code></pre></div>
+<div class="sourceCode" id="cb1085"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1085-1" title="1">wn_papers_titles<span class="op">$</span>meta</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1      210     0</code></pre>
+## 1      213     0</code></pre>
 <p>Re-run the query using an appropriate limit to get all the matching articles:</p>
-<div class="sourceCode" id="cb1089"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1089-1" title="1">wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </a>
-<a class="sourceLine" id="cb1089-2" title="2">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
-<a class="sourceLine" id="cb1089-3" title="3">                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>),</a>
-<a class="sourceLine" id="cb1089-4" title="4">                        <span class="dt">limit =</span> <span class="dv">190</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1087"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1087-1" title="1">wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </a>
+<a class="sourceLine" id="cb1087-2" title="2">                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</a>
+<a class="sourceLine" id="cb1087-3" title="3">                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>),</a>
+<a class="sourceLine" id="cb1087-4" title="4">                        <span class="dt">limit =</span> <span class="dv">190</span>)</a></code></pre></div>
 <p>Check the number of rows:</p>
-<div class="sourceCode" id="cb1090"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1090-1" title="1"><span class="kw">nrow</span>(wn_papers_titles<span class="op">$</span>data)</a></code></pre></div>
+<div class="sourceCode" id="cb1088"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1088-1" title="1"><span class="kw">nrow</span>(wn_papers_titles<span class="op">$</span>data)</a></code></pre></div>
 <pre><code>## [1] 190</code></pre>
 <p>Create a plot of the number of articles in the PLoS journals with “West Nile” in the title
 by year:</p>
-<div class="sourceCode" id="cb1092"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1092-1" title="1"><span class="kw">library</span>(lubridate)</a>
-<a class="sourceLine" id="cb1092-2" title="2"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb1092-3" title="3"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb1092-4" title="4">wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1092-5" title="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">publication_date =</span> <span class="kw">ymd_hms</span>(publication_date),</a>
-<a class="sourceLine" id="cb1092-6" title="6">         <span class="dt">pub_year =</span> <span class="kw">year</span>(publication_date),</a>
-<a class="sourceLine" id="cb1092-7" title="7">         <span class="dt">research_article =</span> article_type <span class="op">==</span><span class="st"> &quot;Research Article&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1092-8" title="8"><span class="st">  </span><span class="kw">group_by</span>(pub_year, research_article) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1092-9" title="9"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1092-10" title="10"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pub_year, <span class="dt">y =</span> n, <span class="dt">fill =</span> research_article)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1092-11" title="11"><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1092-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year of publication&quot;</span>, </a>
-<a class="sourceLine" id="cb1092-13" title="13">       <span class="dt">y =</span> <span class="st">&quot;Number of articles published&quot;</span>,</a>
-<a class="sourceLine" id="cb1092-14" title="14">       <span class="dt">fill =</span> <span class="st">&quot;Research article&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1092-15" title="15"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;West Nile articles published in PLoS journals&quot;</span>,</a>
-<a class="sourceLine" id="cb1092-16" title="16">          <span class="dt">subtitle =</span> <span class="st">&quot;Based on articles with &#39;West Nile&#39; in the title&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1090"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1090-1" title="1"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb1090-2" title="2"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb1090-3" title="3"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb1090-4" title="4">wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1090-5" title="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">publication_date =</span> <span class="kw">ymd_hms</span>(publication_date),</a>
+<a class="sourceLine" id="cb1090-6" title="6">         <span class="dt">pub_year =</span> <span class="kw">year</span>(publication_date),</a>
+<a class="sourceLine" id="cb1090-7" title="7">         <span class="dt">research_article =</span> article_type <span class="op">==</span><span class="st"> &quot;Research Article&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1090-8" title="8"><span class="st">  </span><span class="kw">group_by</span>(pub_year, research_article) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1090-9" title="9"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1090-10" title="10"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pub_year, <span class="dt">y =</span> n, <span class="dt">fill =</span> research_article)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1090-11" title="11"><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1090-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year of publication&quot;</span>, </a>
+<a class="sourceLine" id="cb1090-13" title="13">       <span class="dt">y =</span> <span class="st">&quot;Number of articles published&quot;</span>,</a>
+<a class="sourceLine" id="cb1090-14" title="14">       <span class="dt">fill =</span> <span class="st">&quot;Research article&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1090-15" title="15"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;West Nile articles published in PLoS journals&quot;</span>,</a>
+<a class="sourceLine" id="cb1090-16" title="16">          <span class="dt">subtitle =</span> <span class="st">&quot;Based on articles with &#39;West Nile&#39; in the title&quot;</span>)</a></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-616-1.png" width="672" /></p>
 <p>Determine which journals have published these articles and the number of articles published
 in each journal:</p>
-<div class="sourceCode" id="cb1093"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1093-1" title="1"><span class="kw">library</span>(forcats)</a>
-<a class="sourceLine" id="cb1093-2" title="2"><span class="kw">library</span>(stringr)</a>
-<a class="sourceLine" id="cb1093-3" title="3">wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1093-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">journal =</span> <span class="kw">str_replace</span>(journal, <span class="st">&quot;PLOS&quot;</span>, <span class="st">&quot;PLoS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1093-5" title="5"><span class="st">  </span><span class="kw">group_by</span>(journal) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1093-6" title="6"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1093-7" title="7"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1093-8" title="8"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(journal)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1093-9" title="9"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n))</a></code></pre></div>
+<div class="sourceCode" id="cb1091"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1091-1" title="1"><span class="kw">library</span>(forcats)</a>
+<a class="sourceLine" id="cb1091-2" title="2"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb1091-3" title="3">wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1091-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">journal =</span> <span class="kw">str_replace</span>(journal, <span class="st">&quot;PLOS&quot;</span>, <span class="st">&quot;PLoS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1091-5" title="5"><span class="st">  </span><span class="kw">group_by</span>(journal) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1091-6" title="6"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1091-7" title="7"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1091-8" title="8"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(journal)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1091-9" title="9"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n))</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 2
 ##   journal                              n
 ##   &lt;chr&gt;                            &lt;int&gt;
-## 1 PLoS ONE                           103
+## 1 PLoS ONE                           102
 ## 2 PLoS Neglected Tropical Diseases    43
-## 3 PLoS Pathogens                      29
+## 3 PLoS Pathogens                      30
 ## 4 PLoS Computational Biology           3
 ## 5 PLoS Medicine                        3
 ## 6 PLoS Biology                         2</code></pre>
@@ -1049,12 +1055,11 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -1066,6 +1071,10 @@ gitbook.start({
 "text": "Edit"
 },
 "history": {
+"link": null,
+"text": null
+},
+"view": {
 "link": null,
 "text": null
 },
