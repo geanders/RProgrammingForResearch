@@ -1,0 +1,167 @@
+---
+title: "Preliminaries in R"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+
+
+## Creating dataframes
+
+We'll be working with a specific class of dataframe called a **tibble**.
+
+You can create tibble dataframe using the `tibble` function from the `tibble`
+package. 
+
+However, most often you will create a dataframe by reading in data from
+a file---most datasets
+will not be short enough that you want to enter them by hand in R.
+
+We'll look at both methods of creating dataframes.
+
+## Creating dataframes
+
+The format for creating a tibble dataframe using the `tibble` function is:
+
+```{r eval = FALSE}
+## Generic code
+library(package = "tibble")
+[name of object] <- tibble([1st column name] = 
+                                     [1st column content],
+                           [2nd column name] = 
+                                     [2nd column content],
+                           etc.)
+```
+
+## Creating dataframes
+
+```{r}
+library(package = "tibble")
+hp_data <- tibble(first_name = c("Harry", "Ron", "Hermione"),
+                  last_name = c("Potter", "Weasley", "Granger"),
+                  n_kids = c(1, 7, 1),
+                  survived = c(TRUE, TRUE, TRUE))
+hp_data
+```
+
+## Creating dataframes
+
+You can also create dataframes by joining together vector objects you previously
+created, as long as they have the same length and line up:
+
+```{r}
+main_characters <- c("Harry", "Ron", "Hermione")
+n_kids <- c(1, 7, 1)
+hp_data <- tibble(first_name = main_characters,
+                  last_name = c("Potter", "Weasley", "Granger"),
+                  n_kids = n_kids,
+                  survived = c(TRUE, TRUE, TRUE))
+hp_data
+```
+
+## Creating dataframes
+
+Usually, instead of creating a dataframe from vectors, you'll read one in from
+data on an outside file, for example using `read_csv` from the `readr` package.
+
+\medskip
+
+For example, to read in a dataset from a csv file called "daily_show_guests.csv":
+
+```{r echo = FALSE, message = FALSE}
+library(package = "readr")
+daily_show <- read_csv(file = "../data/daily_show_guests.csv",
+                       skip = 4)
+```
+```{r eval = FALSE}
+library(package = "readr")
+daily_show <- read_csv(file = "daily_show_guests.csv",
+                       skip = 4)
+```
+
+## Creating dataframes
+
+This has read data in from the external file into a dataframe object in my R
+session:
+
+```{r}
+ls()
+```
+
+## Dataframes
+
+You can use the functions `dim`, `nrow`, and `ncol` to figure out the dimensions
+(number of rows and columns) of a dataframe:
+
+```{r}
+dim(x = daily_show)
+nrow(x = daily_show)
+ncol(x = daily_show)
+```
+
+## Dataframes
+
+Base R also has some useful functions for quickly exploring dataframes:
+
+- `str`: Show the structure of an R object, including a dataframe
+- `summary`: Give summaries of each column of a dataframe.
+
+
+## Extracting values from dataframes
+
+The `dplyr` package has two functions for extracting data from dataframes by position: 
+`slice` to extract rows based on their row position and select to extract columns
+based on their column position.
+
+## Extracting values from dataframes
+
+For example, if you wanted to get the first two rows of the `hp_data`
+dataframe, you could run:
+
+```{r message = FALSE, warning = FALSE}
+library(package = "dplyr")
+slice(.data = hp_data, c(1:2))
+```
+
+## Extracting values from dataframes
+
+If you wanted to get the first and fourth columns, you could run: 
+
+```{r}
+select(.data = hp_data, c(1, 4))
+```
+
+## Extracting values from dataframes
+
+You can compose calls from both functions. For example, you could extract the
+values in the first and fourth columns of the first two rows with: 
+
+```{r}
+select(slice(.data = hp_data, c(1:2)), c(1, 4))
+```
+
+
+
+<!-- ## Dataframes -->
+
+<!-- You can use indexing (`[..., ...]`) for dataframes, too, but now they'll have -->
+<!-- two dimensions (rows, then columns). For example: -->
+
+<!-- ```{r} -->
+<!-- hp_data[1:2, 2] # First two rows, second column -->
+<!-- ``` -->
+
+<!-- ## Dataframes -->
+
+<!-- If you want all of something, leave the designated spot blank. For example: -->
+
+<!-- ```{r} -->
+<!-- hp_data[3, ] # Last row, all columns -->
+<!-- ``` -->
+
