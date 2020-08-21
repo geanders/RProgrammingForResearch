@@ -10,156 +10,71 @@ output:
 fontsize: 10pt
 ---
 
-# The "package" system
+# How to "talk" to R
 
-## R packages
+## How to "talk" to R
 
-Your original download of R is only a starting point:
+1. Open an **R session**
+2. At the **prompt** in the **console**, enter an **R expression**
+3. Read R's "response" (the **output**)
+4. Repeat 2 and 3
+5. Close the R session
 
-```{r echo = FALSE, out.width = "200pt", fig.align='center'}
-knitr::include_graphics("../figures/TrainBasic.JPG")
+## Opening an R session
+
+An **R session** is an instance of you using R. 
+
+To open an R session, double-click on the icon for "RStudio" on you computer.
+When RStudio opens, you will be in a "fresh" R session, unless you restore a saved
+session (which I strongly recommend against).
+
+This means that, once you open RStudio, you will need to "set up" your session, 
+including loading any packages you need (which we'll talk about later) and 
+reading in any data (which we'll also talk about).
+
+## The prompt in the console
+
+In RStudio, there screen is divided into several "panes". We'll start with the pane 
+called "Console".
+
+The **console** lets you "talk" to R. This is where you can "talk" to R by
+typing an **expression** at the **prompt** (the caret symbol, ">"). You press
+the "Return" key to send this message to R.
+
+## The prompt in the console
+
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/r_console.jpg")
 ```
 
-## R packages
+## How R might respond
 
-To take full advantage of R, you'll want to add on packages:
+Once you press "Return", R will respond in one of three ways:
 
-```{r echo = FALSE, out.width = "200pt", fig.align='center'}
-knitr::include_graphics("../figures/TrainComplex.JPG")
-```
+1. R does whatever you asked it to do with the expression and prints the output
+(if any) of doing that, as well as a new prompt so you can ask it something new
+2. R doesn't think you've finished asking you something, and instead of giving you
+a new prompt (">") it gives you a "+". This means that R is still listening, waiting 
+for you to finish asking it something. 
+3. R tries to do what you asked it to, but it can't. It gives you an **error message**, 
+as well as a new prompt so you can try again or ask it something new. 
 
-## What's in a package?
+## R expressions, function calls, and objects
 
-```{r echo = FALSE, out.width = "200pt", fig.align='center'}
-knitr::include_graphics("../figures/package_contents.jpg")
-```
+To "talk" with R, you need to know how to give it a complete **expression**. 
 
-## R packages
+Most expressions you'll want to give R will be some combination of two elements: 
 
-You can get packages to add-on to your version of R from:
+1. **Function calls**
+2. **Object assignments**
 
-- CRAN 
-- Bioconductor (specifically for bioinformatics-related packages)
-- GitHub
-- Your friends and collaborators
-- Make them yourself
+We'll go through both these pieces and also look at how you can combine them 
+together for some expressions.
 
-## CRAN 
+## R expressions, function calls, and objects
 
-The Comprehensive R Archive Network (CRAN) is the primary source of R packages,
-with thousands of available packages. Each of the packages available on CRAN has
-a unique name and has passed some broad checks.
+According to John Chambers, one of the creators of R's precursor S:
 
-```{r echo = FALSE, out.width = "300pt", fig.align='center'}
-knitr::include_graphics("../figures/CRAN_package_10000.png")
-```
+1. Everything that exists in R is an **object**
+2. Everything that happens in R is a **call to a function**
 
-## Installing from CRAN  
-
-The main way you will install new packages will be with the `install.packages`
-function. By default, this installs packages from CRAN.
-
-For example, to get the package "phonenumber", you could use:
-
-```{r, eval = FALSE}
-install.packages(pkgs = "phonenumber")
-```
-
-```{r fig.align = "center", out.width = "75pt", echo = FALSE}
-knitr::include_graphics("../figures/telephone_keypad.png")
-```
-
-## Installing from CRAN  
-
-**Installing** a package downloads it (usually from CRAN) to your computer. 
-
-\medskip
-
-You will need to be online to install a package, because it downloads the package
-from an online repository. 
-
-\medskip
-
-Once you install a package, you do not need to install it again. It's on your
-computer. (At least, until the package maintainer creates a new version.)
-
-## Installing versus loading
-
-```{r echo = FALSE, out.width = "275pt", fig.align='center'}
-knitr::include_graphics("../figures/install_vs_library.jpg")
-```
-
-**Install** a package (with `install.packages`) to get it onto your computer. **Load** it (with `library`) to get it into
-your R session.
-
-
-
-## How to use a package you've installed
-
-1. Open an R session
-2. Load the package
-3. Use the package's vignette and helpfiles to figure out how to use the package
-(optional)
-4. Use functions in the package
-
-## Loading an installed package
-
-Once you have a package, you can load it to an R session using the `library()`
-function.
-
-```{r}
-library(package = "phonenumber")
-```
-
-Once it's loaded, you can use all its functions.
-
-```{r}
-message <- "HelloWorld"
-letterToNumber(value = message)
-```
-
-
-
-## Package vignettes
-
-Many packages will come with a "vignette", or a tutorial on how to use the
-package. These are very helpful tools for figuring out how to use a package.
-
-To get a list of all the vignettes a package has, use the `vignette` function,
-specifying a package name with `package`:
-
-```{r eval = FALSE}
-vignette(package = "phonenumber")
-```
-
-## Package vignettes
-
-To open a vignette once you know its name, you can also use the `vignette`
-function. For example, to open the vignette called "phonenumber" for the
-`phonenumber` package, run:
-
-```{r eval = FALSE}
-vignette(topic = "phonenumber",
-         package = "phonenumber")
-```
-
-Many packages only have one vignette, with the same name as the package. In that
-case, the vignette topic usually has the same name as the whole package, so you can 
-open the vignette using a shorter call:
-
-```{r eval = FALSE}
-vignette(topic = "phonenumber")
-```
-
-## Function helpfiles
-
-Packages include helpfiles for all the functions they intend for people to use.
-
-\medskip
-
-You can access the helpfile for a function using `?` followed by the function
-name. For example, to get the helpfile for `letterToNumber`, you can run:
-
-```{r eval = FALSE}
-?letterToNumber
-```

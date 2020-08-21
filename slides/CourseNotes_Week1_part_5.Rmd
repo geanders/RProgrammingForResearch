@@ -10,158 +10,134 @@ output:
 fontsize: 10pt
 ---
 
+# Objects and assignment
 
+## Objects, object names, and assignment expressions
 
-## Creating dataframes
+Function calls will usually produce something called an **object**. 
 
-We'll be working with a specific class of dataframe called a **tibble**.
+If you just call a function, as we've been doing, then R will respond by printing out that
+object. 
 
-You can create tibble dataframe using the `tibble` function from the `tibble`
-package. 
+However, we'll often want to use that object some more. For example, we might want to 
+use it as an argument later in our "conversation" with R, when we call another function 
+later. 
 
-However, most often you will create a dataframe by reading in data from
-a file---most datasets
-will not be short enough that you want to enter them by hand in R.
+If you want to re-use the results of a function call later, you can **assign** that
+**object** to an **object name**.
 
-We'll look at both methods of creating dataframes.
+This kind of expression is called an **assignment expression**.
 
-## Creating dataframes
+## Assignment expressions
 
-The format for creating a tibble dataframe using the `tibble` function is:
+The **gets arrow**, `<-`, is R's assignment operator. It takes whatever you've
+created on the right hand side of the `<-` and saves it as an object with the
+name you put on the left hand side of the `<-` :
 
 ```{r eval = FALSE}
-## Generic code
-library(package = "tibble")
-[name of object] <- tibble([1st column name] = 
-                                     [1st column content],
-                           [2nd column name] = 
-                                     [2nd column content],
-                           etc.)
+## Note: Generic code-- this will not work
+[object name] <- [object]
 ```
 
-## Creating dataframes
+## Assignment expressions
+
+For example, if I just type `"Hello world"`, R will print it back to me, but
+won't save it anywhere for me to use later:
 
 ```{r}
-library(package = "tibble")
-hp_data <- tibble(first_name = c("Harry", "Ron", "Hermione"),
-                  last_name = c("Potter", "Weasley", "Granger"),
-                  n_kids = c(1, 7, 1),
-                  survived = c(TRUE, TRUE, TRUE))
-hp_data
+"Hello world"
 ```
 
-## Creating dataframes
+## Assignment expressions
 
-You can also create dataframes by joining together vector objects you previously
-created, as long as they have the same length and line up:
+However, if I assign it to an object, I can "refer" to that object in a later expression. 
+
+For example, the code below assigns the **object** `"Hello world"` the **object name** `message`. 
+Later, I can just refer to this object using the name `message`, for example in a function
+call to the `print` function:
 
 ```{r}
-main_characters <- c("Harry", "Ron", "Hermione")
-n_kids <- c(1, 7, 1)
-hp_data <- tibble(first_name = main_characters,
-                  last_name = c("Potter", "Weasley", "Granger"),
-                  n_kids = n_kids,
-                  survived = c(TRUE, TRUE, TRUE))
-hp_data
+message <- "Hello world"
+print(x = message)
 ```
 
-## Creating dataframes
+## History of <-
 
-Usually, instead of creating a dataframe from vectors, you'll read one in from
-data on an outside file, for example using `read_csv` from the `readr` package.
-
-\medskip
-
-For example, to read in a dataset from a csv file called "daily_show_guests.csv":
-
-```{r echo = FALSE, message = FALSE}
-library(package = "readr")
-daily_show <- read_csv(file = "../data/daily_show_guests.csv",
-                       skip = 4)
-```
-```{r eval = FALSE}
-library(package = "readr")
-daily_show <- read_csv(file = "daily_show_guests.csv",
-                       skip = 4)
+```{r fig.align = "center", out.width = "200pt", echo = FALSE}
+knitr::include_graphics("../figures/teletype.jpg")
 ```
 
-## Creating dataframes
+<!-- \small Photo by Marcin Wichary, User:AlanM1 - Derived (cropped) from, CC BY 2.0, https://commons.wikimedia.org/w/index.php?curid=20744606 -->
 
-This has read data in from the external file into a dataframe object in my R
-session:
+
+## Assignment expressions
+
+When you enter an **assignment expression** like this at the R console, if everything
+goes right, then R will "respond" by giving you a new prompt, without any kind of 
+message. 
+
+However, there are three ways you can check to make sure that the object was 
+assigned to the object name: 
+
+1. Enter the object's name at the prompt and press return. The default if you do this
+is for R to "respond" by calling the `print` function with that object as the `x`
+argument. 
+2. Call the `ls` function (which doesn't require any arguments). This will list all the
+object names that have been assigned in the current R session. 
+3. Look in the "Environment" pane in RStudio. This also lists all the object names that
+have been assigned in the current R session.
+
+## Assignment expressions
+
+Here's an example of the first two strategies:
+
+1. Enter the object's name at the prompt and press return:
+
+```{r}
+message
+```
+
+2. Call the `ls` function:
 
 ```{r}
 ls()
 ```
 
-## Dataframes
+## "Environment" pane
 
-You can use the functions `dim`, `nrow`, and `ncol` to figure out the dimensions
-(number of rows and columns) of a dataframe:
+Here's an example of the third method:
 
-```{r}
-dim(x = daily_show)
-nrow(x = daily_show)
-ncol(x = daily_show)
+```{r fig.align = "center", out.width = "250pt", echo = FALSE}
+knitr::include_graphics("../figures/environment_pane.jpg")
 ```
 
-## Dataframes
+## Object names
 
-Base R also has some useful functions for quickly exploring dataframes:
+There are some absolute **rules** for the names you can use for an object name:
 
-- `str`: Show the structure of an R object, including a dataframe
-- `summary`: Give summaries of each column of a dataframe.
+- Use only letters, numbers, and underscores 
+- Don't start with anything but a letter
 
+## Assigning objects to object names
 
-## Extracting values from dataframes
+If you try to assign an object to a name that doesn't follow the "hard" rules, you'll 
+get an error. 
 
-The `dplyr` package has two functions for extracting data from dataframes by position: 
-`slice` to extract rows based on their row position and select to extract columns
-based on their column position.
+For example, all of these expressions will give you an error: 
 
-## Extracting values from dataframes
-
-For example, if you wanted to get the first two rows of the `hp_data`
-dataframe, you could run:
-
-```{r message = FALSE, warning = FALSE}
-library(package = "dplyr")
-slice(.data = hp_data, c(1:2))
+```{r eval = FALSE}
+1message <- "Hello world"
+_message <- "Hello world"
+message! <- "Hello world"
 ```
 
-## Extracting values from dataframes
+## Object names
 
-If you wanted to get the first and fourth columns, you could run: 
+There are also some **guidelines** for picking *good* object names:
 
-```{r}
-select(.data = hp_data, c(1, 4))
-```
+*From [Hadley Wickham's R style guide](http://adv-r.had.co.nz/Style.html)* 
 
-## Extracting values from dataframes
-
-You can compose calls from both functions. For example, you could extract the
-values in the first and fourth columns of the first two rows with: 
-
-```{r}
-select(slice(.data = hp_data, c(1:2)), c(1, 4))
-```
-
-
-
-<!-- ## Dataframes -->
-
-<!-- You can use indexing (`[..., ...]`) for dataframes, too, but now they'll have -->
-<!-- two dimensions (rows, then columns). For example: -->
-
-<!-- ```{r} -->
-<!-- hp_data[1:2, 2] # First two rows, second column -->
-<!-- ``` -->
-
-<!-- ## Dataframes -->
-
-<!-- If you want all of something, leave the designated spot blank. For example: -->
-
-<!-- ```{r} -->
-<!-- hp_data[3, ] # Last row, all columns -->
-<!-- ``` -->
+- Use lower case for variable names (`message`, not `Message`)
+- Use an underscore as a separator (`message_one`, not `messageOne`)
+- Avoid using names that are already defined in R (e.g., don't name an object `mean`, because a `mean` function exists)
 
