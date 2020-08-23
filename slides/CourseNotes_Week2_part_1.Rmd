@@ -1,0 +1,105 @@
+---
+title: "Entering / cleaning data 1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE}
+options(width = 50)
+```
+
+# Reading data into R
+
+## Basics of getting data into R
+
+Basic approach: 
+
+- Download data to your computer
+- Save the data in your R Project directory for the project you're using it for or in a subdirectory within that directory ("data" is a good name for this subdirectory)
+- Read data into R (functions in `readr`: `read_csv`, `read_table`, `read_delim`, `read_fwf`, etc.) 
+- Check to make sure the data came in correctly (`dim`, `ncol`, `nrow`, `head`, `tail`, `str`, `colnames`)
+
+## What kind of data can you get into R?
+
+The sky is the limit...
+
+- **Flat files**
+- Files from other statistical packages (SAS, Excel, Stata, SPSS)
+- [Tables on webpages](http://yihui.name/en/2010/10/grabbing-tables-in-webpages-using-the-xml-package/) 
+- Data in a database (e.g., SQL)
+- Data stored in XML and JSON
+- Complex data formats (e.g., [netCDF files from climate folks](https://www.image.ucar.edu/GSP/Software/Netcdf/), [MRI data stored in Analyze, NIfTI, and DICOM formats](http://www.tractor-mri.org.uk))
+- Data through APIs (e.g., [GoogleMaps](http://www.r-bloggers.com/heatmap-of-toronto-traffic-signals-using-rgooglemaps/), [Twitter](http://davetang.org/muse/2013/04/06/using-the-r_twitter-package/), many government agencies)
+- Incredibly messy data using `scan` and `readLines`
+
+## Flat files
+
+R can read in data from *a lot* of different formats. 
+The only catch: you need to tell R how to do it.
+
+To start, we'll look at **flat files**, which are plain text files (i.e., you can read them when you open them in a text editor, unlike a file in a binary format, like an Excel or Word file) with a two-dimenional structure (a row for each observation and a column for each variable). 
+
+## Types of flat files
+
+There are two main types of flat files:
+
+1. **Fixed width files**: Each column is a certain number of characters wide. (If you printed it out, you could draw vertical lines that separate the columns.)
+
+2. **Delimited files**: In each row, a certain symbol (**delimiter**) separates the data into columns values for that observation.
+    + ".csv": Comma-separated values
+    + ".tab", ".tsv": Tab-separated values
+    + Other possible delimiters: colon, semicolon, pipe ("|")
+    
+\medskip
+
+See if you can identify what types of files the following files are...
+
+## What type of file?
+
+```{r echo = FALSE, fig.align='center', out.width = "150pt"}
+knitr::include_graphics("../figures/csvEx1.jpg")
+```
+
+## What type of file?
+
+```{r echo = FALSE, fig.align='center', out.width = "250pt"}
+knitr::include_graphics("../figures/fixedwidthfile.png")
+```
+
+## What type of file?
+
+```{r echo = FALSE, fig.align='center', out.width = "250pt"}
+knitr::include_graphics("../figures/pipeDelimited.png")
+```
+
+## What type of file?
+
+```{r echo = FALSE, fig.align='center', out.width = "325pt"}
+knitr::include_graphics("../figures/tabEx1.jpg")
+```
+
+## What type of file?
+
+```{r echo = FALSE, fig.align='center', out.width = "350pt"}
+knitr::include_graphics("../figures/csvEx2.jpg")
+```
+
+## What type of file?
+
+```{r echo = FALSE, fig.align='center', out.width = "200pt"}
+knitr::include_graphics("../figures/fwfEx2.png")
+```
+
+## Types of flat files
+
+Flat files will often end in file extensions like ".txt", ".csv", ".fwf", and ".tsv".
+
+To figure out the structure of a flat file, start by opening it in a text editor. 
+RStudio can also be used as a text editor to open and explore flat files (right click on the file name and then choose "Open With" and "RStudio").
+
