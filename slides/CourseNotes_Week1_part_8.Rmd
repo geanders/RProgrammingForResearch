@@ -10,176 +10,165 @@ output:
 fontsize: 10pt
 ---
 
-# Dataframes
+# Object classes and vectors
 
-## Structure of dataframe objects
+## What are object classes?
+
+Objects can be structured in different ways, in terms of how they "hold" data.
+
+These difference structures are called **object classes**.
+
+One class of objects can be a subtype of a more general object class.
+
+## What are object classes?
+
+Today, we'll look at two key object classes for working with data in R: 
+
+1. Vectors
+2. Dataframes (tibbles)
+
+## What are object classes?
+
+For these two object classes (vectors and dataframes), we'll look at: 
+
+1. How that class is structured
+2. How to make a new object with that class
+3. How to extract values from objects with that class
+
+In later classes, we'll spend a lot of time learning how to do other things
+with objects from these two classes, plus learn some other classes.
+
+## Structure of vector class
 
 ```{r fig.align = "center", out.width = "300pt", echo = FALSE}
-knitr::include_graphics("../figures/example_dataframe.jpg")
+knitr::include_graphics("../figures/example_vector.jpg")
 ```
 
-A **dataframe** combines one or more vectors of the same length stuck together
-side-by-side. 
+A **vector** is an object class where the object is made of a string of values.
 
-## Structure of dataframe objects
+## Structure of vector class
 
-```{r fig.align = "center", out.width = "325pt", echo = FALSE}
-knitr::include_graphics("../figures/example_dataframe_labeled.jpg")
+```{r fig.align = "center", out.width = "275pt", echo = FALSE}
+knitr::include_graphics("../figures/vector_class_examples.jpg")
 ```
 
-A dataframe contains **rows** and **columns**, and each column has a 
-**column name**.
+All the values in a vector must be of the same **type** (e.g., all numbers, all
+characters). There are different **classes** of vectors depending on the type
+of data they store.
 
-## Creating dataframes
+## Creating vectors
 
-We'll be working with a specific class of dataframe called a **tibble**.
+To create a vector object, you can use the **concatenate** function, `c`.
 
-You can create tibble dataframe using the `tibble` function from the `tibble`
-package. 
-
-However, most often you will create a dataframe by reading in data from
-a file---most datasets
-will not be short enough that you want to enter them by hand in R.
-
-We'll look at both methods of creating dataframes.
-
-## Creating dataframes
-
-The format for creating a tibble dataframe using the `tibble` function is:
-
-```{r eval = FALSE}
-## Generic code
-library(package = "tibble")
-[name of object] <- tibble([1st column name] = 
-                                     [1st column content],
-                           [2nd column name] = 
-                                     [2nd column content],
-                           etc.)
-```
-
-## Creating dataframes
+For example, to create a vector with the names of the three main characters 
+in *Harry Potter*, use the R expression:
 
 ```{r}
-library(package = "tibble")
-hp_data <- tibble(first_name = c("Harry", "Ron", "Hermione"),
-                  last_name = c("Potter", "Weasley", "Granger"),
-                  n_kids = c(1, 7, 1),
-                  survived = c(TRUE, TRUE, TRUE))
-hp_data
+c("Harry", "Ron", "Hermione")
 ```
 
-## Creating dataframes
+## Creating vectors
 
-You can also create dataframes by joining together vector objects you previously
-created, as long as they have the same length and line up:
+If you want to use that object later, you can assign it an object name in the expression: 
 
 ```{r}
 main_characters <- c("Harry", "Ron", "Hermione")
+print(x = main_characters)
+```
+
+## Creating vectors
+
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/assign_vector.jpg")
+```
+
+This **assignment expression** follows the structure we covered earlier for
+function calls and assignment expressions.
+
+## Creating vectors
+
+Typically, when you use the `c` function, you'll be creating a numeric,
+character, or logical vector. More complex classes (like factors and dates)
+require a bit more work to create "from scratch".
+
+- For character vectors, use quotation marks around each element. 
+
+```{r}
+main_characters <- c("Harry", "Ron", "Hermione")
+```
+
+- For numeric, don't use quotation marks. 
+
+```{r}
 n_kids <- c(1, 7, 1)
-hp_data <- tibble(first_name = main_characters,
-                  last_name = c("Potter", "Weasley", "Granger"),
-                  n_kids = n_kids,
-                  survived = c(TRUE, TRUE, TRUE))
-hp_data
 ```
 
-## Creating dataframes
+## Vectors
 
-Usually, instead of creating a dataframe from vectors, you'll read one in from
-data on an outside file, for example using `read_csv` from the `readr` package.
-
-\medskip
-
-For example, to read in a dataset from a csv file called "daily_show_guests.csv":
-
-```{r echo = FALSE, message = FALSE}
-library(package = "readr")
-daily_show <- read_csv(file = "../data/daily_show_guests.csv",
-                       skip = 4)
-```
-```{r eval = FALSE}
-library(package = "readr")
-daily_show <- read_csv(file = "daily_show_guests.csv",
-                       skip = 4)
-```
-
-## Creating dataframes
-
-This has read data in from the external file into a dataframe object in my R
-session:
+You can use the `class` function to figure out the class of a vector. 
 
 ```{r}
-ls()
+class(x = main_characters)
+class(x = n_kids)
 ```
 
-## Dataframes
+## Vectors
 
-You can use the functions `dim`, `nrow`, and `ncol` to figure out the dimensions
-(number of rows and columns) of a dataframe:
+If you create a vector with a mix of classes, R will default the whole vector to
+the most generic class:
 
 ```{r}
-dim(x = daily_show)
-nrow(x = daily_show)
-ncol(x = daily_show)
+mixed_classes <- c(1, 3, "five")
+mixed_classes
 ```
 
-## Dataframes
+## Vectors
 
-Base R also has some useful functions for quickly exploring dataframes:
+The *length* of the vector is how many values it has. The 
+`main_characters` vector includes three values ("Harry", "Ron", and "Hermione"),
+so it has a length of 3.
 
-- `str`: Show the structure of an R object, including a dataframe
-- `summary`: Give summaries of each column of a dataframe.
-
-
-## Extracting values from dataframes
-
-The `dplyr` package has two functions for extracting data from dataframes by position: 
-`slice` to extract rows based on their row position and select to extract columns
-based on their column position.
-
-## Extracting values from dataframes
-
-For example, if you wanted to get the first two rows of the `hp_data`
-dataframe, you could run:
-
-```{r message = FALSE, warning = FALSE}
-library(package = "dplyr")
-slice(.data = hp_data, c(1:2))
-```
-
-## Extracting values from dataframes
-
-If you wanted to get the first and fourth columns, you could run: 
+You can use the `length` function to figure out how long a vector is:
 
 ```{r}
-select(.data = hp_data, c(1, 4))
+length(x = main_characters)
 ```
 
-## Extracting values from dataframes
+## Extracting values from vectors
 
-You can compose calls from both functions. For example, you could extract the
-values in the first and fourth columns of the first two rows with: 
+You can pull out certain values by using indexing (`[...]`) to identify the
+locations you want to get. For example, to get the second value from the `main_characters` 
+vector, you can call:
 
 ```{r}
-select(slice(.data = hp_data, c(1:2)), c(1, 4))
+main_characters[2] # Get the second value
 ```
 
+## Extracting values from vectors
 
+You can also extract more than one value from a vector, by giving a vector
+of positions as the input in the square brackets. 
 
-<!-- ## Dataframes -->
+For example, to get the first and third values from the `main_characters` 
+vector, you can call:
 
-<!-- You can use indexing (`[..., ...]`) for dataframes, too, but now they'll have -->
-<!-- two dimensions (rows, then columns). For example: -->
+```{r}
+main_characters[c(1, 3)] # Get first and third values
+```
 
-<!-- ```{r} -->
-<!-- hp_data[1:2, 2] # First two rows, second column -->
-<!-- ``` -->
+## Extracting values from vectors
 
-<!-- ## Dataframes -->
+There is an R operator that's very helpful with this. The `:` operator
+will create a sequence of values: 
 
-<!-- If you want all of something, leave the designated spot blank. For example: -->
+```{r}
+1:3
+```
 
-<!-- ```{r} -->
-<!-- hp_data[3, ] # Last row, all columns -->
-<!-- ``` -->
+Therefore, to get the first three values from the `main_characters` 
+vector, you can call:
+
+```{r}
+main_characters[1:3] 
+```
 

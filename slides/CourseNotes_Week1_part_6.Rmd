@@ -10,156 +10,107 @@ output:
 fontsize: 10pt
 ---
 
-# The "package" system
+# More on talking to R
 
-## R packages
+## "Composing" to combine function calls
 
-Your original download of R is only a starting point:
+What if you want to "compose" a call from more than one function call?
 
-```{r echo = FALSE, out.width = "200pt", fig.align='center'}
-knitr::include_graphics("../figures/TrainBasic.JPG")
-```
+One way to do it is to assign the output from the first function call to a name and
+then use that name for the next call. 
 
-## R packages
-
-To take full advantage of R, you'll want to add on packages:
-
-```{r echo = FALSE, out.width = "200pt", fig.align='center'}
-knitr::include_graphics("../figures/TrainComplex.JPG")
-```
-
-## What's in a package?
-
-```{r echo = FALSE, out.width = "200pt", fig.align='center'}
-knitr::include_graphics("../figures/package_contents.jpg")
-```
-
-## R packages
-
-You can get packages to add-on to your version of R from:
-
-- CRAN 
-- Bioconductor (specifically for bioinformatics-related packages)
-- GitHub
-- Your friends and collaborators
-- Make them yourself
-
-## CRAN 
-
-The Comprehensive R Archive Network (CRAN) is the primary source of R packages,
-with thousands of available packages. Each of the packages available on CRAN has
-a unique name and has passed some broad checks.
-
-```{r echo = FALSE, out.width = "300pt", fig.align='center'}
-knitr::include_graphics("../figures/CRAN_package_10000.png")
-```
-
-## Installing from CRAN  
-
-The main way you will install new packages will be with the `install.packages`
-function. By default, this installs packages from CRAN.
-
-For example, to get the package "phonenumber", you could use:
-
-```{r, eval = FALSE}
-install.packages(pkgs = "phonenumber")
-```
-
-```{r fig.align = "center", out.width = "75pt", echo = FALSE}
-knitr::include_graphics("../figures/telephone_keypad.png")
-```
-
-## Installing from CRAN  
-
-**Installing** a package downloads it (usually from CRAN) to your computer. 
-
-\medskip
-
-You will need to be online to install a package, because it downloads the package
-from an online repository. 
-
-\medskip
-
-Once you install a package, you do not need to install it again. It's on your
-computer. (At least, until the package maintainer creates a new version.)
-
-## Installing versus loading
-
-```{r echo = FALSE, out.width = "275pt", fig.align='center'}
-knitr::include_graphics("../figures/install_vs_library.jpg")
-```
-
-**Install** a package (with `install.packages`) to get it onto your computer. **Load** it (with `library`) to get it into
-your R session.
-
-
-
-## How to use a package you've installed
-
-1. Open an R session
-2. Load the package
-3. Use the package's vignette and helpfiles to figure out how to use the package
-(optional)
-4. Use functions in the package
-
-## Loading an installed package
-
-Once you have a package, you can load it to an R session using the `library()`
-function.
+For example: 
 
 ```{r}
-library(package = "phonenumber")
+message <- paste("Hello", "world")
+print(x = message)
 ```
 
-Once it's loaded, you can use all its functions.
+## "Composing" to combine function calls
+
+You can also "nest" one function call inside another function call. For example:
 
 ```{r}
-message <- "HelloWorld"
-letterToNumber(value = message)
+print(x = paste("Hello", "world"))
 ```
 
+Just like with math, the order that the functions are evaluated moves from the
+inner set of parentheses to the outer one.
 
+There's one more way we'll look at later...
 
-## Package vignettes
+## "Composing" to combine function calls
 
-Many packages will come with a "vignette", or a tutorial on how to use the
-package. These are very helpful tools for figuring out how to use a package.
-
-To get a list of all the vignettes a package has, use the `vignette` function,
-specifying a package name with `package`:
-
-```{r eval = FALSE}
-vignette(package = "phonenumber")
+```{r echo = FALSE, fig.align="center", out.width= "300pt"}
+knitr::include_graphics("../figures/composing_function_calls.jpg")
 ```
 
-## Package vignettes
+## Using R scripts
 
-To open a vignette once you know its name, you can also use the `vignette`
-function. For example, to open the vignette called "phonenumber" for the
-`phonenumber` package, run:
+The console can be great for quick functions to explore the data. 
 
-```{r eval = FALSE}
-vignette(topic = "phonenumber",
-         package = "phonenumber")
+However, for most data analysis work you'll want to use a script, so you can
+save all the expressions you used for the analysis.
+
+This improves the *reproducibility* of your analysis.
+
+## R scripts
+
+An **R script** is a plain text file where you can write down and save R code. 
+
+When you write, run, and save your R code in a script rather than running it one
+line at a time in the console, you can easily go back and re-do exactly what you
+did again later. 
+
+You can also share the script for someone else to use, or run it on a different
+computer.
+
+## R scripts
+
+RStudio has one pane that shows any R scripts you have open. If you'd like to
+create new R scripts, you can do that in RStudio with the following steps:
+
+- Open a new script file in RStudio: `File` -> `New File` -> `R Script`.
+- I recommend that you make an "R" folder in all of the R project directories
+that you create and save all your script files in that folder.
+- Save scripts using the extension `.R`
+
+## R scripts
+
+Running code in R scripts line-by-line:
+
+- To run code from an R script file in RStudio, you can use the `Run` button (or
+`Command-R`).
+- This will run whatever's on your cursor line or whatever's highlighted.
+
+**Sourcing** an R script (i.e., running all the code saved in the script):
+
+- To run the whole script, you can also use the `source` function with the
+filename.
+- You can also use the "Source" button on the script pane. 
+
+## R scripts
+
+```{r echo = FALSE, fig.align="center", out.width= "300pt"}
+knitr::include_graphics("../figures/ExampleOfRScript.jpg")
 ```
 
-Many packages only have one vignette, with the same name as the package. In that
-case, the vignette topic usually has the same name as the whole package, so you can 
-open the vignette using a shorter call:
+## Comment characters
 
-```{r eval = FALSE}
-vignette(topic = "phonenumber")
+Sometimes, you'll want to include notes in your code. You can do this in all
+programming languages by using a **comment character** to start the line with
+your comment.
+
+In R, the comment character is the hash symbol, `#`. R will skip any line that
+starts with `#` in a script.
+
+```{r}
+# Don't print this.
+"But print this"
 ```
 
-## Function helpfiles
+## Closing an R session
 
-Packages include helpfiles for all the functions they intend for people to use.
-
-\medskip
-
-You can access the helpfile for a function using `?` followed by the function
-name. For example, to get the helpfile for `letterToNumber`, you can run:
-
-```{r eval = FALSE}
-?letterToNumber
-```
+Do **not** save the history of your R session when you close RStudio. Instead,
+get in the habit of writing your R code in reproducible formats (R scripts,
+RMarkdown documents)
