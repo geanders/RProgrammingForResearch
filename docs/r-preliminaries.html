@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 1 R Preliminaries | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 1 R Preliminaries | R Programming for Research" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2020-02-12" />
+<meta name="date" content="2020-08-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -50,17 +50,18 @@
 
 
 
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
+<script src="libs/plotly-binding-4.9.2.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
-<link href="libs/bokehjs-0.12.2/bokeh.min.css" rel="stylesheet" />
-<link href="libs/bokehjs-0.12.2/loader.css" rel="stylesheet" />
-<script src="libs/bokehjs-0.12.2/bokeh.min.js"></script>
-<script src="libs/rbokeh-binding-0.5.0/rbokeh.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
+<link href="libs/bokehjs-0.12.5/bokeh.min.css" rel="stylesheet" />
+<link href="libs/bokehjs-0.12.5/loader.css" rel="stylesheet" />
+<script src="libs/bokehjs-0.12.5/bokeh.min.js"></script>
+<script src="libs/rbokeh-binding-0.5.1/rbokeh.js"></script>
 <link href="libs/dygraphs-1.1.1/dygraph.css" rel="stylesheet" />
 <script src="libs/dygraphs-1.1.1/dygraph-combined.js"></script>
 <script src="libs/dygraphs-1.1.1/shapes.js"></script>
@@ -69,7 +70,7 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.12/datatables.js"></script>
+<script src="libs/datatables-binding-0.15/datatables.js"></script>
 <link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
@@ -85,9 +86,9 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 pre.sourceCode { margin: 0; }
@@ -96,14 +97,16 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -112,9 +115,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -222,7 +225,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="part"><span><b>II Part II: Basics</b></span></li>
 <li class="chapter" data-level="2" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html"><i class="fa fa-check"></i><b>2</b> Entering and cleaning data #1</a><ul>
-<li class="chapter" data-level="2.1" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#objectives-1"><i class="fa fa-check"></i><b>2.1</b> Objectives</a></li>
+<li class="chapter" data-level="2.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#objectives"><i class="fa fa-check"></i><b>2.1</b> Objectives</a></li>
 <li class="chapter" data-level="2.2" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#overview"><i class="fa fa-check"></i><b>2.2</b> Overview</a></li>
 <li class="chapter" data-level="2.3" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#reading-data-into-r"><i class="fa fa-check"></i><b>2.3</b> Reading data into R</a><ul>
 <li class="chapter" data-level="2.3.1" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#reading-local-flat-files"><i class="fa fa-check"></i><b>2.3.1</b> Reading local flat files</a></li>
@@ -246,7 +249,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.6.2" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#filtering-to-certain-rows"><i class="fa fa-check"></i><b>2.6.2</b> Filtering to certain rows</a></li>
 </ul></li>
 <li class="chapter" data-level="2.7" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#piping"><i class="fa fa-check"></i><b>2.7</b> Piping</a></li>
-<li class="chapter" data-level="2.8" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#in-course-exercise-1"><i class="fa fa-check"></i><b>2.8</b> In-course Exercise</a><ul>
+<li class="chapter" data-level="2.8" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>2.8</b> In-course Exercise</a><ul>
 <li class="chapter" data-level="2.8.1" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#downloading-and-checking-out-the-example-data"><i class="fa fa-check"></i><b>2.8.1</b> Downloading and checking out the example data</a></li>
 <li class="chapter" data-level="2.8.2" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#reading-in-different-types-of-files"><i class="fa fa-check"></i><b>2.8.2</b> Reading in different types of files</a></li>
 <li class="chapter" data-level="2.8.3" data-path="entering-and-cleaning-data-1.html"><a href="entering-and-cleaning-data-1.html#directory-structure-1"><i class="fa fa-check"></i><b>2.8.3</b> Directory structure</a></li>
@@ -256,7 +259,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="exploring-data-1.html"><a href="exploring-data-1.html"><i class="fa fa-check"></i><b>3</b> Exploring data #1</a><ul>
-<li class="chapter" data-level="3.1" data-path="exploring-data-1.html"><a href="exploring-data-1.html#objectives-2"><i class="fa fa-check"></i><b>3.1</b> Objectives</a></li>
+<li class="chapter" data-level="3.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#objectives"><i class="fa fa-check"></i><b>3.1</b> Objectives</a></li>
 <li class="chapter" data-level="3.2" data-path="exploring-data-1.html"><a href="exploring-data-1.html#data-from-a-package"><i class="fa fa-check"></i><b>3.2</b> Data from a package</a></li>
 <li class="chapter" data-level="3.3" data-path="exploring-data-1.html"><a href="exploring-data-1.html#logical-vectors"><i class="fa fa-check"></i><b>3.3</b> Logical vectors</a></li>
 <li class="chapter" data-level="3.4" data-path="exploring-data-1.html"><a href="exploring-data-1.html#simple-statistics-functions"><i class="fa fa-check"></i><b>3.4</b> Simple statistics functions</a><ul>
@@ -274,7 +277,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.5.8" data-path="exploring-data-1.html"><a href="exploring-data-1.html#scatterplots"><i class="fa fa-check"></i><b>3.5.8</b> Scatterplots</a></li>
 <li class="chapter" data-level="3.5.9" data-path="exploring-data-1.html"><a href="exploring-data-1.html#boxplots"><i class="fa fa-check"></i><b>3.5.9</b> Boxplots</a></li>
 </ul></li>
-<li class="chapter" data-level="3.6" data-path="exploring-data-1.html"><a href="exploring-data-1.html#in-course-exercise-2"><i class="fa fa-check"></i><b>3.6</b> In-course exercise</a><ul>
+<li class="chapter" data-level="3.6" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>3.6</b> In-course exercise</a><ul>
 <li class="chapter" data-level="3.6.1" data-path="exploring-data-1.html"><a href="exploring-data-1.html#loading-data-from-an-r-package"><i class="fa fa-check"></i><b>3.6.1</b> Loading data from an R package</a></li>
 <li class="chapter" data-level="3.6.2" data-path="exploring-data-1.html"><a href="exploring-data-1.html#exploring-the-data-using-simple-statistics-and-summarize"><i class="fa fa-check"></i><b>3.6.2</b> Exploring the data using simple statistics and <code>summarize</code></a></li>
 <li class="chapter" data-level="3.6.3" data-path="exploring-data-1.html"><a href="exploring-data-1.html#exploring-the-data-using-logical-statements"><i class="fa fa-check"></i><b>3.6.3</b> Exploring the data using logical statements</a></li>
@@ -295,7 +298,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.8.1" data-path="reporting-data-results-1.html"><a href="reporting-data-results-1.html#scales"><i class="fa fa-check"></i><b>4.8.1</b> Scales</a></li>
 </ul></li>
 <li class="chapter" data-level="4.9" data-path="reporting-data-results-1.html"><a href="reporting-data-results-1.html#to-find-out-more"><i class="fa fa-check"></i><b>4.9</b> To find out more</a></li>
-<li class="chapter" data-level="4.10" data-path="reporting-data-results-1.html"><a href="reporting-data-results-1.html#in-course-exercise-3"><i class="fa fa-check"></i><b>4.10</b> In-course exercise</a><ul>
+<li class="chapter" data-level="4.10" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>4.10</b> In-course exercise</a><ul>
 <li class="chapter" data-level="4.10.1" data-path="reporting-data-results-1.html"><a href="reporting-data-results-1.html#designing-a-plot"><i class="fa fa-check"></i><b>4.10.1</b> Designing a plot</a></li>
 <li class="chapter" data-level="4.10.2" data-path="reporting-data-results-1.html"><a href="reporting-data-results-1.html#implementing-plot-guidelines-1"><i class="fa fa-check"></i><b>4.10.2</b> Implementing plot guidelines #1</a></li>
 <li class="chapter" data-level="4.10.3" data-path="reporting-data-results-1.html"><a href="reporting-data-results-1.html#implementing-plot-guidelines-2"><i class="fa fa-check"></i><b>4.10.3</b> Implementing plot guidelines #2</a></li>
@@ -321,7 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.5.3" data-path="reproducible-research-1.html"><a href="reproducible-research-1.html#saving-graphics-files"><i class="fa fa-check"></i><b>5.5.3</b> Saving graphics files</a></li>
 <li class="chapter" data-level="5.5.4" data-path="reproducible-research-1.html"><a href="reproducible-research-1.html#tables-in-r-markdown"><i class="fa fa-check"></i><b>5.5.4</b> Tables in R Markdown</a></li>
 </ul></li>
-<li class="chapter" data-level="5.6" data-path="reproducible-research-1.html"><a href="reproducible-research-1.html#in-course-exercise-4"><i class="fa fa-check"></i><b>5.6</b> In-course exercise</a><ul>
+<li class="chapter" data-level="5.6" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>5.6</b> In-course exercise</a><ul>
 <li class="chapter" data-level="5.6.1" data-path="reproducible-research-1.html"><a href="reproducible-research-1.html#creating-a-markdown-document"><i class="fa fa-check"></i><b>5.6.1</b> Creating a Markdown document</a></li>
 <li class="chapter" data-level="5.6.2" data-path="reproducible-research-1.html"><a href="reproducible-research-1.html#adding-in-r-code"><i class="fa fa-check"></i><b>5.6.2</b> Adding in R code</a></li>
 <li class="chapter" data-level="5.6.3" data-path="reproducible-research-1.html"><a href="reproducible-research-1.html#working-with-r-markdown-documents"><i class="fa fa-check"></i><b>5.6.3</b> Working with R Markdown documents</a></li>
@@ -336,7 +339,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.4" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#working-with-factors"><i class="fa fa-check"></i><b>6.4</b> Working with factors</a></li>
 <li class="chapter" data-level="6.5" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#string-operations-and-regular-expressions"><i class="fa fa-check"></i><b>6.5</b> String operations and regular expressions</a></li>
 <li class="chapter" data-level="6.6" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#tidy-select"><i class="fa fa-check"></i><b>6.6</b> Tidy select</a></li>
-<li class="chapter" data-level="6.7" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#in-course-exercise-5"><i class="fa fa-check"></i><b>6.7</b> In-course exercise</a><ul>
+<li class="chapter" data-level="6.7" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>6.7</b> In-course exercise</a><ul>
 <li class="chapter" data-level="6.7.1" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#designing-tidy-data"><i class="fa fa-check"></i><b>6.7.1</b> Designing tidy data</a></li>
 <li class="chapter" data-level="6.7.2" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#easier-data-wrangling"><i class="fa fa-check"></i><b>6.7.2</b> Easier data wrangling</a></li>
 <li class="chapter" data-level="6.7.3" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#more-extensive-data-wrangling"><i class="fa fa-check"></i><b>6.7.3</b> More extensive data wrangling</a></li>
@@ -363,7 +366,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.7.1" data-path="exploring-data-2.html"><a href="exploring-data-2.html#if-else-statements"><i class="fa fa-check"></i><b>7.7.1</b> if / else statements</a></li>
 <li class="chapter" data-level="7.7.2" data-path="exploring-data-2.html"><a href="exploring-data-2.html#some-other-control-structures"><i class="fa fa-check"></i><b>7.7.2</b> Some other control structures</a></li>
 </ul></li>
-<li class="chapter" data-level="7.8" data-path="exploring-data-2.html"><a href="exploring-data-2.html#in-course-exercise-6"><i class="fa fa-check"></i><b>7.8</b> In-course exercise</a><ul>
+<li class="chapter" data-level="7.8" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>7.8</b> In-course exercise</a><ul>
 <li class="chapter" data-level="7.8.1" data-path="exploring-data-2.html"><a href="exploring-data-2.html#exploring-taxonomic-profiling-data"><i class="fa fa-check"></i><b>7.8.1</b> Exploring taxonomic profiling data</a></li>
 <li class="chapter" data-level="7.8.2" data-path="exploring-data-2.html"><a href="exploring-data-2.html#more-with-baby-names"><i class="fa fa-check"></i><b>7.8.2</b> More with baby names</a></li>
 <li class="chapter" data-level="7.8.3" data-path="exploring-data-2.html"><a href="exploring-data-2.html#running-a-simple-statistical-test"><i class="fa fa-check"></i><b>7.8.3</b> Running a simple statistical test</a></li>
@@ -388,7 +391,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.4.3" data-path="reporting-results-2.html"><a href="reporting-results-2.html#creating-an-sf-object"><i class="fa fa-check"></i><b>8.4.3</b> Creating an <code>sf</code> object</a></li>
 <li class="chapter" data-level="8.4.4" data-path="reporting-results-2.html"><a href="reporting-results-2.html#reading-in-from-gis-files"><i class="fa fa-check"></i><b>8.4.4</b> Reading in from GIS files</a></li>
 </ul></li>
-<li class="chapter" data-level="8.5" data-path="reporting-results-2.html"><a href="reporting-results-2.html#in-course-exercise-7"><i class="fa fa-check"></i><b>8.5</b> In-course exercise</a><ul>
+<li class="chapter" data-level="8.5" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>8.5</b> In-course exercise</a><ul>
 <li class="chapter" data-level="8.5.1" data-path="reporting-results-2.html"><a href="reporting-results-2.html#getting-and-cleaning-the-example-data"><i class="fa fa-check"></i><b>8.5.1</b> Getting and cleaning the example data</a></li>
 <li class="chapter" data-level="8.5.2" data-path="reporting-results-2.html"><a href="reporting-results-2.html#trying-out-ggplot2-extensions"><i class="fa fa-check"></i><b>8.5.2</b> Trying out <code>ggplot2</code> extensions</a></li>
 <li class="chapter" data-level="8.5.3" data-path="reporting-results-2.html"><a href="reporting-results-2.html#using-simple-features-to-map"><i class="fa fa-check"></i><b>8.5.3</b> Using simple features to map</a></li>
@@ -412,7 +415,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.3.8" data-path="reproducible-research-2.html"><a href="reproducible-research-2.html#merge-conflicts"><i class="fa fa-check"></i><b>9.3.8</b> Merge conflicts</a></li>
 <li class="chapter" data-level="9.3.9" data-path="reproducible-research-2.html"><a href="reproducible-research-2.html#find-out-more"><i class="fa fa-check"></i><b>9.3.9</b> Find out more</a></li>
 </ul></li>
-<li class="chapter" data-level="9.4" data-path="reproducible-research-2.html"><a href="reproducible-research-2.html#in-course-exercise-8"><i class="fa fa-check"></i><b>9.4</b> In-course exercise</a><ul>
+<li class="chapter" data-level="9.4" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>9.4</b> In-course exercise</a><ul>
 <li class="chapter" data-level="9.4.1" data-path="reproducible-research-2.html"><a href="reproducible-research-2.html#organizing-a-project"><i class="fa fa-check"></i><b>9.4.1</b> Organizing a project</a></li>
 <li class="chapter" data-level="9.4.2" data-path="reproducible-research-2.html"><a href="reproducible-research-2.html#initializing-git-for-an-r-project"><i class="fa fa-check"></i><b>9.4.2</b> Initializing git for an R Project</a></li>
 <li class="chapter" data-level="9.4.3" data-path="reproducible-research-2.html"><a href="reproducible-research-2.html#linking-your-project-with-a-github-repository"><i class="fa fa-check"></i><b>9.4.3</b> Linking your project with a GitHub repository</a></li>
@@ -427,7 +430,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.3" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#tigris-package"><i class="fa fa-check"></i><b>10.3</b> <code>tigris</code> package</a></li>
 <li class="chapter" data-level="10.4" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#countyweather"><i class="fa fa-check"></i><b>10.4</b> <code>countyweather</code></a></li>
 <li class="chapter" data-level="10.5" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#cleaning-very-messy-data"><i class="fa fa-check"></i><b>10.5</b> Cleaning very messy data</a></li>
-<li class="chapter" data-level="10.6" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#in-course-exercise-9"><i class="fa fa-check"></i><b>10.6</b> In-course exercise</a><ul>
+<li class="chapter" data-level="10.6" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise"><i class="fa fa-check"></i><b>10.6</b> In-course exercise</a><ul>
 <li class="chapter" data-level="10.6.1" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#working-with-an-api-wrapper-package"><i class="fa fa-check"></i><b>10.6.1</b> Working with an API wrapper package</a></li>
 <li class="chapter" data-level="10.6.2" data-path="entering-and-cleaning-data-3.html"><a href="entering-and-cleaning-data-3.html#cleaning-very-messy-data-1"><i class="fa fa-check"></i><b>10.6.2</b> Cleaning very messy data</a></li>
 </ul></li>
@@ -473,7 +476,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="13.1.3" data-path="reproducible-research-3.html"><a href="reproducible-research-3.html#sharing-an-r-package"><i class="fa fa-check"></i><b>13.1.3</b> Sharing an R package</a></li>
 <li class="chapter" data-level="13.1.4" data-path="reproducible-research-3.html"><a href="reproducible-research-3.html#package-names"><i class="fa fa-check"></i><b>13.1.4</b> Package names</a></li>
 <li class="chapter" data-level="13.1.5" data-path="reproducible-research-3.html"><a href="reproducible-research-3.html#package-maintainer"><i class="fa fa-check"></i><b>13.1.5</b> Package maintainer</a></li>
-<li class="chapter" data-level="13.1.6" data-path="reproducible-research-3.html"><a href="reproducible-research-3.html#find-out-more-1"><i class="fa fa-check"></i><b>13.1.6</b> Find out more</a></li>
+<li class="chapter" data-level="13.1.6" data-path="reproducible-research-2.html"><a href="reproducible-research-2.html#find-out-more"><i class="fa fa-check"></i><b>13.1.6</b> Find out more</a></li>
 </ul></li>
 <li class="chapter" data-level="13.2" data-path="reproducible-research-3.html"><a href="reproducible-research-3.html#basic-example-package-weathermetrics"><i class="fa fa-check"></i><b>13.2</b> Basic example package: <code>weathermetrics</code></a><ul>
 <li class="chapter" data-level="13.2.1" data-path="reproducible-research-3.html"><a href="reproducible-research-3.html#contents-of-weathermetrics-package"><i class="fa fa-check"></i><b>13.2.1</b> Contents of weathermetrics package</a></li>
@@ -756,10 +759,10 @@ together for some expressions.</p>
 <li>Everything that happens in R is a <strong>call to a function</strong></li>
 </ol>
 <p>In general, function calls in R take the following structure:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co">## Generic code (this won&#39;t run)</span></a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="kw">function_name</span>(<span class="dt">formal_argument_1 =</span> named_argument_<span class="dv">1</span>, </a>
-<a class="sourceLine" id="cb1-3" title="3">              <span class="dt">formal_argument_2 =</span> named_argument_<span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb1-4" title="4">              [etc.])</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="r-preliminaries.html#cb1-1"></a><span class="co">## Generic code (this won&#39;t run)</span></span>
+<span id="cb1-2"><a href="r-preliminaries.html#cb1-2"></a><span class="kw">function_name</span>(<span class="dt">formal_argument_1 =</span> named_argument_<span class="dv">1</span>, </span>
+<span id="cb1-3"><a href="r-preliminaries.html#cb1-3"></a>              <span class="dt">formal_argument_2 =</span> named_argument_<span class="dv">2</span>,</span>
+<span id="cb1-4"><a href="r-preliminaries.html#cb1-4"></a>              [etc.])</span></code></pre></div>
 <div class="rmdwarning">
 <p>
 Sometimes, we’ll show “generic” code in a code block, that doesn’t actually work if you put it in R, but instead shows the generic structure of an R call. We’ll try to always include a comment with any generic code, so you’ll know not to try to run it in R.
@@ -768,7 +771,7 @@ Sometimes, we’ll show “generic” code in a code block, that doesn’t actua
 <p>A function call forms a complete R expression, and the output will
 be the result of running <code>print</code> or <code>show</code> on the object that is output
 by the function call. Here is an example of this structure:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="r-preliminaries.html#cb2-1"></a><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
 <p>Figure <a href="r-preliminaries.html#fig:function-call">1.4</a> shows an example of the typical elements of a
 function call. In this example, we’re <strong>calling</strong> a function with the <strong>name</strong>
@@ -783,27 +786,27 @@ Figure 1.4: Main parts of a function call. This example is calling a function wi
 <p>The <strong>arguments</strong> are how you customize the call to an R function. For example,
 you can use change the named argument value to print different messages with the
 <code>print</code> function:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="r-preliminaries.html#cb4-1"></a><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hi Fort Collins&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="r-preliminaries.html#cb6-1"></a><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hi Fort Collins&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;Hi Fort Collins&quot;</code></pre>
 <p>Some functions do not require any arguments. For example, the <code>getRversion</code> function will
 print out the version of R you are using.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">getRversion</span>()</a></code></pre></div>
-<pre><code>## [1] &#39;3.6.2&#39;</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="r-preliminaries.html#cb8-1"></a><span class="kw">getRversion</span>()</span></code></pre></div>
+<pre><code>## [1] &#39;4.0.2&#39;</code></pre>
 <p>Some functions will accept multiple arguments. For example, the <code>print</code> function allows you
 to specify whether the output should include quotation marks, using the <code>quote</code>
 formal argument:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>, <span class="dt">quote =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="r-preliminaries.html#cb10-1"></a><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>, <span class="dt">quote =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>, <span class="dt">quote =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="r-preliminaries.html#cb12-1"></a><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>, <span class="dt">quote =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <pre><code>## [1] Hello world</code></pre>
 <p>Arguments can be <strong>required</strong> or <strong>optional</strong>.</p>
 <p>For a required argument, if you don’t provide a value for the argument when you
 call the function, R will respond with an error. For example, <code>x</code> is a <strong>required argument</strong>
 for the <code>print</code> function, so if you try to call the function without it, you’ll get an
 error:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">print</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="r-preliminaries.html#cb14-1"></a><span class="kw">print</span>()</span></code></pre></div>
 <pre><code>Error in print.default() : argument &quot;x&quot; is 
   missing, with no default</code></pre>
 <p>For an <strong>optional argument</strong> on the other hand, R knows a <strong>default value</strong> for that
@@ -812,9 +815,9 @@ default value for that argument.</p>
 <p>For example, for the <code>print</code> function, the <code>quote</code> argument has the default value
 <code>TRUE</code>. So if you don’t specify a value for that argument, R will assume it should
 use <code>quote = TRUE</code>. That’s why the following two calls give the same result:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>, <span class="dt">quote =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="r-preliminaries.html#cb16-1"></a><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>, <span class="dt">quote =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="r-preliminaries.html#cb18-1"></a><span class="kw">print</span>(<span class="dt">x =</span> <span class="st">&quot;Hello world&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
 <p>Often, you’ll want to find out more about a function, including:</p>
 <ul>
@@ -826,7 +829,7 @@ use <code>quote = TRUE</code>. That’s why the following two calls give the sam
 <p>You can find out all this information in the function’s <strong>helpfile</strong>, which
 you can access using the function <code>?</code>. For example, the <code>mean</code> function will let you calculate the mean (average) of a
 group of numbers. To find out more about this function, at the console type:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">?mean</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="r-preliminaries.html#cb20-1"></a>?mean</span></code></pre></div>
 <p>This will open a helpfile in the “Help” pane in RStudio. Figure
 <a href="r-preliminaries.html#fig:helpfile">1.5</a> shows some of the key elements of an example helpfile, the
 helpfile for the <code>mean</code> function. In particular, the “Usage” section helps you
@@ -842,7 +845,7 @@ Figure 1.5: Navigating a helpfile. This example shows some key parts of the help
 the infix <strong>operator</strong> functions. Instead using parentheses after the function
 name, they usually go <em>between</em> two arguments. One common example is the <code>+</code>
 operator:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span></a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="r-preliminaries.html#cb21-1"></a><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span></span></code></pre></div>
 <pre><code>## [1] 5</code></pre>
 <p>There are operators for several mathematical functions: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>.
 There are also other operators, including <strong>logical operators</strong> and <strong>assignment
@@ -866,18 +869,18 @@ data later, you won’t need to read it in again from the external file.</p>
 <p>The <strong>gets arrow</strong>, <code>&lt;-</code>, is R’s assignment operator. It takes whatever you’ve
 created on the right hand side of the <code>&lt;-</code> and saves it as an object with the
 name you put on the left hand side of the <code>&lt;-</code> :</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="co">## Note: Generic code-- this will not work</span></a>
-<a class="sourceLine" id="cb23-2" title="2">[object name] &lt;-<span class="st"> </span>[object]</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="r-preliminaries.html#cb23-1"></a><span class="co">## Note: Generic code-- this will not work</span></span>
+<span id="cb23-2"><a href="r-preliminaries.html#cb23-2"></a>[object name] &lt;-<span class="st"> </span>[object]</span></code></pre></div>
 <p>For example, if I just type <code>"Hello world"</code>, R will print it back to me, but
 won’t save it anywhere for me to use later:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="st">&quot;Hello world&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="r-preliminaries.html#cb24-1"></a><span class="st">&quot;Hello world&quot;</span></span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
 <p>However, if I assign it to an object, I can “refer” to that object in a later expression.
 For example, the code below assigns the <strong>object</strong> <code>"Hello world"</code> the <strong>object name</strong> <code>message</code>.
 Later, I can just refer to this object using the name <code>message</code>, for example in a function
 call to the <code>print</code> function:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1">message &lt;-<span class="st"> &quot;Hello world&quot;</span></a>
-<a class="sourceLine" id="cb26-2" title="2"><span class="kw">print</span>(<span class="dt">x =</span> message)</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="r-preliminaries.html#cb26-1"></a>message &lt;-<span class="st"> &quot;Hello world&quot;</span></span>
+<span id="cb26-2"><a href="r-preliminaries.html#cb26-2"></a><span class="kw">print</span>(<span class="dt">x =</span> message)</span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
 <p>When you enter an <strong>assignment expression</strong> like this at the R console, if everything
 goes right, then R will “respond” by giving you a new prompt, without any kind of
@@ -897,12 +900,12 @@ have been assigned in the current R session.</li>
 <ol style="list-style-type: decimal">
 <li>Enter the object’s name at the prompt and press return:</li>
 </ol>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1">message</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="r-preliminaries.html#cb28-1"></a>message</span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Call the <code>ls</code> function:</li>
 </ol>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw">ls</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="r-preliminaries.html#cb30-1"></a><span class="kw">ls</span>()</span></code></pre></div>
 <pre><code>## [1] &quot;a&quot;       &quot;message&quot;</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Look in the “Environment” pane in RStudio (see Figure <a href="r-preliminaries.html#fig:environment">1.6</a>).</li>
@@ -925,11 +928,11 @@ for assignment.</p>
 <p>While you will be coding with the gets arrow exclusively in this course, it will
 be helpful for you to know that the two assignment arrows do pretty much the
 same thing:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1">one_to_ten &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb32-2" title="2">one_to_ten</a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="r-preliminaries.html#cb32-1"></a>one_to_ten &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></span>
+<span id="cb32-2"><a href="r-preliminaries.html#cb32-2"></a>one_to_ten</span></code></pre></div>
 <pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1">one_to_ten =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb34-2" title="2">one_to_ten</a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="r-preliminaries.html#cb34-1"></a>one_to_ten =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></span>
+<span id="cb34-2"><a href="r-preliminaries.html#cb34-2"></a>one_to_ten</span></code></pre></div>
 <pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
 <p>While the gets arrow takes two key strokes instead of one (like the equals
 sign), you can somewhat get around this limitation by using RStudio’s keyboard
@@ -944,9 +947,9 @@ in RStudio and select “Keyboard Shortcuts”.</p>
 <p>If you try to assign an object to a name that doesn’t follow the “hard” rules,
 you’ll get an error. For example, all of these expressions will give you an
 error:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1">1message &lt;-<span class="st"> &quot;Hello world&quot;</span></a>
-<a class="sourceLine" id="cb36-2" title="2">_message &lt;-<span class="st"> &quot;Hello world&quot;</span></a>
-<a class="sourceLine" id="cb36-3" title="3">message<span class="op">!</span><span class="st"> </span><span class="er">&lt;</span><span class="op">-</span><span class="st"> &quot;Hello world&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="r-preliminaries.html#cb36-1"></a>1message &lt;-<span class="st"> &quot;Hello world&quot;</span></span>
+<span id="cb36-2"><a href="r-preliminaries.html#cb36-2"></a>_message &lt;-<span class="st"> &quot;Hello world&quot;</span></span>
+<span id="cb36-3"><a href="r-preliminaries.html#cb36-3"></a>message<span class="op">!</span><span class="st"> </span><span class="er">&lt;</span><span class="op">-</span><span class="st"> &quot;Hello world&quot;</span></span></code></pre></div>
 <p>In addition to these fixed rules, there are also some guidelines for naming
 objects that you should adopt now, since they will make your life easier as you
 advance to writing more complex code in R. The following three guidelines for
@@ -978,23 +981,23 @@ There are all kinds of traditions for these placeholder variable names in comput
 <p>What if you want to “compose” a call from more than one function call? One way
 to do it is to assign the output from the first function call to a name and then
 use that name for the next call. For example:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1">message &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;world&quot;</span>)</a>
-<a class="sourceLine" id="cb37-2" title="2"><span class="kw">print</span>(<span class="dt">x =</span> message)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="r-preliminaries.html#cb37-1"></a>message &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;world&quot;</span>)</span>
+<span id="cb37-2"><a href="r-preliminaries.html#cb37-2"></a><span class="kw">print</span>(<span class="dt">x =</span> message)</span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
 <p>If you give two objects the same name, the most recent definition will be used (i.e., objects can be overwritten by assigning new content to the same object name). For example:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1">a &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb39-2" title="2">b &lt;-<span class="st"> </span>LETTERS [<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</a>
-<a class="sourceLine" id="cb39-3" title="3"></a>
-<a class="sourceLine" id="cb39-4" title="4">a</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="r-preliminaries.html#cb39-1"></a>a &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></span>
+<span id="cb39-2"><a href="r-preliminaries.html#cb39-2"></a>b &lt;-<span class="st"> </span>LETTERS [<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</span>
+<span id="cb39-3"><a href="r-preliminaries.html#cb39-3"></a></span>
+<span id="cb39-4"><a href="r-preliminaries.html#cb39-4"></a>a</span></code></pre></div>
 <pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1">b</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="r-preliminaries.html#cb41-1"></a>b</span></code></pre></div>
 <pre><code>## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot;</code></pre>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1">a &lt;-<span class="st"> </span>b</a>
-<a class="sourceLine" id="cb43-2" title="2">a</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="r-preliminaries.html#cb43-1"></a>a &lt;-<span class="st"> </span>b</span>
+<span id="cb43-2"><a href="r-preliminaries.html#cb43-2"></a>a</span></code></pre></div>
 <pre><code>## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot;</code></pre>
 <p>To create an R expression you can “nest” one function call inside another
 function call. For example:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="kw">print</span>(<span class="dt">x =</span> <span class="kw">paste</span>(<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;world&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="r-preliminaries.html#cb45-1"></a><span class="kw">print</span>(<span class="dt">x =</span> <span class="kw">paste</span>(<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;world&quot;</span>))</span></code></pre></div>
 <pre><code>## [1] &quot;Hello world&quot;</code></pre>
 <p>Just like with math, the order that the functions are evaluated moves from the
 inner set of parentheses to the outer one (Figure
@@ -1048,7 +1051,7 @@ either from the console or from within another script by using the <code>source(
 function, with the filename of the script you want to run as the argument. For
 example, to run all of the code in a file named “MyFile.R” that is saved in your
 current working directory, run:</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="kw">source</span>(<span class="st">&quot;MyFile.R&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="r-preliminaries.html#cb47-1"></a><span class="kw">source</span>(<span class="st">&quot;MyFile.R&quot;</span>)</span></code></pre></div>
 <p>You can add comments into an R script to let others know (and remind yourself)
 what you’re doing and why. To do this, use R’s comment character, <code>#</code>. Any line
 on a script line that starts with <code>#</code> will not be read by R. You can also take
@@ -1069,14 +1072,14 @@ programming languages by using a <em>comment character</em> to start the line wi
 comment. In R, the comment character is the hash symbol, <code>#</code>. R will skip any
 line that starts with <code>#</code> in a script. For example, if you run the following
 code:</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1"><span class="co"># Don&#39;t print this.</span></a>
-<a class="sourceLine" id="cb48-2" title="2"><span class="st">&quot;But print this&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="r-preliminaries.html#cb48-1"></a><span class="co"># Don&#39;t print this.</span></span>
+<span id="cb48-2"><a href="r-preliminaries.html#cb48-2"></a><span class="st">&quot;But print this&quot;</span></span></code></pre></div>
 <pre><code>## [1] &quot;But print this&quot;</code></pre>
 <p>R will only print the second, uncommented line.</p>
 <p>You can also use a comment in the middle of a line, to add a note on what you’re
 doing in that line of the code. R will skip any part of the code from the hash
 symbol on. For example:</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="st">&quot;Print this&quot;</span> <span class="co">## But not this, it&#39;s a comment.</span></a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="r-preliminaries.html#cb50-1"></a><span class="st">&quot;Print this&quot;</span> <span class="co">## But not this, it&#39;s a comment.</span></span></code></pre></div>
 <pre><code>## [1] &quot;Print this&quot;</code></pre>
 <p>There’s typically no reason to use code comments when running commands at the R
 console. However, it’s very important to get in the practice of including
@@ -1152,7 +1155,7 @@ Figure 1.12: Telephone keypad with letters corresponding to each number.
 numbers and letters based on the telephone keypad. Since this package is on
 CRAN, you can install the package to your computer using the <code>install.packages</code>
 function:</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1"><span class="kw">install.packages</span>(<span class="dt">pkgs =</span> <span class="st">&quot;phonenumber&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="r-preliminaries.html#cb52-1"></a><span class="kw">install.packages</span>(<span class="dt">pkgs =</span> <span class="st">&quot;phonenumber&quot;</span>)</span></code></pre></div>
 <p>This downloads the package from CRAN and saves it in a special location on your
 computer where R can load it when you’re ready to use it. Once you’ve installed
 a package to your computer this way, you don’t need to re-run this
@@ -1171,7 +1174,7 @@ it in that R session. Loading a package essentially makes all of the package’s
 functions available to you.</p>
 <p>You can load a package in an R session using the
 <code>library</code> function, with the package name inside the parentheses.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;phonenumber&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="r-preliminaries.html#cb53-1"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;phonenumber&quot;</span>)</span></code></pre></div>
 <p>Figure <a href="r-preliminaries.html#fig:install-vs-load">1.13</a> provides a conceptual
 picture of the different steps of installing and loading a package.</p>
 <div class="figure" style="text-align: center"><span id="fig:install-vs-load"></span>
@@ -1186,8 +1189,8 @@ by calling them directly. For example, the <code>phonenumber</code> has a functi
 loaded the <code>phonenumber</code> package in your current R session and try to use this
 function, you will get an error. However, once you’ve loaded <code>phonenumber</code> using
 the <code>library</code> function, you can use this function in your R session:</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1">fedex_number &lt;-<span class="st"> &quot;GoFedEx&quot;</span></a>
-<a class="sourceLine" id="cb54-2" title="2"><span class="kw">letterToNumber</span>(<span class="dt">value =</span> fedex_number)</a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="r-preliminaries.html#cb54-1"></a>fedex_number &lt;-<span class="st"> &quot;GoFedEx&quot;</span></span>
+<span id="cb54-2"><a href="r-preliminaries.html#cb54-2"></a><span class="kw">letterToNumber</span>(<span class="dt">value =</span> fedex_number)</span></code></pre></div>
 <pre><code>## [1] &quot;4633339&quot;</code></pre>
 <div class="rmdnote">
 <p>
@@ -1202,7 +1205,7 @@ will need for analysis in that session.</p>
 <p>If you are using a package in academic research, you should cite it, especially
 if it implements an algorithm or method that is not standard. You can use the
 <code>citation</code> function to get the information you need about how to cite a package:</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1"><span class="kw">citation</span>(<span class="dt">package =</span> <span class="st">&quot;phonenumber&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="r-preliminaries.html#cb56-1"></a><span class="kw">citation</span>(<span class="dt">package =</span> <span class="st">&quot;phonenumber&quot;</span>)</span></code></pre></div>
 <pre><code>## 
 ## To cite package &#39;phonenumber&#39; in publications use:
 ## 
@@ -1238,16 +1241,16 @@ function.</li>
 </ul>
 <p>To determine which vignettes are available for a package, you can use the
 <code>vignette</code> function, with the package’s name specified for the <code>package</code> option:</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1"><span class="kw">vignette</span>(<span class="dt">package =</span> <span class="st">&quot;phonenumber&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="r-preliminaries.html#cb58-1"></a><span class="kw">vignette</span>(<span class="dt">package =</span> <span class="st">&quot;phonenumber&quot;</span>)</span></code></pre></div>
 <p>From the output of this, you can call any of the package’s vignettes directly.
 For example, the previous call tells you that this package only has one
 vignette, and that vignette has the same name as the package (“phonenumber”).
 Once you know the name of the vignette you would like to open, you can also use
 <code>vignette</code> to open it:</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1"><span class="kw">vignette</span>(<span class="dt">topic =</span> <span class="st">&quot;phonenumber&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="r-preliminaries.html#cb59-1"></a><span class="kw">vignette</span>(<span class="dt">topic =</span> <span class="st">&quot;phonenumber&quot;</span>)</span></code></pre></div>
 <p>To access the helpfile for any function within a package you’ve loaded, you can
 use <code>?</code> followed by the function’s name:</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1">?letterToNumber</a></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="r-preliminaries.html#cb60-1"></a>?letterToNumber</span></code></pre></div>
 </div>
 </div>
 <div id="rs-most-basic-object-types" class="section level2">
@@ -1302,11 +1305,11 @@ Figure 1.15: Examples of vectors of different classes. All the values in a vecto
 function, <code>c</code> to join them together, with commas between the elements. For
 example, to create the vector shown in Figure <a href="r-preliminaries.html#fig:vector-example">1.14</a>, you
 can run:</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="kw">c</span>(<span class="st">&quot;Harry&quot;</span>, <span class="st">&quot;Ron&quot;</span>, <span class="st">&quot;Hermione&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="r-preliminaries.html#cb61-1"></a><span class="kw">c</span>(<span class="st">&quot;Harry&quot;</span>, <span class="st">&quot;Ron&quot;</span>, <span class="st">&quot;Hermione&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;Harry&quot;    &quot;Ron&quot;      &quot;Hermione&quot;</code></pre>
 <p>If you want to use that object later, you can assign it an object name in the expression:</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1">main_characters &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Harry&quot;</span>, <span class="st">&quot;Ron&quot;</span>, <span class="st">&quot;Hermione&quot;</span>)</a>
-<a class="sourceLine" id="cb63-2" title="2"><span class="kw">print</span>(<span class="dt">x =</span> main_characters)</a></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="r-preliminaries.html#cb63-1"></a>main_characters &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Harry&quot;</span>, <span class="st">&quot;Ron&quot;</span>, <span class="st">&quot;Hermione&quot;</span>)</span>
+<span id="cb63-2"><a href="r-preliminaries.html#cb63-2"></a><span class="kw">print</span>(<span class="dt">x =</span> main_characters)</span></code></pre></div>
 <pre><code>## [1] &quot;Harry&quot;    &quot;Ron&quot;      &quot;Hermione&quot;</code></pre>
 <p>This <strong>assignment expression</strong>, for assigning a vector an object name, follows
 the structure we covered earlier for function calls and assignment expressions
@@ -1318,20 +1321,20 @@ Figure 1.16: Elements of the assignment expression for creating a vector and ass
 </p>
 </div>
 <p>If you create a numeric vector, you should not put the values in quotation marks:</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1">n_kids &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="r-preliminaries.html#cb65-1"></a>n_kids &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">1</span>)</span></code></pre></div>
 <p>If you mix classes when you create the vector, R will coerce all the elements
 to most generic of the elements’ classes:</p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1">mixed_classes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="st">&quot;five&quot;</span>)</a>
-<a class="sourceLine" id="cb66-2" title="2">mixed_classes</a></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="r-preliminaries.html#cb66-1"></a>mixed_classes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="st">&quot;five&quot;</span>)</span>
+<span id="cb66-2"><a href="r-preliminaries.html#cb66-2"></a>mixed_classes</span></code></pre></div>
 <pre><code>## [1] &quot;1&quot;    &quot;3&quot;    &quot;five&quot;</code></pre>
 <p>Notice that the two integers, 1 and 3, are now in quotation marks, once they
 are put in a vector with a value with the character data type. You can use the
 <code>class</code> function to determine the class of an object:</p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1"><span class="kw">class</span>(<span class="dt">x =</span> mixed_classes)</a></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="r-preliminaries.html#cb68-1"></a><span class="kw">class</span>(<span class="dt">x =</span> mixed_classes)</span></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
 <p>A vector’s <em>length</em> is the number of elements in the vector. You can use the
 <code>length</code> function to determine a vector’s length:</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1"><span class="kw">length</span>(<span class="dt">x =</span> mixed_classes)</a></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="r-preliminaries.html#cb70-1"></a><span class="kw">length</span>(<span class="dt">x =</span> mixed_classes)</span></code></pre></div>
 <pre><code>## [1] 3</code></pre>
 <p>Once you create an object, you will often want to reference the whole object in
 future code. However, there will be some times when you’ll want to reference
@@ -1340,23 +1343,23 @@ can pull out certain values from a vector by using indexing with square brackets
 (<code>[...]</code>) to identify the locations of the element you want to extract. For
 example, to extract the second element of the <code>main_characters</code> vector, you can
 run:</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1">main_characters[<span class="dv">2</span>] <span class="co"># Get the second value</span></a></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="r-preliminaries.html#cb72-1"></a>main_characters[<span class="dv">2</span>] <span class="co"># Get the second value</span></span></code></pre></div>
 <pre><code>## [1] &quot;Ron&quot;</code></pre>
 <p>You can use this same method to extract more than one value. You just need to
 create a numeric vector with the position of each element you want to extract
 and pass that in the square brackets. For example, to extract the first and
 third elements of the <code>main_characters</code> vect, you can run:</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1">main_characters[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)] <span class="co"># Get first and third values</span></a></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="r-preliminaries.html#cb74-1"></a>main_characters[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)] <span class="co"># Get first and third values</span></span></code></pre></div>
 <pre><code>## [1] &quot;Harry&quot;    &quot;Hermione&quot;</code></pre>
 <p>The <code>:</code> operator can be very helpful with extracting values from a vector.
 This operator creates a sequence of values from the value before the <code>:</code> to the
 value after <code>:</code>, going by units of 1. For example, if you want to create a list
 of the numbers between 1 and 10, you can run:</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" title="1"><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="r-preliminaries.html#cb76-1"></a><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></span></code></pre></div>
 <pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
 <p>If you want to extract the first two values from the <code>main_characters</code> vector, you
 can use the <code>:</code> operator:</p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" title="1">main_characters[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] <span class="co"># Get the first two values</span></a></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="r-preliminaries.html#cb78-1"></a>main_characters[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] <span class="co"># Get the first two values</span></span></code></pre></div>
 <pre><code>## [1] &quot;Harry&quot; &quot;Ron&quot;</code></pre>
 <p>You can also use logic to pull out some values of a vector. For example, you
 might only want to pull out even values from the <code>fibonacci</code> vector. We’ll cover
@@ -1416,19 +1419,19 @@ There are base R functions for both of these tasks (<code>data.frame</code> and 
 </div>
 <p>To create a dataframe, you can use the <code>tibble</code> function from the <code>tibble</code>
 package. The general format for using <code>tibble</code> is:</p>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" title="1"><span class="co">## Note: Generic code</span></a>
-<a class="sourceLine" id="cb81-2" title="2">[name of object] &lt;-<span class="st"> </span><span class="kw">tibble</span>([1st column name] =<span class="st"> </span>[1st column content],</a>
-<a class="sourceLine" id="cb81-3" title="3">                           [2nd column name] =<span class="st"> </span>[2nd column content])</a></code></pre></div>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="r-preliminaries.html#cb81-1"></a><span class="co">## Note: Generic code</span></span>
+<span id="cb81-2"><a href="r-preliminaries.html#cb81-2"></a>[name of object] &lt;-<span class="st"> </span><span class="kw">tibble</span>([1st column name] =<span class="st"> </span>[1st column content],</span>
+<span id="cb81-3"><a href="r-preliminaries.html#cb81-3"></a>                           [2nd column name] =<span class="st"> </span>[2nd column content])</span></code></pre></div>
 <p>with an equals sign between the column name and column content for each column,
 and commas between each of the columns.</p>
 <p>Here is an example of the code used to create the <em>Harry Potter</em> tibble
 dataframe shown above:</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" title="1"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;tibble&quot;</span>)</a>
-<a class="sourceLine" id="cb82-2" title="2">hp_data &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">first_name =</span> <span class="kw">c</span>(<span class="st">&quot;Harry&quot;</span>, <span class="st">&quot;Ron&quot;</span>, <span class="st">&quot;Hermione&quot;</span>),</a>
-<a class="sourceLine" id="cb82-3" title="3">                  <span class="dt">last_name =</span> <span class="kw">c</span>(<span class="st">&quot;Potter&quot;</span>, <span class="st">&quot;Weasley&quot;</span>, <span class="st">&quot;Granger&quot;</span>),</a>
-<a class="sourceLine" id="cb82-4" title="4">                  <span class="dt">n_kids =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb82-5" title="5">                  <span class="dt">survived =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb82-6" title="6">hp_data</a></code></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="r-preliminaries.html#cb82-1"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;tibble&quot;</span>)</span>
+<span id="cb82-2"><a href="r-preliminaries.html#cb82-2"></a>hp_data &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">first_name =</span> <span class="kw">c</span>(<span class="st">&quot;Harry&quot;</span>, <span class="st">&quot;Ron&quot;</span>, <span class="st">&quot;Hermione&quot;</span>),</span>
+<span id="cb82-3"><a href="r-preliminaries.html#cb82-3"></a>                  <span class="dt">last_name =</span> <span class="kw">c</span>(<span class="st">&quot;Potter&quot;</span>, <span class="st">&quot;Weasley&quot;</span>, <span class="st">&quot;Granger&quot;</span>),</span>
+<span id="cb82-4"><a href="r-preliminaries.html#cb82-4"></a>                  <span class="dt">n_kids =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">1</span>),</span>
+<span id="cb82-5"><a href="r-preliminaries.html#cb82-5"></a>                  <span class="dt">survived =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span>
+<span id="cb82-6"><a href="r-preliminaries.html#cb82-6"></a>hp_data</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
 ##   first_name last_name n_kids survived
 ##   &lt;chr&gt;      &lt;chr&gt;      &lt;dbl&gt; &lt;lgl&gt;   
@@ -1436,11 +1439,11 @@ dataframe shown above:</p>
 ## 2 Ron        Weasley        7 TRUE    
 ## 3 Hermione   Granger        1 TRUE</code></pre>
 <p>You can also create a dataframe by sticking together vectors you already have saved as R objects. For example:</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" title="1">hp_data &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">first_name =</span> main_characters,</a>
-<a class="sourceLine" id="cb84-2" title="2">                  <span class="dt">last_name =</span> <span class="kw">c</span>(<span class="st">&quot;Potter&quot;</span>, <span class="st">&quot;Weasley&quot;</span>, <span class="st">&quot;Granger&quot;</span>),</a>
-<a class="sourceLine" id="cb84-3" title="3">                  <span class="dt">n_kids =</span> n_kids,</a>
-<a class="sourceLine" id="cb84-4" title="4">                  <span class="dt">survived =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb84-5" title="5">hp_data</a></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="r-preliminaries.html#cb84-1"></a>hp_data &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">first_name =</span> main_characters,</span>
+<span id="cb84-2"><a href="r-preliminaries.html#cb84-2"></a>                  <span class="dt">last_name =</span> <span class="kw">c</span>(<span class="st">&quot;Potter&quot;</span>, <span class="st">&quot;Weasley&quot;</span>, <span class="st">&quot;Granger&quot;</span>),</span>
+<span id="cb84-3"><a href="r-preliminaries.html#cb84-3"></a>                  <span class="dt">n_kids =</span> n_kids,</span>
+<span id="cb84-4"><a href="r-preliminaries.html#cb84-4"></a>                  <span class="dt">survived =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>))</span>
+<span id="cb84-5"><a href="r-preliminaries.html#cb84-5"></a>hp_data</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
 ##   first_name last_name n_kids survived
 ##   &lt;chr&gt;      &lt;chr&gt;      &lt;dbl&gt; &lt;lgl&gt;   
@@ -1464,20 +1467,20 @@ came on the <em>Daily Show</em>, <em>circa</em> Jon Stewart. If you have this da
 comma-separated (csv) file on your computer called “daily_show_guests.csv”
 (see the In-Course Exercise for instructions on downloading it), you
 can read it into your R session with the following code:</p>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" title="1"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;readr&quot;</span>)</a>
-<a class="sourceLine" id="cb86-2" title="2">daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;daily_show_guests.csv&quot;</span>,</a>
-<a class="sourceLine" id="cb86-3" title="3">                       <span class="dt">skip =</span> <span class="dv">4</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="r-preliminaries.html#cb86-1"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;readr&quot;</span>)</span>
+<span id="cb86-2"><a href="r-preliminaries.html#cb86-2"></a>daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;daily_show_guests.csv&quot;</span>,</span>
+<span id="cb86-3"><a href="r-preliminaries.html#cb86-3"></a>                       <span class="dt">skip =</span> <span class="dv">4</span>)</span></code></pre></div>
 <p>In this code, the <code>read_csv</code> function is reading in the data from the file
 “daily_show_guests.csv”, while the gets arrow (<code>&lt;-</code>) assigns that data to the
 object <code>daily_show</code>, which you can then reference in later code to explore and
 plot the data.</p>
 <p>You can use the functions <code>dim</code>, <code>nrow</code>, and <code>ncol</code> to figure out the dimensions
 (number of rows and columns) of a dataframe:</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" title="1"><span class="kw">dim</span>(<span class="dt">x =</span> daily_show)</a></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="r-preliminaries.html#cb87-1"></a><span class="kw">dim</span>(<span class="dt">x =</span> daily_show)</span></code></pre></div>
 <pre><code>## [1] 2693    5</code></pre>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" title="1"><span class="kw">nrow</span>(<span class="dt">x =</span> daily_show)</a></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="r-preliminaries.html#cb89-1"></a><span class="kw">nrow</span>(<span class="dt">x =</span> daily_show)</span></code></pre></div>
 <pre><code>## [1] 2693</code></pre>
-<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" title="1"><span class="kw">ncol</span>(<span class="dt">x =</span> daily_show)</a></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="r-preliminaries.html#cb91-1"></a><span class="kw">ncol</span>(<span class="dt">x =</span> daily_show)</span></code></pre></div>
 <pre><code>## [1] 5</code></pre>
 <p>Base R also has some useful functions for quickly exploring dataframes:</p>
 <ul>
@@ -1486,13 +1489,13 @@ plot the data.</p>
 </ul>
 <p>For example, you can explore the data we just pulled in on the <em>Daily Show</em>
 with:</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" title="1"><span class="kw">str</span>(<span class="dt">object =</span> daily_show)</a></code></pre></div>
-<pre><code>## Classes &#39;spec_tbl_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 2693 obs. of  5 variables:
-##  $ YEAR                     : num  1999 1999 1999 1999 1999 ...
-##  $ GoogleKnowlege_Occupation: chr  &quot;actor&quot; &quot;Comedian&quot; &quot;television actress&quot; &quot;film actress&quot; ...
-##  $ Show                     : chr  &quot;1/11/99&quot; &quot;1/12/99&quot; &quot;1/13/99&quot; &quot;1/14/99&quot; ...
-##  $ Group                    : chr  &quot;Acting&quot; &quot;Comedy&quot; &quot;Acting&quot; &quot;Acting&quot; ...
-##  $ Raw_Guest_List           : chr  &quot;Michael J. Fox&quot; &quot;Sandra Bernhard&quot; &quot;Tracey Ullman&quot; &quot;Gillian Anderson&quot; ...
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="r-preliminaries.html#cb93-1"></a><span class="kw">str</span>(<span class="dt">object =</span> daily_show)</span></code></pre></div>
+<pre><code>## tibble [2,693 × 5] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ YEAR                     : num [1:2693] 1999 1999 1999 1999 1999 ...
+##  $ GoogleKnowlege_Occupation: chr [1:2693] &quot;actor&quot; &quot;Comedian&quot; &quot;television actress&quot; &quot;film actress&quot; ...
+##  $ Show                     : chr [1:2693] &quot;1/11/99&quot; &quot;1/12/99&quot; &quot;1/13/99&quot; &quot;1/14/99&quot; ...
+##  $ Group                    : chr [1:2693] &quot;Acting&quot; &quot;Comedy&quot; &quot;Acting&quot; &quot;Acting&quot; ...
+##  $ Raw_Guest_List           : chr [1:2693] &quot;Michael J. Fox&quot; &quot;Sandra Bernhard&quot; &quot;Tracey Ullman&quot; &quot;Gillian Anderson&quot; ...
 ##  - attr(*, &quot;spec&quot;)=
 ##   .. cols(
 ##   ..   YEAR = col_double(),
@@ -1501,7 +1504,7 @@ with:</p>
 ##   ..   Group = col_character(),
 ##   ..   Raw_Guest_List = col_character()
 ##   .. )</code></pre>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" title="1"><span class="kw">summary</span>(<span class="dt">object =</span> daily_show)</a></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="r-preliminaries.html#cb95-1"></a><span class="kw">summary</span>(<span class="dt">object =</span> daily_show)</span></code></pre></div>
 <pre><code>##       YEAR      GoogleKnowlege_Occupation     Show              Group          
 ##  Min.   :1999   Length:2693               Length:2693        Length:2693       
 ##  1st Qu.:2003   Class :character          Class :character   Class :character  
@@ -1524,15 +1527,15 @@ row or column number). Later in the book, we’ll talk about other ways to extra
 values from dataframes.</p>
 <p>For example, if you wanted to get the first two rows of the <code>hp_data</code>
 dataframe, you could run:</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" title="1"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>)</a>
-<a class="sourceLine" id="cb97-2" title="2"><span class="kw">slice</span>(<span class="dt">.data =</span> hp_data, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="r-preliminaries.html#cb97-1"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb97-2"><a href="r-preliminaries.html#cb97-2"></a><span class="kw">slice</span>(<span class="dt">.data =</span> hp_data, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
 ##   first_name last_name n_kids survived
 ##   &lt;chr&gt;      &lt;chr&gt;      &lt;dbl&gt; &lt;lgl&gt;   
 ## 1 Harry      Potter         1 TRUE    
 ## 2 Ron        Weasley        7 TRUE</code></pre>
 <p>If you wanted to get the first and fourth columns, you could run:</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" title="1"><span class="kw">select</span>(<span class="dt">.data =</span> hp_data, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="r-preliminaries.html#cb99-1"></a><span class="kw">select</span>(<span class="dt">.data =</span> hp_data, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 2
 ##   first_name survived
 ##   &lt;chr&gt;      &lt;lgl&gt;   
@@ -1541,7 +1544,7 @@ dataframe, you could run:</p>
 ## 3 Hermione   TRUE</code></pre>
 <p>You can compose calls from both functions. For example, you could extract the
 values in the first and fourth columns of the first two rows with:</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" title="1"><span class="kw">select</span>(<span class="dt">.data =</span> <span class="kw">slice</span>(<span class="dt">.data =</span> hp_data, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)), <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="r-preliminaries.html#cb101-1"></a><span class="kw">select</span>(<span class="dt">.data =</span> <span class="kw">slice</span>(<span class="dt">.data =</span> hp_data, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)), <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ##   first_name survived
 ##   &lt;chr&gt;      &lt;lgl&gt;   
@@ -1553,13 +1556,13 @@ the comma, the columns after. If you want all of something (e.g., all rows in
 the dataframe), leave the designated spot blank. Here are two examples of using
 square-bracket indexing to pull a subset of the <code>hp_data</code> dataframe we
 created above:</p>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb103-1" title="1">hp_data[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">2</span>] <span class="co"># First two rows, second column</span></a></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="r-preliminaries.html#cb103-1"></a>hp_data[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">2</span>] <span class="co"># First two rows, second column</span></span></code></pre></div>
 <pre><code>## # A tibble: 2 x 1
 ##   last_name
 ##   &lt;chr&gt;    
 ## 1 Potter   
 ## 2 Weasley</code></pre>
-<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" title="1">hp_data[<span class="dv">3</span>, ] <span class="co"># Last row, all columns</span></a></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="r-preliminaries.html#cb105-1"></a>hp_data[<span class="dv">3</span>, ] <span class="co"># Last row, all columns</span></span></code></pre></div>
 <pre><code>## # A tibble: 1 x 4
 ##   first_name last_name n_kids survived
 ##   &lt;chr&gt;      &lt;chr&gt;      &lt;dbl&gt; &lt;lgl&gt;   
@@ -1613,7 +1616,7 @@ If you forget to put the comma in the indexing for a dataframe (e.g., <code>fibo
 <!-- You can also see from this "Usage" section that the default value of `col_names` is `TRUE` (use the first row of the data as the column names), the default value of `skip` is 0 (don't skip any lines), etc. -->
 <!-- The "Arguments" section explains each of the parameters, and possible arguments that each can take. For example, here is the explanation of the `n_max` parameter in the `read_csv` function:  -->
 <!-- ``` -->
-<!-- n_max: Maximum number of records to read. -->
+<!-- n_max:	Maximum number of records to read. -->
 <!-- ``` -->
 <!-- From this, you can determine that you should put in a whole number, 0 or higher, and the function will skip that many line of the file before it starts reading in a dataframe when you run `read_csv`. -->
 <!-- ### Function parameters -->
@@ -1749,31 +1752,31 @@ quotation marks for each element you add to the vector?</li>
 of each of the vectors you just created.</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb107-1" title="1"><span class="co"># I picked five random guests from throughout the dataset. The guests you pick will </span></a>
-<a class="sourceLine" id="cb107-2" title="2"><span class="co"># likely be different.</span></a>
-<a class="sourceLine" id="cb107-3" title="3"></a>
-<a class="sourceLine" id="cb107-4" title="4"><span class="co"># Create a vector with the names of five guests</span></a>
-<a class="sourceLine" id="cb107-5" title="5">five_guests &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Miss Piggy&quot;</span>, <span class="st">&quot;Stanley Tucci&quot;</span>, <span class="st">&quot;Kermit the Frog&quot;</span>,</a>
-<a class="sourceLine" id="cb107-6" title="6">                 <span class="st">&quot;Hank Azaria&quot;</span>, <span class="st">&quot;Al Gore&quot;</span>)</a>
-<a class="sourceLine" id="cb107-7" title="7"></a>
-<a class="sourceLine" id="cb107-8" title="8"><span class="co"># Use square-bracket indexing to print out some subsets of the data</span></a>
-<a class="sourceLine" id="cb107-9" title="9">five_guests[<span class="dv">1</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="r-preliminaries.html#cb107-1"></a><span class="co"># I picked five random guests from throughout the dataset. The guests you pick will </span></span>
+<span id="cb107-2"><a href="r-preliminaries.html#cb107-2"></a><span class="co"># likely be different.</span></span>
+<span id="cb107-3"><a href="r-preliminaries.html#cb107-3"></a></span>
+<span id="cb107-4"><a href="r-preliminaries.html#cb107-4"></a><span class="co"># Create a vector with the names of five guests</span></span>
+<span id="cb107-5"><a href="r-preliminaries.html#cb107-5"></a>five_guests &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Miss Piggy&quot;</span>, <span class="st">&quot;Stanley Tucci&quot;</span>, <span class="st">&quot;Kermit the Frog&quot;</span>,</span>
+<span id="cb107-6"><a href="r-preliminaries.html#cb107-6"></a>                 <span class="st">&quot;Hank Azaria&quot;</span>, <span class="st">&quot;Al Gore&quot;</span>)</span>
+<span id="cb107-7"><a href="r-preliminaries.html#cb107-7"></a></span>
+<span id="cb107-8"><a href="r-preliminaries.html#cb107-8"></a><span class="co"># Use square-bracket indexing to print out some subsets of the data</span></span>
+<span id="cb107-9"><a href="r-preliminaries.html#cb107-9"></a>five_guests[<span class="dv">1</span>]</span></code></pre></div>
 <pre><code>## [1] &quot;Miss Piggy&quot;</code></pre>
-<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb109-1" title="1">five_guests[<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>)]</a></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="r-preliminaries.html#cb109-1"></a>five_guests[<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>)]</span></code></pre></div>
 <pre><code>## [1] &quot;Kermit the Frog&quot; &quot;Al Gore&quot;</code></pre>
-<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb111-1" title="1">five_guests[<span class="dv">2</span><span class="op">:</span><span class="dv">4</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="r-preliminaries.html#cb111-1"></a>five_guests[<span class="dv">2</span><span class="op">:</span><span class="dv">4</span>]</span></code></pre></div>
 <pre><code>## [1] &quot;Stanley Tucci&quot;   &quot;Kermit the Frog&quot; &quot;Hank Azaria&quot;</code></pre>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" title="1"><span class="co"># Save just the first guest in a separate object</span></a>
-<a class="sourceLine" id="cb113-2" title="2">first_guest &lt;-<span class="st"> </span>five_guests[<span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb113-3" title="3">first_guest</a></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="r-preliminaries.html#cb113-1"></a><span class="co"># Save just the first guest in a separate object</span></span>
+<span id="cb113-2"><a href="r-preliminaries.html#cb113-2"></a>first_guest &lt;-<span class="st"> </span>five_guests[<span class="dv">1</span>]</span>
+<span id="cb113-3"><a href="r-preliminaries.html#cb113-3"></a>first_guest</span></code></pre></div>
 <pre><code>## [1] &quot;Miss Piggy&quot;</code></pre>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" title="1"><span class="co"># Create a vector with the year of the appearance of each guest</span></a>
-<a class="sourceLine" id="cb115-2" title="2">appearance_year &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">2001</span>, <span class="dv">2001</span>, <span class="dv">2002</span>)</a>
-<a class="sourceLine" id="cb115-3" title="3"></a>
-<a class="sourceLine" id="cb115-4" title="4"><span class="co"># Figure out the classes of the two vectors you just created</span></a>
-<a class="sourceLine" id="cb115-5" title="5"><span class="kw">class</span>(<span class="dt">x =</span> five_guests)</a></code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="r-preliminaries.html#cb115-1"></a><span class="co"># Create a vector with the year of the appearance of each guest</span></span>
+<span id="cb115-2"><a href="r-preliminaries.html#cb115-2"></a>appearance_year &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1999</span>, <span class="dv">2000</span>, <span class="dv">2001</span>, <span class="dv">2001</span>, <span class="dv">2002</span>)</span>
+<span id="cb115-3"><a href="r-preliminaries.html#cb115-3"></a></span>
+<span id="cb115-4"><a href="r-preliminaries.html#cb115-4"></a><span class="co"># Figure out the classes of the two vectors you just created</span></span>
+<span id="cb115-5"><a href="r-preliminaries.html#cb115-5"></a><span class="kw">class</span>(<span class="dt">x =</span> five_guests)</span></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" title="1"><span class="kw">class</span>(<span class="dt">x =</span> appearance_year)</a></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="r-preliminaries.html#cb117-1"></a><span class="kw">class</span>(<span class="dt">x =</span> appearance_year)</span></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
 </div>
 <div id="installing-and-using-a-package" class="section level3">
@@ -1795,18 +1798,18 @@ convert all the names in your <code>five_guests</code> vector to uppercase. (Hin
 console, try typing <code>?stringr::</code> and then the Tab key.)</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" title="1"><span class="co"># If you need to, install the package from CRAN</span></a>
-<a class="sourceLine" id="cb119-2" title="2"><span class="kw">install.packages</span>(<span class="dt">pkgs =</span> <span class="st">&quot;stringr&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb120-1" title="1"><span class="co"># Load the package into your current R session</span></a>
-<a class="sourceLine" id="cb120-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;stringr&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb121-1" title="1"><span class="co"># Open the package&#39;s vignette</span></a>
-<a class="sourceLine" id="cb121-2" title="2"><span class="kw">vignette</span>(<span class="dt">topic =</span> <span class="st">&quot;stringr&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb122-1" title="1"><span class="co"># Convert the `five_guests` strings to lowercase</span></a>
-<a class="sourceLine" id="cb122-2" title="2"><span class="kw">str_to_lower</span>(<span class="dt">string =</span> five_guests)</a></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="r-preliminaries.html#cb119-1"></a><span class="co"># If you need to, install the package from CRAN</span></span>
+<span id="cb119-2"><a href="r-preliminaries.html#cb119-2"></a><span class="kw">install.packages</span>(<span class="dt">pkgs =</span> <span class="st">&quot;stringr&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="r-preliminaries.html#cb120-1"></a><span class="co"># Load the package into your current R session</span></span>
+<span id="cb120-2"><a href="r-preliminaries.html#cb120-2"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;stringr&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="r-preliminaries.html#cb121-1"></a><span class="co"># Open the package&#39;s vignette</span></span>
+<span id="cb121-2"><a href="r-preliminaries.html#cb121-2"></a><span class="kw">vignette</span>(<span class="dt">topic =</span> <span class="st">&quot;stringr&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="r-preliminaries.html#cb122-1"></a><span class="co"># Convert the `five_guests` strings to lowercase</span></span>
+<span id="cb122-2"><a href="r-preliminaries.html#cb122-2"></a><span class="kw">str_to_lower</span>(<span class="dt">string =</span> five_guests)</span></code></pre></div>
 <pre><code>## [1] &quot;miss piggy&quot;      &quot;stanley tucci&quot;   &quot;kermit the frog&quot; &quot;hank azaria&quot;    
 ## [5] &quot;al gore&quot;</code></pre>
-<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb124-1" title="1"><span class="co"># Convert the `five_guests` strings to uppercase</span></a>
-<a class="sourceLine" id="cb124-2" title="2"><span class="kw">str_to_upper</span>(<span class="dt">string =</span> five_guests)</a></code></pre></div>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="r-preliminaries.html#cb124-1"></a><span class="co"># Convert the `five_guests` strings to uppercase</span></span>
+<span id="cb124-2"><a href="r-preliminaries.html#cb124-2"></a><span class="kw">str_to_upper</span>(<span class="dt">string =</span> five_guests)</span></code></pre></div>
 <pre><code>## [1] &quot;MISS PIGGY&quot;      &quot;STANLEY TUCCI&quot;   &quot;KERMIT THE FROG&quot; &quot;HANK AZARIA&quot;    
 ## [5] &quot;AL GORE&quot;</code></pre>
 </div>
@@ -1830,12 +1833,12 @@ can access by running <code>?str</code>). Do you see anything that surprises you
 your R session. Compare this list to the “Environment” pane in RStudio.</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb126-1" title="1"><span class="co"># Create the data frame, then print it out to make sure it looks like you thought</span></a>
-<a class="sourceLine" id="cb126-2" title="2"><span class="co"># it would</span></a>
-<a class="sourceLine" id="cb126-3" title="3"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;tibble&quot;</span>)</a>
-<a class="sourceLine" id="cb126-4" title="4">guest_list &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">Raw_Guest_List =</span> five_guests,</a>
-<a class="sourceLine" id="cb126-5" title="5">                     <span class="dt">YEAR =</span> appearance_year)</a>
-<a class="sourceLine" id="cb126-6" title="6">guest_list</a></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="r-preliminaries.html#cb126-1"></a><span class="co"># Create the data frame, then print it out to make sure it looks like you thought</span></span>
+<span id="cb126-2"><a href="r-preliminaries.html#cb126-2"></a><span class="co"># it would</span></span>
+<span id="cb126-3"><a href="r-preliminaries.html#cb126-3"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;tibble&quot;</span>)</span>
+<span id="cb126-4"><a href="r-preliminaries.html#cb126-4"></a>guest_list &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">Raw_Guest_List =</span> five_guests,</span>
+<span id="cb126-5"><a href="r-preliminaries.html#cb126-5"></a>                     <span class="dt">YEAR =</span> appearance_year)</span>
+<span id="cb126-6"><a href="r-preliminaries.html#cb126-6"></a>guest_list</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 2
 ##   Raw_Guest_List   YEAR
 ##   &lt;chr&gt;           &lt;dbl&gt;
@@ -1844,21 +1847,21 @@ your R session. Compare this list to the “Environment” pane in RStudio.</li>
 ## 3 Kermit the Frog  2001
 ## 4 Hank Azaria      2001
 ## 5 Al Gore          2002</code></pre>
-<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb128-1" title="1"><span class="co"># Use functions from the dplyr package to extract values from the dataframe</span></a>
-<a class="sourceLine" id="cb128-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>)</a>
-<a class="sourceLine" id="cb128-3" title="3"><span class="kw">slice</span>(<span class="dt">.data =</span> <span class="kw">select</span>(<span class="dt">.data =</span> guest_list, <span class="dv">2</span>), <span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="r-preliminaries.html#cb128-1"></a><span class="co"># Use functions from the dplyr package to extract values from the dataframe</span></span>
+<span id="cb128-2"><a href="r-preliminaries.html#cb128-2"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb128-3"><a href="r-preliminaries.html#cb128-3"></a><span class="kw">slice</span>(<span class="dt">.data =</span> <span class="kw">select</span>(<span class="dt">.data =</span> guest_list, <span class="dv">2</span>), <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 1
 ##    YEAR
 ##   &lt;dbl&gt;
 ## 1  1999</code></pre>
-<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb130-1" title="1"><span class="kw">slice</span>(<span class="dt">.data =</span> <span class="kw">select</span>(<span class="dt">.data =</span> guest_list, <span class="dv">1</span>), <span class="dv">3</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="r-preliminaries.html#cb130-1"></a><span class="kw">slice</span>(<span class="dt">.data =</span> <span class="kw">select</span>(<span class="dt">.data =</span> guest_list, <span class="dv">1</span>), <span class="dv">3</span><span class="op">:</span><span class="dv">5</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 1
 ##   Raw_Guest_List 
 ##   &lt;chr&gt;          
 ## 1 Kermit the Frog
 ## 2 Hank Azaria    
 ## 3 Al Gore</code></pre>
-<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb132-1" title="1"><span class="kw">select</span>(<span class="dt">.data =</span> guest_list, <span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="r-preliminaries.html#cb132-1"></a><span class="kw">select</span>(<span class="dt">.data =</span> guest_list, <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 1
 ##   Raw_Guest_List 
 ##   &lt;chr&gt;          
@@ -1867,17 +1870,17 @@ your R session. Compare this list to the “Environment” pane in RStudio.</li>
 ## 3 Kermit the Frog
 ## 4 Hank Azaria    
 ## 5 Al Gore</code></pre>
-<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb134-1" title="1"><span class="kw">slice</span>(<span class="dt">.data =</span> guest_list, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="r-preliminaries.html#cb134-1"></a><span class="kw">slice</span>(<span class="dt">.data =</span> guest_list, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ##   Raw_Guest_List   YEAR
 ##   &lt;chr&gt;           &lt;dbl&gt;
 ## 1 Miss Piggy       1999
 ## 2 Kermit the Frog  2001</code></pre>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb136-1" title="1"><span class="co"># Use `str` to check out the structure of the data frame you created</span></a>
-<a class="sourceLine" id="cb136-2" title="2"><span class="kw">str</span>(guest_list)</a></code></pre></div>
-<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    5 obs. of  2 variables:
-##  $ Raw_Guest_List: chr  &quot;Miss Piggy&quot; &quot;Stanley Tucci&quot; &quot;Kermit the Frog&quot; &quot;Hank Azaria&quot; ...
-##  $ YEAR          : num  1999 2000 2001 2001 2002</code></pre>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="r-preliminaries.html#cb136-1"></a><span class="co"># Use `str` to check out the structure of the data frame you created</span></span>
+<span id="cb136-2"><a href="r-preliminaries.html#cb136-2"></a><span class="kw">str</span>(guest_list)</span></code></pre></div>
+<pre><code>## tibble [5 × 2] (S3: tbl_df/tbl/data.frame)
+##  $ Raw_Guest_List: chr [1:5] &quot;Miss Piggy&quot; &quot;Stanley Tucci&quot; &quot;Kermit the Frog&quot; &quot;Hank Azaria&quot; ...
+##  $ YEAR          : num [1:5] 1999 2000 2001 2001 2002</code></pre>
 </div>
 <div id="getting-the-data-onto-your-computer" class="section level3">
 <h3><span class="header-section-number">1.7.7</span> Getting the data onto your computer</h3>
@@ -1896,8 +1899,8 @@ file is in your current working directory (we’ll talk more about working
 directories, listing files in your working directory, and R Projects later in
 the semester).</li>
 </ul>
-<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb138-1" title="1"><span class="co"># List the files in your current working directory </span></a>
-<a class="sourceLine" id="cb138-2" title="2"><span class="kw">list.files</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="r-preliminaries.html#cb138-1"></a><span class="co"># List the files in your current working directory </span></span>
+<span id="cb138-2"><a href="r-preliminaries.html#cb138-2"></a><span class="kw">list.files</span>()</span></code></pre></div>
 <pre><code>[1] &quot;daily_show_guests.csv&quot;</code></pre>
 </div>
 <div id="getting-the-data-into-r" class="section level3">
@@ -1923,14 +1926,14 @@ as the object <code>daily_show</code>? (For example, you’d run the code
 <code>read_csv("daily_show_guests.csv", skip = 4)</code> rather than <code>daily_show &lt;- read_csv("daily_show_guests.csv")</code>.)</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb140-1" title="1"><span class="co"># Install (if needed) and load the `readr` package</span></a>
-<a class="sourceLine" id="cb140-2" title="2"><span class="kw">install.packages</span>(<span class="dt">pkgs =</span> <span class="st">&quot;readr&quot;</span>) <span class="co"># You only need to do this if you </span></a>
-<a class="sourceLine" id="cb140-3" title="3">                          <span class="co"># do not already have the `readr`</span></a>
-<a class="sourceLine" id="cb140-4" title="4">                          <span class="co"># package.</span></a>
-<a class="sourceLine" id="cb140-5" title="5"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;readr&quot;</span>)</a>
-<a class="sourceLine" id="cb140-6" title="6"></a>
-<a class="sourceLine" id="cb140-7" title="7"><span class="co"># Read in dataframe from the csv file with Daily Show guests</span></a>
-<a class="sourceLine" id="cb140-8" title="8">daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;daily_show_guests.csv&quot;</span>, <span class="dt">skip =</span> <span class="dv">4</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="r-preliminaries.html#cb140-1"></a><span class="co"># Install (if needed) and load the `readr` package</span></span>
+<span id="cb140-2"><a href="r-preliminaries.html#cb140-2"></a><span class="kw">install.packages</span>(<span class="dt">pkgs =</span> <span class="st">&quot;readr&quot;</span>) <span class="co"># You only need to do this if you </span></span>
+<span id="cb140-3"><a href="r-preliminaries.html#cb140-3"></a>                          <span class="co"># do not already have the `readr`</span></span>
+<span id="cb140-4"><a href="r-preliminaries.html#cb140-4"></a>                          <span class="co"># package.</span></span>
+<span id="cb140-5"><a href="r-preliminaries.html#cb140-5"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;readr&quot;</span>)</span>
+<span id="cb140-6"><a href="r-preliminaries.html#cb140-6"></a></span>
+<span id="cb140-7"><a href="r-preliminaries.html#cb140-7"></a><span class="co"># Read in dataframe from the csv file with Daily Show guests</span></span>
+<span id="cb140-8"><a href="r-preliminaries.html#cb140-8"></a>daily_show &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;daily_show_guests.csv&quot;</span>, <span class="dt">skip =</span> <span class="dv">4</span>)</span></code></pre></div>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   YEAR = col_double(),
@@ -1939,8 +1942,8 @@ as the object <code>daily_show</code>? (For example, you’d run the code
 ##   Group = col_character(),
 ##   Raw_Guest_List = col_character()
 ## )</code></pre>
-<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb142-1" title="1"><span class="co"># Print out the first few rows</span></a>
-<a class="sourceLine" id="cb142-2" title="2">daily_show</a></code></pre></div>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="r-preliminaries.html#cb142-1"></a><span class="co"># Print out the first few rows</span></span>
+<span id="cb142-2"><a href="r-preliminaries.html#cb142-2"></a>daily_show</span></code></pre></div>
 <pre><code>## # A tibble: 2,693 x 5
 ##     YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List  
 ##    &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
@@ -1970,9 +1973,9 @@ would you need to change your <code>read_csv</code> call if you changed to use t
 FiveThirtyEight version of the raw data?</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb144-1" title="1"><span class="co"># Read in only the first 10 rows of the dataset</span></a>
-<a class="sourceLine" id="cb144-2" title="2">daily_show_first10 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;daily_show_guests.csv&quot;</span>, </a>
-<a class="sourceLine" id="cb144-3" title="3">                       <span class="dt">skip =</span> <span class="dv">4</span>, <span class="dt">n_max =</span> <span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="r-preliminaries.html#cb144-1"></a><span class="co"># Read in only the first 10 rows of the dataset</span></span>
+<span id="cb144-2"><a href="r-preliminaries.html#cb144-2"></a>daily_show_first10 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;daily_show_guests.csv&quot;</span>, </span>
+<span id="cb144-3"><a href="r-preliminaries.html#cb144-3"></a>                       <span class="dt">skip =</span> <span class="dv">4</span>, <span class="dt">n_max =</span> <span class="dv">10</span>)</span></code></pre></div>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   YEAR = col_double(),
@@ -1981,8 +1984,8 @@ FiveThirtyEight version of the raw data?</li>
 ##   Group = col_character(),
 ##   Raw_Guest_List = col_character()
 ## )</code></pre>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb146-1" title="1"><span class="co"># Check the dataframe</span></a>
-<a class="sourceLine" id="cb146-2" title="2">daily_show_first10</a></code></pre></div>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="r-preliminaries.html#cb146-1"></a><span class="co"># Check the dataframe</span></span>
+<span id="cb146-2"><a href="r-preliminaries.html#cb146-2"></a>daily_show_first10</span></code></pre></div>
 <pre><code>## # A tibble: 10 x 5
 ##     YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List  
 ##    &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
@@ -2022,18 +2025,18 @@ first show?</li>
 the last show date covered by the dataframe? Who was the last guest?</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb148-1" title="1"><span class="co"># Extract values from the dataframe</span></a>
-<a class="sourceLine" id="cb148-2" title="2"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>) <span class="co"># Load the &#39;dplyr&#39; package</span></a>
-<a class="sourceLine" id="cb148-3" title="3"><span class="kw">slice</span>(<span class="dt">.data =</span> daily_show, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>) <span class="co"># Look at the first two rows of data</span></a></code></pre></div>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="r-preliminaries.html#cb148-1"></a><span class="co"># Extract values from the dataframe</span></span>
+<span id="cb148-2"><a href="r-preliminaries.html#cb148-2"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>) <span class="co"># Load the &#39;dplyr&#39; package</span></span>
+<span id="cb148-3"><a href="r-preliminaries.html#cb148-3"></a><span class="kw">slice</span>(<span class="dt">.data =</span> daily_show, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>) <span class="co"># Look at the first two rows of data</span></span></code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group  Raw_Guest_List 
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;          
 ## 1  1999 actor                     1/11/99 Acting Michael J. Fox 
 ## 2  1999 Comedian                  1/12/99 Comedy Sandra Bernhard</code></pre>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb150-1" title="1"><span class="co"># Check the dimensions of the data</span></a>
-<a class="sourceLine" id="cb150-2" title="2"><span class="kw">dim</span>(<span class="dt">x =</span> daily_show)</a></code></pre></div>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="r-preliminaries.html#cb150-1"></a><span class="co"># Check the dimensions of the data</span></span>
+<span id="cb150-2"><a href="r-preliminaries.html#cb150-2"></a><span class="kw">dim</span>(<span class="dt">x =</span> daily_show)</span></code></pre></div>
 <pre><code>## [1] 2693    5</code></pre>
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb152-1" title="1"><span class="kw">head</span>(<span class="dt">x =</span> daily_show)</a></code></pre></div>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="r-preliminaries.html#cb152-1"></a><span class="kw">head</span>(<span class="dt">x =</span> daily_show)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group  Raw_Guest_List  
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;           
@@ -2043,7 +2046,7 @@ the last show date covered by the dataframe? Who was the last guest?</li>
 ## 4  1999 film actress              1/14/99 Acting Gillian Anderson
 ## 5  1999 actor                     1/18/99 Acting David Alan Grier
 ## 6  1999 actor                     1/19/99 Acting William Baldwin</code></pre>
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb154-1" title="1"><span class="kw">tail</span>(<span class="dt">x =</span> daily_show)</a></code></pre></div>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="r-preliminaries.html#cb154-1"></a><span class="kw">tail</span>(<span class="dt">x =</span> daily_show)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group  Raw_Guest_List      
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;               
@@ -2059,8 +2062,8 @@ the last show date covered by the dataframe? Who was the last guest?</li>
 first six. How could you use an option with <code>head</code> to do this?</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb156-1" title="1"><span class="co"># Look at the first few rows of the data</span></a>
-<a class="sourceLine" id="cb156-2" title="2"><span class="kw">head</span>(<span class="dt">x =</span> daily_show, <span class="dt">n =</span> <span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="r-preliminaries.html#cb156-1"></a><span class="co"># Look at the first few rows of the data</span></span>
+<span id="cb156-2"><a href="r-preliminaries.html#cb156-2"></a><span class="kw">head</span>(<span class="dt">x =</span> daily_show, <span class="dt">n =</span> <span class="dv">10</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 10 x 5
 ##     YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List  
 ##    &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
@@ -2099,23 +2102,23 @@ give you?</li>
 <code>select</code> function from the <code>dplyr</code> package.</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb158-1" title="1"><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>)</a>
-<a class="sourceLine" id="cb158-2" title="2"><span class="co"># Create a subset of the data with just Nate Silver appearances</span></a>
-<a class="sourceLine" id="cb158-3" title="3">nate_silver &lt;-<span class="st"> </span><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, Raw_Guest_List <span class="op">==</span><span class="st"> &quot;Nate Silver&quot;</span>)</a>
-<a class="sourceLine" id="cb158-4" title="4"></a>
-<a class="sourceLine" id="cb158-5" title="5"><span class="co"># Investigate this subset of the data</span></a>
-<a class="sourceLine" id="cb158-6" title="6">nate_silver</a></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="r-preliminaries.html#cb158-1"></a><span class="kw">library</span>(<span class="dt">package =</span> <span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb158-2"><a href="r-preliminaries.html#cb158-2"></a><span class="co"># Create a subset of the data with just Nate Silver appearances</span></span>
+<span id="cb158-3"><a href="r-preliminaries.html#cb158-3"></a>nate_silver &lt;-<span class="st"> </span><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, Raw_Guest_List <span class="op">==</span><span class="st"> &quot;Nate Silver&quot;</span>)</span>
+<span id="cb158-4"><a href="r-preliminaries.html#cb158-4"></a></span>
+<span id="cb158-5"><a href="r-preliminaries.html#cb158-5"></a><span class="co"># Investigate this subset of the data</span></span>
+<span id="cb158-6"><a href="r-preliminaries.html#cb158-6"></a>nate_silver</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##    YEAR GoogleKnowlege_Occupation Show     Group Raw_Guest_List
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;         
 ## 1  2012 Statistician              10/17/12 Media Nate Silver   
 ## 2  2012 Statistician              11/7/12  Media Nate Silver   
 ## 3  2014 Statistician              3/27/14  Media Nate Silver</code></pre>
-<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb160-1" title="1"><span class="kw">dim</span>(<span class="dt">x =</span> nate_silver)</a></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="r-preliminaries.html#cb160-1"></a><span class="kw">dim</span>(<span class="dt">x =</span> nate_silver)</span></code></pre></div>
 <pre><code>## [1] 3 5</code></pre>
-<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb162-1" title="1"><span class="kw">nrow</span>(<span class="dt">x =</span> nate_silver)</a></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="r-preliminaries.html#cb162-1"></a><span class="kw">nrow</span>(<span class="dt">x =</span> nate_silver)</span></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb164-1" title="1"><span class="kw">select</span>(<span class="dt">.data =</span> nate_silver, <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="r-preliminaries.html#cb164-1"></a><span class="kw">select</span>(<span class="dt">.data =</span> nate_silver, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 1
 ##   Show    
 ##   &lt;chr&gt;   
@@ -2135,22 +2138,22 @@ guest, but he had three visits.) Pick your favorite “one-off” example and fi
 out who the guest was for that occupation.</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb166-1" title="1">statisticians &lt;-<span class="st"> </span><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show,</a>
-<a class="sourceLine" id="cb166-2" title="2">                        GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Statistician&quot;</span>)</a>
-<a class="sourceLine" id="cb166-3" title="3">statisticians</a></code></pre></div>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="r-preliminaries.html#cb166-1"></a>statisticians &lt;-<span class="st"> </span><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show,</span>
+<span id="cb166-2"><a href="r-preliminaries.html#cb166-2"></a>                        GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Statistician&quot;</span>)</span>
+<span id="cb166-3"><a href="r-preliminaries.html#cb166-3"></a>statisticians</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##    YEAR GoogleKnowlege_Occupation Show     Group Raw_Guest_List
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;         
 ## 1  2012 Statistician              10/17/12 Media Nate Silver   
 ## 2  2012 Statistician              11/7/12  Media Nate Silver   
 ## 3  2014 Statistician              3/27/14  Media Nate Silver</code></pre>
-<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb168-1" title="1">num_visits &lt;-<span class="st"> </span><span class="kw">table</span>(daily_show<span class="op">$</span>GoogleKnowlege_Occupation)</a>
-<a class="sourceLine" id="cb168-2" title="2"><span class="kw">head</span>(<span class="dt">x =</span> num_visits) <span class="co"># Note: This is a vector rather than a dataframe</span></a></code></pre></div>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="r-preliminaries.html#cb168-1"></a>num_visits &lt;-<span class="st"> </span><span class="kw">table</span>(daily_show<span class="op">$</span>GoogleKnowlege_Occupation)</span>
+<span id="cb168-2"><a href="r-preliminaries.html#cb168-2"></a><span class="kw">head</span>(<span class="dt">x =</span> num_visits) <span class="co"># Note: This is a vector rather than a dataframe</span></span></code></pre></div>
 <pre><code>## 
 ##          -          0   academic   Academic accountant   activist 
 ##          1          4          3          3          1         14</code></pre>
-<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb170-1" title="1">single_visits &lt;-<span class="st"> </span>num_visits[num_visits <span class="op">==</span><span class="st"> </span><span class="dv">1</span>] <span class="co"># This is using a &quot;logical operator&quot; to extract values that meet a condition</span></a>
-<a class="sourceLine" id="cb170-2" title="2"><span class="kw">names</span>(single_visits)</a></code></pre></div>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="r-preliminaries.html#cb170-1"></a>single_visits &lt;-<span class="st"> </span>num_visits[num_visits <span class="op">==</span><span class="st"> </span><span class="dv">1</span>] <span class="co"># This is using a &quot;logical operator&quot; to extract values that meet a condition</span></span>
+<span id="cb170-2"><a href="r-preliminaries.html#cb170-2"></a><span class="kw">names</span>(single_visits)</span></code></pre></div>
 <pre><code>##   [1] &quot;-&quot;                                                          
 ##   [2] &quot;accountant&quot;                                                 
 ##   [3] &quot;administrator&quot;                                              
@@ -2353,27 +2356,27 @@ out who the guest was for that occupation.</li>
 ## [200] &quot;us secretary of defense&quot;                                    
 ## [201] &quot;us secretary of energy&quot;                                     
 ## [202] &quot;white house official&quot;</code></pre>
-<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb172-1" title="1"><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;chess player&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="r-preliminaries.html#cb172-1"></a><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;chess player&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 5
 ##    YEAR GoogleKnowlege_Occupati… Show    Group Raw_Guest_List                   
 ##   &lt;dbl&gt; &lt;chr&gt;                    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;                            
 ## 1  2012 chess player             11/8/12 Misc  Katie Dellamaggiore and Pobo Efe…</code></pre>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb174-1" title="1"><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;mathematician&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="r-preliminaries.html#cb174-1"></a><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;mathematician&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List        
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;                 
 ## 1  2005 mathematician             9/14/05 Academic Dr. William A. Dembski</code></pre>
-<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb176-1" title="1"><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;orca trainer&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="r-preliminaries.html#cb176-1"></a><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;orca trainer&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group     Raw_Guest_List
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;         
 ## 1  2015 orca trainer              3/26/15 Athletics John Hargrove</code></pre>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb178-1" title="1"><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Puzzle Creator&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="r-preliminaries.html#cb178-1"></a><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Puzzle Creator&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group Raw_Guest_List
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         
 ## 1  2003 Puzzle Creator            8/20/03 Media Will Shortz</code></pre>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb180-1" title="1"><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Scholar&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="r-preliminaries.html#cb180-1"></a><span class="kw">filter</span>(<span class="dt">.data =</span> daily_show, GoogleKnowlege_Occupation <span class="op">==</span><span class="st"> &quot;Scholar&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group    Raw_Guest_List
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;         
@@ -2422,7 +2425,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/01-prelim.Rmd",
+"link": "https://github.com/geanders/RProgrammingForResearch/edit/master/01-prelim.Rmd",
 "text": "Edit"
 },
 "history": {
