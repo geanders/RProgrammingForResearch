@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2020-08-25" />
+<meta name="date" content="2020-08-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -219,7 +219,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.9.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#dataframes"><i class="fa fa-check"></i><b>1.9.2</b> Dataframes</a></li>
 </ul></li>
 <li class="chapter" data-level="1.10" data-path="r-preliminaries.html"><a href="r-preliminaries.html#in-course-exercise-chapter-1"><i class="fa fa-check"></i><b>1.10</b> In-course Exercise Chapter 1</a><ul>
-<li class="chapter" data-level="1.10.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#trying-out-the-code-in-slides-so-far"><i class="fa fa-check"></i><b>1.10.1</b> Trying out the code in slides so far</a></li>
+<li class="chapter" data-level="1.10.1" data-path="r-preliminaries.html"><a href="r-preliminaries.html#trying-out-the-code-in-slides-for-first-lecture-videos"><i class="fa fa-check"></i><b>1.10.1</b> Trying out the code in slides for first lecture videos</a></li>
 <li class="chapter" data-level="1.10.2" data-path="r-preliminaries.html"><a href="r-preliminaries.html#writing-your-code-as-an-r-script"><i class="fa fa-check"></i><b>1.10.2</b> Writing your code as an R script</a></li>
 <li class="chapter" data-level="1.10.3" data-path="r-preliminaries.html"><a href="r-preliminaries.html#about-the-dataset"><i class="fa fa-check"></i><b>1.10.3</b> About the dataset</a></li>
 <li class="chapter" data-level="1.10.4" data-path="r-preliminaries.html"><a href="r-preliminaries.html#manually-creating-vectors"><i class="fa fa-check"></i><b>1.10.4</b> Manually creating vectors</a></li>
@@ -686,19 +686,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb531-1"><a href="entering-and-cleaning-data-2.html#cb531-1"></a>wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01 -0.567 -0.282  2.74
-## 2 2009-01-02 -1.47   0.864  5.96
-## 3 2009-01-03 -0.587  1.13  -1.39</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01  0.902 -0.454 -7.09 
+## 2 2009-01-02  0.181 -1.87  -0.346
+## 3 2009-01-03 -0.636 -3.00  -0.202</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb533-1"><a href="entering-and-cleaning-data-2.html#cb533-1"></a>wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01 -0.567 -0.282  2.74
-## 2 2009-01-02 -1.47   0.864  5.96
-## 3 2009-01-03 -0.587  1.13  -1.39</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01  0.902 -0.454 -7.09 
+## 2 2009-01-02  0.181 -1.87  -0.346
+## 3 2009-01-03 -0.636 -3.00  -0.202</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>pivot_longer</code> to convert wide data to long data:</p>
 <div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb535-1"><a href="entering-and-cleaning-data-2.html#cb535-1"></a>long_stocks &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dt">data =</span> wide_stocks,</span>
 <span id="cb535-2"><a href="entering-and-cleaning-data-2.html#cb535-2"></a>                            <span class="dt">cols =</span> <span class="op">-</span>time,</span>
@@ -708,21 +708,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X     -0.567
-## 2 2009-01-01 Y     -0.282
-## 3 2009-01-01 Z      2.74 
-## 4 2009-01-02 X     -1.47 
-## 5 2009-01-02 Y      0.864</code></pre>
+## 1 2009-01-01 X      0.902
+## 2 2009-01-01 Y     -0.454
+## 3 2009-01-01 Z     -7.09 
+## 4 2009-01-02 X      0.181
+## 5 2009-01-02 Y     -1.87</code></pre>
 <p>In this “longer” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="entering-and-cleaning-data-2.html#cb537-1"></a>long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X     -0.567
-## 2 2009-01-01 Y     -0.282
-## 3 2009-01-01 Z      2.74 
-## 4 2009-01-02 X     -1.47 
-## 5 2009-01-02 Y      0.864</code></pre>
+## 1 2009-01-01 X      0.902
+## 2 2009-01-01 Y     -0.454
+## 3 2009-01-01 Z     -7.09 
+## 4 2009-01-02 X      0.181
+## 5 2009-01-02 Y     -1.87</code></pre>
 <p>The format for a <code>pivots_longer</code> call is:</p>
 <div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb539-1"><a href="entering-and-cleaning-data-2.html#cb539-1"></a><span class="co">## Generic code</span></span>
 <span id="cb539-2"><a href="entering-and-cleaning-data-2.html#cb539-2"></a>new_df &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(old_df,</span>
@@ -747,13 +747,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb541-3"><a href="entering-and-cleaning-data-2.html#cb541-3"></a>                      <span class="dt">values_from =</span> price)</span>
 <span id="cb541-4"><a href="entering-and-cleaning-data-2.html#cb541-4"></a>stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
-##   time            X       Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01 -0.567 -0.282   2.74
-## 2 2009-01-02 -1.47   0.864   5.96
-## 3 2009-01-03 -0.587  1.13   -1.39
-## 4 2009-01-04 -0.735 -0.0693  2.62
-## 5 2009-01-05 -1.01  -2.62    2.45</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01  0.902 -0.454 -7.09 
+## 2 2009-01-02  0.181 -1.87  -0.346
+## 3 2009-01-03 -0.636 -3.00  -0.202
+## 4 2009-01-04  1.28   0.902 -3.60 
+## 5 2009-01-05 -3.02  -0.914  5.74</code></pre>
 <p>Notice that this reverses the action of <code>pivot_longer</code>.</p>
 <p>The “wider” your data the less likely it is to be tidy, so won’t use <code>pivot_wider</code> frequently when you are preparing data for analysis. However, <code>pivot_wider</code> can be very helpful in creating tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>pivot_wider</code> to rearrange the final summary to create an attractive table.</p>
@@ -763,11 +763,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="entering-and-cleaning-data-2.html#cb545-1"></a>stock_summary</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   stock     N     mean    sd
-##   &lt;chr&gt; &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10 -0.729   0.937
-## 2 Y        10  0.00731 1.86 
-## 3 Z        10  1.36    3.94</code></pre>
+##   stock     N   mean    sd
+##   &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 X        10  0.182  1.30
+## 2 Y        10 -0.289  2.52
+## 3 Z        10 -2.30   3.59</code></pre>
 <div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb547-1"><a href="entering-and-cleaning-data-2.html#cb547-1"></a>stock_summary <span class="op">%&gt;%</span></span>
 <span id="cb547-2"><a href="entering-and-cleaning-data-2.html#cb547-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</span>
 <span id="cb547-3"><a href="entering-and-cleaning-data-2.html#cb547-3"></a>                                    <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span></span>
@@ -794,9 +794,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="even">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">-0.73 (0.94)</td>
-<td align="left">0.01 (1.86)</td>
-<td align="left">1.36 (3.94)</td>
+<td align="left">0.18 (1.3)</td>
+<td align="left">-0.29 (2.52)</td>
+<td align="left">-2.3 (3.59)</td>
 </tr>
 </tbody>
 </table>
