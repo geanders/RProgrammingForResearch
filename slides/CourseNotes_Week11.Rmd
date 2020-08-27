@@ -1,5 +1,9 @@
 ---
 title: 'Exploring data #3'
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 output:
   beamer_presentation:
     theme: metropolis
@@ -28,6 +32,8 @@ Source: Flikr commons, https://www.flickr.com/photos/internetarchivebookimages/2
 ## The lady tasting tea
 
 If you'd like to learn more about R.A. Fisher, there's an excellent article by Ben Christopher called ["Why the Father of Modern Statistics Didn’t Believe Smoking Caused Cancer"](https://priceonomics.com/why-the-father-of-modern-statistics-didnt-believe/).
+
+\medskip
 
 \begin{quotation}
 ``If he were alive today, Ronald Fisher would have one hell of a Twitter account." \\
@@ -86,7 +92,7 @@ n_right
 
 ## The lady tasting tea
 
-Write a function that will run one simulation. It takes the argument `n_cups`--- in real life, they used eight cups (`n_cups = 8`). Note that this function just wraps the code we just walked through. 
+Write a function that will run one simulation. It takes the argument `n_cups`---in real life, they used eight cups (`n_cups = 8`). Note that this function just wraps the code we just walked through. 
 
 ```{r}
 sim_null_tea <- function(n_cups){
@@ -145,7 +151,7 @@ perc_all_right
 ## The lady tasting tea
 
 ```{r out.width = "0.6\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center"}
-tea_sims <- data_frame(n_cups, perc_all_right)
+tea_sims <- tibble(n_cups, perc_all_right)
 ggplot(tea_sims, aes(x = n_cups, y = perc_all_right)) + 
   geom_point() + xlab("# of cups tested") + 
   ylab("Probability of getting\nall cups right if guessing")
@@ -160,7 +166,7 @@ P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n
 $$
 
 ```{r echo = FALSE, eval = FALSE}
-tea_table <- data_frame(` ` = c("Really milk", "Really tea", "Total"),
+tea_table <- tibble(` ` = c("Really milk", "Really tea", "Total"),
                         `Guessed milk` = c("$n_{11}$", "$n_{21}$",
                                            "$n_{+1} = 4$"),
                         `Guessed tea` = c("$n_{12}$", "$n_{22}$",
@@ -217,7 +223,7 @@ Other density functions:
 You can get the analytical result for each of the number of cups we simulated and compare those values to our simulations:
 
 ```{r}
-analytical_results <- data_frame(n_cups = seq(2, 14, 2)) %>%
+analytical_results <- tibble(n_cups = seq(2, 14, 2)) %>%
   mutate(perc_all_right = dhyper(x = n_cups / 2,
                                  m = n_cups / 2,
                                  n = n_cups / 2,
@@ -687,7 +693,7 @@ This file has > 37,000,000 lines. The total file size is 2.26 GB.
 `fread` is the `data.table` equivalent of the `read.table` family of functions: 
 
 ```{r echo = FALSE}
-precip_dir <- "~/r_projects/hurricaneexposuredata/data-raw/"
+precip_dir <- "~/Documents/r_packages/hurricaneexposuredata/data-raw/"
 ```
 
 ```{r message = FALSE, warning = FALSE}
@@ -870,4 +876,3 @@ knitr::include_graphics("../figures/RDatabaseInterface.png")
 - Rcpp website: http://www.rcpp.org
 - *Statistical Computing in C++ and R.* Eubank and Kupresanin.
 - *Parallel Computing for Data Science.* Norman Matloff.
-- Datacamp course on `data.table`

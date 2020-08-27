@@ -1,0 +1,174 @@
+---
+title: "Preliminaries in R"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+# Function calls
+
+## Function calls
+
+In general, function calls in R take the following structure: 
+
+```{r eval = FALSE}
+## Generic code (this won't run)
+function_name(formal_argument_1 = named_argument_1, 
+              formal_argument_2 = named_argument_2,
+              [etc.])
+```
+
+A function call forms a complete R expression, and the output will 
+be the result of running `print` or `show` on the object that is output
+by the function call.
+
+## Function calls
+
+Here is an example of this structure: 
+
+```{r}
+print(x = "Hello world")
+```
+
+## Function calls
+
+```{r fig.align = "center", out.width = "325pt", echo = FALSE}
+knitr::include_graphics("../figures/function_call.jpg")
+```
+
+In this example, we're **calling** a function with the **name** `print`. It has one
+**argument**, with a **formal argument** of `x`, which in this call we've provided
+the **named argument** "Hello world". 
+
+## Function calls
+
+The **arguments** are how you customize the call to an R function. 
+
+For example, you can use change the named argument value to print different messages 
+with the `print` function: 
+
+```{r}
+print(x = "Hello world")
+print(x = "Hi Fort Collins")
+```
+
+## Function calls
+
+Some functions do not require any arguments. For example, the `getRversion` function will 
+print out the version of R you are using.
+
+```{r}
+getRversion()
+```
+
+## Function calls
+
+Some functions will accept multiple arguments. For example, the `print` function allows you 
+to specify whether the output should include quotation marks, using the `quote`
+formal argument: 
+
+```{r}
+print(x = "Hello world", quote = TRUE)
+print(x = "Hello world", quote = FALSE)
+```
+
+## Function calls
+
+Arguments can be **required** or **optional**. 
+
+For a required argument, if you don't provide a value for the argument when you
+call the function, R will respond with an error. For example, `x` is a **required argument**
+for the `print` function, so if you try to call the function without it, you'll get an 
+error: 
+
+```{r eval = FALSE}
+print()
+```
+
+```
+Error in print.default() : argument "x" is 
+  missing, with no default
+```
+
+## Function calls
+
+For an **optional argument** on the other hand, R knows a **default value** for that 
+argument, so if you don't give it a value for that argument, it will just use the 
+default value for that argument. 
+
+For example, for the `print` function, the `quote` argument has the default value 
+`TRUE`. So if you don't specify a value for that argument, R will assume it should 
+use `quote = TRUE`. That's why the following two calls give the same result: 
+
+```{r}
+print(x = "Hello world", quote = TRUE)
+print(x = "Hello world")
+```
+
+## Function helpfiles
+
+Often, you'll want to find out more about a function, including:
+
+- Examples of how to use the function
+- Which arguments you can include for the function
+- Which  arguments are required versus optional
+- What the default values are for optional arguments. 
+
+You can find out all this information in the function's **helpfile**, which 
+you can access using the function `?`. 
+
+## Function helpfiles
+
+For example, the `mean` function will let you calculate the mean (average) of a 
+group of numbers. To find out more about this function, at the console type:
+
+```{r eval = FALSE}
+?mean
+```
+
+This will open a helpfile in the "Help" pane in RStudio.
+
+## Function helpfiles
+
+```{r fig.align = "center", out.width = "300pt", echo = FALSE}
+knitr::include_graphics("../figures/helpfile.jpg")
+```
+
+The helpfile includes sections giving the function's **usage**, **arguments**,
+**value**, and **examples**.
+
+## Function helpfiles
+
+```{r fig.align = "center", out.width = "250pt", echo = FALSE}
+knitr::include_graphics("../figures/helpfile_arguments.jpg")
+```
+
+You can figure out which arguments are **required** and which are
+**optional** in the Usage section of the helpfile.
+
+## Operators
+
+There's one class of functions that looks a bit different from others. These are the 
+infix **operator** functions. 
+
+Instead using parentheses after the function name, they usually go *between* two 
+arguments. 
+
+One common example is the `+` operator: 
+
+```{r}
+2 + 3
+```
+
+## Operators
+
+There are operators for several mathematical functions: `+`, `-`, `*`, `/`.
+
+There are also other operators, including **logical operators** and 
+**assignment operators**, which we'll cover later.
+
