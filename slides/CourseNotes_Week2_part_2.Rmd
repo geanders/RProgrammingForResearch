@@ -1,0 +1,178 @@
+---
+title: "Entering / cleaning data 1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE}
+options(width = 50)
+```
+
+# Reading in flat files
+
+## Reading in flat files
+
+R can read any of the types of files we just looked at by using one of the functions from the `readr` package: 
+
+File type     | General function
+------------- | ----------------
+Delimited     | `read_delim`
+Fixed width   | `read_fwf`
+
+You will just need to be able to clearly tell R *how* to read the file in, including what type of flat file it is and what delimiter it uses.
+
+## Reading in flat files
+
+For example, the file "AWOIS_Wrecks_KnownYear.tab" is a flat delimited file with tabs as delimiters containing the subset of the [Office of the Coast Survey's Automated Wreck and Obstruction Information System (AWOIS)](https://www.nauticalcharts.noaa.gov/data/wrecks-and-obstructions.html) for which the year the vessel sank is known. 
+
+You can download this file by going to [this link](https://github.com/geanders/RProgrammingForResearch/blob/master/data/AWOIS_Wrecks_KnownYear.tab) and using the "Raw" button in the top right hand corner (right click and select "Download Linked File").
+
+## Reading in flat files
+
+If save this file in your working directory, to read it in and assign it the name `shipwrecks`, you can run: 
+
+```{r eval = FALSE}
+library("readr")
+shipwrecks <- read_delim("AWOIS_Wrecks_KnownYear.tab", 
+                        delim = "\t")
+```
+```{r echo = FALSE, message = FALSE}
+library("readr")
+shipwrecks <- read_delim("../data/AWOIS_Wrecks_KnownYear.tab", 
+                        delim = "\t")
+```
+
+
+## `readr` family of functions
+
+Some of the interesting options with the `readr` family of functions are:
+
+Option  | Description
+------- | -----------
+`skip`    | How many lines of the start of the file should you skip?
+`col_names`  | What would you like to use as the column names?
+`col_types`   | What would you like to use as the column types?
+`n_max`   | How many rows do you want to read in?
+`na` | How are missing values coded?
+
+
+## Reading in flat files
+
+The "daily_show_guests.csv" file you worked with in the previous In-Course Exercise is a delimited flat file with commas as the delimiters. **It also has four lines of information about the data, before the actual data begins.** 
+
+```{r echo = FALSE, fig.align='center', out.width = "300pt"}
+knitr::include_graphics("../figures/lines_at_start_of_file.png")
+```
+
+## Reading in flat files
+
+You can handle this by using the `skip` option to tell R to skip the first four lines:
+
+\footnotesize
+
+```{r eval = FALSE, echo = TRUE}
+read_delim("daily_show_guests.csv", delim = ",", skip = 4)
+```
+
+\footnotesize
+
+```{r echo = FALSE, message = FALSE}
+read_delim("../data/daily_show_guests.csv", delim = ",", skip = 4)
+```
+
+## `readr` family of functions
+
+Many members of the `readr` package that read delimited files are doing the same basic thing. The only difference is what defaults they have for the delimiter (`delim`). \medskip
+
+Some key members of the `readr` family for delimited data:
+
+Function     | Delimiter
+------------ | ---------- 
+`read_csv`    |  comma     
+`read_csv2`   | semi-colon 
+`read_table2` | whitespace
+`read_tsv`    | tab
+
+## `readr` family of functions
+
+For any type of delimited flat files, you can also use the more general `read_delim` function to read in the file. However, you will have to specify yourself what the delimiter is (e.g., `delim = ","` for a comma-separated file).
+
+For example, the following two calls do the same thing: 
+
+```{r eval = FALSE}
+read_delim("daily_show_guests.csv", delim = ",", skip = 4)
+read_csv("daily_show_guests.csv", skip = 4)
+```
+
+## `readr` family of functions
+
+The `readr` package also includes some functions for reading in fixed width files: 
+
+- `read_fwf`
+- `read_table`
+
+These allow you to specify field widths for each fixed width field, but they will also try to determine the field-widths automatically.
+
+## Reading data from other files types
+
+You can also read data in from a variety of other file formats, including:
+
+```{r echo = FALSE}
+read_funcs <- data.frame(file_type = c("Excel",
+                                       "SAS",
+                                       "SPSS",
+                                       "Stata"),
+                         func = c("`read_excel`",
+                                  "`read_sas`",
+                                  "`read_spss`",
+                                  "`read_stata`"),
+                         pkg = c("`readxl`",
+                                 "`haven`",
+                                 "`haven`",
+                                 "`haven`"))
+knitr::kable(read_funcs, col.names = c("File type", "Function", "Package"))
+```
+
+## Reading in flat files
+
+Once you read the data in, you should investigate it to make sure it looks like
+it was read in without bugs. 
+
+For example, you may want to look at a subset of the data using the tools you 
+learned last week:
+
+```{r message = FALSE}
+# Check out a subset of the data
+library("dplyr")
+slice(.data = select(.data = shipwrecks, c(2, 4, 5, 9)), 1:4)
+```
+
+## Reading in flat files
+
+You can also use the `head` function to look at the first few rows:
+
+```{r}
+head(x = shipwrecks, n = 3)
+```
+
+## Reading in flat files
+
+Or you can also use the `tail` function to look at the last few rows:
+
+```{r}
+tail(x = shipwrecks, n = 3)
+```
+
+## Reading in flat files
+
+Also, check that you have the number of rows and columns that you expect: 
+
+```{r}
+dim(shipwrecks)
+```

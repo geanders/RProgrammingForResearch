@@ -1,0 +1,165 @@
+---
+title: "Preliminaries in R"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+# The "package" system
+
+## R packages
+
+Your original download of R is only a starting point:
+
+```{r echo = FALSE, out.width = "200pt", fig.align='center'}
+knitr::include_graphics("../figures/TrainBasic.JPG")
+```
+
+## R packages
+
+To take full advantage of R, you'll want to add on packages:
+
+```{r echo = FALSE, out.width = "200pt", fig.align='center'}
+knitr::include_graphics("../figures/TrainComplex.JPG")
+```
+
+## What's in a package?
+
+```{r echo = FALSE, out.width = "200pt", fig.align='center'}
+knitr::include_graphics("../figures/package_contents.jpg")
+```
+
+## R packages
+
+You can get packages to add-on to your version of R from:
+
+- CRAN 
+- Bioconductor (specifically for bioinformatics-related packages)
+- GitHub
+- Your friends and collaborators
+- Make them yourself
+
+## CRAN 
+
+The Comprehensive R Archive Network (CRAN) is the primary source of R packages,
+with thousands of available packages. Each of the packages available on CRAN has
+a unique name and has passed some broad checks.
+
+```{r echo = FALSE, out.width = "300pt", fig.align='center'}
+knitr::include_graphics("../figures/CRAN_package_10000.png")
+```
+
+## Installing from CRAN  
+
+The main way you will install new packages will be with the `install.packages`
+function. By default, this installs packages from CRAN.
+
+For example, to get the package "phonenumber", you could use:
+
+```{r, eval = FALSE}
+install.packages(pkgs = "phonenumber")
+```
+
+```{r fig.align = "center", out.width = "75pt", echo = FALSE}
+knitr::include_graphics("../figures/telephone_keypad.png")
+```
+
+## Installing from CRAN  
+
+**Installing** a package downloads it (usually from CRAN) to your computer. 
+
+\medskip
+
+You will need to be online to install a package, because it downloads the package
+from an online repository. 
+
+\medskip
+
+Once you install a package, you do not need to install it again. It's on your
+computer. (At least, until the package maintainer creates a new version.)
+
+## Installing versus loading
+
+```{r echo = FALSE, out.width = "275pt", fig.align='center'}
+knitr::include_graphics("../figures/install_vs_library.jpg")
+```
+
+**Install** a package (with `install.packages`) to get it onto your computer. **Load** it (with `library`) to get it into
+your R session.
+
+
+
+## How to use a package you've installed
+
+1. Open an R session
+2. Load the package
+3. Use the package's vignette and helpfiles to figure out how to use the package
+(optional)
+4. Use functions in the package
+
+## Loading an installed package
+
+Once you have a package, you can load it to an R session using the `library()`
+function.
+
+```{r}
+library(package = "phonenumber")
+```
+
+Once it's loaded, you can use all its functions.
+
+```{r}
+message <- "HelloWorld"
+letterToNumber(value = message)
+```
+
+
+
+## Package vignettes
+
+Many packages will come with a "vignette", or a tutorial on how to use the
+package. These are very helpful tools for figuring out how to use a package.
+
+To get a list of all the vignettes a package has, use the `vignette` function,
+specifying a package name with `package`:
+
+```{r eval = FALSE}
+vignette(package = "phonenumber")
+```
+
+## Package vignettes
+
+To open a vignette once you know its name, you can also use the `vignette`
+function. For example, to open the vignette called "phonenumber" for the
+`phonenumber` package, run:
+
+```{r eval = FALSE}
+vignette(topic = "phonenumber",
+         package = "phonenumber")
+```
+
+Many packages only have one vignette, with the same name as the package. In that
+case, the vignette topic usually has the same name as the whole package, so you can 
+open the vignette using a shorter call:
+
+```{r eval = FALSE}
+vignette(topic = "phonenumber")
+```
+
+## Function helpfiles
+
+Packages include helpfiles for all the functions they intend for people to use.
+
+\medskip
+
+You can access the helpfile for a function using `?` followed by the function
+name. For example, to get the helpfile for `letterToNumber`, you can run:
+
+```{r eval = FALSE}
+?letterToNumber
+```
