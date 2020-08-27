@@ -1,0 +1,80 @@
+---
+title: "Exploring data #1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE}
+options(width = 50)
+```
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(readr)
+library(dplyr)
+```
+
+```{r echo = FALSE}
+beijing_pm <- read_rds("../data/beijing_pm.rds")
+```
+
+# Data from R packages
+
+## Data from R packages
+
+So far we've covered two ways to get data into R:
+
+1. From flat files (either on your computer or online)
+2. From files like SAS and Excel
+
+Many R packages come with their own data, which is very easy to load and use.
+
+## Data from R packages
+
+For example, the `faraway` package has a dataset called `worldcup` that you'll
+use today. To load it, use the `data()` function once you've loaded the package
+with the name of the dataset as its argument:
+
+```{r}
+library("faraway")
+data("worldcup")
+```
+
+## Data from R packages
+
+Unlike most data objects you'll work with, the data that comes with an R package
+will often have its own help file. You can access this using the `?` operator:
+
+```{r, eval = FALSE}
+?worldcup
+```
+
+## Data from R packages
+
+To find out all the datasets that are available in the packages you currently
+have loaded, run `data()` without an option inside the parentheses:
+
+```{r, eval = FALSE}
+data()
+```
+
+To find out all of the datasets available within a certain package, run `data`
+with the argument `package`:
+
+```{r eval = FALSE}
+data(package = "faraway")
+```
+
+As a note, you can similarly use `library()`, without the name of a package, to
+list all of the packages you have installed that you could call with
+`library()`:
+
+```{r, eval = FALSE}
+library()
+```
+
