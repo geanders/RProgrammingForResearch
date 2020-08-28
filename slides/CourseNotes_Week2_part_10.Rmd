@@ -1,0 +1,84 @@
+---
+title: "Entering / cleaning data 1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE}
+options(width = 50)
+```
+
+# Odds and ends
+
+## `dplyr` versus base R
+
+Just so you know, all of these actions also have alternatives in base R:
+
+```{r echo = FALSE}
+dplyr_vs_base <- data.frame(dplyr = c("`rename`",
+                                      "`select`",
+                                      "`slice`",
+                                      "`filter`",
+                                      "`mutate`"),
+                            base = c("Reassign `colnames`",
+                                     "Square bracket indexing (`[` , `]`)",
+                                     "Square bracket indexing (`[` , `]`)",
+                                     "`subset`",
+                                     "Replacement assignment expression"))
+knitr::kable(dplyr_vs_base, col.names = c("`dplyr`", 
+                                          "Base R equivalent"))
+```
+
+You will see these alternatives used in older code examples.
+
+## Alternative package::function notation
+
+The `library` function is the most common way you'll access functions from R
+packages, but it's not the only way to do this. There is another type of
+notation that will allow you to use any external function from any package you
+have installed on your computer: the `package::function` notation.
+
+You can call functions by specifying the package name, a double colon, and then
+the function name you want to use from that package. For example:
+
+```{r}
+stringr::str_to_upper("Astrophysicist")
+```
+
+## Alternative package::function notation
+
+The `package::function` notation is not typically used because it substantially
+increases how much you have to type in your code.
+
+However, there can be cases where a function name is ambiguous. For example, you
+might want to use functions from two different packages that have the same name.
+In this case, using the `package::function` notation makes it crystal clear
+which function you mean.
+
+In practice, this problem is most likely to come up when you've loaded both
+`plyr` and `dplyr`, which share several function names and are both popular
+packages.
+
+## Alternative package::function notation
+
+There is another useful trick that you can do with the `package::function` notation.
+
+RStudio has tab complemention, which means that once you start typing an object
+name or function, if you press the Tab key, RStudio will give you suggestions
+for how you can finish the name.
+
+If you want to scroll through the names of all the external functions in a
+package, you can do so by typing something like `?stringr::` in the console
+(don't press Return) and then pressing the Tab key.
+
+
+
+
+
+
