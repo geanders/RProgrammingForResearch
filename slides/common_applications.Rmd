@@ -1,0 +1,508 @@
+---
+title: "Common Applications"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output:
+  beamer_presentation:
+    theme: metropolis
+fontsize: 10pt
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.path = 'figures/',
+  warning = FALSE,
+  message = FALSE)
+```
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+# Functions
+
+## Writing your own functions
+
+* When to write your own function?
+
+## Writing your own functions
+
+
+* when you are writing the same code over and over again
+* when you are running the same code over and over again
+* when you want to make your code available to others
+
+## Writing your own functions
+
+Nice column names!
+
+```{r}
+nice_name <- function(x){gsub(" ", "_", tolower(x))}
+```
+
+## Writing your own functions
+
+Make a nice(er) column name
+
+```{r}
+evil_name <- "StuPid name"
+
+nice_name(evil_name)
+```
+
+## Writing your own functions
+
+We can use the function in to in a tidy pipeline, just like any of the built-in functions
+
+```{r, echo=FALSE}
+set.seed(13)
+df <- tibble("A B C" = LETTERS[1:26], NORM = rnorm(26, mean = 5, sd = 1))
+head(df, 5)
+```
+
+## Writing your own functions
+
+We can use the function in to in a tidy pipeline, just like any of the built-in functions
+
+```{r}
+df %>% rename_all(nice_name) %>% slice(1:5)
+```
+
+# Mutate and factors
+
+## if_else
+
+The `if_else()` function returns one of two options based on the result of a logical test:
+
+```{r, eval=FALSE}
+if_else(condition [test with yes/no answer],
+        true [do this],
+        false [do this], ...)
+```
+
+## if_else
+
+For example:
+
+```{r, echo=FALSE}
+df <- tibble(var = c("teaspoon", "Mr. Nick", "silverspoon", "just a spoon ok!", "servingspoon", "Mr. Spoon", "tablespoon"))
+df
+```
+
+## if_else
+
+Spoon or person?
+
+```{r}
+df_type <-
+df %>%
+mutate(type = if_else(condition = grepl(".*spoon", var),
+                     true = "spoon",
+                     false = "person"))
+```
+
+## combining factors
+
+We can make factors with the `factor()` function.
+
+```{r}
+df_factor <- df_type %>%
+mutate(type_fct = factor(type))
+df_factor
+```
+
+## combining factors
+
+A factor with 6 levels
+
+```{r}
+x <- factor(c("control", "lpg", "gasifier",
+              "fan_rocket", "rocket_elbow", "three_stone"))
+```
+
+## combining factors
+
+Combine 4 of the levels
+
+```{r}
+library(forcats)
+
+fct_collapse(x, wood = c("gasifier", "fan_rocket",
+                         "rocket_elbow", "three_stone"))
+```
+
+# Loading multiple files
+
+## Loading multiple files
+
+Common task you might be faced with is loading multiple files in the same format
+
+* e.g. an instrument that creates a file every day
+* how might we go about this?
+
+## Loading multiple files
+
+First we need to know the files we want to load
+
+* The `list.files()` function can help us here:
+
+```{r, eval = FALSE}
+list.files(
+  path = ["path to directory you wish to load"],
+  pattern = ["regular expression?"],
+  full.names = ["full path to each file?"],
+  include.dirs = ["include files in sub-folders?"]
+  ...)
+```
+
+## Loading multiple files
+
+Let's list our files
+
+```{r, eval = TRUE}
+files <- list.files(path = ".")
+files[1:5]
+```
+
+## Loading multiple files
+
+Let's try again!
+
+```{r, eval = TRUE}
+files <- list.files(path = "../data/pax_data")
+files[1:5]
+```
+
+## Loading multiple files
+
+And again!
+
+```{r, eval = TRUE}
+files <- list.files(path = "../data/pax_data",
+           pattern = "^PAX.*.txt$",
+           full.names = TRUE)
+files[1:5]
+```
+
+## Loading multiple files
+
+Now that we know the file names, we need a function to load the data
+
+```{r, eval = TRUE}
+library(readr)
+data_file <- read_delim(files[1],
+             delim = "\t",
+             col_type = cols())
+data_file
+```
+
+## Loading multiple files
+
+Can up `map()` over vector of file names to read in all the data.
+
+```{r}
+library(purrr)
+library(dplyr)
+data_pax <- map(files, read_delim,
+                delim = "\t", col_type = cols()) %>%
+bind_rows()
+```
+
+## Loading multiple files
+
+Looking at what we loaded:
+
+```{r}
+head(data_pax, 3)
+```
+
+```{r, eval = TRUE}
+nrow(data_pax)
+```
+
+## Loading multiple files
+
+We don't have to use an existing function:
+
+```{r}
+read_pax <- function(file){
+read_delim(file,
+           delim = "\t",
+           col_type = cols()) %>%
+mutate(datetime = 
+  as.POSIXct(strptime(x = current_fire_datetime,
+                          format = "%Y/%m/%d %T"))) %>%
+rename(babs = "current_fire_Babs_bkg_fit",
+      bscat = "current_fire_Bscat_bkg_fit") %>%
+select(datetime, babs, bscat)
+}
+```
+
+## Loading multiple files
+
+We can use our own function the same way we use an existing function
+
+```{r}
+data_pax <- map(files, read_pax) %>%
+  bind_rows()
+head(data_pax, 3)
+```
+
+# Exploring parameter space
+
+## Exploring parameter space
+
+The `cross_*` family of functions are useful for this
+
+```{r, eval = FALSE}
+library(purrr)
+cross_df(.l, ...)
+```
+
+## Exploring parameter space
+
+Start with a list of the the parameters
+
+```{r}
+var_list <- list (distance = seq(1, 5, 1),
+                  time = seq(10, 1000, 5))
+```
+
+## Exploring parameter space
+
+Use the `cross_df()` function to create a dataframe of all the combinations
+
+```{r}
+cross_df(var_list)
+```
+
+## Exploring parameter space
+
+Create a function to run our analysis
+
+```{r}
+library(tidyr)
+
+speed_f <- function(distance, time){distance * time}
+```
+
+## Exploring parameter space
+
+Use `cross_df()` and `map2()` to run our function on every combination of variables
+
+```{r}
+df <- cross_df(var_list) %>%
+mutate(speed = map2(.x = distance,
+                    .y = time,
+                    .f = speed_f)) %>%
+unnest(speed)
+
+head(df, 3)
+```
+
+## Exploring parameter space
+
+```{r}
+library(ggplot2)
+
+p <- ggplot(df, aes(x = distance,
+                    y = time,
+                    fill = speed)) +
+  geom_tile() +
+  theme_bw() +
+  scale_fill_continuous(type = "viridis") +
+  theme(legend.position = "top")
+```
+
+## Exploring parameter space
+
+```{r, echo=FALSE}
+p 
+```
+
+# Deeply nested lists
+
+## Deeply nested lists
+
+* download the .rds file
+* add it to your working directory
+
+https://tinyurl.com/deeplynested-list
+
+## Deeply nested lists
+
+Read in data
+
+```{r}
+library(readr)
+result <- read_rds("../data/result.rds")
+```
+
+## Deeply nested lists
+
+Work out what the object is
+
+```{r}
+class(result)
+```
+
+## Deeply nested lists
+
+Use the `httr` library to extract the `content of the object`
+
+```{r}
+library(httr)
+content <- content(result)
+class(content)
+```
+
+## Deeply nested lists
+
+Start making it look more like a dataframe
+
+```{r}
+library(tibble)
+tbl <- as_tibble(content)
+```
+
+## Deeply nested lists
+
+```{r, echo=FALSE}
+tbl
+```
+
+## Deeply nested lists
+
+When you see lists in dataframes, think `nesting`
+
+```{r}
+library(tidyr)
+unnested <- unnest_wider(tbl, data)
+```
+
+## Deeply nested lists
+
+```{r, echo=FALSE}
+unnested
+```
+
+## Deeply nested lists
+
+Let's take a look at one of the `sensor` cells:
+
+```{r}
+sensors_1 <- unnested$sensors[[1]]
+sensors_1
+```
+
+## Deeply nested lists
+
+When we see lists of lists or a list column think `map`
+
+Use `map_df()` to extract the valves to a dataframe
+
+```{r}
+library(purrr)
+map_df(sensors_1, magrittr::extract, c("comp", "value"))
+```
+
+## Deeply nested lists
+
+But!!! That's just one cell of a list column
+
+```{r}
+list_of_tbl <- unnested %>%
+mutate(df = map(sensors,
+                 ~ .x %>% map_df(magrittr::extract,
+                                 c("comp", "value"))))
+```
+
+## Deeply nested lists
+
+Which gives us:
+
+```{r, echo=FALSE}
+list_of_tbl %>%
+select(-sensors, -indices)
+```
+
+## Deeply nested lists
+
+Use `unnest()` to flatten the list-column back to a regular column
+
+```{r}
+long_df <- list_of_tbl %>%
+select(-sensors, -indices) %>%
+unnest(df)
+```
+
+## Deeply nested lists
+
+```{r, echo=FALSE}
+long_df
+```
+
+## Deeply nested lists
+
+Finally we can `pivot` the long object back to a wider format:
+
+```{r}
+wider_df <- long_df %>%
+pivot_wider(names_from = "comp", values_from = "value")
+```
+
+## Deeply nested lists
+
+```{r, echo=FALSE}
+wider_df
+```
+
+## Deeply nested lists
+
+Fix the timestamp!
+
+```{r}
+p_data <- wider_df %>% 
+  mutate(timestamp = as.POSIXct(strptime(timestamp,
+                              format = "%FT%H:%M:%S",
+                              tz = "GMT")),
+         timestamp = format(timestamp,
+                            tz = "US/Mountain",
+                            usetz = TRUE),
+         timestamp = as.POSIXct(timestamp))
+```
+
+## Deeply nested lists
+
+```{r, echo=FALSE}
+p_data
+```
+
+## Deeply nested lists
+
+Finally, we can plot the data:
+
+```{r fig_timeseries}
+p_data <- p_data %>% 
+ pivot_longer(-timestamp, names_to = "var", values_to = "val")
+
+p <- ggplot(data = p_data,
+       mapping = aes(x = timestamp, y = val, color = var)) +
+  geom_point() +
+  geom_line() +
+  theme_bw() +
+  facet_wrap(~var, ncol = 1, scales = "free_y") +
+  theme(legend.position = "none") +
+  xlab("") + ylab("")
+```
+
+## Deeply nested lists
+
+```{r, echo=FALSE, fig.width = 8, fig.height = 5}
+p
+```
+
