@@ -658,7 +658,7 @@ dc_func <- tibble(task = c("Renaming columns",
 knitr::kable(dc_func, col.names = c("Task", "`dplyr` function"))
 ```
 
-In this section, I'll describe how to do each of these four tasks; in later
+In this section, I'll describe how to do each of these tasks; in later
 sections of the course, we'll go much deeper into how to clean messier data.
 
 For the examples in this section, I'll use example data listing guests to the
@@ -730,6 +730,11 @@ working with has been loaded to your R session as its own object.
 
 ### Selecting columns
 
+<iframe width="659" height="412" src="https://www.youtube.com/embed/yAYm_V6Y1Cw?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_6.pdf) 
+a pdf of the lecture slides for this video.
+
 Next, you may want to select only some columns of the dataframe. You can use the
 `select` function from `dplyr` to subset the dataframe to certain columns. The
 basic structure of this command is:
@@ -767,173 +772,85 @@ daily_show <- select(.data = daily_show, -year)
 head(x = daily_show, n = 3)
 ```
 
-### Add or change columns
+### Extracting and arranging rows
 
-You can change a column or add a new column using the `mutate` function from the
-`dplyr` package. That function has the syntax:
+<iframe width="659" height="412" src="https://www.youtube.com/embed/vIxlSmbFsQ0?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_7.pdf) 
+a pdf of the lecture slides for this video.
+
+There are a number of different actions you can take to extract or rearrange rows from a dataset to clean it up for your current analysis, including: 
+
+- `slice`
+- `sample_n`
+- `arrange`
+- `filter`
+
+We'll go through what each of these does and how to use them.
+
+### Slicing and sampling
+
+The `slice` function from the `dplyr` package can extract certain rows based on
+their position in the dataframe. 
+
+We already looked at this a bit in Chapter 1. 
+In the last chapter, you learned how to use the `slice` function 
+to limit a dataframe to certain rows by row position.
+
+For example, to print the first three rows of the `daily_show` data, you can
+run:
+
+```{r}
+library("dplyr")
+slice(.data = daily_show, 1:3)
+```
+
+There are some other functions you can use to extract rows from a tibble dataframe, 
+all from the "dplyr" package. 
+
+For example, if you'd like to extract a random subset of *n* rows, you can use the 
+`sample_n` function, with the `size` argument set to *n*. 
+
+To extract two random rows from the `daily_show` dataframe, run: 
+
+```{r}
+sample_n(tbl = daily_show, size = 2)
+```
+
+### Arranging rows
+
+There is also a function, `arrange`, you can use to re-order the rows in a
+dataframe based on the values in one of its columns. The syntax for this
+function is:
 
 ```{r eval = FALSE}
 # Generic code
-mutate(.data = dataframe,
-       changed_column = function(changed_column),
-       new_column = function(other arguments))
+arrange(.data = dataframe, column_to_order_by)
 ```
 
-For example, the `job` column in `daily_show` sometimes uses upper case and
-sometimes does not (this call uses the `unique` function to list only unique
-values in this column):
+If you run this function to use a character vector to order, it will order the
+rows alphabetically by the values in that column. If you specify a numeric
+vector, it will order the rows by the numeric value.
+
+For example, we could reorder the `daily_show` data alphabetically by the values
+in the `category` column with the following call:
 
 ```{r}
-head(x = unique(x = daily_show$job), n = 10)
+daily_show <- arrange(.data = daily_show, category)
+slice(.data = daily_show, 1:3)
 ```
 
-To make all the observations in the `job` column lowercase, use the `str_to_lower` function from the `stringr` package within a `mutate` function: 
+If you want the ordering to be reversed (e.g., from "z" to "a" for character
+vectors, from higher to lower for numeric, latest to earliest for a Date), you
+can include the `desc` function.
+
+For example, to reorder the `daily_show` data by job category in descending 
+alphabetical order, you can run:
 
 ```{r}
-library(package = "stringr")
-mutate(.data = daily_show, 
-       job = str_to_lower(string = job))
-```
-
-### Base R equivalents to `dplyr` functions
-
-Just so you know, all of these `dplyr` functions have alternatives, either
-functions or processes, in base R:
-
-```{r echo = FALSE}
-dplyr_vs_base <- data.frame(dplyr = c("`rename`",
-                                      "`select`",
-                                      "`filter`",
-                                      "`mutate`"),
-                            base = c("Reassign `colnames`",
-                                     "Square bracket indexing",
-                                     "`subset`",
-                                     "Use `$` to change / create columns"))
-knitr::kable(dplyr_vs_base, col.names = c("`dplyr`", 
-                                          "Base R equivalent"))
-```
-
-You will see these alternatives used in older code examples.
-
-## Dates and filtering
-
-The following video covers the lecture material on working with dates in R and
-on filtering a dataframe to a subset of rows using logical operators from 2018:
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/v-nRrFnYl50" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
-### Dates in R
-
-As part of the data cleaning process, you may want to change the class of some
-of the columns in the dataframe. For example, you may want to change a column
-from a character to a date.
-
-Here are some of the most common vector classes in R:
-
-Class        | Example
------------- | -----------------------------------
-`character`  | "Chemistry", "Physics", "Mathematics"
-`numeric`    | 10, 20, 30, 40
-`factor`     | Male [underlying number: 1], Female [2]
-`Date`       | "2010-01-01" [underlying number: 14,610]
-`logical`    | TRUE, FALSE
-
-To find out the class of a vector (including a column in a dataframe -- remember
-each column can be thought of as a vector), you can use `class()`:
-
-```{r}
-class(daily_show$date)
-```
-
-It is especially common to need to convert dates during the data cleaning
-process, since date columns will usually be read into R as characters or
-factors---you can do some interesting things with vectors that are in a Date
-class that you cannot do with a vector in a character class.
-
-To convert a vector to the `Date` class, if you'd like to only use base R, you
-can use the `as.Date` function. I'll walk through how to use `as.Date`, since
-it's often used in older R code. However, I recommend in your own code that you
-instead use the `lubridate` package, which I'll talk about later in this
-section.
-
-To convert a vector to the `Date` class, you can use functions in the
-`lubridate` package. This package has a series of functions based on the order
-that date elements are given in the incoming character with date information.
-For example, in "12/31/99", the date elements are given in the order of month
-(**m**), day (**d**), year (**y**), so this character string could be converted
-to the date class with the function `mdy`. As another example, the `ymd`
-function from lubridate can be used to parse a column into a Date class,
-regardless of the original format of the date, as long as the date elements are
-in the order: year, month, day. For example:
-
-```{r message = FALSE}
-library("lubridate")
-ymd("2008-10-13")
-ymd("'08 Oct 13")
-ymd("'08 Oct 13")
-```
-
-To convert the `date` column in the `daily_show` data into a Date
-class, then, you can run:
-
-```{r}
-library(package = "lubridate")
-
-class(x = daily_show$date) # Check the class of the 'date' column before mutating it
-
-daily_show <- mutate(.data = daily_show,
-                     date = mdy(date))
-head(x = daily_show, n = 3)
-class(x = daily_show$date) # Check the class of the 'date' column after mutating it
-```
-
-Once you have an object in the `Date` class, you can do things like plot by
-date, calculate the range of dates, and calculate the total number of days the
-dataset covers:
-
-```{r eval = FALSE}
-range(daily_show$date)
-diff(x = range(daily_show$date))
-```
-
-We could have used these to transform the date in `daily_show`, using the following pipe chain: 
-
-```{r message = FALSE}
-daily_show <- read_csv(file = "data/daily_show_guests.csv",
-                       skip = 4) %>%
-  rename(job = GoogleKnowlege_Occupation, 
-         date = Show,
-         category = Group,
-         guest_name = Raw_Guest_List) %>%
-  select(-YEAR) %>%
-  mutate(date = mdy(date)) %>%
-  filter(category == "Science")
-head(x = daily_show, n = 2)
-```
-
-The `lubridate` package also includes functions to pull out certain elements of a date, including: 
-
-- `wday`
-- `mday`
-- `yday`
-- `month`
-- `quarter`
-- `year`
-
-For example, we could use `wday` to create a new column with the weekday of each show: 
-
-```{r}
-mutate(.data = daily_show,
-       show_day = wday(x = date, label = TRUE)) %>%
-  select(date, show_day, guest_name) %>%
-  slice(1:5)
-```
-
-```{block, type = 'rmdwarning'}
-R functions tend to use the timezone of **YOUR** computer's operating system by
-default, or UTC, or GMT. You need to be careful when working with dates and
-times to either specify the time zone or convince yourself the default behavior
-works for your application.
+daily_show <- arrange(.data = daily_show, 
+                      desc(x = category))
+slice(.data = daily_show, 1:2)
 ```
 
 ### Filtering to certain rows
@@ -966,7 +883,7 @@ logical operators. Some of the most commonly used ones are:
 Operator  | Meaning | Example
 --------- | ------- | ---------------------------------
 `==`      | equals  | `category == "Acting"`
-`!=`      | does not equal | `category != "Comedy`
+`!=`      | does not equal | `category != "Comedy"`
 `%in%`    | is in | `category %in% c("Academic", "Science")`
 `is.na()` | is missing | `is.na(job)`
 `!is.na()`| is not missing | `!is.na(job)`
@@ -982,11 +899,46 @@ check if two values are equal; and (2) Using `== NA` instead of `is.na` to check
 for missing observations.
 ```
 
+
+
+### Add or change columns
+
+<iframe width="659" height="412" src="https://www.youtube.com/embed/_oC0WrrTf5Q?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_8.pdf) 
+a pdf of the lecture slides for this video.
+
+You can change a column or add a new column using the `mutate` function from the
+`dplyr` package. That function has the syntax:
+
+```{r eval = FALSE}
+# Generic code
+mutate(.data = dataframe,
+       changed_column = function(changed_column),
+       new_column = function(other arguments))
+```
+
+For example, the `job` column in `daily_show` sometimes uses upper case and
+sometimes does not (this call uses the `unique` function to list only unique
+values in this column):
+
+```{r}
+head(x = unique(x = daily_show$job), n = 10)
+```
+
+To make all the observations in the `job` column lowercase, use the `str_to_lower` function from the `stringr` package within a `mutate` function: 
+
+```{r}
+library(package = "stringr")
+mutate(.data = daily_show, 
+       job = str_to_lower(string = job))
+```
+
 ## Piping
 
-The following video covers the lecture material on piping from 2018:
+<iframe width="659" height="412" src="https://www.youtube.com/embed/fSJR0cM1qT0?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/6beqELKjuG4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+[Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_9.pdf) a pdf of the lecture slides for this video.
 
 So far, I've shown how to use these `dplyr` functions one at a time to clean up
 the data, reassigning the dataframe object at each step. However, there's a
@@ -1051,47 +1003,106 @@ excluded from all function calls that follow a pipe. This is because piping
 sends the dataframe from the last step into each of these functions as the
 dataframe argument.
 
+<iframe width="659" height="412" src="https://www.youtube.com/embed/sD94JyvOMn4?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[Download](https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_10.pdf) a pdf of the lecture slides for this video.
+
+### Base R equivalents to `dplyr` functions
+
+Just so you know, all of these `dplyr` functions have alternatives, either
+functions or processes, in base R:
+
+```{r echo = FALSE}
+dplyr_vs_base <- data.frame(dplyr = c("`rename`",
+                                      "`select`",
+                                      "`filter`",
+                                      "`mutate`"),
+                            base = c("Reassign `colnames`",
+                                     "Square bracket indexing",
+                                     "`subset`",
+                                     "Use `$` to change / create columns"))
+knitr::kable(dplyr_vs_base, col.names = c("`dplyr`", 
+                                          "Base R equivalent"))
+```
+
+You will see these alternatives used in older code examples.
+
+
 ## In-course Exercise
+
+Use the `sample` function to determine the order for your group to rotate in 
+sharing screens. 
 
 ### Downloading and checking out the example data
 
-Download the whole directory for this week from Github
+First, you'll download a directory from GitHub that has the data for this
+week's exercise and explore the files in that directory. 
+
+Have the first person in your group share their screen. Then take the following 
+steps (everyone in the group should do this, but have one person share their 
+screen and talk through what they're doing as you do this):
+
+- Create an R Project directory to use as you practice coding for this class.
+You may have already done this as you watched this week's slides. If not, 
+take these steps: (1) Open RStudio; (2) In RStudio, go to "File" -> "New Project" 
+-> "New Directory" -> "New Project". This will prompt you to pick a name for your
+R Project directory and also select where to save it. You can use a name like 
+"learn_r" for your Project and save it somewhere easy to find, like you Desktop
+or Documents folder.
+- Download the whole directory for this week from Github
 (https://github.com/geanders/week_2_data). To do that, go the the [GitHub page
 with data for this week's exercise](https://github.com/geanders/week_2_data)
-and, in the top right, choose "Clone or Download" and then choose "Download
-ZIP". This will download a compressed file with the full directory of data,
-probably to your computer's "Downloads" folder. Then move the directory into
-your course Project directory and "unzip" it (try double-clicking the file, or
-right click on the file and see if there's a "decompress" or "unzip" option).
-All the files will be in a subdirectory---move them into the main Project
-directory (don't do this in R, just use whatever technique you usually use on
-your computer to move files between directories).
+and, in the top right, click on the green "Code" button near the top right. When
+you click on this green button, one of the choices that you see should be
+"Download ZIP". Click on this. This will download a compressed file with the
+full directory of data, probably to your computer's "Downloads" folder.
+- Next, "unzip" the zipped downloaded file from GitHub. To do this, try
+double-clicking the file, or right click on the file and see if there's a
+"decompress" or "unzip" option. If you still don't have much luck, try googling
+how to unzip a zipped file on your computer's operating system. You should end
+up with six files and one directory ("measles_data") which itself has sixteen files
+inside). 
+- Next move all these files/directories **except "week_2_data.RProj"** into
+the R Project directory you created in the first step. Don't do this in R, just
+use whatever technique you usually use on your computer to move files between
+directories (clicking and dragging the files from one folder to another, for 
+example).
+- Open RStudio to the Project you created in the first step, if you haven't already.
+- Look through the structure of these files. What files are included?  Which
+files are **flat files**? For any flat files, look inside the files---you can
+open them with RStudio or another text editor. If you are in your Project in
+RStudio, look in the "Files" pane, click on the flat file's name, and select
+"View File" to get R to open the file with a text editor so you can look at the
+structure of the file. Which flat files are **delimited** (one category of flat
+files), and what are their delimiters?
 
-- Look through the structure of the "data" directory. What files are in the
-directory? Which files are **flat files**? Which are **delimited** (one category
-of flat files), and what are their delimiters?
-- Create a new R script to put all the code you use for this exercise. Create a
-subdirectory in your course directory called "R" and save this script there
-using a `.R` extension (e.g., "week_2.R").
 
 ### Reading in different types of files
 
-Now you'll try reading in data from a variety of types of file formats.  
+Now you'll try reading in data from a variety of types of file formats. You will
+be working with the files you downloaded in the last part of the exercise. 
 
-Try the following tasks:
+Switch the person in your group who is sharing their screen. Then try the
+following tasks (there is example R code below if you get stuck):
 
+- Create a new R script where you can put all the code you write for this exercise, 
+as you develop that code over the next few parts of the exercise. Create a
+subdirectory in your course directory called "R" and save this script there
+using a `.R` extension (e.g., "week_2.R").
 - What type of flat file do you think the "ld\_genetics.txt" file is? See if you
-can read it in and save it as the R object `ld_genetics`. Use the `summary`
-function to check out basic statistics on the data.
+can read it in using a `readr` function (e.g., `read_delim`, `read_fwf`,
+`read_tsv`, `read_csv`---pick depending on the type of file you think this is)
+and save it as the R object `ld_genetics`. Use the `summary` function to check
+out basic statistics on the data.
 - Check out the file "measles\_data/02-09-2015.txt". What type of flat file do
-you think it is? Since it's in a subdirectory, you'll need to tell R how to get
-to it from the project directory, using something called a **relative pathname**
-(we'll talk about this a lot more in the next section of the lecture). Read this
-file into R as an object named `ca_measles`, using the relative pathname
-("measles\_data/02-09-2015.txt") in place of the file name in the `read_tsv`
-function call. Use the `col_names` option to name the columns "city" and
-"count". What would the default column names be if you didn't use this option
-(try this out by running `read_csv` without the `col_names` option)?
+you think it is? Since it's in a subdirectory, to read it into R, you'll need to
+tell R how to get to it from the project directory, using something called a
+**relative pathname**. Read this file into R as an object named `ca_measles`,
+using the relative pathname ("measles\_data/02-09-2015.txt") in place of the
+file name in the `read_tsv` function call. Use the `col_names` option to name
+the columns "city" and "count". What would the default column names be if you
+didn't use this option (try this out by running `read_csv` without the
+`col_names` option)?
 - Read in the Excel file "icd-10.xls" and assign it to the object name `idc10`.
 Use the [`readxl` package to do that](https://github.com/hadley/readxl)
 (examples are at the bottom of the linked page).
@@ -1174,20 +1185,25 @@ slice(.data = select(.data = icu, 1:5), 1:5)
 
 ### Directory structure 
 
-Once you have the data, I'd like you to try using `getwd()` to figure out your
-current working directory and `list.files()` to figure out which files you have
-in the directories near that current working directory.
+Next, you'll explore your current working directory and the files in that working
+directory. 
 
-Start by creating a new subdirectory called "data" in your R Project directory
-for this class (if you don't already have that subdirectory). Move the data you
-downloaded in the start of this In-Course Exercise into that "data"
-subdirectory. (For this, use whatever tools you would normally use on your
-computer to move files from one directory to another---you don't have to do this
-part in R.) Keep the "measles" data in its own subdirectory (so, the "data"
-subdirectory of your project will have its own "measles" subdirectory, which
-will have those files).
+Switch the person in your group who is sharing their screen. Then try the
+following tasks (there is example R code below if you get stuck):
 
-Check that you are, in fact, in the working directory you think you're in. Run:
+- Make sure you have opened R and have moved into the R Project you created 
+at the beginning of this exercise. 
+- In this Project directory, create a new subdirectory called "data" (if you 
+don't already have that subdirectory---you may have created it if you followed
+along with the code in the video lectures).
+- In the last two steps, you downloaded and explored some data files. These
+should currently be in the main level of your R Project directory. Move these
+into the "data" subdirectory you just created. For this, use whatever tools you
+would normally use on your computer to move files from one directory to
+another---you don't have to do this part in R. Keep the "measles" data in its
+own subdirectory (so, the "data" subdirectory of your project will have its own
+"measles" subdirectory, which will have those files).
+- Check that you are, in fact, in the working directory you think you're in. Run:
 
 ```{r eval = FALSE}
 getwd()
@@ -1196,50 +1212,31 @@ getwd()
 Does it agree with the R project name in the top right hand corner of your R
 Studio window?
 
-Now, use the `list.files` function to print out which files or subdirectories
-you have in your current working directory:
+- Now, use the `list.files` function to print out which files or subdirectories
+you have in your current working directory (the R Project directory):
 
 ```{r eval = FALSE}
 list.files()
 ```
 
-Try the following tasks: 
-
-* Read in the ebola data in `country_timeseries.csv` from your current working
-directory. This will require you to use a relative filename to direct R to how
-to find that file in the "data" subdirectory of your current working directory.
-* Assign the data you read in to an R object named `ebola`. How many rows and
-columns does it have? What are the names of the columns?
-* While staying in the same working directory, used `list.files()` to print the
+What results do you get when you run this call? Is this what you were expecting?
+- While staying in the same working directory, used `list.files()` to print the
 names of the available files in the "data" subdirectory using the `path`
-argument. How about in the "R" subdirectory (if you have one)?
-* Try to list the files in your "data" subdirectory using:
-    + A relative pathname
-    + An absolute pathname
-* Now use a relative pathname along with `list.files()` to list all the files in
+argument. 
+- Now see if you can use `list.files()` to list all the files in
 the "measles_data" subdirectory.
-* Then try to read in the Ebola data using the appropriate `readr` function and
-a relative pathname.
-* Which method (absolute or relative pathnames) always used the same code,
-regardless of your current working directory? Which method used different code,
-depending on the starting working directory?
+- Read into R the ebola data in `country_timeseries.csv` using the appropriate
+`readr` function. This will require you to use a relative filename to direct R
+to how to find that file in the "data" subdirectory of your current working
+directory. Assign the data you read as an R object named `ebola`.
+- How many rows and
+columns does the `ebola` dataframe you just created have? What are the names of the columns?
 
-Read in the Ebola data in `country_timeseries.csv` from your current working
-directory. This will require you to use a relative filename to direct R to how
-to find that file in the "data" subdirectory of your current working directory.
+Example R code:
 
-```{r eval = FALSE}
-ebola <- read_csv(file = "data/country_timeseries.csv")
-```
+In the early steps, you only need to run the suggested code (`getwd()` and `list.files()`)
 
-How many rows and columns does it have? What are the names of the columns?
-
-```{r, eval = FALSE}
-dim(x = ebola)    # Get the dimensions of the data (`nrow` and `ncol` would also work)
-colnames(x = ebola) # Get the column names (you can also just print the object: `ebola`)
-```
-
-While staying in the same working directory, used `list.files()` to print the
+Next, while staying in the same working directory, used `list.files()` to print the
 names of the available files in the "data" subdirectory by using the `path`
 argument. How about in the "R" subdirectory (if you have one)?
 
@@ -1248,7 +1245,7 @@ list.files(path = "data")
 list.files(path = "R")
 ```
 
-Try to list the files in your "data" subdirectory using:
+Note that you can use `list.files` to list the files in your "data" subdirectory using either:
     + A relative pathname
     + An absolute pathname
     
@@ -1266,12 +1263,23 @@ the "measles_data" subdirectory.
 list.files(path = "data/measles_data")
 ```
 
-Then try to read in the Ebola data using the appropriate `readr` function and a
-relative pathname
+Read in the Ebola data in `country_timeseries.csv` from your current working
+directory using the appropriate `readr` function and a relative pathname. This
+will require you to use a relative filename to direct R to how to find that file
+in the "data" subdirectory of your current working directory.
 
 ```{r eval = FALSE}
+library("readr")
 ebola <- read_csv(file = "data/country_timeseries.csv")
 ```
+
+How many rows and columns does it have? What are the names of the columns?
+
+```{r, eval = FALSE}
+dim(x = ebola)    # Get the dimensions of the data (`nrow` and `ncol` would also work)
+colnames(x = ebola) # Get the column names (you can also just print the object: `ebola`)
+```
+
 
 If you have extra time: 
 
@@ -1288,7 +1296,8 @@ Which one? Why does this listing not have a file extension?
 
 ### Cleaning up data #1
 
-Try out the following tasks:
+Switch the person in your group who is sharing their screen. Then try out the
+following tasks:
 
 - Copy the following code into an R script. Figure out what each line does, and
 add comments to each line of code describing what the code is doing. Use the 
@@ -1360,6 +1369,9 @@ head(x = ebola_liberia)
 
 ### Cleaning up data #2
 
+Switch the person in your group who is sharing their screen. Then try out the
+following tasks:
+
 - Filter out all rows from the `ebola_liberia` dataframe that are missing death
 counts for Liberia. How many rows are in the dataframe now?
 - Create a new object called `first_five` that has only the five observations
@@ -1385,7 +1397,8 @@ first_five # Two days tied for the highest deaths counts (Jan. 2 and 3, 2015).
 
 ### Piping
 
-Try the following tasks: 
+Switch the person in your group who is sharing their screen. Then try out the
+following tasks:
 
 - Copy the following "piped" code into an R script. Figure out what each line
 does, and add comments to each line of code describing what the code is doing.
