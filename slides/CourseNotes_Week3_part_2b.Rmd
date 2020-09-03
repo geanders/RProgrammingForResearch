@@ -1,0 +1,157 @@
+---
+title: "Exploring data #1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE}
+options(width = 50)
+```
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(readr)
+library(dplyr)
+```
+
+```{r echo = FALSE}
+beijing_pm <- read_rds("../data/beijing_pm.rds")
+```
+
+# Factors in R
+
+## Factors in R
+
+Factor vectors are used in R for **categorical variables**, where more than 
+one observation can have the same category.
+
+```{r echo = FALSE, out.width="4.5in"}
+knitr::include_graphics("../figures/how_r_stores_figures.jpg")
+```
+
+Factor variables have one or more **levels**. While you will always see a 
+factor printed with its factor level labels, R "remembers" the variable
+with each level assigned a number.
+
+## Factors in R
+
+In tibbles, factors will be noted with "fctr" under the column name. 
+For example, look at the `aqi` column in the `beijing_pm` data:
+
+```{r}
+head(beijing_pm, n = 3)
+```
+
+## Factors in R
+
+You can use the `levels` function to see the levels of a factor vector, as well
+as the order those levels are recorded in R.
+
+```{r}
+levels(beijing_pm$aqi)
+```
+
+## Factors in R
+
+To explore a factor vector, you'll often want to **count** the number of 
+observations in each category. You can do that with two functions in the
+`dplyr` package, `group_by` and `count`. 
+
+Start with a dataframe that includes the factor variable as a column. 
+First `group_by` the factor, then pipe the output of that into the `count`
+function. 
+
+This will create a new summary dataframe, with a row for each level of the
+factor. A column called `n` will give the number of observations in the 
+original data that had that level of the factor.
+
+## Factors in R
+
+You can **count** how many observations have each level of a factor.
+
+```{r echo = FALSE, out.width="4.5in"}
+knitr::include_graphics("../figures/counting_factor.jpg")
+```
+
+## Factors in R
+
+```{r message = FALSE, warning = FALSE}
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  count()
+```
+
+## Factors in R
+
+You can jointly explore multiple columns in a dataframe. 
+
+For example, if one column is a factor and one is numeric, it can be
+useful to explore values of the numeric column within each level of 
+the factor column. 
+
+For the Beijing data, you may want to find out the mean comcentration of
+PM\textsubscript{2.5} within each AQI level.
+
+## Factors in R
+
+You can **summarize** a numeric column within levels of a factor column:
+
+```{r echo = FALSE, out.width="4in", fig.align='center'}
+knitr::include_graphics("../figures/factor_summarize.jpg")
+```
+
+## Factors in R
+
+To do this, pipe the dataframe into `group_by` (where you can group by the
+factor column) and then into `summarize`, where you can calculate summaries. 
+
+```{r message = FALSE, warning = FALSE}
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  summarize(mean_pm = mean(value))
+```
+
+
+## Factors in R
+
+You can create several summaries at once: 
+
+```{r message = FALSE, warning = FALSE}
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  summarize(min_pm = min(value), 
+            max_pm = max(value))
+```
+
+## Factors in R
+
+As a note, there's a function called `n()` that you can use inside
+summarize to replace `count`. For example, these two expressions
+give the same output: 
+
+```{r eval = FALSE}
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  count()
+
+beijing_pm %>% 
+  group_by(aqi) %>% 
+  summarize(n = n())
+```
+
+## Factors in R
+
+If a column is in a character class, but you'd like it to be a 
+factor, you can use `as_factor` from the `forcats` package: 
+
+```{r}
+library("forcats")
+beijing_pm %>% 
+  mutate(qc = as_factor(qc))
+```
+
