@@ -14,228 +14,15 @@ fontsize: 10pt
 options(width = 50)
 ```
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
-library(readr)
-library(dplyr)
-library(lubridate)
-```
-
-```{r echo = FALSE}
-beijing_pm <- read_rds("../data/beijing_pm.rds")
-```
-
-# Logical operators, vectors, and expressions
-
-## Logical operators, vectors, and expressions
-
-**Logical expressions** are operators that conduct a logical test based on 
-one or more vectors, while logical expressions are the full R expressions 
-that use these operators to conduct the test. The output is a **logical vector**. 
-
-```{r echo = FALSE, out.width="4.5in"}
-knitr::include_graphics("../figures/logical_expression.jpg")
-```
-
-## Logical expressions
-
-Last week, you learned some about logical expressions and how to use them with
-the `filter` function. \medskip
-
-You can use *logical vectors*, created with these expressions, for a lot data
-exploration tasks. We'll review them and add some more details this week.
-
-## Logical vectors
-
-A logical expression outputs a *logical vector*. This logical vector will be the
-same length as the original vector tested by the logical statement:
-
-```{r}
-length(beijing_pm$value)
-length(beijing_pm$value > 500)
-```
-
-## Logical vectors
-
-Each element of the logical vector can only have one of three values (`TRUE`,
-`FALSE`, `NA`). The logical vector will have the value `TRUE` at any position
-where the original vector met the logical condition you tested, and `FALSE`
-anywhere else:
-
-```{r}
-head(beijing_pm$value)
-head(beijing_pm$value > 500)
-```
-
-## Logical vectors
-
-Because the logical vector is the same length as the vector it's testing, you
-can add logical vectors to dataframes with `mutate`:
-
-```{r}
-beijing_pm <- beijing_pm %>% 
-  mutate(beyond_index = value > 500)
-```
-
-## Logical vectors
-
-```{r}
-beijing_pm %>% 
-  select(sample_time, value, beyond_index)
-```
-
-## Logical vectors
-
-As another example, you could add a column that is a logical vector of whether
-a day was in the "heating season", which usually ends on March 15 each year:
-
-```{r}
-beijing_pm <- beijing_pm %>% 
-  mutate(heating = sample_time < ymd("2017-03-15")) 
-```
-
-## Common logical and relational operators in R
-
-The **bang operator** (`!`) negates (flips) a logical expression:
-
-```{r}
-c(1, 2, 3) == c(1, 2, 5)
-!(c(1, 2, 3) == c(1, 2, 5))
-```
-
-```{r}
-is.na(c(1, 2,  NA))
-!is.na(c(1, 2, NA))
-```
-
-## Common logical and relational operators in R
-
-The `%in%` operator will check each element of a 
-vector to see if it's a value that is included in a second 
-vector. 
-
-In this case, the two vectors don't have to have 
-the same length: 
-
-```{r}
-c(1, 2, 3) %in% c(1, 5)
-```
-
-This logical expressions is asking *Is the first element of the first vector, 1,
-in the set given by the second vector, 1 and 5? Is the second element of the
-first vector, 2, in the set given by the second vector? Etc.*
-
-## Logical vectors
-
-You can do a few cool things now with this vector. For example, you can use it
-with the `filter` function to pull out just the rows where `heating` is `TRUE`:
-
-```{r}
-beijing_pm %>% 
-  filter(heating) %>% 
-  slice(1:3)
-```
-
-## Logical vectors
-
-Or, with `!`, just the rows where `heating` is `FALSE`:
-
-```{r}
-beijing_pm %>% 
-  filter(!heating) %>% 
-  slice(1:3)
-```
-
-## Logical vectors
-
-All of the values in a logical vector are saved, at a deeper level, with a
-number. Values of `TRUE` are saved as 1 and values of `FALSE` are saved as 0.
-
-```{r echo = FALSE, out.width="4.5in"}
-knitr::include_graphics("../figures/how_r_saves_logical_vector.jpg")
-```
-
-## Logical vectors
-
-```{r}
-head(beijing_pm$beyond_index)
-```
-
-```{r}
-head(as.numeric(beijing_pm$beyond_index))
-```
-
-
-## Logical vectors
-
-Therefore, you can use `sum()` to get the sum of all values in a vector. Because
-logical vector values are linked with numerical values of 0 or 1, you can use
-`sum()` to find out how many males and females are in the dataset:
-
-```{r}
-sum(beijing_pm$beyond_index)
-sum(!beijing_pm$beyond_index)
-```
-
-# Tidyverse and cheatsheets
-
-## The "tidyverse"
-
-So far, we have used a number of packages that are part of the *tidyverse*. The
-tidyverse is a collection of recent and developing packages for R, many written
-by Hadley Wickham. \medskip
-
-```{r echo = FALSE, out.width = "0.6\\textwidth", fig.align = "center"}
-knitr::include_graphics("../figures/tidyverse_hexbin.jpeg")
-```
-
-
-## The "tidyverse"
-
-```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = 'center'}
-knitr::include_graphics("../figures/HadleyObama.png")
-```
-
-\begin{center}
-"A giant among data nerds"
-\end{center}
-
-\footnotesize{
-\url{https://priceonomics.com/hadley-wickham-the-man-who-revolutionized-r/}}
-
-## Cheatsheets
-
-RStudio has several very helpful **cheatsheets**. These are one-page sheets
-(front and back) that cover many of the main functions for a certain topic or
-task in R. These cheatsheets cover a lot of the main "tidyverse" functions.
-
-You can access these directly from RStudio. Go to "Help" -> "Cheatsheets" and
-select the cheatsheet on the topic of interest.
-
-You can find even more of these cheatsheets at
-https://www.rstudio.com/resources/cheatsheets/.
-
-## Cheatsheets
-
-```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = 'center'}
-knitr::include_graphics("../figures/rstudio_cheatsheet.png")
-```
-
-## More reading / practice
-
-If you would like more reading and practice on what we've covered so far on transforming data, see chapter 5 of the "R for Data Science" book suggested at the start of the course. 
-
-As a reminder, that is available at: 
-
-http://r4ds.had.co.nz
-
 # Basic plotting
 
 ## Example data---Beijing air quality
 
 Let's read the Beijing data in and clean up the "-999" values: 
 
-```{r}
+```{r, message = FALSE}
 library("readr")
+library("dplyr")
 ```
 ```{r echo = FALSE, message = FALSE}
 beijing_pm_raw <- read_csv("../data/Beijing_2017_HourlyPM25.csv", 
@@ -252,7 +39,8 @@ Clean up as before:
 
 \footnotesize
 
-```{r}
+```{r, message = FALSE}
+library(lubridate)
 beijing_pm <- beijing_pm_raw %>% 
   rename(sample_time = `Date (LST)`, 
          value = Value,
@@ -352,7 +140,6 @@ This is how these mappings will be specified in an `aes` call:
 # It will eventually be nested in a ggplot call.
 aes(x = sample_time, y = value, color = aqi)
 ```
-
 
 ## Plot aesthetics
 
@@ -596,7 +383,6 @@ ggplot(data = beijing_pm) +
           subtitle = "Based on U.S. Embassy Monitor") 
 ```
 
-
 ## Adding geoms
 
 There are a number of different `geom_*` functions you can use to add geoms to a plot. They are divided between geoms that directly map the data to an aesthetic and those that show some summary or statistic of the data. \medskip 
@@ -635,7 +421,6 @@ To plot a histogram of PM_{2.5} concentrations in the Beijing data, run:
 ggplot(data = beijing_pm) + 
   geom_histogram(aes(x = value))
 ```
-
 
 ## Histogram example
 
