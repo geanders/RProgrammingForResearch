@@ -1,0 +1,161 @@
+---
+title: "Exploring data #1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE}
+options(width = 50)
+```
+
+```{r, message = FALSE, echo = FALSE}
+library("readr")
+library("dplyr")
+library("ggplot2")
+```
+```{r echo = FALSE, message = FALSE}
+beijing_pm_raw <- read_csv("../data/Beijing_2017_HourlyPM25.csv", 
+                       skip = 3, na = "-999")
+```
+
+```{r, message = FALSE, echo = FALSE}
+library(lubridate)
+beijing_pm <- beijing_pm_raw %>% 
+  rename(sample_time = `Date (LST)`, 
+         value = Value,
+         qc = `QC Name`) %>% 
+  select(sample_time, value, qc) %>% 
+  mutate(aqi = cut(value, 
+                   breaks = c(0, 50, 100, 150, 200, 
+                              300, 500, Inf),
+                   labels = c("Good", "Moderate",
+                              "Unhealthy for Sensitive Groups",
+                              "Unhealthy", "Very Unhealthy", 
+                              "Hazardous", "Beyond Index"))) %>% 
+  mutate(sample_time = mdy_hm(sample_time)) %>% 
+  mutate(heating = sample_time < mdy("03/15/2017"))
+```
+
+# Aesthetics
+
+## Plot aesthetics
+
+Which aesthetics you must specify in the `aes` call depend on which geom you are
+adding to the plot. \medskip
+
+You can find out the aesthetics you can use for a geom in the "Aesthetics"
+section of the geom's help file (e.g., `?geom_point`). \medskip
+
+Required aesthetics are in bold in this section of the help file and optional
+ones are not.
+
+## Constant aesthetics
+
+Instead of mapping an aesthetic to an element of your data, you can use a
+constant value for the aesthetic. For example, you may want to make all the
+points blue, rather than having color map to AQI:
+
+```{r echo = FALSE, warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+beijing_pm %>%
+  ggplot(aes(x = sample_time, y = value)) + 
+  geom_point(color = "blue")
+```
+
+In this case, you can define that aesthetic as a constant for the geom,
+**outside** of an `aes` statement.
+
+## Constant aesthetics
+
+For example, you may want to change the shape of the points in a scatterplot from their default shape, but not map them to a particular element of the data. \medskip
+
+In R, you can specify point shape with a number. Here are the shapes that correspond to the numbers 1 to 25:
+
+```{r echo = FALSE, out.width = "0.6\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center"}
+x <- rep(1:5, 5)
+y <- rep(1:5, each = 5)
+shape <- 1:25
+to_plot <- tibble(x = x, y = y, shape = shape)
+ggplot(to_plot, aes(x = x, y = y)) + 
+  geom_point(shape = shape, size = 4, color = "black", fill = "red") + 
+  geom_text(label = shape, nudge_x = -0.25) +
+  xlim(c(0.5, 5.5)) + 
+  theme_void() + 
+  scale_y_reverse()
+```
+
+## Constant aesthetics
+
+Here is an example of mapping point shape to a constant value other than the
+default:
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 8, fig.height = 3.5}
+ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value,
+                           color = aqi),
+             shape = 9)
+```
+
+## Constant aesthetics
+
+R has character names for different colors. For example: 
+
+```{r echo = FALSE, out.width = "0.18\\textwidth", fig.width = 5, fig.height = 3, fig.align = "center"}
+x <- rep(0, 6)
+y <- 1:6
+color <- c("blue", "blue4", "darkorchid", "deepskyblue2", 
+           "steelblue1", "dodgerblue3")
+to_plot <- data_frame(x = x, y = y, color = color)
+ggplot(to_plot, aes(x = x, y = y)) + 
+  geom_point(color = color, size = 2) + 
+  geom_text(label = color, hjust = 0, nudge_x = 0.05) + 
+  theme_void() + 
+  xlim(c(-1, 1.5)) +
+  scale_y_reverse()
+```
+
+Google "R colors" and search the images to find links to listings of different R colors.
+
+## Constant aesthetics
+
+Here is an example of mapping point shape and color to constant values other than the defaults:
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.9\\textwidth", message = FALSE, fig.width = 7, fig.height = 3}
+ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value),
+             shape = 9, 
+             color = "darkorchid")
+```
+
+## Useful plot additions
+
+There are also a number of elements that you can add onto a `ggplot` object using `+`. A few very frequently used ones are: 
+
+```{r echo = FALSE}
+plot_adds <- data.frame(add = c("`ggtitle`",
+                                "`xlab`, `ylab`, `labs`",
+                                "`xlim`, `ylim`",
+                                "`expand_limits`"),
+                        descrip = c("Plot title",
+                                    "x- and y-axis labels",
+                                    "Limits of x- and y-axis",
+                                    "Include a value in a range"))
+knitr::kable(plot_adds, col.names = c("Element", "Description"))
+```
+
+## Useful plot additions
+
+```{r warning = FALSE, fig.align = "center", out.width = "0.6\\textwidth", message = FALSE, fig.width = 5, fig.height = 3}
+ggplot(data = beijing_pm) + 
+  geom_point(mapping = aes(x = sample_time, y = value)) + 
+  labs(x = "Sampling Date and Time", 
+       y = "PM2.5 Concentration") + 
+  ggtitle("Measurements of PM2.5 in Beijing, China, 2017",
+          subtitle = "Based on U.S. Embassy Monitor") 
+```
+
