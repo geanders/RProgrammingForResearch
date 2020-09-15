@@ -1,0 +1,131 @@
+---
+title: "Reporting data results #1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library("knitr")
+```
+
+
+```{r echo = FALSE, message = FALSE}
+library("dplyr")
+
+library("ggplot2")
+library("gridExtra")
+library("ggthemes")
+
+library("faraway")
+data("worldcup")
+
+library("dlnm")
+data("chicagoNMMAPS")
+chic <- chicagoNMMAPS
+chic_july <- chic %>%
+  filter(month == 7 & year == 1995)
+```
+
+# Small multiples
+
+## Small multiples
+
+Guideline 5: **When possible, use small multiples.** \bigskip
+
+*Small multiples* are graphs that use many small plots showing the same thing for different facets of the data. For example, instead of using color in a single plot to show data for males and females, you could use two small plots, one each for males and females. \bigskip
+
+Typically, in small multiples, all plots with use the same x- and y-axes. This makes it easier to compare across plots, and it also allows you to save room by limiting axis annotation.
+
+------
+
+```{r echo = FALSE, message = FALSE, fig.height = 6, fig.width = 8}
+ex <- subset(worldcup, Position %in% c("Forward",
+                                       "Midfielder"))
+ex2 <- group_by(ex, Team) %>%
+        summarise(mean = mean(Shots)) %>%
+        arrange(desc(mean))
+ex$Team <- factor(ex$Team, 
+                      levels = ex2$Team)
+a <- ggplot(ex, aes(x = Time, y = Shots)) + 
+        geom_point() + 
+        theme_few() + 
+        facet_wrap(~ Team, ncol = 8) 
+a
+```
+
+## Small multiples
+
+You can use the `facet` functions to create small multiples. This separates the graph into several small graphs, one for each level of a factor. \bigskip
+
+The `facet` functions are: 
+
+- `facet_grid()`
+- `facet_wrap()`
+
+
+## Small multiples
+
+The `facet_grid` function can facet by one or two variables. One will be shown by rows, and one by columns:
+
+```{r eval = FALSE}
+## Generic code
+facet_grid([factor for rows] ~ [factor for columns])
+```
+
+The `facet_wrap()` function can only facet by one variable, but it can "wrap" the small graphs for that variable, so the don't all have to be in one row or column:
+
+```{r eval = FALSE}
+## Generic code
+facet_wrap(~ [factor for faceting], ncol = [# of columns])
+```
+
+## Small multiples
+
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/facet_grid.jpg")
+```
+
+## Small multiples
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/facet_wrap.jpg")
+```
+
+## Small multiples
+
+For example, to create small multiples of ozone concentration by day of week for the Chicago data, you can run:
+
+\footnotesize
+
+```{r message = FALSE, warning = FALSE, fig.height = 3, fig.width = 6, out.width = "0.95\\textwidth"}
+chic %>% 
+  ggplot(aes(x = o3)) + 
+  geom_histogram(fill = "skyblue1", color = "black") +
+  facet_wrap(~ dow)
+```
+
+## Small multiples
+
+To change the order of the facets, change the order of the factor levels for the factor you're using to facet. 
+
+## Small multiples
+
+For example, to move weekend days together, you could run:
+
+\footnotesize
+
+```{r message = FALSE, warning = FALSE, fig.height = 3, fig.width = 6, out.width = "0.95\\textwidth"}
+library(forcats)
+chic %>% 
+  mutate(dow = fct_relevel(dow, "Saturday")) %>% 
+  ggplot(aes(x = o3)) + 
+  geom_histogram(fill = "skyblue1", color = "black") +
+  facet_wrap(~ dow)
+```
+

@@ -1,0 +1,98 @@
+---
+title: "Reporting data results #1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library("knitr")
+```
+
+
+```{r echo = FALSE, message = FALSE}
+library("dplyr")
+
+library("ggplot2")
+library("gridExtra")
+library("ggthemes")
+
+library("faraway")
+data("worldcup")
+
+library("dlnm")
+data("chicagoNMMAPS")
+chic <- chicagoNMMAPS
+chic_july <- chic %>%
+  filter(month == 7 & year == 1995)
+```
+
+# Make order meaningful
+
+## Order
+
+Guideline 4: **Make order meaningful.** \bigskip
+
+You can make the ranking of data clearer from a graph by using order to show rank. Often, factor or categorical variables are ordered by something that is not interesting, like alphabetical order. 
+
+## Order
+
+Guideline 4: **Make order meaningful.** \bigskip
+
+```{r echo = FALSE, fig.width = 8, fig.height = 5, message = FALSE}
+ex <- group_by(worldcup, Team) %>%
+        summarise(mean_time = mean(Time))
+
+a <- ggplot(ex, aes(x = mean_time, y = Team)) + 
+        geom_point() + 
+        theme_few() + 
+        xlab("Mean time per player (minutes)") + ylab("") + 
+        ggtitle("1. Alphabetical order")
+
+ex2 <- arrange(ex, mean_time) %>%
+        mutate(Team = factor(Team, levels = Team))
+b <- ggplot(ex2, aes(x = mean_time, y = Team)) + 
+        geom_point() + 
+        theme_few() + 
+        xlab("Mean time per player (minutes)") +  ylab("") + 
+        ggtitle("2. Meaningful order")
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## Order
+
+```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/alphabetical_rainbow.png")
+```
+
+
+## Order
+
+You can re-order factor variables in a graph by resetting the factor using several 
+functions from the `forcats` package. 
+
+The simplest is `fct_relevel`, which lets you change the levels "by hand". 
+
+See the "factors" cheatsheet for more `forcats` functions.
+
+## Changing factor levels
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/relevel_factor.jpg")
+```
+
+## Order
+
+> "And if you think that I'm going to miss even one
+opportunity to
+pick up half-a-mile boat speed, you're absolutely out of your mind. When it
+costs us
+nothing, when we give up nothing?! You're out of your mind." \newline
+Bruno, \underline{The West Wing}, "The Indians in the Lobby"
+

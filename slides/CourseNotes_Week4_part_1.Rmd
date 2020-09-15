@@ -1,0 +1,79 @@
+---
+title: "Reporting data results #1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library("knitr")
+```
+
+# Plot guidelines
+
+## Guidelines for good plots
+
+There are a number of very thoughtful books and articles about creating graphics that effectively communicate information. \medskip
+
+Some of the authors I highly recommend (and from whose work I've pulled the guidelines for good graphics we'll talk about this week) are: 
+
+- Edward Tufte
+- Howard Wainer
+- Stephen Few
+- Nathan Yau
+
+You should plan, in particular, to read *The Visual Display of Quantitative Information* by Edward Tufte before you graduate.
+
+## Guidelines for good plots
+
+This week, we'll focus on six guidelines for good graphics, based on the writings of these and other specialists in data display. \medskip
+
+The guidelines are: 
+
+1. Aim for high data density. 
+2. Use clear, meaningful labels.
+3. Provide useful references.
+4. Highlight interesting aspects of the data. 
+5. Make order meaningful. 
+6. When possible, use small multiples.
+
+## Packages for examples
+
+For the examples, I'll use `dplyr` for data cleaning and, for plotting, the packages `ggplot2`, `gridExtra`, and `ggthemes`.
+
+```{r message = FALSE}
+library("dplyr")
+
+library("ggplot2")
+library("gridExtra")
+library("ggthemes")
+```
+
+## Example data
+
+You can load the data for today's examples with the following code: 
+
+```{r message = FALSE}
+library("faraway")
+data("worldcup")
+```
+
+## Example data
+
+```{r message = FALSE}
+library("dlnm")
+data("chicagoNMMAPS")
+chic <- chicagoNMMAPS
+chic_july <- chic %>%
+  filter(month == 7 & year == 1995)
+```
+\footnotesize
+```{r}
+slice(chic_july, 1:3)
+```
+

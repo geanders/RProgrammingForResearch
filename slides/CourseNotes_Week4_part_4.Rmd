@@ -1,0 +1,179 @@
+---
+title: "Reporting data results #1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library("knitr")
+```
+
+
+```{r echo = FALSE, message = FALSE}
+library("dplyr")
+
+library("ggplot2")
+library("gridExtra")
+library("ggthemes")
+
+library("faraway")
+data("worldcup")
+
+library("dlnm")
+data("chicagoNMMAPS")
+chic <- chicagoNMMAPS
+chic_july <- chic %>%
+  filter(month == 7 & year == 1995)
+```
+
+# Highlighting interesting aspects
+
+## Highlighting
+
+Guideline 4: **Highlight interesting aspects.** \bigskip
+
+Consider adding elements to highlight noteworthy elements of the data. For example, in the graph on the right, the days of a major heat wave have been highlighted with a red line. \bigskip
+
+```{r echo = FALSE, fig.height = 3, fig.width = 8}
+chic_july <- subset(chic, month == 7 & year == 1995)
+chic_july_ref <- filter(chic, month == 7 & 
+                        year %in% c(1990:1994,
+                                    1996:2000)) %>%
+        summarise(mean = mean(death),
+                  min = min(death),
+                  max = max(death))
+ref_points <- data.frame(date = c(-2, 33, 33, -2),
+        death = c(rep(chic_july_ref$max, 2),
+                  rep(chic_july_ref$min, 2)))
+hw <- data.frame(date = c(12, 16, 16, 12),
+                 death = c(425, 425, 0, 0))
+        
+a <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
+                           y = death)) + 
+        xlab("Day in July 1995") + 
+        ylab("All-cause deaths") + 
+        ylim(0, 450) + 
+        theme_tufte() + 
+        geom_polygon(aes(x = date, y = death), 
+                     data = ref_points,
+                     color = "lightgray", 
+                     alpha = 0.1) + 
+        geom_line() + 
+        ggtitle("1. No highlighting")
+
+b <- ggplot(chic_july, aes(x = as.POSIXlt(date)$mday,
+                           y = death)) + 
+        xlab("Day in July 1995") + 
+        ylab("All-cause deaths") + 
+        ylim(0, 450) + 
+        theme_tufte() + 
+        geom_polygon(aes(x = date, y = death), 
+                     data = ref_points,
+                     color = "lightgray", 
+                     alpha = 0.1) + 
+        geom_line(aes(x = date, y = death),
+                  data = hw[1:2, ],
+                     color = "red",
+                  size = 2) +
+        geom_line() + 
+        ggtitle("2. With highlighting")
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## Highlighting
+
+Guideline 4: **Highlight interesting aspects.** \bigskip
+
+In the below graphs, the names of the players with the most shots and passes have been added to highlight these unusual points. \bigskip
+
+```{r echo = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
+ex <- subset(worldcup, Position == "Forward")
+a <- ggplot(ex, aes(x = Passes, y = Shots)) + 
+        geom_point(size = 1.5, alpha = 0.5) + 
+        theme_few()  + 
+        ggtitle("1. No highlighting")
+
+most_shots <- ex[which.max(ex$Shots), ]
+most_passes <- ex[which.max(ex$Passes), ]
+b <- ggplot(ex, aes(x = Passes, y = Shots)) + 
+        geom_point(size = 1.5, alpha = 0.5) + 
+        theme_few()  + 
+        ggtitle("2. Highlighting") + 
+        geom_text(data = most_shots,
+           label = paste(rownames(most_shots), ",",
+                                most_shots$Team, " "),
+                  colour = "blue", size = 3,
+                  hjust = 1, vjust = 0.4) + 
+        geom_text(data = most_passes,
+           label = paste(rownames(most_passes), ",",
+                                most_passes$Team, " "),
+                  colour = "blue", size = 3,
+                  hjust = 1, vjust = 0.4) 
+
+grid.arrange(a, b, ncol = 2)
+```
+
+## Highlighting
+
+One helpful way to annotate is with text, using `geom_text()`. For this, you'll first need to create a dataframe with the hottest day in the data:
+
+```{r}
+hottest_day <- chic_july %>%
+  filter(temp == max(temp))
+hottest_day %>% select(date:dow)
+```
+
+## Highlighting
+
+```{r fig.height = 3, fig.width = 4, out.width = "0.7\\textwidth", fig.align = "center"}
+ggplot(data = chic_july, aes(x = date, y = death)) + 
+  geom_point(color = "red") + 
+  geom_text(data = hottest_day, 
+            label = "Max", size = 3)
+```
+
+## Highlighting
+
+With `geom_text`, you'll often want to use position adjustment (the `position` parameter) to move the text so it won't be right on top of the data points: 
+
+\footnotesize
+
+```{r fig.height = 3, fig.width = 4, out.width = "0.5\\textwidth", fig.align = "center", message = FALSE}
+ggplot(data = chic_july, aes(x = date, y = death)) + 
+  geom_point(color = "red") + 
+  geom_text(data = hottest_day, 
+            label = "Max", size = 3, 
+            hjust = 0, vjust = -1)
+```
+
+
+## Highlighting
+
+You can also use lines to highlight. For this, it is often useful to create a new dataframe with data for the reference. To add a line for the Chicago heat wave, I've added a dataframe called `hw` with the relevant date range. I'm setting the y-value to be high enough (425) to ensure the line will be placed above the mortality data. 
+
+```{r message = FALSE, warning = FALSE}
+library(lubridate)
+hw <- data.frame(date = c(ymd("1995-07-12"), 
+                          ymd("1995-07-16")),
+                 death = c(425, 425))
+        
+b <- ggplot(data = chic_july, aes(x = date, y = death)) + 
+        geom_point(color = "red") + 
+        geom_line(data = hw,
+                  aes(x = date, y = death),
+                  size = 2)
+```
+
+-----
+
+```{r fig.height = 3, fig.width = 4, out.width = "0.7\\textwidth", fig.align = "center"}
+b
+```
+
