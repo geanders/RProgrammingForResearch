@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2020-09-10" />
+<meta name="date" content="2020-09-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -580,17 +580,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb1122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1122-1"><a href="exploring-data-3.html#cb1122-1"></a>n_cups &lt;-<span class="st"> </span><span class="dv">8</span></span>
 <span id="cb1122-2"><a href="exploring-data-3.html#cb1122-2"></a>cups &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="dt">each =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>))</span>
 <span id="cb1122-3"><a href="exploring-data-3.html#cb1122-3"></a>cups</span></code></pre></div>
-<pre><code>## [1] &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot; &quot;tea&quot;  &quot;milk&quot; &quot;tea&quot;  &quot;milk&quot; &quot;milk&quot;</code></pre>
+<pre><code>## [1] &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;  &quot;milk&quot; &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot; &quot;tea&quot;</code></pre>
 <div class="sourceCode" id="cb1124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1124-1"><a href="exploring-data-3.html#cb1124-1"></a>guesses &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="dt">each =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>))</span>
 <span id="cb1124-2"><a href="exploring-data-3.html#cb1124-2"></a>guesses</span></code></pre></div>
-<pre><code>## [1] &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot; &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot;</code></pre>
+<pre><code>## [1] &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;  &quot;tea&quot;</code></pre>
 <p>For this simulation, determine how many cups she got right (i.e., guess equals the true value):</p>
 <div class="sourceCode" id="cb1126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1126-1"><a href="exploring-data-3.html#cb1126-1"></a>cup_results &lt;-<span class="st"> </span>cups <span class="op">==</span><span class="st"> </span>guesses</span>
 <span id="cb1126-2"><a href="exploring-data-3.html#cb1126-2"></a>cup_results</span></code></pre></div>
-<pre><code>## [1]  TRUE  TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE</code></pre>
+<pre><code>## [1]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE</code></pre>
 <div class="sourceCode" id="cb1128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1128-1"><a href="exploring-data-3.html#cb1128-1"></a>n_right &lt;-<span class="st"> </span><span class="kw">sum</span>(cup_results)</span>
 <span id="cb1128-2"><a href="exploring-data-3.html#cb1128-2"></a>n_right</span></code></pre></div>
-<pre><code>## [1] 6</code></pre>
+<pre><code>## [1] 4</code></pre>
 <p>Write a function that will run one simulation. It takes the argument <code>n_cups</code>— in real life, they used eight cups (<code>n_cups = 8</code>). Note that this function just wraps the code we just walked through.</p>
 <div class="sourceCode" id="cb1130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1130-1"><a href="exploring-data-3.html#cb1130-1"></a>sim_null_tea &lt;-<span class="st"> </span><span class="cf">function</span>(n_cups){</span>
 <span id="cb1130-2"><a href="exploring-data-3.html#cb1130-2"></a>  cups &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="dt">each =</span> n_cups <span class="op">/</span><span class="st"> </span><span class="dv">2</span>))</span>
@@ -607,16 +607,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1132-3"><a href="exploring-data-3.html#cb1132-3"></a>          <span class="dt">eval =</span> [code to replicate each time])</span></code></pre></div>
 <div class="sourceCode" id="cb1133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1133-1"><a href="exploring-data-3.html#cb1133-1"></a>tea_sims &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">5</span>, <span class="kw">sim_null_tea</span>(<span class="dt">n_cups =</span> <span class="dv">8</span>))</span>
 <span id="cb1133-2"><a href="exploring-data-3.html#cb1133-2"></a>tea_sims</span></code></pre></div>
-<pre><code>## [1] 4 4 6 4 4</code></pre>
+<pre><code>## [1] 6 6 6 6 2</code></pre>
 <p>This call gives a vector with the number of cups she got right for each simulation. You can replicate the simulation many times to get a better idea of what to expect if she just guesses, including what percent of the time she gets all cups right.</p>
 <div class="sourceCode" id="cb1135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1135-1"><a href="exploring-data-3.html#cb1135-1"></a>tea_sims &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">1000</span>, <span class="kw">sim_null_tea</span>(<span class="dt">n_cups =</span> <span class="dv">8</span>))</span>
 <span id="cb1135-2"><a href="exploring-data-3.html#cb1135-2"></a><span class="kw">mean</span>(tea_sims)</span></code></pre></div>
-<pre><code>## [1] 3.878</code></pre>
+<pre><code>## [1] 4.07</code></pre>
 <div class="sourceCode" id="cb1137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1137-1"><a href="exploring-data-3.html#cb1137-1"></a><span class="kw">quantile</span>(tea_sims, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
 <pre><code>##  2.5% 97.5% 
 ##     2     6</code></pre>
 <div class="sourceCode" id="cb1139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1139-1"><a href="exploring-data-3.html#cb1139-1"></a><span class="kw">mean</span>(tea_sims <span class="op">==</span><span class="st"> </span><span class="dv">8</span>)</span></code></pre></div>
-<pre><code>## [1] 0.009</code></pre>
+<pre><code>## [1] 0.019</code></pre>
 <p>Now we’d like to know, for different numbers of cups of tea, what is the probability that the lady will get all cups right?</p>
 <p>For this, we can apply the replication code across different values of <code>n_cups</code>:</p>
 <div class="sourceCode" id="cb1141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1141-1"><a href="exploring-data-3.html#cb1141-1"></a>n_cups &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">2</span>, <span class="dt">to =</span> <span class="dv">14</span>, <span class="dt">by =</span> <span class="dv">2</span>)</span>
@@ -626,7 +626,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1141-5"><a href="exploring-data-3.html#cb1141-5"></a>  <span class="kw">return</span>(out)</span>
 <span id="cb1141-6"><a href="exploring-data-3.html#cb1141-6"></a>})</span>
 <span id="cb1141-7"><a href="exploring-data-3.html#cb1141-7"></a>perc_all_right</span></code></pre></div>
-<pre><code>## [1] 0.509 0.150 0.062 0.012 0.002 0.000 0.000</code></pre>
+<pre><code>## [1] 0.484 0.168 0.049 0.019 0.001 0.000 0.001</code></pre>
 <div class="sourceCode" id="cb1143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1143-1"><a href="exploring-data-3.html#cb1143-1"></a>tea_sims &lt;-<span class="st"> </span><span class="kw">data_frame</span>(n_cups, perc_all_right)</span>
 <span id="cb1143-2"><a href="exploring-data-3.html#cb1143-2"></a><span class="kw">ggplot</span>(tea_sims, <span class="kw">aes</span>(<span class="dt">x =</span> n_cups, <span class="dt">y =</span> perc_all_right)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb1143-3"><a href="exploring-data-3.html#cb1143-3"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;# of cups tested&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
@@ -729,12 +729,12 @@ P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n
 <span id="cb1153-3"><a href="exploring-data-3.html#cb1153-3"></a>throw.y &lt;-<span class="st"> </span><span class="kw">runif</span>(n.throws, <span class="dt">min =</span> <span class="dv">-1</span>, <span class="dt">max =</span> <span class="dv">1</span>)</span>
 <span id="cb1153-4"><a href="exploring-data-3.html#cb1153-4"></a><span class="kw">head</span>(<span class="kw">cbind</span>(throw.x, throw.y))</span></code></pre></div>
 <pre><code>##         throw.x    throw.y
-## [1,]  0.6914551 -0.0219195
-## [2,]  0.6558000  0.1075505
-## [3,] -0.8504120 -0.5457072
-## [4,] -0.2988204  0.9316681
-## [5,]  0.4120461  0.4294811
-## [6,]  0.6708780  0.4562824</code></pre>
+## [1,] -0.9788700 -0.9880754
+## [2,]  0.2431585  0.1332028
+## [3,]  0.9977428  0.3349957
+## [4,]  0.9972448  0.5534977
+## [5,] -0.4197893 -0.5049276
+## [6,] -0.7072879  0.5019818</code></pre>
 <div class="sourceCode" id="cb1155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1155-1"><a href="exploring-data-3.html#cb1155-1"></a><span class="kw">plot</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">type =</span> <span class="st">&quot;n&quot;</span>, <span class="dt">asp=</span><span class="dv">1</span>,</span>
 <span id="cb1155-2"><a href="exploring-data-3.html#cb1155-2"></a>     <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>)</span>
 <span id="cb1155-3"><a href="exploring-data-3.html#cb1155-3"></a><span class="kw">rect</span>( <span class="dv">-1</span>, <span class="dv">-1</span>, <span class="dv">1</span>, <span class="dv">1</span>) </span>
@@ -754,21 +754,21 @@ P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n
 <p>Use these rules to “score” each random throw:</p>
 <div class="sourceCode" id="cb1156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1156-1"><a href="exploring-data-3.html#cb1156-1"></a>throw.dist &lt;-<span class="st"> </span><span class="kw">sqrt</span>(throw.x<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>throw.y<span class="op">^</span><span class="dv">2</span>)</span>
 <span id="cb1156-2"><a href="exploring-data-3.html#cb1156-2"></a><span class="kw">head</span>(throw.dist)</span></code></pre></div>
-<pre><code>## [1] 0.6918025 0.6645606 1.0104439 0.9784166 0.5951773 0.8113389</code></pre>
+<pre><code>## [1] 1.3908557 0.2772527 1.0524794 1.1405511 0.6566391 0.8673188</code></pre>
 <div class="sourceCode" id="cb1158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1158-1"><a href="exploring-data-3.html#cb1158-1"></a>throw.score &lt;-<span class="st"> </span><span class="kw">cut</span>(throw.dist,</span>
 <span id="cb1158-2"><a href="exploring-data-3.html#cb1158-2"></a>                   <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">.25</span>, <span class="fl">.5</span>, <span class="fl">.75</span>, <span class="fl">1.5</span>),</span>
 <span id="cb1158-3"><a href="exploring-data-3.html#cb1158-3"></a>                   <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;20&quot;</span>, <span class="st">&quot;15&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;0&quot;</span>),</span>
 <span id="cb1158-4"><a href="exploring-data-3.html#cb1158-4"></a>                   <span class="dt">right =</span> <span class="ot">FALSE</span>)</span>
 <span id="cb1158-5"><a href="exploring-data-3.html#cb1158-5"></a><span class="kw">head</span>(throw.score)</span></code></pre></div>
-<pre><code>## [1] 10 10 0  0  10 0 
+<pre><code>## [1] 0  15 0  0  10 0 
 ## Levels: 20 15 10 0</code></pre>
 <p>Now that we’ve scored each throw, let’s tally up the total:</p>
 <div class="sourceCode" id="cb1160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1160-1"><a href="exploring-data-3.html#cb1160-1"></a><span class="kw">table</span>(throw.score)</span></code></pre></div>
 <pre><code>## throw.score
 ## 20 15 10  0 
-##  0  1  5 14</code></pre>
+##  1  3  4 12</code></pre>
 <div class="sourceCode" id="cb1162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1162-1"><a href="exploring-data-3.html#cb1162-1"></a><span class="kw">mean</span>(<span class="kw">as.numeric</span>(<span class="kw">as.character</span>(throw.score)))</span></code></pre></div>
-<pre><code>## [1] 3.25</code></pre>
+<pre><code>## [1] 5.25</code></pre>
 <p>So, this just showed <em>one</em> example of what might happen under the null. If we had a lot of examples like this (someone with no skill throwing 20 darts), what would we expect the mean scores to be?</p>
 <p><em>Questions to consider:</em></p>
 <ul>
@@ -833,15 +833,15 @@ Var(\bar X) = \sigma^2 / n = 45.42 / 20 = 2.27
 <span id="cb1166-11"><a href="exploring-data-3.html#cb1166-11"></a>                   <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;20&quot;</span>, <span class="st">&quot;15&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;0&quot;</span>),</span>
 <span id="cb1166-12"><a href="exploring-data-3.html#cb1166-12"></a>                   <span class="dt">right =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb1167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1167-1"><a href="exploring-data-3.html#cb1167-1"></a>dist.throws[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span></code></pre></div>
-<pre><code>##           [,1]      [,2]     [,3]      [,4]     [,5]
-## [1,] 0.7417291 0.8441230 1.106657 0.8724035 1.059040
-## [2,] 0.9742084 0.5025975 1.031361 0.7161766 1.084745
-## [3,] 0.4649340 0.4237752 1.000663 0.6078047 0.496205</code></pre>
+<pre><code>##           [,1]      [,2]      [,3]     [,4]      [,5]
+## [1,] 0.8205312 0.7212587 0.1050981 1.156109 0.6137664
+## [2,] 0.8556629 0.8530214 1.1336214 1.089183 0.7519221
+## [3,] 0.4801621 1.1306930 0.4888417 1.053778 0.6311454</code></pre>
 <div class="sourceCode" id="cb1169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1169-1"><a href="exploring-data-3.html#cb1169-1"></a>score.throws[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span></code></pre></div>
 <pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,] &quot;10&quot; &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot; 
-## [2,] &quot;0&quot;  &quot;10&quot; &quot;0&quot;  &quot;10&quot; &quot;0&quot; 
-## [3,] &quot;15&quot; &quot;15&quot; &quot;0&quot;  &quot;10&quot; &quot;15&quot;</code></pre>
+## [1,] &quot;0&quot;  &quot;10&quot; &quot;20&quot; &quot;0&quot;  &quot;10&quot;
+## [2,] &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot; 
+## [3,] &quot;15&quot; &quot;0&quot;  &quot;15&quot; &quot;0&quot;  &quot;10&quot;</code></pre>
 <div class="sourceCode" id="cb1171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1171-1"><a href="exploring-data-3.html#cb1171-1"></a>mean.scores &lt;-<span class="st"> </span><span class="kw">apply</span>(score.throws, <span class="dt">MARGIN =</span> <span class="dv">1</span>,</span>
 <span id="cb1171-2"><a href="exploring-data-3.html#cb1171-2"></a>                     <span class="cf">function</span>(x){</span>
 <span id="cb1171-3"><a href="exploring-data-3.html#cb1171-3"></a>                             out &lt;-<span class="st"> </span><span class="kw">mean</span>(<span class="kw">as.numeric</span>(</span>
@@ -849,13 +849,13 @@ Var(\bar X) = \sigma^2 / n = 45.42 / 20 = 2.27
 <span id="cb1171-5"><a href="exploring-data-3.html#cb1171-5"></a>                             <span class="kw">return</span>(out)</span>
 <span id="cb1171-6"><a href="exploring-data-3.html#cb1171-6"></a>                     })</span>
 <span id="cb1171-7"><a href="exploring-data-3.html#cb1171-7"></a><span class="kw">head</span>(mean.scores)</span></code></pre></div>
-<pre><code>## [1] 4.75 3.75 5.50 8.25 7.75 5.50</code></pre>
+<pre><code>## [1] 5.75 5.50 6.25 4.50 6.25 3.75</code></pre>
 <p><img src="RProgrammingForResearch_files/figure-html/gg-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
 <p>Let’s check the simulated mean and variance against the theoretical values:</p>
 <div class="sourceCode" id="cb1173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1173-1"><a href="exploring-data-3.html#cb1173-1"></a><span class="kw">mean</span>(mean.scores) <span class="co">## Theoretical: 5.635</span></span></code></pre></div>
-<pre><code>## [1] 5.64655</code></pre>
+<pre><code>## [1] 5.647475</code></pre>
 <div class="sourceCode" id="cb1175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1175-1"><a href="exploring-data-3.html#cb1175-1"></a><span class="kw">var</span>(mean.scores) <span class="co">## Theoretical: 2.27</span></span></code></pre></div>
-<pre><code>## [1] 2.297378</code></pre>
+<pre><code>## [1] 2.258796</code></pre>
 </div>
 <div id="simulations-in-research" class="section level3">
 <h3><span class="header-section-number">11.1.3</span> Simulations in research</h3>
