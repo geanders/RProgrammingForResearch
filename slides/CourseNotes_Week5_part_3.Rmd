@@ -1,0 +1,189 @@
+---
+title: "Reproducible research 1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+knitr::knit_hooks$set(source = function(x, options){
+  if (!is.null(options$verbatim) && options$verbatim){
+    opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*", "", options$params.src)
+    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    stringr::str_c(
+      bef, 
+      knitr:::indent_block(paste(x, collapse = '\n'), "    "), 
+      "\n    ```\n"
+    )
+  } else {
+    stringr::str_c("\n\n```", tolower(options$engine), "\n", 
+      paste(x, collapse = '\n'), "\n```\n\n"
+    )
+  }
+})
+library(faraway)
+data(nepali)
+```
+
+# Literate programming 
+
+## Literate programming
+
+- **Literate programming** mixes code that can be executed with regular text.
+- The files you create can then be rendered, to run any embedded code. 
+- The final output will have results from your code and the regular text.
+
+## Literate programming
+
+Literate programming was developed by **Donald Knuth**. \medskip 
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/KnuthCheck.jpg")
+```
+
+
+## Literate programming with `knitr`
+
+The `knitr` package can be used for literate programming in R. \bigskip
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/RMarkdownWorkflow.png")
+```
+
+(Source: RMarkdown Cheatsheet, RStudio) \bigskip
+
+In essence, `knitr` allows you to write an R Markdown file that can be rendered into a pdf, Word, or HTML document.
+
+## Basics
+
+- To open a new RMarkdown file, go to "File" -> "New File" -> "RMarkdown..." -> for now, chose a "Document" in "HTML" format.
+- This will open a new R Markdown file in RStudio. The file extension for RMarkdown files is ".Rmd". 
+- The new file comes with some example code and text. You can run the file as-is to try out the example. You will ultimately delete this example code and text and replace it with your own.
+- Once you "knit" the R Markdown file, R will render an HTML file with the output. This is automatically saved in the same directory where you saved your .Rmd file.
+- Write everything besides R code using Markdown syntax.
+
+## Chunk syntax
+
+To include R code in an RMarkdown document, separate the code chunk using the following syntax:
+
+    `r ''````{r}
+    my_vec <- 1:10
+    ```
+
+## Naming chunks
+
+You can specify a name for each chunk, if you'd like, by including it after "r" when you begin your chunk. \medskip
+
+For example, to give the name `load_nepali` to a code chunk that loads the `nepali` dataset, specify that name in the start of the code chunk: \bigskip
+
+    `r ''````{r load_nepali}
+    library(faraway)
+    data(nepali)
+    ```
+
+\bigskip 
+
+Some tips: 
+
+- Chunk names must be unique across a document.
+- Any chunks you don't name are given numbers by `knitr`.
+
+## Naming chunks
+
+You do not have to name each chunk. However, there are some advantages: 
+
+- It will be easier to find any errors.  
+- You can use the chunk labels in referencing for figure labels. 
+- You can reference chunks later by name.
+
+## Chunk options
+
+You can add options when you start a chunk. Many of these options can be set as TRUE / FALSE and include:
+
+```{r echo = FALSE}
+chunk_opts <- data.frame(Option = c("`echo`",
+                                    "`eval`",
+                                    "`messages`",
+                                    "`warnings`",
+                                    "`include`"),
+                         Action = c("Print out the R code?",
+                                    "Run the R code?",
+                                    "Print out messages?",
+                                    "Print out warnings?",
+                                    "If FALSE, run code, but don't print code or results"))
+knitr::kable(chunk_opts)
+```
+
+## Chunk options
+
+Other chunk options take values other than TRUE / FALSE. Some you might want to include are:
+
+```{r echo = FALSE}
+chunk_opts2 <- data.frame(Option = c("`results`",
+                                     "`fig.width`",
+                                     "`fig.height`"),
+                          Action = c("How to print results (e.g., `hide` runs the code, but doesn't print the results)",
+                                     "Width to print your figure, in inches (e.g., `fig.width = 4`)",
+                                     "Height to print your figure"))
+pander::pander(chunk_opts2, split.cells = c(10, 50),
+               justify = c("center", "left"))
+```
+
+## Chunk options
+
+Add these options in the opening brackets and separate multiple ones with commas:
+
+    `r ''````{r  messages = FALSE, echo = FALSE}
+    nepali[1, 1:3]
+    ```
+
+\bigskip 
+
+We will go over other options later, once you've gotten the chance to try adding R code into RMarkdown files.
+
+## Global options
+
+You can set "global" options at the beginning of the document. This will create new defaults for all of the chunks in the document. \bigskip
+
+For example, if you want `echo`, `warning`, and `message` to be `FALSE` by default in all code chunks, you can run: \bigskip
+
+    `r ''````{r  global_options}
+    knitr::opts_chunk$set(echo = FALSE, message = FALSE,
+      warning = FALSE)
+    ```
+
+## Global options
+
+Options that you set specifically for a chunk will take precedence over global options. \bigskip
+
+For example, running a document with:
+
+    `r ''````{r  global_options}
+    knitr::opts_chunk$set(echo = FALSE, message = FALSE,
+      warning = FALSE)
+    ```
+
+
+    `r ''````{r  check_nepali, echo = TRUE}
+    head(nepali, 1)
+    ```
+    
+would print the code for the `check_nepali` chunk.
+
+## Inline code
+
+You can also include R output directly in your text ("inline") using backticks: \bigskip
+
+There are `` `r '\x60r nrow(nepali)\x60'` `` observations in the `nepali` data set. The average age is `` `r '\x60r mean(nepali$age, na.rm = TRUE)\x60'` `` months.
+
+\bigskip
+
+Once the file is rendered, this gives: \bigskip
+
+There are `r nrow(nepali)` observations in the `nepali` data set. The average age is `r mean(nepali$age, na.rm = TRUE)` months.
+

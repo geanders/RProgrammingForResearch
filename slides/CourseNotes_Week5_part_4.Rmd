@@ -1,0 +1,78 @@
+---
+title: "Reproducible research 1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+knitr::knit_hooks$set(source = function(x, options){
+  if (!is.null(options$verbatim) && options$verbatim){
+    opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*", "", options$params.src)
+    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    stringr::str_c(
+      bef, 
+      knitr:::indent_block(paste(x, collapse = '\n'), "    "), 
+      "\n    ```\n"
+    )
+  } else {
+    stringr::str_c("\n\n```", tolower(options$engine), "\n", 
+      paste(x, collapse = '\n'), "\n```\n\n"
+    )
+  }
+})
+library(faraway)
+data(nepali)
+```
+
+# Working with Rmd files
+
+## R Markdown tips
+
+Here are two tips that will help you diagnose some problems rendering R Markdown files:
+
+- Be sure to save your R Markdown file before you run it.
+- All the code in the file will run "from scratch"-- as if you just opened a new R session.
+- The code will run using, as a working directory, the directory where you saved the R Markdown file.
+
+## Running code
+
+You'll want to try out pieces of your code as you write an R Markdown document. There are a few ways you can do that:
+
+- You can run code in chunks just like you can run code from a script (Ctrl-Return or the "Run" button). 
+- You can run all the code in a chunk (or all the code in all chunks) using the different options under the "Run" button in RStudio. 
+- All the "Run" options have keyboard shortcuts, so you can use those.
+
+## Compiling to other formats
+
+You can compile R Markdown documents to other formats:
+
+- Word
+- Pdf (requires that you've installed a LaTeX engine on your computer, like MikTeX or MacTeX.)
+- Slides (ioslides, PowerPoint)
+
+\bigskip
+
+Click the button to the right of "Knit" to see different options for rendering on your computer. 
+
+## RPubs
+
+You can freely post your RMarkdown documents at [RPubs](http://rpubs.com). \bigskip
+
+If you want to post to RPubs, you need to create an account. Once you do, you can click the "Publish" button on the window that pops up with your compiled file. \bigskip
+
+RPubs can also be a great place to look for interesting example code, although it sometimes can be pretty overwhelmed with MOOC homework. 
+
+## Find out more
+
+Here are some good how-to books on reproducible research in R:
+
+- *R Markdown: The Definitive Guide*, Garrett Grolemund, J.J. Allaire, and Yihui Xie (https://bookdown.org/yihui/rmarkdown/)
+- *Reproducible Research with R and RStudio*, Christopher Gandrud
+- *Dynamic Documents with R and knitr*, Yihui Xie
+

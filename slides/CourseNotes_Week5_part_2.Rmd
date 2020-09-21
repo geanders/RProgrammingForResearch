@@ -1,0 +1,121 @@
+---
+title: "Reproducible research 1"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+knitr::knit_hooks$set(source = function(x, options){
+  if (!is.null(options$verbatim) && options$verbatim){
+    opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*", "", options$params.src)
+    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    stringr::str_c(
+      bef, 
+      knitr:::indent_block(paste(x, collapse = '\n'), "    "), 
+      "\n    ```\n"
+    )
+  } else {
+    stringr::str_c("\n\n```", tolower(options$engine), "\n", 
+      paste(x, collapse = '\n'), "\n```\n\n"
+    )
+  }
+})
+library(faraway)
+data(nepali)
+```
+
+
+# Markdown
+
+## Markup languages
+
+To write RMarkdown files, you need to understand what markup languages like Markdown are and how they work. \bigskip
+
+In Word, you can add formatting using buttons and keyboard shortcuts (e.g., "Ctrl-B" for bold). The file saves the words you type. It also saves the formatting, but you see the final output, rather than the formatting markup, when you edit the file (WYSIWYG-- what you see is what you get). \bigskip
+
+In markup languages, you markup the document directly to show what formatting the final version should have (e.g., you type `**bold**` in the file to end up with a document with **bold**).
+
+## Markup languages
+
+Examples of markup languages include:
+
+- HTML (HyperText Markup Language)
+- LaTeX
+- Markdown (a "lightweight" markup language)
+
+## Markup languages
+
+For example, here's some marked-up HTML code from CSU's website: \bigskip
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/example_html.png")
+```
+
+## Markup languages
+
+And here's how it looks when it's rendered by a web browser: \bigskip
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/example_output.png")
+```
+
+## Markdown conventions
+
+To write a file in Markdown, you'll need to learn the conventions for creating formatting. This table shows what you would need to write in a flat file for some common formatting choices: \medskip
+
+\small
+
+```{r echo = FALSE}
+markdown_format <- data.frame(Code = c("`**text**`",
+                                       "`*text*`",
+                                       "`[text](www.google.com)`", 
+                                       "`# text`", 
+                                       "`## text`"),
+                              Rendering = c("**text**",
+                                            "*text*",
+                                            "[text](www.google.com)",
+                                            "",
+                                            ""),
+                              Explanation = c("boldface",
+                                              "italicized",
+                                              "hyperlink",
+                                              "first-level header",
+                                              "second-level header"))
+knitr::kable(markdown_format)
+```
+
+## Markdown conventions
+
+To create a list, you can use the following syntax (*Note*: The empty lines before and after the list items must be included or the list won't be created correctly.):
+
+\small
+
+```
+Here are the items in my list: 
+
+- List item 1
+- List item 2
+
+Those are all the items.
+```
+
+
+
+## Markdown conventions
+
+Some other simple things you can do:
+
+- Equations
+- Tables
+- Figures from file
+- Block quotes
+
+\bigskip
+
+For more Markdown conventions, see [RStudio's R Markdown Reference Guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) (link also available through "Help" in RStudio). 
