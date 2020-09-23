@@ -979,7 +979,7 @@ top_player <- worldcup %>%
 
 Now you can use `geom_text()` to label this player's point on the graph with his name. You may need to mess around with some of the options in `geom_text()`, like `size`, `hjust`, and `vjust` (`hjust` and `vjust` say where, in relation to the point location, to put the label), to get something you're happy with. 
 
-```{r echo = FALSE, fig.width = 4, fig.height = 3}
+```{r echo = TRUE, fig.width = 4, fig.height = 3}
 worldcup %>% 
   mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany")) %>% 
   ggplot(aes(x = Time, y = Shots, color = top_4)) + 
@@ -994,7 +994,7 @@ worldcup %>%
 
 If you want to put both the player's name and his team, you can add a `mutate()` function when you create the new dataframe with just the top player, and then use this for the label: 
 
-```{r echo = FALSE, fig.width = 4, fig.height = 3}
+```{r echo = TRUE, fig.width = 4, fig.height = 3}
 top_player <- worldcup %>% 
   top_n(n = 1, wt = Shots) %>% 
   mutate(label = paste0(Player, ", ", Team))
@@ -1014,7 +1014,7 @@ worldcup %>%
 
 To create small multiples, use the `facet_wrap()` command (you'll probably want to use `ncol` to specify to use four columns):
 
-```{r echo = FALSE, fig.width = 8, fig.height = 2.5}
+```{r echo = TRUE, fig.width = 8, fig.height = 2.5}
 top_player <- worldcup %>% 
   top_n(n = 1, wt = Shots) %>% 
   mutate(label = paste0(Player, ", ", Team))
@@ -1035,7 +1035,7 @@ worldcup %>%
 
 To re-order the `Position` column of the dataframe, add a `mutate` statement before you pipe into the plotting code. Use the `levels` option of the `factor()` function-- whatever order you put the factors in for this argument will be the new order in which R saves the levels of this factor.
 
-```{r echo = FALSE, fig.width = 8, fig.height = 2.5}
+```{r echo = TRUE, fig.width = 8, fig.height = 2.5}
 worldcup %>% 
   mutate(top_4 = Team %in% c("Netherlands", "Uruguay", "Spain", "Germany"),
          Position = factor(Position, levels = c("Goalkeeper", "Defender", 
