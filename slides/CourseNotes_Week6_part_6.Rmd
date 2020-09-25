@@ -1,0 +1,107 @@
+---
+title: "Getting / cleaning data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(knitr)
+library(faraway)
+data(worldcup)
+```
+
+# Tidying with `dplyr` 
+
+## `VADeaths` data
+
+For this example, I'll use the `VADeaths` dataset that comes with R. \bigskip
+
+This dataset gives the death rates per 1,000 people in Virginia in 1940. It gives death rates by age, gender, and rural / urban:
+
+```{r}
+data("VADeaths")
+VADeaths
+```
+
+## `VADeaths` data
+
+There are a few things that make this data untidy: 
+
+- One variable (age category) is saved as row names, rather than a column.
+- Other variables (gender, rural / urban) are in column names.
+- Once you gather the data, you will have two variables (gender, rural / urban) in the same column.
+
+In the following slides, we'll walk through how to tidy this data. 
+
+## Tidying the `VADeaths` data
+
+(1) One variable (age category) is saved as row names, rather than a column. \bigskip
+
+To fix this, we need to convert the row names into a new column. We can do this using `mutate` (load `tibble` if needed):
+
+```{r echo = 2:4}
+library(tibble)
+VADeaths %>%
+  as.data.frame() %>% ## Convert from matrix to dataframe
+  rownames_to_column(var = "age")
+```
+
+## Tidying the `VADeaths` data
+
+(2) Two variables (gender, rural / urban) are in column names. \bigskip
+
+Gather the data to convert column names to a new column:
+
+```{r}
+VADeaths %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "age") %>%
+  pivot_longer(- age, names_to = "gender_loc", values_to = "mort_rate") %>%
+  slice(1:4)
+```
+
+## Tidying the `VADeaths` data
+
+(3) Two variables (gender, rural / urban) in the same column. \bigskip
+
+Separate the column into two separate columns for "gender" and "loc" (rural / urban):
+
+```{r}
+VADeaths %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "age") %>%
+  pivot_longer(- age, names_to = "gender_loc", values_to = "mort_rate") %>%
+  separate(col = gender_loc, into = c("gender", "loc"),
+           sep = " ") %>%
+  slice(1)
+```
+
+## Tidying the `VADeaths` data
+
+Now that the data is tidy, it's much easier to plot: 
+
+```{r echo = FALSE}
+VADeaths <- VADeaths %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "age") %>%
+  pivot_longer(- age, names_to = "gender_loc", values_to = "mort_rate") %>%
+  separate(col = gender_loc, into = c("loc", "gender"),
+           sep = " ")
+```
+
+```{r fig.width = 8, fig.height = 3}
+ggplot(VADeaths, aes(x = age, y = mort_rate,
+                     color = gender)) + 
+  geom_point() + 
+  facet_wrap( ~ loc, ncol = 2) + 
+  xlab("Age category") + ylab("Death rate (per 1,000)") + 
+  theme_minimal()
+```
+

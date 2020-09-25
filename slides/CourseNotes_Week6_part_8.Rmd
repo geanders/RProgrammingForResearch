@@ -1,0 +1,75 @@
+---
+title: "Getting / cleaning data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(knitr)
+library(faraway)
+data(worldcup)
+```
+
+
+# Working with strings
+
+## String operations
+
+For these examples, we'll use some data on passengers of the Titanic. You can load this data using:
+
+```{r}
+# install.packages("titanic")
+library("titanic")
+data("titanic_train")
+```
+
+We will be using the `stringr` package:
+
+```{r}
+library("stringr")
+```
+
+## String operations
+
+This data includes a column called "Name" with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). 
+
+Here are the first few values of "Name": 
+
+```{r}
+titanic_train %>% select(Name) %>% slice(1:3)
+```
+
+## String operations
+
+The `str_trim` function from the `stringr` package allows you to trim leading and trailing whitespace: 
+
+```{r}
+with_spaces <- c("    a ", "  bob", " gamma")
+with_spaces
+str_trim(with_spaces)
+```
+
+This is rarer, but if you ever want to, you can add leading and / or trailing whitespace to elements of a character vector with `str_pad` from the `stringr` package.
+
+## String operations
+
+There are also functions to change a full character string to uppercase, lowercase, or title case: 
+
+```{r echo = FALSE}
+library(titanic)
+data(titanic_train)
+```
+
+```{r}
+str_to_upper("Braund, Mr. Owen Harris")
+str_to_lower("Braund, Mr. Owen Harris")
+str_to_title("braund, mr. owen harris")
+```
+

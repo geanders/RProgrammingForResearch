@@ -1,0 +1,108 @@
+---
+title: "Getting / cleaning data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(knitr)
+library(faraway)
+data(worldcup)
+```
+
+# More with `dplyr`
+
+## `dplyr`
+
+So far, you've used several `dplyr` functions: 
+
+- `rename`
+- `filter`
+- `select`
+- `mutate`
+- `group_by`
+- `summarize`
+
+Some other useful `dplyr` functions to add to your toolbox are: 
+
+- `separate` and `unite`
+- `mutate` and other `dplyr` functions with `group_by`
+- `anti_join` and `semi_join`
+
+## `separate`
+
+Sometimes, you want to take one column and split it into two columns. For example, you may have information for two variables in one column: 
+
+```{r echo = FALSE}
+ebola <- tibble(ebola_key = c("Liberia_Cases", "Liberia_Deaths", 
+                              "Spain_Cases", "Spain_Deaths"))
+```
+
+```{r}
+ebola
+```
+
+
+## `separate`
+
+If you have a consistent "split" character, you can use the `separate` function to split one column into two: 
+
+```{r}
+ebola %>%
+  separate(col = ebola_key, into = c("country", "outcome"),
+           sep = "_")
+```
+
+## `separate`
+
+Here is the generic code for `separate`: 
+
+```{r eval = FALSE}
+## Generic code
+separate([dataframe], 
+         col = [name of the single column you want to split],
+         into = [vector of the names of the columns 
+                 you want to create],
+         sep = [the character that designates where 
+                you want to split])
+```
+
+## `separate`
+
+The default is to drop the original column and only keep the columns into which it was split. However, you can use the argument `remove = FALSE` to keep the first column, as well: 
+
+```{r}
+ebola %>%
+  separate(col = ebola_key, into = c("country", "outcome"),
+           sep = "_", remove = FALSE)
+```
+
+## `separate`
+
+You can use the `fill` argument (`fill = "right"` or `fill = "left"`) to control what happens when there are some observations that do not have the split character. \bigskip
+
+For example, say your original column looked like this:
+
+```{r echo = FALSE}
+ebola <- tibble(ebola_key = c("Liberia_Cases", "Liberia", 
+                              "Spain_Cases", "Spain_Deaths"))
+ebola
+```
+
+## `separate`
+
+You can use `fill = "right"` to set how to split observations like the second one, where there is no separator character ("_"):
+
+```{r}
+ebola %>%
+  separate(col = ebola_key, into = c("country", "outcome"),
+           sep = "_", fill = "right")
+```
+
