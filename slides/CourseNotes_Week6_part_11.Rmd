@@ -1,0 +1,248 @@
+---
+title: "Getting / cleaning data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(knitr)
+library(faraway)
+data(worldcup)
+
+library("titanic")
+data("titanic_train")
+```
+
+# More on using regular expressions
+
+## Regular expressions
+
+The `str_detect` function will look through each element of a character vector for a designated pattern. If the pattern is there, it will return `TRUE`, and otherwise `FALSE`. The convention is: 
+
+```
+## Generic code
+str_detect(string = [vector you want to check], 
+           pattern = [pattern you want to check for])
+```
+
+For example, to create a logical vector specifying which of the Titanic passenger names include "Mrs.", you can call:
+
+```{r}
+mrs <- str_detect(titanic_train$Name, "Mrs\\.")
+head(mrs)
+```
+
+
+## Regular expressions
+
+The result is a logical vector, so `str_detect` can be used in `filter` to subset data to only rows where the passenger's name includes "Mrs.":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "Mrs\\.")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+The `str_extract` function can be used to extract a string (if it exists) from each value in a character vector. It follows similar conventions to `str_detect`:
+
+```
+## Generic code
+str_extract(string = [vector you want to check], 
+           pattern = [pattern you want to check for])
+```
+
+## Regular expressions
+
+For example, you might want to extract "Mrs." if it exists in a passenger's name:
+
+```{r}
+titanic_train %>%
+  mutate(mrs = str_extract(Name, "Mrs\\.")) %>%
+  select(Name, mrs) %>%
+  slice(1:3)
+```
+
+Notice that now we're creating a new column (`mrs`) that either has "Mrs." (if there's a match) or is missing (`NA`) if there's not a match. 
+
+## Regular expressions
+
+For this first example, we were looking for an exact string ("Mrs"). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find "Mr." or "Mrs.":  
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, "Mr[s]*\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+This pattern uses `[s]*` to match zero or more "s"s at this spot in the pattern. 
+
+## Regular expressions
+
+In the previous code, we found "Mr." and "Mrs.", but missed "Miss.". We could tweak the pattern again to try to capture that, as well. For all three, we have the pattern that it starts with "M", has some lowercase letters, and then ends with ".".  
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, "M[a-z]+\\.")) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+
+
+## Regular expressions 
+
+Sometimes, you want to match a pattern, but then only subset a part of it. For example, each passenger seems to have a title ("Mr.", "Mrs.", etc.) that comes after ", " and before ". ". We can use this pattern to find the title, but then we get some extra stuff with the match: 
+
+```{r}
+titanic_train %>%
+  mutate(title = str_extract(Name, ", [A-Z][a-z]*\\.")) %>%
+  select(title) %>%
+  slice(1:3)
+```
+
+
+## Regular expressions 
+
+We are getting things like ", Mr. ", when we really want "Mr". We can use the `str_match` function to do this. We group what we want to extract from the pattern in parentheses, and then the function returns a matrix. The first column is the full pattern match, and each following column gives just what matches within the groups. 
+
+```{r}
+head(str_match(titanic_train$Name,
+          pattern = ", ([A-Z][a-z]*)\\."))
+```
+
+## Regular expressions 
+
+To get just the title, then, we can run:
+
+```{r}
+titanic_train %>%
+  mutate(title = 
+           str_match(Name, ", ([A-Z][a-z]*)\\.")[ , 2]) %>%
+  select(Name, title) %>%
+  slice(1:3)
+```
+
+The `[ , 2]` pulls out just the second column from the matrix returned by `str_match`. 
+
+## Regular expressions 
+
+Here are some of the most common titles: 
+
+```{r}
+titanic_train %>%
+  mutate(title = 
+           str_match(Name, ", ([A-Z][a-z]*)\\.")[ , 2]) %>%
+  group_by(title) %>% summarize(n = n()) %>%
+  arrange(desc(n)) %>% slice(1:5)
+```
+
+## Regular expressions
+
+The following slides have a few other examples of regular expressions in action with this dataset. \bigskip
+
+Get just names that start with ("^") the letter "A":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "^A")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+Get names with "II" or "III" (`{2,}` says to match at least two times):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "I{2,}")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+Get names with "Andersen" or "Anderson" (alternatives in square brackets):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "Anders[eo]n")) %>%
+  select(Name)
+```
+
+
+## Regular expressions
+
+Get names that start with ("^" outside of brackets) the letters "A" and "B":
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "^[AB]")) %>%
+  select(Name) %>%
+  slice(1:3)
+```
+
+## Regular expressions
+
+Get names that end with ("$") the letter "b" (either lowercase or uppercase):
+
+```{r}
+titanic_train %>%
+  filter(str_detect(Name, "[bB]$")) %>%
+  select(Name) 
+```
+
+
+## Regular expressions
+
+There is a family of older, base R functions called `grep` that does something very similar.
+
+You may see these functions in example code.
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/xkcd_regex_1.png")
+```
+
+\footnotesize
+Souce: xkcd
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/xkcd_regex_2.png")
+```
+
+\footnotesize
+Souce: xkcd
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "\\textwidth"}
+knitr::include_graphics("../figures/xkcd_regex_3.png")
+```
+
+\footnotesize
+Souce: xkcd
+
+## Regular expressions
+
+For more on these patterns, see: 
+
+- Help file for the `stringi-search-regex` function in the `stringi` package (which should install when you install `stringr`)
+- Chapter 14 of R For Data Science
+- http://gskinner.com/RegExr: Interactive tool for helping you build regular expression pattern strings
+
+

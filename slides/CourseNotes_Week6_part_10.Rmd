@@ -1,0 +1,111 @@
+---
+title: "Getting / cleaning data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(knitr)
+library(faraway)
+data(worldcup)
+
+library("titanic")
+data("titanic_train")
+```
+
+# Using regular expressions
+
+## Regular expression patterns
+
+The easiest regular expression patterns are literal text. For example, the regular expression
+pattern if you're trying to match "Mr" is just "Mr": 
+
+```{r}
+ex_names <- c("Braund, Mr. Owen Harris",
+              "Cumings, Mrs. John Bradley",
+              "Heikkinen, Miss. Laina")
+str_extract(ex_names, pattern = "Mr")
+```
+
+## Regular expression patterns
+
+Regular expression patterns are case sensitive, so you won't match "Mr" with the
+pattern "mr":
+
+```{r}
+ex_names <- c("Braund, Mr. Owen Harris",
+              "Cumings, Mrs. John Bradley",
+              "Heikkinen, Miss. Laina")
+str_extract(ex_names, pattern = "mr")
+```
+
+## Regular expression patterns
+
+There are a few characters called **metacharacters** that mean something special in 
+regular expression patterns. 
+
+To use any of these literally in a regular expression, you 
+need to "protect" them with two backslashes. 
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_2.jpg")
+```
+
+## Regular expressions
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_3.jpg")
+```
+
+## Regular expression patterns
+
+For example, "." is a metacharacter, so to match "Mr.", you need to use the pattern `"Mr\\."`:
+
+```{r}
+ex_names <- c("Braund, Mr. Owen Harris",
+              "Cumings, Mrs. John Bradley",
+              "Heikkinen, Miss. Laina")
+str_extract(ex_names, pattern = "Mr\\.")
+```
+
+## Regular expression metacharacters
+
+```{r echo = FALSE, out.width = "0.9\\textwidth"}
+knitr::include_graphics("../figures/regexp_metachars.jpg")
+```
+
+## Regular expression patterns
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_4.jpg")
+```
+
+## Regular expression patterns
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_5.jpg")
+```
+
+## Regular expressions
+
+The last pattern used `[a-z]+` to match one or more lowercase letters. The `[a-z]`is a **character class**. \bigskip 
+
+You can also match digits (`[0-9]`), uppercase letters (`[A-Z]`), just some letters (`[aeiou]`), etc. \bigskip
+
+You can negate a character class by starting it with `^`. For example, `[^0-9]` will match anything that **isn't** a digit. 
+
+## Regular expression patterns
+
+```{r echo = FALSE, out.width = "0.9\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/regex_pattern_6.jpg")
+```
+
