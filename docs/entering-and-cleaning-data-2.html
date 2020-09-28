@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2020-09-23" />
+<meta name="date" content="2020-09-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -344,8 +344,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="part"><span><b>III Part III: Intermediate</b></span></li>
 <li class="chapter" data-level="6" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html"><i class="fa fa-check"></i><b>6</b> Entering and cleaning data #2</a><ul>
-<li class="chapter" data-level="6.1" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#joining-datasets"><i class="fa fa-check"></i><b>6.1</b> Joining datasets</a></li>
-<li class="chapter" data-level="6.2" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#tidy-data"><i class="fa fa-check"></i><b>6.2</b> Tidy data</a></li>
+<li class="chapter" data-level="6.1" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#tidy-data"><i class="fa fa-check"></i><b>6.1</b> Tidy data</a></li>
+<li class="chapter" data-level="6.2" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#joining-datasets"><i class="fa fa-check"></i><b>6.2</b> Joining datasets</a></li>
 <li class="chapter" data-level="6.3" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#longer-data"><i class="fa fa-check"></i><b>6.3</b> Longer data</a></li>
 <li class="chapter" data-level="6.4" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#working-with-factors"><i class="fa fa-check"></i><b>6.4</b> Working with factors</a></li>
 <li class="chapter" data-level="6.5" data-path="entering-and-cleaning-data-2.html"><a href="entering-and-cleaning-data-2.html#string-operations-and-regular-expressions"><i class="fa fa-check"></i><b>6.5</b> String operations and regular expressions</a></li>
@@ -553,71 +553,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="entering-and-cleaning-data-2" class="section level1">
 <h1><span class="header-section-number">Chapter 6</span> Entering and cleaning data #2</h1>
-<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6.pdf">Download</a> a pdf of the lecture slides covering this topic.</p>
-<div id="joining-datasets" class="section level2">
-<h2><span class="header-section-number">6.1</span> Joining datasets</h2>
-<p>So far, you have only worked with a single data source at a time. When you work on your own projects, however, you typically will need to merge together two or more datasets to create the a data frame to answer your research question. For example, for air pollution epidemiology, you will often have to join several datasets:</p>
-<ul>
-<li>Health outcome data (e.g., number of deaths per day)</li>
-<li>Air pollution concentrations</li>
-<li>Weather measurements (since weather can be a confounder)</li>
-<li>Demographic data</li>
-</ul>
-<p>The <code>dplyr</code> package has a family of different functions to join two dataframes together, the <code>*_join</code> family of functions. All combine two dataframes, which I’ll call <code>x</code> and <code>y</code> here. </p>
-<p>The functions include:</p>
-<ul>
-<li><code>inner_join(x, y)</code>: Keep only rows where there are observations in both <code>x</code> and <code>y</code>.</li>
-<li><code>left_join(x, y)</code>: Keep all rows from <code>x</code>, whether they have a match in <code>y</code> or not.</li>
-<li><code>right_join(x, y)</code>: Keep all rows from <code>y</code>, whether they have a match in <code>x</code> or not.</li>
-<li><code>full_join(x, y)</code>: Keep all rows from both <code>x</code> and <code>y</code>, whether they have a match in the other dataset or not.</li>
-</ul>
-<p>In the examples, I’ll use two datasets, <code>x</code> and <code>y</code>. Both datasets include the column <code>course</code>. The other column in <code>x</code> is <code>grade</code>, while the other column in <code>y</code> is <code>day</code>. Observations exist for courses <code>x</code> and <code>y</code> in both datasets, but for <code>w</code> and <code>z</code> in only one dataset.</p>
-<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb529-1"><a href="entering-and-cleaning-data-2.html#cb529-1"></a>x &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">course =</span> <span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;z&quot;</span>),</span>
-<span id="cb529-2"><a href="entering-and-cleaning-data-2.html#cb529-2"></a>                <span class="dt">grade =</span> <span class="kw">c</span>(<span class="dv">90</span>, <span class="dv">82</span>, <span class="dv">78</span>))</span>
-<span id="cb529-3"><a href="entering-and-cleaning-data-2.html#cb529-3"></a>y &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">course =</span> <span class="kw">c</span>(<span class="st">&quot;w&quot;</span>, <span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>),</span>
-<span id="cb529-4"><a href="entering-and-cleaning-data-2.html#cb529-4"></a>                <span class="dt">day =</span> <span class="kw">c</span>(<span class="st">&quot;Tues&quot;</span>, <span class="st">&quot;Mon / Fri&quot;</span>, <span class="st">&quot;Tue&quot;</span>))</span></code></pre></div>
-<p>Here is what these two example datasets look like:</p>
-<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb530-1"><a href="entering-and-cleaning-data-2.html#cb530-1"></a>x</span></code></pre></div>
-<pre><code>##   course grade
-## 1      x    90
-## 2      y    82
-## 3      z    78</code></pre>
-<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb532-1"><a href="entering-and-cleaning-data-2.html#cb532-1"></a>y</span></code></pre></div>
-<pre><code>##   course       day
-## 1      w      Tues
-## 2      x Mon / Fri
-## 3      y       Tue</code></pre>
-<p>With <code>inner_join</code>, you’ll only get the observations that show up in both datasets. That means you’ll lose data on <code>z</code> (only in the first dataset) and <code>w</code> (only in the second dataset).</p>
-<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="entering-and-cleaning-data-2.html#cb534-1"></a><span class="kw">inner_join</span>(x, y)</span></code></pre></div>
-<pre><code>## Joining, by = &quot;course&quot;</code></pre>
-<pre><code>##   course grade       day
-## 1      x    90 Mon / Fri
-## 2      y    82       Tue</code></pre>
-<p>With <code>left_join</code>, you’ll keep everything in <code>x</code> (the “left” dataset), but not keep things in <code>y</code> that don’t match something in <code>x</code>. That means that, here, you’ll lose <code>w</code>:</p>
-<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="entering-and-cleaning-data-2.html#cb537-1"></a><span class="kw">left_join</span>(x, y)</span></code></pre></div>
-<pre><code>## Joining, by = &quot;course&quot;</code></pre>
-<pre><code>##   course grade       day
-## 1      x    90 Mon / Fri
-## 2      y    82       Tue
-## 3      z    78      &lt;NA&gt;</code></pre>
-<p><code>right_join</code> is the opposite:</p>
-<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="entering-and-cleaning-data-2.html#cb540-1"></a><span class="kw">right_join</span>(x, y)</span></code></pre></div>
-<pre><code>## Joining, by = &quot;course&quot;</code></pre>
-<pre><code>##   course grade       day
-## 1      x    90 Mon / Fri
-## 2      y    82       Tue
-## 3      w    NA      Tues</code></pre>
-<p><code>full_join</code> keeps everything from both datasets:</p>
-<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb543-1"><a href="entering-and-cleaning-data-2.html#cb543-1"></a><span class="kw">full_join</span>(x, y)</span></code></pre></div>
-<pre><code>## Joining, by = &quot;course&quot;</code></pre>
-<pre><code>##   course grade       day
-## 1      x    90 Mon / Fri
-## 2      y    82       Tue
-## 3      z    78      &lt;NA&gt;
-## 4      w    NA      Tues</code></pre>
-</div>
+<p>The video lectures for this chapter are embedded at relevant places in the text,
+with links to download a pdf of the associated slides for each video.
+You can also access <a href="https://www.youtube.com/playlist?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4">a full playlist for the videos for this chapter</a>.</p>
 <div id="tidy-data" class="section level2">
-<h2><span class="header-section-number">6.2</span> Tidy data</h2>
+<h2><span class="header-section-number">6.1</span> Tidy data</h2>
+<iframe width="747" height="467" src="https://www.youtube.com/embed/EetWyFQqXbs?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_1.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
 <p>All of the material in this section comes directly from Hadley Wickham’s <a href="http://vita.had.co.nz/papers/tidy-data.pdf">paper on tidy data</a>. You will need to read this paper to prepare for the quiz on this section.</p>
 <p>Getting your data into a “tidy” format makes it easier to model and plot. By taking the time to tidy your data at the start of an analysis, you will save yourself time, and make it easier to plan out later steps.</p>
 <p>Characteristics of tidy data are:</p>
@@ -678,8 +622,78 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>File 2: Daily air pollution measurements</li>
 </ul>
 </div>
+<div id="joining-datasets" class="section level2">
+<h2><span class="header-section-number">6.2</span> Joining datasets</h2>
+<iframe width="747" height="467" src="https://www.youtube.com/embed/UJ8UoK3bSP0?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_2.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
+<p>So far, you have only worked with a single data source at a time. When you work on your own projects, however, you typically will need to merge together two or more datasets to create the a data frame to answer your research question. For example, for air pollution epidemiology, you will often have to join several datasets:</p>
+<ul>
+<li>Health outcome data (e.g., number of deaths per day)</li>
+<li>Air pollution concentrations</li>
+<li>Weather measurements (since weather can be a confounder)</li>
+<li>Demographic data</li>
+</ul>
+<p>The <code>dplyr</code> package has a family of different functions to join two dataframes together, the <code>*_join</code> family of functions. All combine two dataframes, which I’ll call <code>x</code> and <code>y</code> here. </p>
+<p>The functions include:</p>
+<ul>
+<li><code>inner_join(x, y)</code>: Keep only rows where there are observations in both <code>x</code> and <code>y</code>.</li>
+<li><code>left_join(x, y)</code>: Keep all rows from <code>x</code>, whether they have a match in <code>y</code> or not.</li>
+<li><code>right_join(x, y)</code>: Keep all rows from <code>y</code>, whether they have a match in <code>x</code> or not.</li>
+<li><code>full_join(x, y)</code>: Keep all rows from both <code>x</code> and <code>y</code>, whether they have a match in the other dataset or not.</li>
+</ul>
+<p>In the examples, I’ll use two datasets, <code>x</code> and <code>y</code>. Both datasets include the column <code>course</code>. The other column in <code>x</code> is <code>grade</code>, while the other column in <code>y</code> is <code>day</code>. Observations exist for courses <code>x</code> and <code>y</code> in both datasets, but for <code>w</code> and <code>z</code> in only one dataset.</p>
+<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb529-1"><a href="entering-and-cleaning-data-2.html#cb529-1"></a>x &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">course =</span> <span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;z&quot;</span>),</span>
+<span id="cb529-2"><a href="entering-and-cleaning-data-2.html#cb529-2"></a>                <span class="dt">grade =</span> <span class="kw">c</span>(<span class="dv">90</span>, <span class="dv">82</span>, <span class="dv">78</span>))</span>
+<span id="cb529-3"><a href="entering-and-cleaning-data-2.html#cb529-3"></a>y &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">course =</span> <span class="kw">c</span>(<span class="st">&quot;w&quot;</span>, <span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>),</span>
+<span id="cb529-4"><a href="entering-and-cleaning-data-2.html#cb529-4"></a>                <span class="dt">day =</span> <span class="kw">c</span>(<span class="st">&quot;Tues&quot;</span>, <span class="st">&quot;Mon / Fri&quot;</span>, <span class="st">&quot;Tue&quot;</span>))</span></code></pre></div>
+<p>Here is what these two example datasets look like:</p>
+<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb530-1"><a href="entering-and-cleaning-data-2.html#cb530-1"></a>x</span></code></pre></div>
+<pre><code>##   course grade
+## 1      x    90
+## 2      y    82
+## 3      z    78</code></pre>
+<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb532-1"><a href="entering-and-cleaning-data-2.html#cb532-1"></a>y</span></code></pre></div>
+<pre><code>##   course       day
+## 1      w      Tues
+## 2      x Mon / Fri
+## 3      y       Tue</code></pre>
+<p>With <code>inner_join</code>, you’ll only get the observations that show up in both datasets. That means you’ll lose data on <code>z</code> (only in the first dataset) and <code>w</code> (only in the second dataset).</p>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="entering-and-cleaning-data-2.html#cb534-1"></a><span class="kw">inner_join</span>(x, y)</span></code></pre></div>
+<pre><code>## Joining, by = &quot;course&quot;</code></pre>
+<pre><code>##   course grade       day
+## 1      x    90 Mon / Fri
+## 2      y    82       Tue</code></pre>
+<p>With <code>left_join</code>, you’ll keep everything in <code>x</code> (the “left” dataset), but not keep things in <code>y</code> that don’t match something in <code>x</code>. That means that, here, you’ll lose <code>w</code>:</p>
+<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="entering-and-cleaning-data-2.html#cb537-1"></a><span class="kw">left_join</span>(x, y)</span></code></pre></div>
+<pre><code>## Joining, by = &quot;course&quot;</code></pre>
+<pre><code>##   course grade       day
+## 1      x    90 Mon / Fri
+## 2      y    82       Tue
+## 3      z    78      &lt;NA&gt;</code></pre>
+<p><code>right_join</code> is the opposite:</p>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="entering-and-cleaning-data-2.html#cb540-1"></a><span class="kw">right_join</span>(x, y)</span></code></pre></div>
+<pre><code>## Joining, by = &quot;course&quot;</code></pre>
+<pre><code>##   course grade       day
+## 1      x    90 Mon / Fri
+## 2      y    82       Tue
+## 3      w    NA      Tues</code></pre>
+<p><code>full_join</code> keeps everything from both datasets:</p>
+<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb543-1"><a href="entering-and-cleaning-data-2.html#cb543-1"></a><span class="kw">full_join</span>(x, y)</span></code></pre></div>
+<pre><code>## Joining, by = &quot;course&quot;</code></pre>
+<pre><code>##   course grade       day
+## 1      x    90 Mon / Fri
+## 2      y    82       Tue
+## 3      z    78      &lt;NA&gt;
+## 4      w    NA      Tues</code></pre>
+</div>
 <div id="longer-data" class="section level2">
 <h2><span class="header-section-number">6.3</span> Longer data</h2>
+<iframe width="747" height="467" src="https://www.youtube.com/embed/abUDhRmF_bg?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_3.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
 <p>There are two functions from the <code>tidyr</code> package (another member of the tidyverse) that you can use to change between wider and longr data: <code>pivot_longer</code> and <code>pivot_wider</code>. Here is a description of these two functions:</p>
 <ul>
 <li><code>pivot_longer</code>: Takes several columns and pivots them down into two columns. One of the new columns contains the former column names and the other contains the former cell values.</li>
@@ -689,19 +703,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="entering-and-cleaning-data-2.html#cb546-1"></a>wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time           X      Y      Z
-##   &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 2009-01-01 0.440 -0.116   4.19
-## 2 2009-01-02 0.585 -3.29  -10.4 
-## 3 2009-01-03 0.275  1.79   -4.98</code></pre>
+##   time            X      Y     Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 2009-01-01  1.62  -0.902 -5.59
+## 2 2009-01-02 -0.758  4.26  -3.68
+## 3 2009-01-03  0.139 -1.11  -3.65</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="entering-and-cleaning-data-2.html#cb548-1"></a>wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time           X      Y      Z
-##   &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 2009-01-01 0.440 -0.116   4.19
-## 2 2009-01-02 0.585 -3.29  -10.4 
-## 3 2009-01-03 0.275  1.79   -4.98</code></pre>
+##   time            X      Y     Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 2009-01-01  1.62  -0.902 -5.59
+## 2 2009-01-02 -0.758  4.26  -3.68
+## 3 2009-01-03  0.139 -1.11  -3.65</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>pivot_longer</code> to convert wide data to long data:</p>
 <div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="entering-and-cleaning-data-2.html#cb550-1"></a>long_stocks &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dt">data =</span> wide_stocks,</span>
 <span id="cb550-2"><a href="entering-and-cleaning-data-2.html#cb550-2"></a>                            <span class="dt">cols =</span> <span class="op">-</span>time,</span>
@@ -711,21 +725,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X      0.440
-## 2 2009-01-01 Y     -0.116
-## 3 2009-01-01 Z      4.19 
-## 4 2009-01-02 X      0.585
-## 5 2009-01-02 Y     -3.29</code></pre>
+## 1 2009-01-01 X      1.62 
+## 2 2009-01-01 Y     -0.902
+## 3 2009-01-01 Z     -5.59 
+## 4 2009-01-02 X     -0.758
+## 5 2009-01-02 Y      4.26</code></pre>
 <p>In this “longer” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="entering-and-cleaning-data-2.html#cb552-1"></a>long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X      0.440
-## 2 2009-01-01 Y     -0.116
-## 3 2009-01-01 Z      4.19 
-## 4 2009-01-02 X      0.585
-## 5 2009-01-02 Y     -3.29</code></pre>
+## 1 2009-01-01 X      1.62 
+## 2 2009-01-01 Y     -0.902
+## 3 2009-01-01 Z     -5.59 
+## 4 2009-01-02 X     -0.758
+## 5 2009-01-02 Y      4.26</code></pre>
 <p>The format for a <code>pivots_longer</code> call is:</p>
 <div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="entering-and-cleaning-data-2.html#cb554-1"></a><span class="co">## Generic code</span></span>
 <span id="cb554-2"><a href="entering-and-cleaning-data-2.html#cb554-2"></a>new_df &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(old_df,</span>
@@ -750,13 +764,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb556-3"><a href="entering-and-cleaning-data-2.html#cb556-3"></a>                      <span class="dt">values_from =</span> price)</span>
 <span id="cb556-4"><a href="entering-and-cleaning-data-2.html#cb556-4"></a>stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
-##   time            X      Y       Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-## 1 2009-01-01  0.440 -0.116   4.19 
-## 2 2009-01-02  0.585 -3.29  -10.4  
-## 3 2009-01-03  0.275  1.79   -4.98 
-## 4 2009-01-04  2.03  -0.909   1.48 
-## 5 2009-01-05 -1.13   0.112  -0.650</code></pre>
+##   time            X        Y     Z
+##   &lt;date&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;
+## 1 2009-01-01  1.62  -0.902   -5.59
+## 2 2009-01-02 -0.758  4.26    -3.68
+## 3 2009-01-03  0.139 -1.11    -3.65
+## 4 2009-01-04  1.78   2.93    -2.90
+## 5 2009-01-05 -1.63   0.00815  9.82</code></pre>
 <p>Notice that this reverses the action of <code>pivot_longer</code>.</p>
 <p>The “wider” your data the less likely it is to be tidy, so won’t use <code>pivot_wider</code> frequently when you are preparing data for analysis. However, <code>pivot_wider</code> can be very helpful in creating tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>pivot_wider</code> to rearrange the final summary to create an attractive table.</p>
@@ -768,9 +782,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## # A tibble: 3 x 4
 ##   stock     N    mean    sd
 ##   &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10  0.471  0.928
-## 2 Y        10 -0.0402 1.75 
-## 3 Z        10 -1.67   5.96</code></pre>
+## 1 X        10 -0.0202  1.28
+## 2 Y        10  1.07    2.26
+## 3 Z        10 -0.248   5.44</code></pre>
 <div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="entering-and-cleaning-data-2.html#cb562-1"></a>stock_summary <span class="op">%&gt;%</span></span>
 <span id="cb562-2"><a href="entering-and-cleaning-data-2.html#cb562-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</span>
 <span id="cb562-3"><a href="entering-and-cleaning-data-2.html#cb562-3"></a>                                    <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span></span>
@@ -797,12 +811,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="even">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">0.47 (0.93)</td>
-<td align="left">-0.04 (1.75)</td>
-<td align="left">-1.67 (5.96)</td>
+<td align="left">-0.02 (1.28)</td>
+<td align="left">1.07 (2.26)</td>
+<td align="left">-0.25 (5.44)</td>
 </tr>
 </tbody>
 </table>
+<iframe width="747" height="467" src="https://www.youtube.com/embed/NeisIoTKBfo?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_4.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
+<iframe width="747" height="467" src="https://www.youtube.com/embed/5yThV_XJgCU?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_5.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
 </div>
 <div id="working-with-factors" class="section level2">
 <h2><span class="header-section-number">6.4</span> Working with factors</h2>
@@ -1476,7 +1498,11 @@ If you want to use these data further, you should go back and pull them from the
 <li>Use the tidy data to create the following graph:</li>
 </ul>
 <p><img src="RProgrammingForResearch_files/figure-html/tidying_vadeaths-1.png" width="768" /></p>
-<p>There is no example R code for this – try to figure out the code yourselves. We will go over a solution in class. You may find the RStudio Data Wrangling cheatsheet helpful for remembering which tidyverse functions do what.</p>
+<p>There is no example R code for this – try to figure out the code yourselves. I go over a solution in the following video. You may find the RStudio Data Wrangling cheatsheet helpful for remembering which tidyverse functions do what.</p>
+<iframe width="747" height="467" src="https://www.youtube.com/embed/6R5QtrA01fk?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_6.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
 </div>
 <div id="baby-names" class="section level3">
 <h3><span class="header-section-number">6.7.5</span> Baby names</h3>
