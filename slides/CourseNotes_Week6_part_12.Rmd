@@ -36,19 +36,58 @@ titanic_train %>%
   slice(1:3)
 ```
 
+## Tidy select (helpers)
+
+Here we use `contains("ss")` to select all variables that contain `ss`.
+
+```{r}
+titanic_train %>%
+  select(contains("ss")) %>%
+  slice(1:3)
+```
+
 ## Tidy select
 
 
 The are also tidyverse functions that allow us to easily operate on a selection of variables. These functions are called [`scoped varients`](https://dplyr.tidyverse.org/reference/scoped.html). You can identity these functions by these `_all`, `_at`, and `_if` suffixes.
 
+## Tidy select (*_at)
 
-## Tidy select (*_if)
-
-Here we use `select_if` to select all the numeric variables in a dataframe and covert their names to lower case (a handy function to tidy the variable names).
+Here we use `select_at` to select all the variables that contain `ss` in their name:
 
 ```{r}
 titanic_train %>%
-  select_if(is.numeric, tolower) %>%
+  select_at(vars(contains("ss"))) %>%
+  slice(1:3)
+```
+
+## Tidy select (*_at)
+
+Here we use `select_at` to select all the variables that contain `ss` in their name and then convert their names to lower case (a handy function to tidy the variable names).
+
+```{r}
+titanic_train %>%
+  select_at(vars(contains("ss")), .funs = str_to_lower) %>%
+  slice(1:3)
+```
+
+## Tidy select (*_if)
+
+Here we use `select_if` to select all the numeric variables in a dataframe:
+
+```{r}
+titanic_train %>%
+  select_if(is.numeric) %>%
+  slice(1:3)
+```
+
+## Tidy select (*_if)
+
+We can also add on a function with `.funs = ` to convert their names to lower case (a handy function to tidy the variable names).
+
+```{r}
+titanic_train %>%
+  select_if(is.numeric, .funs = str_to_lower) %>%
   slice(1:3)
 ```
 
@@ -64,13 +103,5 @@ new_df <- select_if(old_df,
                              the selected column names])
 ```
 
-## Tidy select (*_at)
 
-Here we use `select_at` to select all the variables that contain `ss` in their name and then covert their names to lower case (a handy function to tidy the variable names).
-
-```{r}
-titanic_train %>%
-  select_at(vars(contains("ss")), tolower) %>%
-  slice(1:3)
-```
 
