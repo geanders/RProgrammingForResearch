@@ -1,0 +1,119 @@
+---
+title: "Exploring data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output:
+  beamer_presentation:
+    theme: metropolis
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(faraway)
+data(worldcup)
+data(nepali)
+
+library(faraway)
+data(worldcup)
+worldcup <- worldcup %>% 
+  select(Time, Tackles, Position)
+library(broom)
+library(purrr)
+```
+
+# Generalized linear models
+
+## Linear models versus GLMs
+
+You can fit a variety of models, including linear models, logistic models, and Poisson models, using generalized linear models (GLMs). \medskip
+
+For linear models, the only difference between `lm` and `glm` is how they're fitting the model (least squares versus maximum likelihood). You should get the same results regardless of which you pick. 
+
+## Linear models versus GLMs
+
+For example:
+
+```{r}
+glm(Tackles ~ Time, data = worldcup) %>% 
+  tidy()
+lm(Tackles ~ Time, data = worldcup) %>% 
+  tidy()
+```
+
+## GLMs
+
+You can fit other model types with `glm()` using the `family` option:
+
+```{r echo = FALSE}
+glm_types <- data.frame(type = c("Linear", "Logistic", "Poisson"),
+                        opt = c("`family = gaussian(link = 'identity')`",
+                                "`family = binomial(link = 'logit')`", 
+                                "`family = poisson(link = 'log')`"))
+knitr::kable(glm_types, col.names = c("Model type", "`family` option"))
+```
+
+## GLM example
+
+For example, say we wanted to fit a GLM, but specifying a Poisson distribution for the outcome (and a log link) since we think that `Tackles` might be distributed with a Poisson distribution:
+
+\small
+
+```{r}
+tackle_model_3 <- glm(Tackles ~ Time, data = worldcup,
+                      family = poisson(link = "log"))
+tackle_model_3 %>% 
+  tidy()
+```
+
+## GLM example
+
+Here are the predicted values from this model (red line): 
+
+```{r warning = FALSE, message = FALSE, out.width = "0.6\\textwidth", fig.align = "center", fig.width = 4, fig.height = 2.5}
+tackle_model_3 %>% 
+  augment() %>% 
+  mutate(.fitted = exp(.fitted)) %>% 
+  ggplot(aes(x = Time, y = Tackles)) + 
+  geom_point() + 
+  geom_line(aes(y = .fitted), color = "red", size = 1.2)
+```
+
+
+
+## Formula structure
+
+There are some conventions that can be used in R formulas. Common ones include: 
+
+```{r echo = FALSE}
+for_convs <- data.frame(Convention = c("`I()`", "`:`", "`*`", "`.`",
+                                       "`-`", "`1`"),
+                        Meaning = c("calculate the value inside before fitting (e.g., `I(x1 + x2)`)",
+                                    "fit the interaction between two variables (e.g., `x1:x2`)",
+                                    "fit the main effects and interaction for both variables (e.g., `x1*x2` equals `x1 + x2 + x1:x2`)",
+                                    "fit all variables other than the response (e.g., `y ~ .`)",
+                                    "do not include a variable (e.g., `y ~ . - x1`)",
+                                    "intercept (e.g., `y ~ 1`)"))
+pander::pander(for_convs, split.cells = c(1,1,58),
+               justify = c("center", "left"))
+```
+
+## To find out more
+
+Great resources to find out more about using R for basic statistics:
+
+- Statistical Analysis with R for Dummies, Joseph Schmuller (free online through our library; Chapter 14 covers regression modeling)
+- The R Book, Michael J. Crawley (free online through our library; Chapter 14 covers regression modeling, Chapters 10 and 13 cover linear and generalized linear regression modeling)
+- R for Data Science (Section 4)
+
+If you want all the details about fitting linear models and GLMs in R, Faraway's books are fantastic (more at level of Master's in Applied Statistics):
+
+- Linear Models with R, Julian Faraway (also freely available online through our library)
+- Extending the Linear Model with R, Julian Faraway (available in hardcopy through our library)
+

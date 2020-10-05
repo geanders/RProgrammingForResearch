@@ -1,0 +1,197 @@
+---
+title: "Exploring data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output:
+  beamer_presentation:
+    theme: metropolis
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(faraway)
+data(worldcup)
+data(nepali)
+
+library(tibble)
+library(broom)
+library("microbiome")
+data("atlas1006")
+tidy_samples <- atlas1006 %>% 
+  get_sample() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "species") %>% 
+  pivot_longer(-species, 
+               names_to = "sample", 
+               values_to = "prevalence")
+```
+
+# More on nesting and mapping
+
+## Nested dataframe
+
+To create a nested dataframe, you can `group_by` a grouping value
+(e.g., bacteria species) and then `nest`: 
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/nesting_data.jpg")
+```
+
+## Nested dataframe
+
+Here's the code to do that: 
+
+```{r}
+nested_samples <- tidy_samples %>% 
+  group_by(species) %>% 
+  nest()
+
+nested_samples %>% head(3)
+```
+
+## Mapping with a nested dataframe
+
+Now, you want to run the "recipe" you figured out on each 
+bacteria species' dataframe. 
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/purrr_map_idea.jpg")
+```
+
+The goal is to create a new list-column with the results for each species.
+
+## Mapping with a nested dataframe
+
+You can use the `map` function from the `purrr` package within
+a `mutate` function to run the "recipe" you figured out on each 
+bacteria species' dataframe. 
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/purrr_map_implementation.jpg")
+```
+
+## Mapping with a nested dataframe
+
+Here is what this looks like in code: 
+
+```{r}
+library(purrr)
+nested_samples2 <- nested_samples %>% 
+  mutate(mean_prevalence = map(data, ~ .x %>% 
+                                 pull("prevalence") %>% 
+                                 mean())) 
+
+nested_samples2 %>% 
+  head(3)
+```
+
+## Unnesting a nested dataframe
+
+You'll usually want to unnest the new column so you can use if for 
+creating plots, tables, and other output. You can use `unnest` to 
+convert this column back to a regular column or columns (e.g., 
+a vector or vectors) in a dataframe. 
+
+## Unnesting a nested dataframe
+
+You'll need to specify which list-column to "unnest" when you use `unnest`:
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/unnest_dataframe.jpg")
+```
+
+## Unnesting a nested dataframe
+
+Here's an example in code:
+
+```{r}
+unnested_samples <- nested_samples2 %>% 
+  unnest(mean_prevalence) 
+
+unnested_samples %>% 
+  head(3)
+```
+
+## Nesting and mapping
+
+Here's what the whole process looks like, if you're doing it in a single 
+piece of code: 
+
+\footnotesize
+
+```{r eval = FALSE}
+atlas1006 %>% 
+  get_sample() %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column(var = "species") %>% 
+  tidyr::pivot_longer(- species, 
+                      names_to = "sample", 
+                      values_to = "prevalence") %>% 
+  group_by(species) %>% 
+  nest() %>% 
+  mutate(mean_prevalence = map(data, ~ .x %>% 
+                                 pull("prevalence") %>% 
+                                 mean())) %>% 
+  unnest(mean_prevalence)
+```
+
+## Nesting and mapping
+
+So far, this might not seem too exciting, since everything we just did 
+could have been done more easily with `group_by` and `summarize`. 
+
+However, this approach allows you to do more complex things. You can 
+expand because you can unnest much more complicated list-columns than 
+ones with length-one vectors for each grouping value.
+
+## Nesting and mapping
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/types_of_unnesting.jpg")
+```
+
+## Nesting and mapping
+
+For example, you can use this approach to run Shapiro-Wilk tests for all bacteria's
+prevalence samples:
+
+
+```{r}
+sample_norm_test <- atlas1006 %>% 
+  get_sample() %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column(var = "species") %>% 
+  tidyr::pivot_longer(- species, 
+                      names_to = "sample", 
+                      values_to = "prevalence") %>% 
+  group_by(species) %>% 
+  nest() %>% 
+  mutate(norm_test = map(data, ~ .x %>% 
+                           pull("prevalence") %>% 
+                           shapiro.test() %>% 
+                           tidy())) %>% 
+  unnest(norm_test)
+```
+
+## Nesting and mapping
+
+```{r}
+sample_norm_test %>% 
+  head(4)
+```
+
+## Nesting and mapping
+
+```{r out.height = "0.7\\textheight", fig.align="center", warning = FALSE, message = FALSE, fig.width = 5, fig.height = 3}
+sample_norm_test %>% 
+  ggplot(aes(x = log10(p.value))) + 
+  geom_histogram()
+```
+

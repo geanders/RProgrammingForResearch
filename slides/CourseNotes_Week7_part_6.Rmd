@@ -1,0 +1,115 @@
+---
+title: "Exploring data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output:
+  beamer_presentation:
+    theme: metropolis
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(faraway)
+data(worldcup)
+data(nepali)
+```
+
+# Example data
+
+## phyloseq sample data
+
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/phyloseq_sample_data.jpg")
+```
+
+The "phyloseq" object class has a "sample" slot, with a matrix with prevalence
+for each bacteria in each sample.
+
+## phyloseq sample data
+
+You can use the `get_sample` accessor function to extract this data: 
+
+```{r message = FALSE}
+library("microbiome")
+data("atlas1006")
+atlas_sample_data <- atlas1006 %>% 
+  get_sample()
+```
+
+## phyloseq sample data
+
+You can check that this is a matrix, with column names giving sample number and
+rownames giving bacteria species: 
+
+```{r}
+atlas_sample_data %>% is.matrix()
+atlas_sample_data %>% colnames() %>% head(n = 3)
+atlas_sample_data %>% row.names() %>% head()
+```
+
+## phyloseq sample data
+
+You can use square bracket indexing to check the top left corner of the 
+sample data: 
+
+```{r}
+atlas_sample_data[1:6, 1:3]
+```
+
+## Tidying phyloseq sample data
+
+To tidy this data, we need to: 
+
+1. Change to a data frame
+2. Move row names into a column
+3. Pivot longer so that column names are in their own column as values
+
+## Tidying phyloseq sample data
+
+Change to a data frame and move row names into a column: 
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/tidy_phyloseq_sample_1.jpg")
+```
+
+## Tidying phyloseq sample data
+
+Pivot longer so that column names are in their own column as values:
+
+```{r echo = FALSE, out.width = "\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/tidy_phyloseq_sample_2.jpg")
+```
+
+## Tidying phyloseq sample data
+
+Here is everything in code:
+
+```{r}
+library(tibble)
+library(tidyr)
+
+tidy_samples <- atlas1006 %>% 
+  get_sample() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "species") %>% 
+  pivot_longer(-species, 
+               names_to = "sample", 
+               values_to = "prevalence")
+```
+
+## Tidying phyloseq sample data
+
+Here's what the beginning of the tidy data looks like: 
+
+```{r}
+tidy_samples %>% 
+  slice(1:5)
+```
+

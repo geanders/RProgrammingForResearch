@@ -1,0 +1,198 @@
+---
+title: "Exploring data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output:
+  beamer_presentation:
+    theme: metropolis
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(faraway)
+data(worldcup)
+data(nepali)
+```
+
+# Other R objects: Matrices and lists
+
+## Matrices
+
+A matrix is like a data frame, but all the values in all columns must be of the same class (e.g., numeric, character). (Another way you can think of it is as a "wrapped" vector.)
+
+Matrices can be faster and more memory-efficient than data frames. Also, a lot of statistical
+methods within R code is implemented using linear algebra and other mathematical 
+techniques based on matrices.
+
+## Matrices
+
+We can use the `matrix()` function to construct a matrix:
+
+```{r}
+foo <- matrix(1:10, ncol = 5)
+foo
+```
+
+## Matrices
+
+The `as.matrix()` function is used to convert an object to a matrix:
+
+```{r}
+foo <- data.frame(col_1 = 1:2, col_2 = 3:4,
+                  col_3 = 5:6, col_4 = 7:8,
+                  col_5 = 9:10)
+foo <- as.matrix(foo)
+foo
+```
+
+## Matrices
+
+You can index matrices with square brackets, just like data frames: 
+
+```{r}
+foo[1, 1:2]
+```
+
+You cannot, however, use `dplyr` functions with matrices: 
+
+```{r, eval = FALSE}
+foo %>% filter(col_1 == 1)
+```
+```
+Error in UseMethod("filter_") : 
+  no applicable method for 'filter_' applied to an object of 
+  class "c('matrix', 'integer', 'numeric')"
+```
+
+# Lists
+
+## Lists
+
+Lists are the "kitchen sink" of R objects. They can be used to keep together a variety of different R objects of different classes, dimensions, and structures in a single R object. 
+
+Because there are often cases where an R operation results in output that doesn't have a simple structure, lists can be a very useful way to output complex output from an R function. 
+
+Most lists are not "tidy" data. However, we'll cover some ways that you can easily "tidy" some common list objects you might use a lot in your R code, including the output of fitting linear and generalized linear models.
+
+## Lists
+
+```{r}
+example_list <- list(a = sample(1:10, 5), 
+                     b = tibble(letters = letters[1:3], 
+                                numbers = 1:3))
+example_list
+```
+
+## Indexing lists
+
+To pull an element out of a list, you can either use `$` or `[[]]` indexing:
+
+```{r}
+example_list$a
+```
+
+```{r}
+example_list[[2]]
+```
+
+## Indexing lists
+
+
+To access a specific value within a list element we can index the element using double, double brackets:
+
+```{r}
+example_list[["b"]][["numbers"]]
+```
+
+Again, we can index using names or numeric indices:
+
+```{r}
+example_list[["b"]][[1]]
+```
+
+## Exploring lists
+
+If an R object is a list, running `class` on the object will return "list": 
+
+```{r}
+class(example_list)
+```
+
+Often, lists will have names for each element (similar to column names for a dataframe). You can get the names of all elements of a list using the `names` function: 
+
+```{r}
+names(example_list)
+```
+
+## Exploring lists
+
+The `str` function is also useful for exploring the structure of a list object: 
+
+\footnotesize
+
+```{r}
+str(example_list)
+```
+
+## Exploring lists
+
+A list can even contain other lists. We can use the `str` function to see the structure of a list:
+
+```{r cakk}
+a_list <- list(list("a", "b"), list(1, 2))
+
+str(a_list)
+```
+
+## Exploring lists
+
+Using `str` to print out the list's structure doesn't produce the easiest to digest output. We can use the `jsonedit` function from the `listviewer` package to create a widget in the Viewer pane to more esily explore our list.
+
+```{r, eval=FALSE}
+library(listviewer)
+jsonedit(a_list)
+```
+
+```{r echo = FALSE, out.width = "0.7\\textwidth", fig.align = "center"}
+include_graphics("../figures/listviewer_pane.png")
+```
+
+<!-- ## Exploring lists -->
+
+<!-- Sometimes you'll see unnecessary lists-of-lists, perhaps when importing data into R created. Or a list with multiple elements that you would like to combine.  -->
+
+<!-- \footnotesize -->
+
+<!-- ```{r cakl, warning = FALSE} -->
+<!-- library(purrr) -->
+<!-- a_list -->
+<!-- ``` -->
+
+<!-- ## Exploring lists -->
+
+<!-- You can remove a level of hierarchy from a list using the `flatten` function from the `purrr` package: -->
+
+<!-- \footnotesize -->
+
+<!-- ```{r} -->
+<!-- flatten(a_list) -->
+<!-- ``` -->
+
+
+## Lists versus dataframes
+
+As a note, a dataframe is actually just a very special type of list. It is a list where every element (column in the dataframe) is a vector of the same length, and the object has a special attribute specifying that it is a dataframe. 
+
+```{r}
+example_df <- tibble(letters = letters[1:3], 
+                     number = 1:3)
+class(example_df)
+is.list(example_df)
+```
