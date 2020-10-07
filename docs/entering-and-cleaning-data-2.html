@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2020-09-28" />
+<meta name="date" content="2020-10-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -703,19 +703,19 @@ a pdf of the lecture slides for this video.</p>
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="entering-and-cleaning-data-2.html#cb546-1"></a>wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01  1.62  -0.902 -5.59
-## 2 2009-01-02 -0.758  4.26  -3.68
-## 3 2009-01-03  0.139 -1.11  -3.65</code></pre>
+##   time            X     Y      Z
+##   &lt;date&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01  1.22  -1.07 -0.660
+## 2 2009-01-02  0.105 -3.53 -1.15 
+## 3 2009-01-03 -0.105 -1.28  3.88</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="entering-and-cleaning-data-2.html#cb548-1"></a>wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01  1.62  -0.902 -5.59
-## 2 2009-01-02 -0.758  4.26  -3.68
-## 3 2009-01-03  0.139 -1.11  -3.65</code></pre>
+##   time            X     Y      Z
+##   &lt;date&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01  1.22  -1.07 -0.660
+## 2 2009-01-02  0.105 -3.53 -1.15 
+## 3 2009-01-03 -0.105 -1.28  3.88</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>pivot_longer</code> to convert wide data to long data:</p>
 <div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="entering-and-cleaning-data-2.html#cb550-1"></a>long_stocks &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dt">data =</span> wide_stocks,</span>
 <span id="cb550-2"><a href="entering-and-cleaning-data-2.html#cb550-2"></a>                            <span class="dt">cols =</span> <span class="op">-</span>time,</span>
@@ -725,21 +725,21 @@ a pdf of the lecture slides for this video.</p>
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X      1.62 
-## 2 2009-01-01 Y     -0.902
-## 3 2009-01-01 Z     -5.59 
-## 4 2009-01-02 X     -0.758
-## 5 2009-01-02 Y      4.26</code></pre>
+## 1 2009-01-01 X      1.22 
+## 2 2009-01-01 Y     -1.07 
+## 3 2009-01-01 Z     -0.660
+## 4 2009-01-02 X      0.105
+## 5 2009-01-02 Y     -3.53</code></pre>
 <p>In this “longer” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="entering-and-cleaning-data-2.html#cb552-1"></a>long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X      1.62 
-## 2 2009-01-01 Y     -0.902
-## 3 2009-01-01 Z     -5.59 
-## 4 2009-01-02 X     -0.758
-## 5 2009-01-02 Y      4.26</code></pre>
+## 1 2009-01-01 X      1.22 
+## 2 2009-01-01 Y     -1.07 
+## 3 2009-01-01 Z     -0.660
+## 4 2009-01-02 X      0.105
+## 5 2009-01-02 Y     -3.53</code></pre>
 <p>The format for a <code>pivots_longer</code> call is:</p>
 <div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="entering-and-cleaning-data-2.html#cb554-1"></a><span class="co">## Generic code</span></span>
 <span id="cb554-2"><a href="entering-and-cleaning-data-2.html#cb554-2"></a>new_df &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(old_df,</span>
@@ -764,13 +764,13 @@ a pdf of the lecture slides for this video.</p>
 <span id="cb556-3"><a href="entering-and-cleaning-data-2.html#cb556-3"></a>                      <span class="dt">values_from =</span> price)</span>
 <span id="cb556-4"><a href="entering-and-cleaning-data-2.html#cb556-4"></a>stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
-##   time            X        Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01  1.62  -0.902   -5.59
-## 2 2009-01-02 -0.758  4.26    -3.68
-## 3 2009-01-03  0.139 -1.11    -3.65
-## 4 2009-01-04  1.78   2.93    -2.90
-## 5 2009-01-05 -1.63   0.00815  9.82</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01  1.22  -1.07  -0.660
+## 2 2009-01-02  0.105 -3.53  -1.15 
+## 3 2009-01-03 -0.105 -1.28   3.88 
+## 4 2009-01-04  1.19  -2.38   4.16 
+## 5 2009-01-05 -0.161  0.312 -3.49</code></pre>
 <p>Notice that this reverses the action of <code>pivot_longer</code>.</p>
 <p>The “wider” your data the less likely it is to be tidy, so won’t use <code>pivot_wider</code> frequently when you are preparing data for analysis. However, <code>pivot_wider</code> can be very helpful in creating tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>pivot_wider</code> to rearrange the final summary to create an attractive table.</p>
@@ -780,11 +780,11 @@ a pdf of the lecture slides for this video.</p>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="entering-and-cleaning-data-2.html#cb560-1"></a>stock_summary</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   stock     N    mean    sd
-##   &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10 -0.0202  1.28
-## 2 Y        10  1.07    2.26
-## 3 Z        10 -0.248   5.44</code></pre>
+##   stock     N  mean    sd
+##   &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 X        10 0.317 0.505
+## 2 Y        10 0.295 2.34 
+## 3 Z        10 0.626 2.40</code></pre>
 <div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="entering-and-cleaning-data-2.html#cb562-1"></a>stock_summary <span class="op">%&gt;%</span></span>
 <span id="cb562-2"><a href="entering-and-cleaning-data-2.html#cb562-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</span>
 <span id="cb562-3"><a href="entering-and-cleaning-data-2.html#cb562-3"></a>                                    <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span></span>
@@ -811,9 +811,9 @@ a pdf of the lecture slides for this video.</p>
 </tr>
 <tr class="even">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">-0.02 (1.28)</td>
-<td align="left">1.07 (2.26)</td>
-<td align="left">-0.25 (5.44)</td>
+<td align="left">0.32 (0.5)</td>
+<td align="left">0.3 (2.34)</td>
+<td align="left">0.63 (2.4)</td>
 </tr>
 </tbody>
 </table>
@@ -828,6 +828,10 @@ a pdf of the lecture slides for this video.</p>
 </div>
 <div id="working-with-factors" class="section level2">
 <h2><span class="header-section-number">6.4</span> Working with factors</h2>
+<iframe width="746" height="466" src="https://www.youtube.com/embed/iM9Js4gTqfI?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_6.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
 <p>Hadley Wickham has developed a package called <code>forcats</code> that helps you work with categorical variables (factors). I’ll show some examples of its functions using the <code>worldcup</code> dataset:</p>
 <div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="entering-and-cleaning-data-2.html#cb563-1"></a><span class="kw">library</span>(forcats)</span>
 <span id="cb563-2"><a href="entering-and-cleaning-data-2.html#cb563-2"></a><span class="kw">library</span>(faraway)</span>
@@ -880,6 +884,14 @@ a pdf of the lecture slides for this video.</p>
 </div>
 <div id="string-operations-and-regular-expressions" class="section level2">
 <h2><span class="header-section-number">6.5</span> String operations and regular expressions</h2>
+<iframe width="746" height="466" src="https://www.youtube.com/embed/bnAec9JOwRM?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_7.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
+<iframe width="746" height="466" src="https://www.youtube.com/embed/7LduecuZW00?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_9.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
 <p>For these examples, we’ll use some data on passengers of the Titanic. You can load this data using:</p>
 <div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="entering-and-cleaning-data-2.html#cb578-1"></a><span class="co"># install.packages(&quot;titanic&quot;)</span></span>
 <span id="cb578-2"><a href="entering-and-cleaning-data-2.html#cb578-2"></a><span class="kw">library</span>(titanic)</span>
@@ -953,6 +965,14 @@ str_extract(string = [vector you want to check],
 ## 2 Cumings, Mrs. John Bradley (Florence Briggs Thayer)  Mrs.
 ## 3                              Heikkinen, Miss. Laina  &lt;NA&gt;</code></pre>
 <p>Note that this pattern uses a special operator (<code>|</code>) to find one pattern <strong>or</strong> another. Double backslashes (<code>\\</code>) <strong>escape</strong> the special character “.”.</p>
+<iframe width="746" height="466" src="https://www.youtube.com/embed/JiMMJwwXPBM?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_10.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
+<iframe width="746" height="466" src="https://www.youtube.com/embed/T0rmoLhs8sI?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_11.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
 <p>As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally:</p>
 <pre><code>. * + ^ ? $ \ | ( ) [ ] { }</code></pre>
 <p>Notice that “Mr.” and “Mrs.” both start with “Mr”, end with “.”, and may or may not have an “s” in between.</p>
@@ -1121,6 +1141,10 @@ str_extract(string = [vector you want to check],
 </div>
 <div id="tidy-select" class="section level2">
 <h2><span class="header-section-number">6.6</span> Tidy select</h2>
+<iframe width="746" height="466" src="https://www.youtube.com/embed/u_y69p0cL-U?list=PLuGPtwgRXxqJK_Jb-q0g9RQHZ-PponJs4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_12.pdf">Download</a>
+a pdf of the lecture slides for this video.</p>
 <p>There are <a href="https://dplyr.tidyverse.org/reference/select.html"><code>tidyverse</code></a> functions to make selecting variables more straightforwards. You can call these functions as arguments of the <code>select</code> function to streamline variable selection. Examples include: <code>starts_with()</code>, <code>ends_with()</code>, and <code>contains()</code>.</p>
 <p>Here we use <code>starts_with("t")</code> to select all variables that begin with <code>t</code>.</p>
 <div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb620-1"><a href="entering-and-cleaning-data-2.html#cb620-1"></a>titanic_train <span class="op">%&gt;%</span></span>

@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2020-09-28" />
+<meta name="date" content="2020-10-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -624,20 +624,17 @@ the data you want from the API:</p>
 <div class="sourceCode" id="cb1066"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1066-1"><a href="entering-and-cleaning-data-3.html#cb1066-1"></a><span class="kw">library</span>(riem)</span>
 <span id="cb1066-2"><a href="entering-and-cleaning-data-3.html#cb1066-2"></a>denver_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">riem_measures</span>(<span class="dt">station =</span> <span class="st">&quot;DEN&quot;</span>, </span>
 <span id="cb1066-3"><a href="entering-and-cleaning-data-3.html#cb1066-3"></a>                          <span class="dt">date_start =</span> <span class="st">&quot;2016-06-01&quot;</span>,</span>
-<span id="cb1066-4"><a href="entering-and-cleaning-data-3.html#cb1066-4"></a>                          <span class="dt">date_end =</span> <span class="st">&quot;2016-06-30&quot;</span>)</span>
-<span id="cb1066-5"><a href="entering-and-cleaning-data-3.html#cb1066-5"></a>denver_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) </span></code></pre></div>
-<pre><code>## # A tibble: 3 x 31
-##   station valid                 lon   lat  tmpf  dwpf  relh  drct  sknt  p01i
-##   &lt;chr&gt;   &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 DEN     2016-06-01 00:00:00 -105.  39.8    NA    NA    NA    70     7    NA
-## 2 DEN     2016-06-01 00:05:00 -105.  39.8    NA    NA    NA    80     8    NA
-## 3 DEN     2016-06-01 00:10:00 -105.  39.8    NA    NA    NA    80     9    NA
-## # … with 21 more variables: alti &lt;dbl&gt;, mslp &lt;dbl&gt;, vsby &lt;dbl&gt;, gust &lt;dbl&gt;,
-## #   skyc1 &lt;chr&gt;, skyc2 &lt;chr&gt;, skyc3 &lt;chr&gt;, skyc4 &lt;chr&gt;, skyl1 &lt;dbl&gt;,
-## #   skyl2 &lt;dbl&gt;, skyl3 &lt;dbl&gt;, skyl4 &lt;dbl&gt;, wxcodes &lt;chr&gt;,
-## #   ice_accretion_1hr &lt;lgl&gt;, ice_accretion_3hr &lt;lgl&gt;, ice_accretion_6hr &lt;lgl&gt;,
-## #   peak_wind_gust &lt;dbl&gt;, peak_wind_drct &lt;dbl&gt;, peak_wind_time &lt;chr&gt;,
-## #   feel &lt;dbl&gt;, metar &lt;chr&gt;</code></pre>
+<span id="cb1066-4"><a href="entering-and-cleaning-data-3.html#cb1066-4"></a>                          <span class="dt">date_end =</span> <span class="st">&quot;2016-06-30&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: No results for this query.</code></pre>
+<div class="sourceCode" id="cb1068"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1068-1"><a href="entering-and-cleaning-data-3.html#cb1068-1"></a>denver_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) </span></code></pre></div>
+<pre><code>## # A tibble: 0 x 31
+## # … with 31 variables: station &lt;lgl&gt;, valid &lt;lgl&gt;, lon &lt;lgl&gt;, lat &lt;lgl&gt;,
+## #   tmpf &lt;lgl&gt;, dwpf &lt;lgl&gt;, relh &lt;lgl&gt;, drct &lt;lgl&gt;, sknt &lt;lgl&gt;, p01i &lt;lgl&gt;,
+## #   alti &lt;lgl&gt;, mslp &lt;lgl&gt;, vsby &lt;lgl&gt;, gust &lt;lgl&gt;, skyc1 &lt;lgl&gt;, skyc2 &lt;lgl&gt;,
+## #   skyc3 &lt;lgl&gt;, skyc4 &lt;lgl&gt;, skyl1 &lt;lgl&gt;, skyl2 &lt;lgl&gt;, skyl3 &lt;lgl&gt;,
+## #   skyl4 &lt;lgl&gt;, wxcodes &lt;lgl&gt;, ice_accretion_1hr &lt;lgl&gt;,
+## #   ice_accretion_3hr &lt;lgl&gt;, ice_accretion_6hr &lt;lgl&gt;, peak_wind_gust &lt;lgl&gt;,
+## #   peak_wind_drct &lt;lgl&gt;, peak_wind_time &lt;lgl&gt;, feel &lt;lgl&gt;, metar &lt;lgl&gt;</code></pre>
 </div>
 </div>
 <div id="example-r-api-wrapper-packages" class="section level2">
@@ -773,51 +770,51 @@ This document includes advice on error handling within R code that accesses data
 <p>Note: Base R has <code>readLines</code>, which is very similar.</p>
 <p>The <code>read_lines</code> function from <code>readr</code> will read in lines from a text file directly, without trying to separate into columns. You can use the <code>n_max</code> argument to specify the number of lines to read it. </p>
 <p>For example, to read in three lines from the hurricane tracking data, you can run:</p>
-<div class="sourceCode" id="cb1068"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1068-1"><a href="entering-and-cleaning-data-3.html#cb1068-1"></a>tracks_url &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;http://www.nhc.noaa.gov/data/hurdat/&quot;</span>,</span>
-<span id="cb1068-2"><a href="entering-and-cleaning-data-3.html#cb1068-2"></a>                     <span class="st">&quot;hurdat2-1851-2017-050118.txt&quot;</span>)</span>
-<span id="cb1068-3"><a href="entering-and-cleaning-data-3.html#cb1068-3"></a>hurr_tracks &lt;-<span class="st"> </span><span class="kw">read_lines</span>(tracks_url, <span class="dt">n_max =</span> <span class="dv">3</span>)</span>
-<span id="cb1068-4"><a href="entering-and-cleaning-data-3.html#cb1068-4"></a>hurr_tracks</span></code></pre></div>
+<div class="sourceCode" id="cb1070"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1070-1"><a href="entering-and-cleaning-data-3.html#cb1070-1"></a>tracks_url &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;http://www.nhc.noaa.gov/data/hurdat/&quot;</span>,</span>
+<span id="cb1070-2"><a href="entering-and-cleaning-data-3.html#cb1070-2"></a>                     <span class="st">&quot;hurdat2-1851-2017-050118.txt&quot;</span>)</span>
+<span id="cb1070-3"><a href="entering-and-cleaning-data-3.html#cb1070-3"></a>hurr_tracks &lt;-<span class="st"> </span><span class="kw">read_lines</span>(tracks_url, <span class="dt">n_max =</span> <span class="dv">3</span>)</span>
+<span id="cb1070-4"><a href="entering-and-cleaning-data-3.html#cb1070-4"></a>hurr_tracks</span></code></pre></div>
 <pre><code>## [1] &quot;AL011851,            UNNAMED,     14,&quot;                                                                                   
 ## [2] &quot;18510625, 0000,  , HU, 28.0N,  94.8W,  80, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999,&quot;
 ## [3] &quot;18510625, 0600,  , HU, 28.0N,  95.4W,  80, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999,&quot;</code></pre>
 <p>The data has been read in as a vector, rather than a dataframe:</p>
-<div class="sourceCode" id="cb1070"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1070-1"><a href="entering-and-cleaning-data-3.html#cb1070-1"></a><span class="kw">class</span>(hurr_tracks)</span></code></pre></div>
+<div class="sourceCode" id="cb1072"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1072-1"><a href="entering-and-cleaning-data-3.html#cb1072-1"></a><span class="kw">class</span>(hurr_tracks)</span></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb1072"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1072-1"><a href="entering-and-cleaning-data-3.html#cb1072-1"></a><span class="kw">length</span>(hurr_tracks)</span></code></pre></div>
+<div class="sourceCode" id="cb1074"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1074-1"><a href="entering-and-cleaning-data-3.html#cb1074-1"></a><span class="kw">length</span>(hurr_tracks)</span></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb1074"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1074-1"><a href="entering-and-cleaning-data-3.html#cb1074-1"></a>hurr_tracks[<span class="dv">1</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1076"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1076-1"><a href="entering-and-cleaning-data-3.html#cb1076-1"></a>hurr_tracks[<span class="dv">1</span>]</span></code></pre></div>
 <pre><code>## [1] &quot;AL011851,            UNNAMED,     14,&quot;</code></pre>
 <p>You can use regular expressions to break each line up. For example, you can use <code>str_split</code> from the <code>stringr</code> package to break the first line of the hurricane track data into its three separate components:</p>
-<div class="sourceCode" id="cb1076"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1076-1"><a href="entering-and-cleaning-data-3.html#cb1076-1"></a><span class="kw">library</span>(stringr)</span>
-<span id="cb1076-2"><a href="entering-and-cleaning-data-3.html#cb1076-2"></a><span class="kw">str_split</span>(hurr_tracks[<span class="dv">1</span>], <span class="dt">pattern =</span> <span class="st">&quot;,&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1078"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1078-1"><a href="entering-and-cleaning-data-3.html#cb1078-1"></a><span class="kw">library</span>(stringr)</span>
+<span id="cb1078-2"><a href="entering-and-cleaning-data-3.html#cb1078-2"></a><span class="kw">str_split</span>(hurr_tracks[<span class="dv">1</span>], <span class="dt">pattern =</span> <span class="st">&quot;,&quot;</span>)</span></code></pre></div>
 <pre><code>## [[1]]
 ## [1] &quot;AL011851&quot;            &quot;            UNNAMED&quot; &quot;     14&quot;            
 ## [4] &quot;&quot;</code></pre>
 <p>You can use this to create a list where each element of the list has the split-up version of a line of the original data. First, read in all of the data:</p>
-<div class="sourceCode" id="cb1078"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1078-1"><a href="entering-and-cleaning-data-3.html#cb1078-1"></a>tracks_url &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;http://www.nhc.noaa.gov/data/hurdat/&quot;</span>,</span>
-<span id="cb1078-2"><a href="entering-and-cleaning-data-3.html#cb1078-2"></a>                     <span class="st">&quot;hurdat2-1851-2017-050118.txt&quot;</span>)</span>
-<span id="cb1078-3"><a href="entering-and-cleaning-data-3.html#cb1078-3"></a>hurr_tracks &lt;-<span class="st"> </span><span class="kw">read_lines</span>(tracks_url)</span>
-<span id="cb1078-4"><a href="entering-and-cleaning-data-3.html#cb1078-4"></a><span class="kw">length</span>(hurr_tracks)</span></code></pre></div>
+<div class="sourceCode" id="cb1080"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1080-1"><a href="entering-and-cleaning-data-3.html#cb1080-1"></a>tracks_url &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;http://www.nhc.noaa.gov/data/hurdat/&quot;</span>,</span>
+<span id="cb1080-2"><a href="entering-and-cleaning-data-3.html#cb1080-2"></a>                     <span class="st">&quot;hurdat2-1851-2017-050118.txt&quot;</span>)</span>
+<span id="cb1080-3"><a href="entering-and-cleaning-data-3.html#cb1080-3"></a>hurr_tracks &lt;-<span class="st"> </span><span class="kw">read_lines</span>(tracks_url)</span>
+<span id="cb1080-4"><a href="entering-and-cleaning-data-3.html#cb1080-4"></a><span class="kw">length</span>(hurr_tracks)</span></code></pre></div>
 <pre><code>## [1] 52151</code></pre>
 <p>Next, use <code>map</code> with <code>str_split</code> to split each line of the data at the commas:</p>
-<div class="sourceCode" id="cb1080"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1080-1"><a href="entering-and-cleaning-data-3.html#cb1080-1"></a><span class="kw">library</span>(purrr)</span>
-<span id="cb1080-2"><a href="entering-and-cleaning-data-3.html#cb1080-2"></a>hurr_tracks &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw">map</span>(hurr_tracks, str_split,</span>
-<span id="cb1080-3"><a href="entering-and-cleaning-data-3.html#cb1080-3"></a>                   <span class="dt">pattern =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">simplify =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb1080-4"><a href="entering-and-cleaning-data-3.html#cb1080-4"></a>hurr_tracks[[<span class="dv">1</span>]]</span></code></pre></div>
+<div class="sourceCode" id="cb1082"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1082-1"><a href="entering-and-cleaning-data-3.html#cb1082-1"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb1082-2"><a href="entering-and-cleaning-data-3.html#cb1082-2"></a>hurr_tracks &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw">map</span>(hurr_tracks, str_split,</span>
+<span id="cb1082-3"><a href="entering-and-cleaning-data-3.html#cb1082-3"></a>                   <span class="dt">pattern =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">simplify =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb1082-4"><a href="entering-and-cleaning-data-3.html#cb1082-4"></a>hurr_tracks[[<span class="dv">1</span>]]</span></code></pre></div>
 <pre><code>##      [,1]       [,2]                  [,3]      [,4]
 ## [1,] &quot;AL011851&quot; &quot;            UNNAMED&quot; &quot;     14&quot; &quot;&quot;</code></pre>
-<div class="sourceCode" id="cb1082"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1082-1"><a href="entering-and-cleaning-data-3.html#cb1082-1"></a>hurr_tracks[[<span class="dv">2</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1084"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1084-1"><a href="entering-and-cleaning-data-3.html#cb1084-1"></a>hurr_tracks[[<span class="dv">2</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</span></code></pre></div>
 <pre><code>## [1] &quot;18510625&quot; &quot; 0000&quot;</code></pre>
 <p>Next, you want to split this list into two lists, one with the shorter “meta-data” lines and one with the longer “observation” lines. You can use <code>map_int</code> to create a vector with the length of each line. You will later use this to identify which lines are short or long.</p>
-<div class="sourceCode" id="cb1084"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1084-1"><a href="entering-and-cleaning-data-3.html#cb1084-1"></a>hurr_lengths &lt;-<span class="st"> </span><span class="kw">map_int</span>(hurr_tracks, length)</span>
-<span id="cb1084-2"><a href="entering-and-cleaning-data-3.html#cb1084-2"></a>hurr_lengths[<span class="dv">1</span><span class="op">:</span><span class="dv">17</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1086"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1086-1"><a href="entering-and-cleaning-data-3.html#cb1086-1"></a>hurr_lengths &lt;-<span class="st"> </span><span class="kw">map_int</span>(hurr_tracks, length)</span>
+<span id="cb1086-2"><a href="entering-and-cleaning-data-3.html#cb1086-2"></a>hurr_lengths[<span class="dv">1</span><span class="op">:</span><span class="dv">17</span>]</span></code></pre></div>
 <pre><code>##  [1]  4 21 21 21 21 21 21 21 21 21 21 21 21 21 21  4 21</code></pre>
-<div class="sourceCode" id="cb1086"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1086-1"><a href="entering-and-cleaning-data-3.html#cb1086-1"></a><span class="kw">unique</span>(hurr_lengths)</span></code></pre></div>
+<div class="sourceCode" id="cb1088"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1088-1"><a href="entering-and-cleaning-data-3.html#cb1088-1"></a><span class="kw">unique</span>(hurr_lengths)</span></code></pre></div>
 <pre><code>## [1]  4 21</code></pre>
 <p>You can use bracket indexing to split the <code>hurr_tracks</code> into two lists: one with the shorter lines that start each observation (<code>hurr_meta</code>) and one with the storm observations (<code>hurr_obs</code>). Use bracket indexing with the <code>hurr_lengths</code> vector you just created to make that split.</p>
-<div class="sourceCode" id="cb1088"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1088-1"><a href="entering-and-cleaning-data-3.html#cb1088-1"></a>hurr_meta &lt;-<span class="st"> </span>hurr_tracks[hurr_lengths <span class="op">==</span><span class="st"> </span><span class="dv">4</span>]</span>
-<span id="cb1088-2"><a href="entering-and-cleaning-data-3.html#cb1088-2"></a>hurr_obs &lt;-<span class="st"> </span>hurr_tracks[hurr_lengths <span class="op">==</span><span class="st"> </span><span class="dv">21</span>]</span></code></pre></div>
-<div class="sourceCode" id="cb1089"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1089-1"><a href="entering-and-cleaning-data-3.html#cb1089-1"></a>hurr_meta[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1090"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1090-1"><a href="entering-and-cleaning-data-3.html#cb1090-1"></a>hurr_meta &lt;-<span class="st"> </span>hurr_tracks[hurr_lengths <span class="op">==</span><span class="st"> </span><span class="dv">4</span>]</span>
+<span id="cb1090-2"><a href="entering-and-cleaning-data-3.html#cb1090-2"></a>hurr_obs &lt;-<span class="st"> </span>hurr_tracks[hurr_lengths <span class="op">==</span><span class="st"> </span><span class="dv">21</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1091"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1091-1"><a href="entering-and-cleaning-data-3.html#cb1091-1"></a>hurr_meta[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</span></code></pre></div>
 <pre><code>## [[1]]
 ##      [,1]       [,2]                  [,3]      [,4]
 ## [1,] &quot;AL011851&quot; &quot;            UNNAMED&quot; &quot;     14&quot; &quot;&quot;  
@@ -829,7 +826,7 @@ This document includes advice on error handling within R code that accesses data
 ## [[3]]
 ##      [,1]       [,2]                  [,3]      [,4]
 ## [1,] &quot;AL031851&quot; &quot;            UNNAMED&quot; &quot;      1&quot; &quot;&quot;</code></pre>
-<div class="sourceCode" id="cb1091"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1091-1"><a href="entering-and-cleaning-data-3.html#cb1091-1"></a>hurr_obs[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1093"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1093-1"><a href="entering-and-cleaning-data-3.html#cb1093-1"></a>hurr_obs[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</span></code></pre></div>
 <pre><code>## [[1]]
 ##      [,1]       [,2]    [,3] [,4]  [,5]     [,6]      [,7]   [,8]    [,9]   
 ## [1,] &quot;18510625&quot; &quot; 0000&quot; &quot;  &quot; &quot; HU&quot; &quot; 28.0N&quot; &quot;  94.8W&quot; &quot;  80&quot; &quot; -999&quot; &quot; -999&quot;
@@ -846,15 +843,15 @@ This document includes advice on error handling within R code that accesses data
 ##      [,19]   [,20]   [,21]
 ## [1,] &quot; -999&quot; &quot; -999&quot; &quot;&quot;</code></pre>
 <p>Now, you can use <code>bind_rows</code> from <code>dplyr</code> to change the list of metadata into a dataframe. (You first need to use <code>as_tibble</code> with <code>map</code> to convert all elements of the list from matrices to dataframes.)</p>
-<div class="sourceCode" id="cb1093"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1093-1"><a href="entering-and-cleaning-data-3.html#cb1093-1"></a><span class="kw">library</span>(dplyr); <span class="kw">library</span>(tibble)</span>
-<span id="cb1093-2"><a href="entering-and-cleaning-data-3.html#cb1093-2"></a>hurr_meta &lt;-<span class="st"> </span>hurr_meta <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1093-3"><a href="entering-and-cleaning-data-3.html#cb1093-3"></a><span class="st">  </span>purrr<span class="op">::</span><span class="kw">map</span>(as_tibble) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1093-4"><a href="entering-and-cleaning-data-3.html#cb1093-4"></a><span class="st">  </span><span class="kw">bind_rows</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb1095"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1095-1"><a href="entering-and-cleaning-data-3.html#cb1095-1"></a><span class="kw">library</span>(dplyr); <span class="kw">library</span>(tibble)</span>
+<span id="cb1095-2"><a href="entering-and-cleaning-data-3.html#cb1095-2"></a>hurr_meta &lt;-<span class="st"> </span>hurr_meta <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1095-3"><a href="entering-and-cleaning-data-3.html#cb1095-3"></a><span class="st">  </span>purrr<span class="op">::</span><span class="kw">map</span>(as_tibble) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1095-4"><a href="entering-and-cleaning-data-3.html#cb1095-4"></a><span class="st">  </span><span class="kw">bind_rows</span>()</span></code></pre></div>
 <pre><code>## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.
 ## Using compatibility `.name_repair`.
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
-<div class="sourceCode" id="cb1095"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1095-1"><a href="entering-and-cleaning-data-3.html#cb1095-1"></a>hurr_meta <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1097"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1097-1"><a href="entering-and-cleaning-data-3.html#cb1097-1"></a>hurr_meta <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
 ##   V1       V2                    V3        V4   
 ##   &lt;chr&gt;    &lt;chr&gt;                 &lt;chr&gt;     &lt;chr&gt;
@@ -865,22 +862,22 @@ This document includes advice on error handling within R code that accesses data
 <ul>
 <li>First, the fourth column doesn’t have any non-missing values, so you can get rid of it:</li>
 </ul>
-<div class="sourceCode" id="cb1097"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1097-1"><a href="entering-and-cleaning-data-3.html#cb1097-1"></a><span class="kw">unique</span>(hurr_meta<span class="op">$</span>V4)</span></code></pre></div>
+<div class="sourceCode" id="cb1099"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1099-1"><a href="entering-and-cleaning-data-3.html#cb1099-1"></a><span class="kw">unique</span>(hurr_meta<span class="op">$</span>V4)</span></code></pre></div>
 <pre><code>## [1] &quot;&quot;</code></pre>
 <ul>
 <li>Second, the second and third columns include a lot of leading whitespace:</li>
 </ul>
-<div class="sourceCode" id="cb1099"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1099-1"><a href="entering-and-cleaning-data-3.html#cb1099-1"></a>hurr_meta<span class="op">$</span>V2[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1101-1"><a href="entering-and-cleaning-data-3.html#cb1101-1"></a>hurr_meta<span class="op">$</span>V2[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</span></code></pre></div>
 <pre><code>## [1] &quot;            UNNAMED&quot; &quot;            UNNAMED&quot;</code></pre>
 <ul>
 <li>Last, we want to name the columns.</li>
 </ul>
-<div class="sourceCode" id="cb1101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1101-1"><a href="entering-and-cleaning-data-3.html#cb1101-1"></a>hurr_meta &lt;-<span class="st"> </span>hurr_meta <span class="op">%&gt;%</span></span>
-<span id="cb1101-2"><a href="entering-and-cleaning-data-3.html#cb1101-2"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>V4) <span class="op">%&gt;%</span></span>
-<span id="cb1101-3"><a href="entering-and-cleaning-data-3.html#cb1101-3"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">storm_id =</span> V1, <span class="dt">storm_name =</span> V2, <span class="dt">n_obs =</span> V3) <span class="op">%&gt;%</span></span>
-<span id="cb1101-4"><a href="entering-and-cleaning-data-3.html#cb1101-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">storm_name =</span> <span class="kw">str_trim</span>(storm_name),</span>
-<span id="cb1101-5"><a href="entering-and-cleaning-data-3.html#cb1101-5"></a>         <span class="dt">n_obs =</span> <span class="kw">as.numeric</span>(n_obs))</span>
-<span id="cb1101-6"><a href="entering-and-cleaning-data-3.html#cb1101-6"></a>hurr_meta <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1103-1"><a href="entering-and-cleaning-data-3.html#cb1103-1"></a>hurr_meta &lt;-<span class="st"> </span>hurr_meta <span class="op">%&gt;%</span></span>
+<span id="cb1103-2"><a href="entering-and-cleaning-data-3.html#cb1103-2"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>V4) <span class="op">%&gt;%</span></span>
+<span id="cb1103-3"><a href="entering-and-cleaning-data-3.html#cb1103-3"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">storm_id =</span> V1, <span class="dt">storm_name =</span> V2, <span class="dt">n_obs =</span> V3) <span class="op">%&gt;%</span></span>
+<span id="cb1103-4"><a href="entering-and-cleaning-data-3.html#cb1103-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">storm_name =</span> <span class="kw">str_trim</span>(storm_name),</span>
+<span id="cb1103-5"><a href="entering-and-cleaning-data-3.html#cb1103-5"></a>         <span class="dt">n_obs =</span> <span class="kw">as.numeric</span>(n_obs))</span>
+<span id="cb1103-6"><a href="entering-and-cleaning-data-3.html#cb1103-6"></a>hurr_meta <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   storm_id storm_name n_obs
 ##   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
@@ -888,18 +885,18 @@ This document includes advice on error handling within R code that accesses data
 ## 2 AL021851 UNNAMED        1
 ## 3 AL031851 UNNAMED        1</code></pre>
 <p>Now you can do the same idea with the hurricane observations. First, we’ll want to add storm identifiers to that data. The “meta” data includes storm ids and the number of observations per storm. We can take advantage of that to make a <code>storm_id</code> vector that will line up with the storm observations.</p>
-<div class="sourceCode" id="cb1103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1103-1"><a href="entering-and-cleaning-data-3.html#cb1103-1"></a>storm_id &lt;-<span class="st"> </span><span class="kw">rep</span>(hurr_meta<span class="op">$</span>storm_id, <span class="dt">times =</span> hurr_meta<span class="op">$</span>n_obs)</span>
-<span id="cb1103-2"><a href="entering-and-cleaning-data-3.html#cb1103-2"></a><span class="kw">head</span>(storm_id, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1105-1"><a href="entering-and-cleaning-data-3.html#cb1105-1"></a>storm_id &lt;-<span class="st"> </span><span class="kw">rep</span>(hurr_meta<span class="op">$</span>storm_id, <span class="dt">times =</span> hurr_meta<span class="op">$</span>n_obs)</span>
+<span id="cb1105-2"><a href="entering-and-cleaning-data-3.html#cb1105-2"></a><span class="kw">head</span>(storm_id, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;AL011851&quot; &quot;AL011851&quot; &quot;AL011851&quot;</code></pre>
-<div class="sourceCode" id="cb1105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1105-1"><a href="entering-and-cleaning-data-3.html#cb1105-1"></a><span class="kw">length</span>(storm_id)</span></code></pre></div>
+<div class="sourceCode" id="cb1107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1107-1"><a href="entering-and-cleaning-data-3.html#cb1107-1"></a><span class="kw">length</span>(storm_id)</span></code></pre></div>
 <pre><code>## [1] 50303</code></pre>
-<div class="sourceCode" id="cb1107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1107-1"><a href="entering-and-cleaning-data-3.html#cb1107-1"></a><span class="kw">length</span>(hurr_obs)</span></code></pre></div>
+<div class="sourceCode" id="cb1109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1109-1"><a href="entering-and-cleaning-data-3.html#cb1109-1"></a><span class="kw">length</span>(hurr_obs)</span></code></pre></div>
 <pre><code>## [1] 50303</code></pre>
-<div class="sourceCode" id="cb1109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1109-1"><a href="entering-and-cleaning-data-3.html#cb1109-1"></a>hurr_obs &lt;-<span class="st"> </span>hurr_obs <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1109-2"><a href="entering-and-cleaning-data-3.html#cb1109-2"></a><span class="st">  </span>purrr<span class="op">::</span><span class="kw">map</span>(as_tibble) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1109-3"><a href="entering-and-cleaning-data-3.html#cb1109-3"></a><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1109-4"><a href="entering-and-cleaning-data-3.html#cb1109-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">storm_id =</span> storm_id)</span>
-<span id="cb1109-5"><a href="entering-and-cleaning-data-3.html#cb1109-5"></a>hurr_obs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(V1<span class="op">:</span>V2, V5<span class="op">:</span>V6, storm_id) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1111-1"><a href="entering-and-cleaning-data-3.html#cb1111-1"></a>hurr_obs &lt;-<span class="st"> </span>hurr_obs <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1111-2"><a href="entering-and-cleaning-data-3.html#cb1111-2"></a><span class="st">  </span>purrr<span class="op">::</span><span class="kw">map</span>(as_tibble) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1111-3"><a href="entering-and-cleaning-data-3.html#cb1111-3"></a><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1111-4"><a href="entering-and-cleaning-data-3.html#cb1111-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">storm_id =</span> storm_id)</span>
+<span id="cb1111-5"><a href="entering-and-cleaning-data-3.html#cb1111-5"></a>hurr_obs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(V1<span class="op">:</span>V2, V5<span class="op">:</span>V6, storm_id) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##   V1       V2      V5       V6        storm_id
 ##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;   
@@ -948,15 +945,15 @@ data relevant to West Nile virus.</li>
 </ul>
 <div id="example-r-code" class="section level4">
 <h4><span class="header-section-number">10.6.1.1</span> Example R code</h4>
-<div class="sourceCode" id="cb1111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1111-1"><a href="entering-and-cleaning-data-3.html#cb1111-1"></a><span class="kw">library</span>(rplos)</span>
-<span id="cb1111-2"><a href="entering-and-cleaning-data-3.html#cb1111-2"></a>wn_papers &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;West Nile&quot;</span>, </span>
-<span id="cb1111-3"><a href="entering-and-cleaning-data-3.html#cb1111-3"></a>                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
-<span id="cb1111-4"><a href="entering-and-cleaning-data-3.html#cb1111-4"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb1113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1113-1"><a href="entering-and-cleaning-data-3.html#cb1113-1"></a><span class="kw">library</span>(rplos)</span>
+<span id="cb1113-2"><a href="entering-and-cleaning-data-3.html#cb1113-2"></a>wn_papers &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;West Nile&quot;</span>, </span>
+<span id="cb1113-3"><a href="entering-and-cleaning-data-3.html#cb1113-3"></a>                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
+<span id="cb1113-4"><a href="entering-and-cleaning-data-3.html#cb1113-4"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</span></code></pre></div>
 <p>Confirm the structure of the returned object:</p>
-<div class="sourceCode" id="cb1112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1112-1"><a href="entering-and-cleaning-data-3.html#cb1112-1"></a><span class="kw">str</span>(wn_papers)</span></code></pre></div>
+<div class="sourceCode" id="cb1114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1114-1"><a href="entering-and-cleaning-data-3.html#cb1114-1"></a><span class="kw">str</span>(wn_papers)</span></code></pre></div>
 <pre><code>## List of 2
 ##  $ meta: tibble [1 × 2] (S3: tbl_df/tbl/data.frame)
-##   ..$ numFound: int 3356
+##   ..$ numFound: int 3367
 ##   ..$ start   : int 0
 ##  $ data: tibble [10 × 6] (S3: tbl_df/tbl/data.frame)
 ##   ..$ journal         : chr [1:10] &quot;PLOS Pathogens&quot; &quot;PLOS ONE&quot; &quot;PLOS Neglected Tropical Diseases&quot; &quot;PLOS ONE&quot; ...
@@ -965,62 +962,62 @@ data relevant to West Nile virus.</li>
 ##   ..$ abstract        : chr [1:10] &quot;\nIt has been 20 years since West Nile virus first emerged in the Americas, and since then, little progress has&quot;| __truncated__ &quot;\nWest Nile virus (WNV) is a mosquito-transmitted Flavivirus belonging to the Japanese encephalitis antigenic c&quot;| __truncated__ &quot;\nThe West Nile virus (WNV), isolated in 1937, is an arbovirus (arthropod-borne virus) that infects thousands o&quot;| __truncated__ &quot;\nThe structural risk of West Nile Disease results from the usual functioning of the socio-ecological system, w&quot;| __truncated__ ...
 ##   ..$ title           : chr [1:10] &quot;Twenty years of West Nile virus spread and evolution in the Americas visualized by Nextstrain&quot; &quot;Spatio-Temporal Identification of Areas Suitable for West Nile Disease in the Mediterranean Basin and Central Europe&quot; &quot;Biological and phylogenetic characteristics of West African lineages of West Nile virus&quot; &quot;Geographic variations of the bird-borne structural risk of West Nile virus circulation in Europe&quot; ...
 ##   ..$ subject         : chr [1:10] &quot;/Biology and life sciences/Biogeography/Phylogeography,/Biology and life sciences/Evolutionary biology/Evolutio&quot;| __truncated__ &quot;/Biology and life sciences/Developmental biology/Life cycles/Larvae,/Biology and life sciences/Microbiology/Med&quot;| __truncated__ &quot;/Biology and life sciences/Evolutionary biology/Evolutionary systematics/Phylogenetics/Phylogenetic analysis,/B&quot;| __truncated__ &quot;/Biology and life sciences/Ecology/Community ecology/Ecological risk,/Biology and life sciences/Microbiology/Me&quot;| __truncated__ ...
-##   ..- attr(*, &quot;numFound&quot;)= int 3356
+##   ..- attr(*, &quot;numFound&quot;)= int 3367
 ##   ..- attr(*, &quot;start&quot;)= int 0</code></pre>
 <p>Look at the meta data:</p>
-<div class="sourceCode" id="cb1114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1114-1"><a href="entering-and-cleaning-data-3.html#cb1114-1"></a>wn_papers<span class="op">$</span>meta</span></code></pre></div>
+<div class="sourceCode" id="cb1116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1116-1"><a href="entering-and-cleaning-data-3.html#cb1116-1"></a>wn_papers<span class="op">$</span>meta</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1     3356     0</code></pre>
+## 1     3367     0</code></pre>
 <p>Query for just articles with “West Nile” in the title:</p>
-<div class="sourceCode" id="cb1116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1116-1"><a href="entering-and-cleaning-data-3.html#cb1116-1"></a>wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
-<span id="cb1116-2"><a href="entering-and-cleaning-data-3.html#cb1116-2"></a>                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
-<span id="cb1116-3"><a href="entering-and-cleaning-data-3.html#cb1116-3"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb1118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1118-1"><a href="entering-and-cleaning-data-3.html#cb1118-1"></a>wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
+<span id="cb1118-2"><a href="entering-and-cleaning-data-3.html#cb1118-2"></a>                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
+<span id="cb1118-3"><a href="entering-and-cleaning-data-3.html#cb1118-3"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</span></code></pre></div>
 <p>Look at the metadata:</p>
-<div class="sourceCode" id="cb1117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1117-1"><a href="entering-and-cleaning-data-3.html#cb1117-1"></a>wn_papers_titles<span class="op">$</span>meta</span></code></pre></div>
+<div class="sourceCode" id="cb1119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1119-1"><a href="entering-and-cleaning-data-3.html#cb1119-1"></a>wn_papers_titles<span class="op">$</span>meta</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
 ## 1      217     0</code></pre>
 <p>Re-run the query using an appropriate limit to get all the matching articles:</p>
-<div class="sourceCode" id="cb1119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1119-1"><a href="entering-and-cleaning-data-3.html#cb1119-1"></a>wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
-<span id="cb1119-2"><a href="entering-and-cleaning-data-3.html#cb1119-2"></a>                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
-<span id="cb1119-3"><a href="entering-and-cleaning-data-3.html#cb1119-3"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>),</span>
-<span id="cb1119-4"><a href="entering-and-cleaning-data-3.html#cb1119-4"></a>                        <span class="dt">limit =</span> <span class="dv">190</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1121-1"><a href="entering-and-cleaning-data-3.html#cb1121-1"></a>wn_papers_titles &lt;-<span class="st"> </span><span class="kw">searchplos</span>(<span class="dt">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
+<span id="cb1121-2"><a href="entering-and-cleaning-data-3.html#cb1121-2"></a>                        <span class="dt">fl =</span> <span class="kw">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
+<span id="cb1121-3"><a href="entering-and-cleaning-data-3.html#cb1121-3"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>),</span>
+<span id="cb1121-4"><a href="entering-and-cleaning-data-3.html#cb1121-4"></a>                        <span class="dt">limit =</span> <span class="dv">190</span>)</span></code></pre></div>
 <p>Check the number of rows:</p>
-<div class="sourceCode" id="cb1120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1120-1"><a href="entering-and-cleaning-data-3.html#cb1120-1"></a><span class="kw">nrow</span>(wn_papers_titles<span class="op">$</span>data)</span></code></pre></div>
+<div class="sourceCode" id="cb1122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1122-1"><a href="entering-and-cleaning-data-3.html#cb1122-1"></a><span class="kw">nrow</span>(wn_papers_titles<span class="op">$</span>data)</span></code></pre></div>
 <pre><code>## [1] 190</code></pre>
 <p>Create a plot of the number of articles in the PLoS journals with “West Nile” in the title
 by year:</p>
-<div class="sourceCode" id="cb1122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1122-1"><a href="entering-and-cleaning-data-3.html#cb1122-1"></a><span class="kw">library</span>(lubridate)</span>
-<span id="cb1122-2"><a href="entering-and-cleaning-data-3.html#cb1122-2"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb1122-3"><a href="entering-and-cleaning-data-3.html#cb1122-3"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb1122-4"><a href="entering-and-cleaning-data-3.html#cb1122-4"></a>wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1122-5"><a href="entering-and-cleaning-data-3.html#cb1122-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">publication_date =</span> <span class="kw">ymd_hms</span>(publication_date),</span>
-<span id="cb1122-6"><a href="entering-and-cleaning-data-3.html#cb1122-6"></a>         <span class="dt">pub_year =</span> <span class="kw">year</span>(publication_date),</span>
-<span id="cb1122-7"><a href="entering-and-cleaning-data-3.html#cb1122-7"></a>         <span class="dt">research_article =</span> article_type <span class="op">==</span><span class="st"> &quot;Research Article&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1122-8"><a href="entering-and-cleaning-data-3.html#cb1122-8"></a><span class="st">  </span><span class="kw">group_by</span>(pub_year, research_article) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1122-9"><a href="entering-and-cleaning-data-3.html#cb1122-9"></a><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1122-10"><a href="entering-and-cleaning-data-3.html#cb1122-10"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pub_year, <span class="dt">y =</span> n, <span class="dt">fill =</span> research_article)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb1122-11"><a href="entering-and-cleaning-data-3.html#cb1122-11"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb1122-12"><a href="entering-and-cleaning-data-3.html#cb1122-12"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year of publication&quot;</span>, </span>
-<span id="cb1122-13"><a href="entering-and-cleaning-data-3.html#cb1122-13"></a>       <span class="dt">y =</span> <span class="st">&quot;Number of articles published&quot;</span>,</span>
-<span id="cb1122-14"><a href="entering-and-cleaning-data-3.html#cb1122-14"></a>       <span class="dt">fill =</span> <span class="st">&quot;Research article&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb1122-15"><a href="entering-and-cleaning-data-3.html#cb1122-15"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;West Nile articles published in PLoS journals&quot;</span>,</span>
-<span id="cb1122-16"><a href="entering-and-cleaning-data-3.html#cb1122-16"></a>          <span class="dt">subtitle =</span> <span class="st">&quot;Based on articles with &#39;West Nile&#39; in the title&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1124-1"><a href="entering-and-cleaning-data-3.html#cb1124-1"></a><span class="kw">library</span>(lubridate)</span>
+<span id="cb1124-2"><a href="entering-and-cleaning-data-3.html#cb1124-2"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1124-3"><a href="entering-and-cleaning-data-3.html#cb1124-3"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb1124-4"><a href="entering-and-cleaning-data-3.html#cb1124-4"></a>wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1124-5"><a href="entering-and-cleaning-data-3.html#cb1124-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">publication_date =</span> <span class="kw">ymd_hms</span>(publication_date),</span>
+<span id="cb1124-6"><a href="entering-and-cleaning-data-3.html#cb1124-6"></a>         <span class="dt">pub_year =</span> <span class="kw">year</span>(publication_date),</span>
+<span id="cb1124-7"><a href="entering-and-cleaning-data-3.html#cb1124-7"></a>         <span class="dt">research_article =</span> article_type <span class="op">==</span><span class="st"> &quot;Research Article&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1124-8"><a href="entering-and-cleaning-data-3.html#cb1124-8"></a><span class="st">  </span><span class="kw">group_by</span>(pub_year, research_article) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1124-9"><a href="entering-and-cleaning-data-3.html#cb1124-9"></a><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1124-10"><a href="entering-and-cleaning-data-3.html#cb1124-10"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pub_year, <span class="dt">y =</span> n, <span class="dt">fill =</span> research_article)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1124-11"><a href="entering-and-cleaning-data-3.html#cb1124-11"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1124-12"><a href="entering-and-cleaning-data-3.html#cb1124-12"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year of publication&quot;</span>, </span>
+<span id="cb1124-13"><a href="entering-and-cleaning-data-3.html#cb1124-13"></a>       <span class="dt">y =</span> <span class="st">&quot;Number of articles published&quot;</span>,</span>
+<span id="cb1124-14"><a href="entering-and-cleaning-data-3.html#cb1124-14"></a>       <span class="dt">fill =</span> <span class="st">&quot;Research article&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1124-15"><a href="entering-and-cleaning-data-3.html#cb1124-15"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;West Nile articles published in PLoS journals&quot;</span>,</span>
+<span id="cb1124-16"><a href="entering-and-cleaning-data-3.html#cb1124-16"></a>          <span class="dt">subtitle =</span> <span class="st">&quot;Based on articles with &#39;West Nile&#39; in the title&quot;</span>)</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-622-1.png" width="672" /></p>
 <p>Determine which journals have published these articles and the number of articles published
 in each journal:</p>
-<div class="sourceCode" id="cb1123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1123-1"><a href="entering-and-cleaning-data-3.html#cb1123-1"></a><span class="kw">library</span>(forcats)</span>
-<span id="cb1123-2"><a href="entering-and-cleaning-data-3.html#cb1123-2"></a><span class="kw">library</span>(stringr)</span>
-<span id="cb1123-3"><a href="entering-and-cleaning-data-3.html#cb1123-3"></a>wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1123-4"><a href="entering-and-cleaning-data-3.html#cb1123-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">journal =</span> <span class="kw">str_replace</span>(journal, <span class="st">&quot;PLOS&quot;</span>, <span class="st">&quot;PLoS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1123-5"><a href="entering-and-cleaning-data-3.html#cb1123-5"></a><span class="st">  </span><span class="kw">group_by</span>(journal) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1123-6"><a href="entering-and-cleaning-data-3.html#cb1123-6"></a><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1123-7"><a href="entering-and-cleaning-data-3.html#cb1123-7"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1123-8"><a href="entering-and-cleaning-data-3.html#cb1123-8"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(journal)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb1123-9"><a href="entering-and-cleaning-data-3.html#cb1123-9"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n))</span></code></pre></div>
+<div class="sourceCode" id="cb1125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1125-1"><a href="entering-and-cleaning-data-3.html#cb1125-1"></a><span class="kw">library</span>(forcats)</span>
+<span id="cb1125-2"><a href="entering-and-cleaning-data-3.html#cb1125-2"></a><span class="kw">library</span>(stringr)</span>
+<span id="cb1125-3"><a href="entering-and-cleaning-data-3.html#cb1125-3"></a>wn_papers_titles<span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1125-4"><a href="entering-and-cleaning-data-3.html#cb1125-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">journal =</span> <span class="kw">str_replace</span>(journal, <span class="st">&quot;PLOS&quot;</span>, <span class="st">&quot;PLoS&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1125-5"><a href="entering-and-cleaning-data-3.html#cb1125-5"></a><span class="st">  </span><span class="kw">group_by</span>(journal) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1125-6"><a href="entering-and-cleaning-data-3.html#cb1125-6"></a><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1125-7"><a href="entering-and-cleaning-data-3.html#cb1125-7"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1125-8"><a href="entering-and-cleaning-data-3.html#cb1125-8"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(journal)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1125-9"><a href="entering-and-cleaning-data-3.html#cb1125-9"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n))</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 2
 ##   journal                              n
 ##   &lt;chr&gt;                            &lt;int&gt;

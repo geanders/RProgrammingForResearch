@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2020-09-28" />
+<meta name="date" content="2020-10-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -690,19 +690,19 @@ pollution and heat waves in its population.”</li>
 T_F = \frac{9}{5} T_C + 32
 \]</span>
 Here is the associated R function:</p>
-<div class="sourceCode" id="cb1234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1234-1"><a href="reproducible-research-3.html#cb1234-1"></a>celsius.to.fahrenheit</span></code></pre></div>
+<div class="sourceCode" id="cb1236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1236-1"><a href="reproducible-research-3.html#cb1236-1"></a>celsius.to.fahrenheit</span></code></pre></div>
 <pre><code>## function (T.celsius, round = 2) 
 ## {
 ##     T.fahrenheit &lt;- (9/5) * T.celsius + 32
 ##     T.fahrenheit &lt;- round(T.fahrenheit, digits = round)
 ##     return(T.fahrenheit)
 ## }
-## &lt;bytecode: 0x7fdab1c1f340&gt;
+## &lt;bytecode: 0x7fa96a93f008&gt;
 ## &lt;environment: namespace:weathermetrics&gt;</code></pre>
 <p>Here is part of the help file for this function:</p>
 <p><img src="figures/convert_temperature_helpfile.png" width="364" style="display: block; margin: auto;" /></p>
 <p>Here is the start of the function to calculate the heat index:</p>
-<div class="sourceCode" id="cb1236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1236-1"><a href="reproducible-research-3.html#cb1236-1"></a><span class="kw">head</span>(heat.index.algorithm, <span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1238-1"><a href="reproducible-research-3.html#cb1238-1"></a><span class="kw">head</span>(heat.index.algorithm, <span class="dv">10</span>)</span></code></pre></div>
 <pre><code>##                                                         
 ## 1  function (t = NA, rh = NA)                           
 ## 2  {                                                    
@@ -715,11 +715,11 @@ Here is the associated R function:</p>
 ## 9      else {                                           
 ## 10         alpha &lt;- 61 + ((t - 68) * 1.2) + (rh * 0.094)</code></pre>
 <p>Here is an example of using this function:</p>
-<div class="sourceCode" id="cb1238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1238-1"><a href="reproducible-research-3.html#cb1238-1"></a><span class="kw">data</span>(suffolk)</span>
-<span id="cb1238-2"><a href="reproducible-research-3.html#cb1238-2"></a>suffolk <span class="op">%&gt;%</span></span>
-<span id="cb1238-3"><a href="reproducible-research-3.html#cb1238-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">heat_index =</span> <span class="kw">heat.index</span>(<span class="dt">t =</span> TemperatureF,</span>
-<span id="cb1238-4"><a href="reproducible-research-3.html#cb1238-4"></a>                                 <span class="dt">rh =</span> Relative.Humidity)) <span class="op">%&gt;%</span></span>
-<span id="cb1238-5"><a href="reproducible-research-3.html#cb1238-5"></a><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1240-1"><a href="reproducible-research-3.html#cb1240-1"></a><span class="kw">data</span>(suffolk)</span>
+<span id="cb1240-2"><a href="reproducible-research-3.html#cb1240-2"></a>suffolk <span class="op">%&gt;%</span></span>
+<span id="cb1240-3"><a href="reproducible-research-3.html#cb1240-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">heat_index =</span> <span class="kw">heat.index</span>(<span class="dt">t =</span> TemperatureF,</span>
+<span id="cb1240-4"><a href="reproducible-research-3.html#cb1240-4"></a>                                 <span class="dt">rh =</span> Relative.Humidity)) <span class="op">%&gt;%</span></span>
+<span id="cb1240-5"><a href="reproducible-research-3.html#cb1240-5"></a><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</span></code></pre></div>
 <pre><code>##         Date TemperatureF Relative.Humidity heat_index
 ## 1 1998-07-12           72                69         72
 ## 2 1998-07-13           73                66         73
@@ -799,11 +799,11 @@ VignetteBuilder: knitr</code></pre>
 </ul>
 <p><img src="figures/weathermetrics_package.png" width="308" style="display: block; margin: auto;" /></p>
 <p>You define functions in the R scripts just as you would anytime you want to define a function in R. For example, “temperature_conversions.R” includes the following code to define converting from Celsius to Fahrenheit:</p>
-<div class="sourceCode" id="cb1241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1241-1"><a href="reproducible-research-3.html#cb1241-1"></a>celsius.to.fahrenheit &lt;-<span class="st"> </span><span class="cf">function</span> (T.celsius, <span class="dt">round =</span> <span class="dv">2</span>) {</span>
-<span id="cb1241-2"><a href="reproducible-research-3.html#cb1241-2"></a>    T.fahrenheit &lt;-<span class="st"> </span>(<span class="dv">9</span><span class="op">/</span><span class="dv">5</span>) <span class="op">*</span><span class="st"> </span>T.celsius <span class="op">+</span><span class="st"> </span><span class="dv">32</span></span>
-<span id="cb1241-3"><a href="reproducible-research-3.html#cb1241-3"></a>    T.fahrenheit &lt;-<span class="st"> </span><span class="kw">round</span>(T.fahrenheit, <span class="dt">digits =</span> round)</span>
-<span id="cb1241-4"><a href="reproducible-research-3.html#cb1241-4"></a>    <span class="kw">return</span>(T.fahrenheit)</span>
-<span id="cb1241-5"><a href="reproducible-research-3.html#cb1241-5"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb1243"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1243-1"><a href="reproducible-research-3.html#cb1243-1"></a>celsius.to.fahrenheit &lt;-<span class="st"> </span><span class="cf">function</span> (T.celsius, <span class="dt">round =</span> <span class="dv">2</span>) {</span>
+<span id="cb1243-2"><a href="reproducible-research-3.html#cb1243-2"></a>    T.fahrenheit &lt;-<span class="st"> </span>(<span class="dv">9</span><span class="op">/</span><span class="dv">5</span>) <span class="op">*</span><span class="st"> </span>T.celsius <span class="op">+</span><span class="st"> </span><span class="dv">32</span></span>
+<span id="cb1243-3"><a href="reproducible-research-3.html#cb1243-3"></a>    T.fahrenheit &lt;-<span class="st"> </span><span class="kw">round</span>(T.fahrenheit, <span class="dt">digits =</span> round)</span>
+<span id="cb1243-4"><a href="reproducible-research-3.html#cb1243-4"></a>    <span class="kw">return</span>(T.fahrenheit)</span>
+<span id="cb1243-5"><a href="reproducible-research-3.html#cb1243-5"></a>}</span></code></pre></div>
 <p>Only exception: use <code>package::function</code> syntax to call functions from other packages (e.g., <code>dplyr::mutate()</code>).</p>
 <p>Using <code>roxygen2</code>, you put all information for the help files directly into a special type of code comments right before defining the function.</p>
 <ul>
