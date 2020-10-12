@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2020-10-11" />
+<meta name="date" content="2020-10-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -766,8 +766,8 @@ a pdf of the lecture slides for this video.</p>
 <div class="sourceCode" id="cb723"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb723-1"><a href="exploring-data-2.html#cb723-1"></a><span class="kw">head</span>(<span class="kw">names</span>(my_mod), <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;coefficients&quot;  &quot;residuals&quot;     &quot;fitted.values&quot;</code></pre>
 <div class="sourceCode" id="cb725"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb725-1"><a href="exploring-data-2.html#cb725-1"></a>my_mod[[<span class="st">&quot;coefficients&quot;</span>]]</span></code></pre></div>
-<pre><code>##  (Intercept)      c(1:10) 
-##  0.413148807 -0.007120857</code></pre>
+<pre><code>## (Intercept)     c(1:10) 
+## -0.63483625  0.07802022</code></pre>
 <p>A list can even contain other lists. We can use the <code>str</code> function to see the structure of a list:</p>
 <div class="sourceCode" id="cb727"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb727-1"><a href="exploring-data-2.html#cb727-1"></a>a_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">list</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="kw">list</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
 <span id="cb727-2"><a href="exploring-data-2.html#cb727-2"></a></span>
@@ -2030,7 +2030,7 @@ form of the data, it lets us use some of the tidyverse tools more easily:</p>
 <span id="cb871-2"><a href="exploring-data-2.html#cb871-2"></a><span class="kw">library</span>(broom)</span>
 <span id="cb871-3"><a href="exploring-data-2.html#cb871-3"></a>student_list <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb871-4"><a href="exploring-data-2.html#cb871-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">c_or_s =</span> first_letter <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;C&quot;</span>, <span class="st">&quot;S&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb871-5"><a href="exploring-data-2.html#cb871-5"></a><span class="st">  </span><span class="kw">pluck</span>(<span class="st">&quot;c_or_s&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb871-5"><a href="exploring-data-2.html#cb871-5"></a><span class="st">  </span><span class="kw">pull</span>(<span class="st">&quot;c_or_s&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb871-6"><a href="exploring-data-2.html#cb871-6"></a><span class="st">  </span><span class="kw">sum</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb871-7"><a href="exploring-data-2.html#cb871-7"></a><span class="st">  </span><span class="kw">prop.test</span>(<span class="dt">n =</span> <span class="dv">20</span>, <span class="dt">p =</span> <span class="fl">0.14</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb871-8"><a href="exploring-data-2.html#cb871-8"></a><span class="st">  </span><span class="kw">tidy</span>()</span></code></pre></div>
@@ -2377,7 +2377,7 @@ departure delay is missing and then create a new column called
 <p>What proportion of all flights leaving from LaGuardia leave 15 minutes late or later? To
 check this, remember that <code>TRUE</code> is saved as a “1” and <code>FALSE</code> is saved as a “0”. That means that
 we can take the mean of a logical vector to get the proportion of trials that are true.</p>
-<div class="sourceCode" id="cb922"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb922-1"><a href="exploring-data-2.html#cb922-1"></a>flights <span class="op">%&gt;%</span><span class="st"> </span>purrr<span class="op">::</span><span class="kw">pluck</span>(<span class="st">&quot;late_dep&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mean</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb922"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb922-1"><a href="exploring-data-2.html#cb922-1"></a>flights <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="st">&quot;late_dep&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mean</span>()</span></code></pre></div>
 <pre><code>## [1] 0.1889685</code></pre>
 <p>Determine what proportion of all flights are delayed base on the hour that the
 flight was scheduled to depart (<code>hour</code>). Create a plot showing how the probability of
@@ -2566,7 +2566,7 @@ into an R dataframe called <code>word_list</code>. It will only have one column;
 and return a logical vector that says whether that character string is a word in the
 <code>word_list</code> dataframe you created in the last step (e.g., <code>c('FALSE', 'TRUE', 'TRUE')</code> for
 a vector where the first value isn’t a word but the second and third are). You may find
-the <code>pluck</code> function in the <code>purrr</code> package useful in writing this code (to pull the
+the <code>pull</code> function useful in writing this code (to pull the
 <code>word</code> column out of the <code>word_list</code> dataframe).</li>
 <li>Write a function called <code>is_word</code> that inputs (1) a vector of character strings
 and (2) a dataframe with a column called “word” that lists real words. The
@@ -2660,9 +2660,9 @@ a vector where the second value isn’t a word but the first and third are).</p>
 <div class="sourceCode" id="cb964"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb964-1"><a href="exploring-data-2.html#cb964-1"></a><span class="kw">library</span>(purrr)</span>
 <span id="cb964-2"><a href="exploring-data-2.html#cb964-2"></a></span>
 <span id="cb964-3"><a href="exploring-data-2.html#cb964-3"></a>words_to_check &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ling&quot;</span>, <span class="st">&quot;scat&quot;</span>, <span class="st">&quot;soil&quot;</span>)</span>
-<span id="cb964-4"><a href="exploring-data-2.html#cb964-4"></a>words_to_check <span class="op">%in%</span><span class="st"> </span><span class="kw">pluck</span>(word_list, <span class="st">&quot;word&quot;</span>)</span></code></pre></div>
+<span id="cb964-4"><a href="exploring-data-2.html#cb964-4"></a>words_to_check <span class="op">%in%</span><span class="st"> </span><span class="kw">pull</span>(word_list, <span class="st">&quot;word&quot;</span>)</span></code></pre></div>
 <pre><code>## [1]  TRUE FALSE  TRUE</code></pre>
-<p>This code works because you can use <code>pluck</code> to extract a column (as a vector) from
+<p>This code works because you can use <code>pull</code> to extract a column (as a vector) from
 a dataframe, and then you can use the <code>%in%</code> operator to see if each value in one vector
 (the <code>words_to_check</code> vector in this example) is one of the values in the second
 vector (the <code>word</code> column from the <code>words</code> dataframe in this example).</p>
@@ -2676,7 +2676,7 @@ to have the default value of <code>words</code>, the dataframe you created earli
 exercise by reading in the dataframe of English words from GitHub.</p>
 <div class="sourceCode" id="cb966"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb966-1"><a href="exploring-data-2.html#cb966-1"></a><span class="co"># Put the code you wrote inside a function</span></span>
 <span id="cb966-2"><a href="exploring-data-2.html#cb966-2"></a>is_word &lt;-<span class="st"> </span><span class="cf">function</span>(words_to_check, <span class="dt">real_word_list =</span> word_list){</span>
-<span id="cb966-3"><a href="exploring-data-2.html#cb966-3"></a>  words_to_check <span class="op">%in%</span><span class="st"> </span><span class="kw">pluck</span>(real_word_list, <span class="st">&quot;word&quot;</span>)</span>
+<span id="cb966-3"><a href="exploring-data-2.html#cb966-3"></a>  words_to_check <span class="op">%in%</span><span class="st"> </span><span class="kw">pull</span>(real_word_list, <span class="st">&quot;word&quot;</span>)</span>
 <span id="cb966-4"><a href="exploring-data-2.html#cb966-4"></a>}</span>
 <span id="cb966-5"><a href="exploring-data-2.html#cb966-5"></a></span>
 <span id="cb966-6"><a href="exploring-data-2.html#cb966-6"></a><span class="co"># Check the function</span></span>

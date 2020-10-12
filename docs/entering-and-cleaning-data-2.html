@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2020-10-11" />
+<meta name="date" content="2020-10-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -703,19 +703,19 @@ a pdf of the lecture slides for this video.</p>
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="entering-and-cleaning-data-2.html#cb546-1"></a>wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y       Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-## 1 2009-01-01 -1.47   0.251  0.0208
-## 2 2009-01-02  0.906  0.694 -4.16  
-## 3 2009-01-03  1.58  -0.218  0.614</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01 -1.93   0.272 -1.17 
+## 2 2009-01-02  0.677  1.31   0.793
+## 3 2009-01-03  0.677 -1.95  -1.77</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="entering-and-cleaning-data-2.html#cb548-1"></a>wide_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y       Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-## 1 2009-01-01 -1.47   0.251  0.0208
-## 2 2009-01-02  0.906  0.694 -4.16  
-## 3 2009-01-03  1.58  -0.218  0.614</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01 -1.93   0.272 -1.17 
+## 2 2009-01-02  0.677  1.31   0.793
+## 3 2009-01-03  0.677 -1.95  -1.77</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>pivot_longer</code> to convert wide data to long data:</p>
 <div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="entering-and-cleaning-data-2.html#cb550-1"></a>long_stocks &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dt">data =</span> wide_stocks,</span>
 <span id="cb550-2"><a href="entering-and-cleaning-data-2.html#cb550-2"></a>                            <span class="dt">cols =</span> <span class="op">-</span>time,</span>
@@ -723,23 +723,23 @@ a pdf of the lecture slides for this video.</p>
 <span id="cb550-4"><a href="entering-and-cleaning-data-2.html#cb550-4"></a>                            <span class="dt">values_to =</span> <span class="st">&quot;price&quot;</span>)</span>
 <span id="cb550-5"><a href="entering-and-cleaning-data-2.html#cb550-5"></a>long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
-##   time       stock   price
-##   &lt;date&gt;     &lt;chr&gt;   &lt;dbl&gt;
-## 1 2009-01-01 X     -1.47  
-## 2 2009-01-01 Y      0.251 
-## 3 2009-01-01 Z      0.0208
-## 4 2009-01-02 X      0.906 
-## 5 2009-01-02 Y      0.694</code></pre>
+##   time       stock  price
+##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
+## 1 2009-01-01 X     -1.93 
+## 2 2009-01-01 Y      0.272
+## 3 2009-01-01 Z     -1.17 
+## 4 2009-01-02 X      0.677
+## 5 2009-01-02 Y      1.31</code></pre>
 <p>In this “longer” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="entering-and-cleaning-data-2.html#cb552-1"></a>long_stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
-##   time       stock   price
-##   &lt;date&gt;     &lt;chr&gt;   &lt;dbl&gt;
-## 1 2009-01-01 X     -1.47  
-## 2 2009-01-01 Y      0.251 
-## 3 2009-01-01 Z      0.0208
-## 4 2009-01-02 X      0.906 
-## 5 2009-01-02 Y      0.694</code></pre>
+##   time       stock  price
+##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
+## 1 2009-01-01 X     -1.93 
+## 2 2009-01-01 Y      0.272
+## 3 2009-01-01 Z     -1.17 
+## 4 2009-01-02 X      0.677
+## 5 2009-01-02 Y      1.31</code></pre>
 <p>The format for a <code>pivots_longer</code> call is:</p>
 <div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="entering-and-cleaning-data-2.html#cb554-1"></a><span class="co">## Generic code</span></span>
 <span id="cb554-2"><a href="entering-and-cleaning-data-2.html#cb554-2"></a>new_df &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(old_df,</span>
@@ -764,13 +764,13 @@ a pdf of the lecture slides for this video.</p>
 <span id="cb556-3"><a href="entering-and-cleaning-data-2.html#cb556-3"></a>                      <span class="dt">values_from =</span> price)</span>
 <span id="cb556-4"><a href="entering-and-cleaning-data-2.html#cb556-4"></a>stocks[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
-##   time             X      Y       Z
-##   &lt;date&gt;       &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-## 1 2009-01-01 -1.47    0.251  0.0208
-## 2 2009-01-02  0.906   0.694 -4.16  
-## 3 2009-01-03  1.58   -0.218  0.614 
-## 4 2009-01-04  0.0602  0.569  8.43  
-## 5 2009-01-05 -0.748  -0.448 -2.46</code></pre>
+##   time            X      Y      Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 2009-01-01 -1.93   0.272 -1.17 
+## 2 2009-01-02  0.677  1.31   0.793
+## 3 2009-01-03  0.677 -1.95  -1.77 
+## 4 2009-01-04 -0.925  0.831 -4.28 
+## 5 2009-01-05  0.614  1.57  -4.03</code></pre>
 <p>Notice that this reverses the action of <code>pivot_longer</code>.</p>
 <p>The “wider” your data the less likely it is to be tidy, so won’t use <code>pivot_wider</code> frequently when you are preparing data for analysis. However, <code>pivot_wider</code> can be very helpful in creating tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>pivot_wider</code> to rearrange the final summary to create an attractive table.</p>
@@ -780,11 +780,11 @@ a pdf of the lecture slides for this video.</p>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="entering-and-cleaning-data-2.html#cb560-1"></a>stock_summary</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   stock     N   mean    sd
-##   &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10 -0.335  1.22
-## 2 Y        10  0.902  1.38
-## 3 Z        10  1.30   4.38</code></pre>
+##   stock     N    mean    sd
+##   &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 X        10 -0.0107  1.11
+## 2 Y        10  0.120   1.49
+## 3 Z        10 -2.20    2.57</code></pre>
 <div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="entering-and-cleaning-data-2.html#cb562-1"></a>stock_summary <span class="op">%&gt;%</span></span>
 <span id="cb562-2"><a href="entering-and-cleaning-data-2.html#cb562-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> =<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</span>
 <span id="cb562-3"><a href="entering-and-cleaning-data-2.html#cb562-3"></a>                                    <span class="kw">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span></span>
@@ -811,9 +811,9 @@ a pdf of the lecture slides for this video.</p>
 </tr>
 <tr class="even">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">-0.34 (1.22)</td>
-<td align="left">0.9 (1.38)</td>
-<td align="left">1.3 (4.38)</td>
+<td align="left">-0.01 (1.11)</td>
+<td align="left">0.12 (1.49)</td>
+<td align="left">-2.2 (2.57)</td>
 </tr>
 </tbody>
 </table>

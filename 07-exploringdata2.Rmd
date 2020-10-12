@@ -1223,7 +1223,7 @@ library(purrr)
 library(broom)
 student_list %>% 
   mutate(c_or_s = first_letter %in% c("C", "S")) %>% 
-  pluck("c_or_s") %>% 
+  pull("c_or_s") %>% 
   sum() %>% 
   prop.test(n = 20, p = 0.14) %>% 
   tidy()
@@ -1550,7 +1550,7 @@ check this, remember that `TRUE` is saved as a "1" and `FALSE` is saved as a "0"
 we can take the mean of a logical vector to get the proportion of trials that are true.
 
 ```{r}
-flights %>% purrr::pluck("late_dep") %>% mean()
+flights %>% pull("late_dep") %>% mean()
 ```
 
 Determine what proportion of all flights are delayed base on the hour that the
@@ -1703,7 +1703,7 @@ into an R dataframe called `word_list`. It will only have one column; name this 
 and return a logical vector that says whether that character string is a word in the 
 `word_list` dataframe you created in the last step (e.g., `c('FALSE', 'TRUE', 'TRUE')` for 
 a vector where the first value isn't a word but the second and third are). You may find 
-the `pluck` function in the `purrr` package useful in writing this code (to pull the 
+the `pull` function useful in writing this code (to pull the 
 `word` column out of the `word_list` dataframe).
 - Write a function called `is_word` that inputs (1) a vector of character strings
 and (2) a dataframe with a column called "word" that lists real words. The
@@ -1802,10 +1802,10 @@ a vector where the second value isn't a word but the first and third are).
 library(purrr)
 
 words_to_check <- c("ling", "scat", "soil")
-words_to_check %in% pluck(word_list, "word")
+words_to_check %in% pull(word_list, "word")
 ```
 
-This code works because you can use `pluck` to extract a column (as a vector) from 
+This code works because you can use `pull` to extract a column (as a vector) from 
 a dataframe, and then you can use the `%in%` operator to see if each value in one vector
 (the `words_to_check` vector in this example) is one of the values in the second
 vector (the `word` column from the `words` dataframe in this example).
@@ -1822,7 +1822,7 @@ exercise by reading in the dataframe of English words from GitHub.
 ```{r}
 # Put the code you wrote inside a function
 is_word <- function(words_to_check, real_word_list = word_list){
-  words_to_check %in% pluck(real_word_list, "word")
+  words_to_check %in% pull(real_word_list, "word")
 }
 
 # Check the function
