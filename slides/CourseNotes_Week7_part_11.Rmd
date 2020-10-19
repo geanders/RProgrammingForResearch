@@ -1,0 +1,200 @@
+---
+title: "Exploring data 2"
+header-includes:
+   - \usepackage{hyperref}
+   - \definecolor{links}{HTML}{2A1B81}
+   - \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+output:
+  beamer_presentation:
+    theme: metropolis
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(faraway)
+data(worldcup)
+data(nepali)
+
+library(tibble)
+library(broom)
+library("microbiome")
+data("atlas1006")
+tidy_samples <- atlas1006 %>% 
+  get_sample() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "species") %>% 
+  pivot_longer(-species, 
+               names_to = "sample", 
+               values_to = "prevalence")
+```
+
+# Using functions
+
+## Applying a function repeatedly
+
+You will often want to apply a function multiple times with different input. A
+powerful way to do this in R is using `lists`. 
+
+We can use functions from the
+`purrr` library to `map` functions to each element of a list.
+
+The `map` family of functions includes: `map`, `map_2`, and `pmap`.
+
+## Applying a function repeatedly
+
+The `map` function works well if you have a list and you 
+want to apply a function to each element in the list.
+
+For example, say you have the following list:
+
+```{r}
+a_list <- list(first_element = 1:3, 
+               second_element = c(11, 15, 20))
+
+```
+
+## Applying a function repeatedly
+
+You want to get the range of numbers in each element of the list.
+From looking at the list, you should have an idea of the values we'll 
+get if we do this:
+
+```{r}
+a_list
+```
+
+## Applying a function repeatedly
+
+You can use the `map` function from the `purrr` package to apply this 
+function to each element of the list:
+
+```{r}
+library(purrr)
+map(.x = a_list, .f = range)
+```
+
+## Applying a function repeatedly
+
+This works well with data that you have in a "list-column" of a
+nested dataframe. 
+
+Say that you originally had the data in a dataframe, with one
+column saying whether it's the first or second element and 
+another giving the measure value:
+
+```{r}
+a_df <- tibble(element = c("first", "first", "first",
+                           "second", "second", "second"),
+               measure = c(1, 2, 3, 11, 15, 20))
+```
+
+## Applying a function repeatedly
+
+Here's what the data looks like:
+
+```{r}
+a_df
+```
+
+## Applying a function repeatedly
+
+You can `group_by` and `nest` the data to get a column that gives
+a list of values in each element, like the list we were working with 
+before:
+
+```{r}
+a_df %>% 
+  group_by(element) %>% 
+  nest()
+```
+
+## Applying a function repeatedly
+
+We can use `map` inside `mutate` to map the `range` function across 
+each value:
+
+```{r}
+a_df %>% 
+  group_by(element) %>% 
+  nest() %>% 
+  mutate(range = map(.x = data, .f = range))
+```
+
+## Applying a function repeatedly
+
+Then `unnest` to get the values in a "normal" column:
+
+```{r}
+a_df %>% 
+  group_by(element) %>% 
+  nest() %>% 
+  mutate(range = map(.x = data, .f = range)) %>% 
+  unnest(range)
+```
+
+## Applying a function repeatedly
+
+Other members of the `map` family of functions will let you map 
+across the elements of two (`map2`) or more (`pmap`) R objects.
+
+As a simple example, say you have two vectors of words, `first_word`
+and `second_word`:
+
+```{r}
+first_word <- c("open", "ride", "moot")
+second_word <- c("source", "share", "point")
+```
+
+You want to paste these together, using `first_word` as
+the first element and `second_word` as the second element.
+
+## Applying a function repeatedly
+
+You can use the `map2` function to put `first_word` in as the
+first argument (`.x`) for the function (`.f`) and `second_word` in as
+the second argument (`.y`):
+
+```{r}
+map2(.x = first_word, 
+     .y = second_word, 
+     .f = paste)
+```
+
+## Applying a function repeatedly
+
+You can also use this function within a dataframe:
+
+```{r}
+df <- tibble(first_word = c("open", "ride", "moot"),
+             second_word = c("source", "share", "point"))
+df
+```
+
+## Applying a function repeatedly
+
+The result is a list-column:
+
+```{r}
+df %>% 
+  mutate(phrase = map2(.x = first_word,
+                       .y = second_word,
+                       .f = paste))
+```
+
+## Applying a function repeatedly
+
+You can unnest this list-column to get it back to a "normal" column:
+
+```{r}
+df %>% 
+  mutate(phrase = map2(.x = first_word,
+                       .y = second_word,
+                       .f = paste)) %>% 
+  unnest(phrase)
+```
+

@@ -33,168 +33,138 @@ tidy_samples <- atlas1006 %>%
                values_to = "prevalence")
 ```
 
-# Using functions
+# More on functions
 
-## Applying a function repeatedly
+## Functions---parameter defaults 
 
-You will often want to apply a function multiple times with different input. A
-powerful way to do this in R is using `lists`. 
-
-We can use functions from the
-`purrr` library to `map` functions to each element of a list.
-
-The `map` family of functions includes: `map`, `map_2`, and `pmap`.
-
-## Applying a function repeatedly
-
-The `map` function works well if you have a list and you 
-want to apply a function to each element in the list.
-
-For example, say you have the following list:
+When defining a function, you can set default values for some of the parameters.
+For example, in the `add_one` function, you can set the default value of the
+`number` input to `0`.
 
 ```{r}
-a_list <- list(first_element = 1:3, 
-               second_element = c(11, 15, 20))
-
+add_one <- function(number = 0){
+        number + 1 # Value returned by the function
+}
 ```
 
-## Applying a function repeatedly
+\small
 
-You want to get the range of numbers in each element of the list.
-From looking at the list, you should have an idea of the values we'll 
-get if we do this:
+Now, if someone runs the function without providing a value for `number`, the
+function will use `0`. If they do provide a value for `number`, the function
+will use that instead.
 
 ```{r}
-a_list
+add_one()    # Uses 0 for `number`
+add_one(number = 3:5)   # Uses 5 for `number`
 ```
 
-## Applying a function repeatedly
+## Functions---parameters
 
-You can use the `map` function from the `purrr` package to apply this 
-function to each element of the list:
+You could write a function with no parameters:
 
 ```{r}
-library(purrr)
-map(.x = a_list, .f = range)
+hello_world <- function(){
+  print("Hello world!")
+}
+
+hello_world()
 ```
 
-## Applying a function repeatedly
+However, this will be pretty uncommon as you're first learning to write
+functions.
 
-This works well with data that you have in a "list-column" of a
-nested dataframe. 
+## Functions---parameters
 
-Say that you originally had the data in a dataframe, with one
-column saying whether it's the first or second element and 
-another giving the measure value:
+You can include multiple parameters, some with defaults and some without. For
+example, you could write a function that inputs two numbers and adds them. If
+you don't include a second value, `1` will be added as the second number:
 
 ```{r}
-a_df <- tibble(element = c("first", "first", "first",
-                           "second", "second", "second"),
-               measure = c(1, 2, 3, 11, 15, 20))
+add_two_numbers <- function(first_number, second_number = 1){
+  first_number + second_number
+}
 ```
 
-## Applying a function repeatedly
-
-Here's what the data looks like:
-
 ```{r}
-a_df
+add_two_numbers(first_number = 5:7, second_number = 5)
+add_two_numbers(first_number = 5:7)
 ```
 
-## Applying a function repeatedly
+## Functions---the `return` function 
 
-You can `group_by` and `nest` the data to get a column that gives
-a list of values in each element, like the list we were working with 
-before:
+You can explicitly specify the value to return from the function (use `return`
+function).
 
-```{r}
-a_df %>% 
-  group_by(element) %>% 
-  nest()
+```{r eval = FALSE}
+add_one <- function(number = 0){
+        new_number <- number + 1 
+        return(new_number)
+}
 ```
 
-## Applying a function repeatedly
+If using `return` helps you think about what's happening with the code in your
+function, you can use it. However, outside of a few exceptions, you usually
+won't need to do it.
 
-We can use `map` inside `mutate` to map the `range` function across 
-each value:
+## `if` / `else`
+
+In R, the `if` statement evaluates everything in the parentheses and, if that
+evaluates to `TRUE`, runs everything in the braces. This means that you can
+trigger code in an `if` statement with a single-value logical vector:
 
 ```{r}
-a_df %>% 
-  group_by(element) %>% 
-  nest() %>% 
-  mutate(range = map(.x = data, .f = range))
+tell_date <- function(){
+  cat("Today's date is: ")
+  cat(format(Sys.time(), "%b %d, %Y"))
+  
+  todays_wday <- lubridate::wday(Sys.time(),
+                                 label = TRUE)
+  if(todays_wday %in% c("Sat", "Sun")){
+    cat("\n")
+    cat("It's the weekend!")
+  }
+}
 ```
 
-## Applying a function repeatedly
-
-Then `unnest` to get the values in a "normal" column:
+## `if` / `else`
 
 ```{r}
-a_df %>% 
-  group_by(element) %>% 
-  nest() %>% 
-  mutate(range = map(.x = data, .f = range)) %>% 
-  unnest(range)
+tell_date()
 ```
 
-## Applying a function repeatedly
+## `if` / `else`
 
-Other members of the `map` family of functions will let you map 
-across the elements of two (`map2`) or more (`pmap`) R objects.
+You can add `else if` and `else` statements to tell R what to do if the
+condition in the `if` statement isn't met.
 
-As a simple example, say you have two vectors of words, `first_word`
-and `second_word`:
+For example, in the `tell_date` function, we might want to add some code so it
+will print `"It's almost the weekend!"` on Fridays and how many days until
+Saturday on other weekdays.
+
+## `if` / `else`
 
 ```{r}
-first_word <- c("open", "ride", "moot")
-second_word <- c("source", "share", "point")
+tell_date <- function(){
+  # Print out today's date
+  cat("Today's date is: ")
+  cat(format(Sys.time(), "%b %d, %Y."), "\n")
+  
+  # Add something based on the weekday of today's date
+  todays_wday <- lubridate::wday(Sys.time())
+  
+  if(todays_wday %in% c(1, 7)){      # What to do on Sat / Sun
+    cat("It's the weekend!")
+  } else if (todays_wday == c(6)) {  # What to do on Friday
+    cat("It's almost the weekend!")
+  } else {                           # What to do other days
+    cat("It's ", 7 - todays_wday, "days until the weekend.")
+  }
+}
 ```
 
-You want to paste these together, using `first_word` as
-the first element and `second_word` as the second element.
-
-## Applying a function repeatedly
-
-You can use the `map2` function to put `first_word` in as the
-first argument (`.x`) for the function (`.f`) and `second_word` in as
-the second argument (`.y`):
+## `if` / `else`
 
 ```{r}
-map2(.x = first_word, 
-     .y = second_word, 
-     .f = paste)
-```
-
-## Applying a function repeatedly
-
-You can also use this function within a dataframe:
-
-```{r}
-df <- tibble(first_word = c("open", "ride", "moot"),
-             second_word = c("source", "share", "point"))
-df
-```
-
-## Applying a function repeatedly
-
-The result is a list-column:
-
-```{r}
-df %>% 
-  mutate(phrase = map2(.x = first_word,
-                       .y = second_word,
-                       .f = paste))
-```
-
-## Applying a function repeatedly
-
-You can unnest this list-column to get it back to a "normal" column:
-
-```{r}
-df %>% 
-  mutate(phrase = map2(.x = first_word,
-                       .y = second_word,
-                       .f = paste)) %>% 
-  unnest(phrase)
+tell_date()
 ```
 
