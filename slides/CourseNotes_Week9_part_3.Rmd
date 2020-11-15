@@ -1,0 +1,97 @@
+---
+title: "Reproducible research #2"
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+```
+
+# GitHub
+
+## GitHub
+
+GitHub allows you to host git repositories online. This allows you to: 
+
+- Work collaboratively on a shared repository
+- Fork someone else's repository to create your own copy that you can use and change as you want
+- Suggest changes to other people's repositories through pull requests
+
+## GitHub
+
+To push local repositories to GitHub and fork other people's repositories, you will need a GitHub account. \bigskip
+
+You can sign up at https://github.com. A free account is fine. 
+
+## GitHub
+
+The basic unit for working in GitHub is the repository. You can think of a repository as very similar to an R Project--- it's a directory of files with some supplemental files saving some additional information about the directory. \bigskip
+
+While R Projects have this additional information saved as an ".RProj" file, git repositories have this information in a directory called ".git". Because this pathname starts with a dot, it won't show up in many of the ways you list files in a directory. From a shell, you can see files that start with `.` by running `ls -a` from within that directory. 
+
+## GitHub
+
+```{r echo = FALSE, out.width = "0.8\\textwidth", fig.align = "center"}
+knitr::include_graphics("../figures/GitHubDiagram.png")
+```
+Source: GitHub
+
+## Linking local repo to GitHub repo
+
+If you have a local directory that you would like to push to GitHub, these are the steps to do it. 
+
+First, you need to make sure that the directory is under git version control. See the notes on initializing a repository.
+
+## Linking local repo to GitHub repo
+
+Next, you need to create an empty repository on GitHub to sync with your local repository. Do that by: 
+
+1. In GitHub, click on the "+" in the upper right corner ("Create new").
+2. Choose "Create new repository".
+3. Give your repository the same name as the local directory you'd like to connect it to. For example, if you want to connect it to a directory called "fars_analysis" on your computer, name the repository "fars_analysis".
+4. Leave everything else as-is (unless you'd like to add a short description in the "Description" box). Click on "Create repository" at the bottom of the page.
+
+## Linking local repo to GitHub repo
+
+Now you are ready to connect the two repositories. \bigskip
+
+First, you'll want to change some settings in RStudio so GitHub will recognize that your local repository belongs to you, rather than asking for you password every time. \bigskip
+
+- In RStudio, go to "RStudio" -> "Preferences" -> "Git / svn". Choose to "Create RSA key".
+- Click on "View public key". Copy what shows up.
+- Go to your GitHub account and navigate to "Settings". Click on "SSH and GPG keys". 
+- Click on "New SSH key". Name the key something like "RStudio" (you might want to include the device name if you'll have SSH keys from RStudio on several computers). Past in your public key in the "Key box".
+
+## Syncing RStudio and GitHub
+
+Now you're ready to push your local repository to the empty GitHub repository you created. \bigskip
+
+1. Open a shell and navigate to the directory you want to push. (You can open a shell from RStudio using the gear button in the Git window.)
+2. Add the GitHub repository as a remote branch with the following command (this gives an example for adding a GitHub repository named "ex_repo" in my GitHub account, "geanders"):
+```
+git remote add origin git@github.com:geanders/ex_repo.git
+```
+
+3. Push the contents of the local repository to the GitHub repository.
+```
+git push -u origin master
+```
+
+## Syncing RStudio and GitHub
+
+To pull a repository that already exists on GitHub and to which you have access (or that you've forked), first use `cd` to change a shell into the directory where you want to put the repository then run `git clone` to clone the repository locally. For example, if I wanted to clone a GitHub repository called "ex_repo" in my GitHub account, I would run:
+
+```
+git clone git@github.com:geanders/ex_repo.git
+```
+
+## Syncing RStudio and GitHub
+
+Once you have linked a local R project with a GitHub repository, you can push and pull commits using the blue down arrow (pull from GitHub) and green up arrow (push to GitHub) in the Git window in RStudio. 
+
+```{r echo = FALSE, out.width="0.8\\textwidth", fig.align="center"}
+knitr::include_graphics("../figures/ExampleGitWindow.png")
+```

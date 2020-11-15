@@ -1,0 +1,95 @@
+---
+title: "Reproducible research #2"
+output: 
+  beamer_presentation:
+    theme: "metropolis"
+fontsize: 10pt
+---
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+```
+
+
+# Templates
+
+## Templates
+
+R Markdown **templates** can be used to change multiple elements of the style of a rendered document. You can think of these as being the document-level analog to the themes we've used with `ggplot` objects. \bigskip
+
+To do this, some kind of style file is applied when rendering document. For HTML documents, Cascading Style Sheets (CSS) (`.css`) can be used to change the style of different elements. For pdf files, LaTeX package (style) files (`.sty`) are used.
+
+## Templates
+
+To open a new R Markdown file that uses a template, in RStudio, go to "File" -> "New File" -> "R Markdown" -> "From Template".
+
+Different templates come with different R packages. A couple of templates come with the `rmarkdown` package, which you likely already have.
+
+## Templates
+
+Many of these templates will only render to pdf. \bigskip
+
+To render a pdf from R Markdown, you need to have a version of TeX installed on your computer. Like R, TeX is open source software. RStudio recommends the following installations by system:
+
+- For Macs: MacTeX
+- For PCs: MiKTeX
+
+Links for installing both can be found at http://www.latex-project.org/ftp.html \bigskip
+
+Current version of TeX: 3.14159265.
+
+## Templates
+
+The `tufte` package has templates for creating handouts typeset like Edward Tufte's books. \bigskip
+
+This package includes templates for creating both pdf and HTML documents in this style. \bigskip
+
+The package includes special functions like `newthought`, special chunk options like `fig.fullwidth`, and special knitr engines like `marginfigure`. Special features available in the tufte template include:
+
+- Margin references
+- Margin figures
+- Side notes
+- Full width figures
+
+## Templates
+
+The `rticles` package has templates for several journals:
+
+- *Journal of Statistical Software*
+- *The R Journal*
+- *Association for Computing Machinery*
+- ACS publications (*Journal of the American Chemical Society*, *Environmental Science & Technology*)
+- Elsevier publications
+
+## Templates
+
+Some of these templates create a whole directory, with several files besides the .Rmd file. For example, the template for *The R Journal* includes:
+
+- The R Markdown file in which you write your article
+- "RJournal.sty": A LaTeX package (style) file specific to *The R Journal*. This file tells LaTeX how to render all the elements in your article in the style desired by this journal.
+- "RJreferences.bib": A BibTeX file, where you can save citation information for all references in your article.
+- "Rlogo.png": An example figure (the R logo).
+
+## Templates
+
+Once you render the R Markdown document from this template, you'll end up with some new files in the directory:
+
+- "[your file name].tex": A TeX file with the content from your R Markdown file. This will be "wrapped" with some additional formatting input to create "RJwrapper.tex".
+- "RJwrapper.tex": A TeX file that includes both the content from your R Markdown file and additional formatting input. Typically, you will submit this file (along with the BibTeX, any figure and image files, and possibly the style file) to the journal.
+- "RJwrapper.pdf": The rendered pdf file (what the published article would look like)
+
+## Templates
+
+This template files will often require some syntax that looks more like LaTeX than Markdown. \bigskip
+
+For example, for the template for *The R Journal*, you need to use `\citep{}` and `\citet{}` to include citations. These details will depend on the style file of the template. \bigskip
+
+As a note, you can always use raw LaTeX in R Markdown documents, not just in documents you're creating with a template. You just need to be careful not to mix the two. For example, if you use a LaTeX environment to begin an itemized list (e.g., with `begin{itemize}`), you must start each item with `item`, not `-`.
+
+## Templates
+
+You can create your own template. You create it as part of a custom R package, and then will have access to the template once you've installed the package. This can be useful if you often write documents in a certain style, or if you ever work somewhere with certain formatting requirements for reports. \bigskip
+
+RStudio has full instructions for creating your own template: http://rmarkdown.rstudio.com/developer_document_templates.html
+
+
