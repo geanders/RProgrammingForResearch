@@ -1,0 +1,172 @@
+---
+title: "Reporting data results #3"
+author: "Brooke Anderson"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Introduction to Leaflet
+
+## Example data
+
+Cleaned data on fatal automobile accident data for 2001--2010 [here](https://github.com/geanders/RProgrammingForResearch/blob/master/data/fars_colorado.RData) (click on the "Download" button on the page).
+
+```{r message = FALSE, results='hide'}
+library(tigris)
+denver_tracts <- tracts(state = "CO", county = 31, 
+                        cb = TRUE, class = "sf")
+
+load("../data/fars_colorado.RData") # Use relative path on your computer 
+library(tidyverse)
+accident_data <- driver_data %>%
+  select(state, st_case, county, latitude, longitud,
+                date, fatals, drunk_dr) %>%
+  filter(county == 31 & longitud < -104.1) %>%
+  distinct()
+```
+
+## Leaflet
+
+"Leaflet" is a JavaScript library for making interactive maps. You can find out more about the JavaScript version here: http://leafletjs.com
+
+The `leaflet` package brings this functionality to R. The R Studio group has created a website on `leaflet`: http://rstudio.github.io/leaflet/. This website walks you through different options available with `leaflet`.
+
+```{r}
+library(leaflet)
+```
+
+## Add map background
+
+If you just run `leaflet()`, you just get a blank leaflet area: 
+
+```{r fig.width = 7, fig.height = 3}
+leaflet()
+```
+
+## Add map background
+
+In `leaflet`, the map background is composed of *tiles*. To get something more interesting, you'll need to add tiles to your leaflet map. If you don't include any other data, the leaflet map will include the world:
+
+```{r eval = FALSE}
+leaflet() %>%
+  addTiles()
+```
+
+## Add map background
+
+```{r echo = FALSE}
+leaflet() %>%
+  addTiles()
+```
+
+## Adding markers
+
+For htmlWidgets, points are often referred to as *markers*.
+
+Once you add these markers, the map will automatically scale to a reasonable size for their bounding box.
+
+```{r eval = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = accident_data, lng = ~ longitud, lat = ~ latitude)
+```
+
+Use `lng` and `lat` to tell R which columns contain data on longitude and latitude for each point. This is not needed if you are using a spatial object (e.g., `SpatialPointsDataFrame`). Further, R will try to guess the columns in a regular dataframe.
+
+## Adding markers
+
+```{r echo = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = accident_data, lng = ~ longitud, lat = ~ latitude)
+```
+
+## Adding markers
+
+You can use several types of R objects for your data for `leaflet`:
+
+- Dataframe with columns for latitude and longitude
+- Simple feature objects 
+- Latitude-longitude matrix
+
+## Adding markers
+
+You can choose circles for your markers instead by using `addCircleMarkers`. You can adjust the circle size with `radius`. 
+
+```{r eval = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+The `radius` argument specifies the size of the circle. For `CircleMarkers`, the size will reset as you zoom in and out. If you want something with a constant radius (e.g., in meters), you can add `Circles`.
+
+## Adding markers
+
+```{r echo = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+## Adding markers
+
+If you have a lot of overlapping data, you can also use the `clusterOptions` argument to show the markers as clusters that group together when you zoom out but split up when you zoom in:
+
+```{r eval = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = accident_data, 
+                   lng = ~ longitud, lat = ~ latitude,
+                   clusterOptions = markerClusterOptions())
+```
+
+## Adding markers
+
+```{r echo = FALSE}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = accident_data, 
+                   lng = ~ longitud, lat = ~ latitude,
+                   clusterOptions = markerClusterOptions())
+```
+
+## Add map background
+
+For the background, the default is to use map tiles from OpenStreetMap. However, you can change the source of the tiles by using `addProviderTiles`. For example, to use Stamen Watercolor, you can call:
+
+```{r eval = FALSE}
+leaflet() %>%
+  addProviderTiles("Stamen.Watercolor") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+## Add map background
+
+```{r echo = FALSE}
+leaflet() %>%
+  addProviderTiles("Stamen.Watercolor") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+
+## Add map background
+
+```{r fig.width = 7, fig.height = 3}
+leaflet() %>%
+  addProviderTiles("Esri.WorldStreetMap") %>%
+  addCircleMarkers(data = accident_data, radius = 2,
+                   lng = ~ longitud, lat = ~ latitude)
+```
+
+## Add map background
+
+You can see previews of provider choices here: http://leaflet-extras.github.io/leaflet-providers/preview/index.html.
+

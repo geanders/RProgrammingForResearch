@@ -1,0 +1,224 @@
+---
+title: "Reporting data results #3"
+author: "Brooke Anderson"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r echo = FALSE}
+library(ggplot2)
+library(tidyverse)
+library(faraway)
+data(worldcup)
+```
+
+# Other htmlWidget packages 
+
+## `rbokeh` package
+
+The `rbokeh` package provides an R interface to a Python interactive visualization library, Bokeh.
+
+There is a website with many more details on using the `rbokeh` package: https://hafen.github.io/rbokeh/ 
+
+You can find out more about the original Python library, Bokeh, at http://bokeh.pydata.org/en/latest/. 
+
+## `rbokeh` package
+
+```{r fig.align = "center"}
+library(rbokeh)
+figure(width = 600, height = 300) %>%
+  ly_points(Time, Shots, data = worldcup,
+    color = Position, hover = list(Time, Shots))
+```
+
+## `rbokeh` package
+
+```{r echo = FALSE}
+# prepare data
+elements <- subset(elements, !is.na(group))
+elements$group <- as.character(elements$group)
+elements$period <- as.character(elements$period)
+
+# add colors for groups
+metals <- c("alkali metal", "alkaline earth metal", "halogen",
+  "metal", "metalloid", "noble gas", "nonmetal", "transition metal")
+colors <- c("#a6cee3", "#1f78b4", "#fdbf6f", "#b2df8a", "#33a02c",
+  "#bbbb88", "#baa2a6", "#e08e79")
+elements$color <- colors[match(elements$metal, metals)]
+elements$type <- elements$metal
+
+# make coordinates for labels
+elements$symx <- paste(elements$group, ":0.1", sep = "")
+elements$numbery <- paste(elements$period, ":0.8", sep = "")
+elements$massy <- paste(elements$period, ":0.15", sep = "")
+elements$namey <- paste(elements$period, ":0.3", sep = "")
+
+# create figure
+p <- figure(title = "Periodic Table", tools = c("resize", "hover"),
+  ylim = as.character(c(7:1)), xlim = as.character(1:18),
+  xgrid = FALSE, ygrid = FALSE, xlab = "", ylab = "",
+  height = 445, width = 800) %>%
+
+# plot rectangles
+ly_crect(group, period, data = elements, 0.9, 0.9,
+  fill_color = color, line_color = color, fill_alpha = 0.6,
+  hover = list(name, atomic.number, type, atomic.mass,
+    electronic.configuration)) %>%
+
+# add symbol text
+ly_text(symx, period, text = symbol, data = elements,
+  font_style = "bold", font_size = "10pt",
+  align = "left", baseline = "middle") %>%
+
+# add atomic number text
+ly_text(symx, numbery, text = atomic.number, data = elements,
+  font_size = "6pt", align = "left", baseline = "middle") %>%
+
+# add name text
+ly_text(symx, namey, text = name, data = elements,
+  font_size = "4pt", align = "left", baseline = "middle") %>%
+
+# add atomic mass text
+ly_text(symx, massy, text = atomic.mass, data = elements,
+  font_size = "4pt", align = "left", baseline = "middle")
+
+p
+```
+
+## `dygraphs` package
+
+The `dygraphs` package lets you create interactive time series plots from R using the `dygraphs` JavaScript library. \bigskip
+
+The main function syntax is fairly straightforward. Like many of these packages, it allows piping. \bigskip
+
+There is a website with more information on using `dygraphs` available at http://rstudio.github.io/dygraphs/index.html. 
+
+## `dygraphs` package
+
+For example, here is the code to plot monthly deaths from lung diseases in the UK in the 1970s. 
+
+```{r eval = FALSE}
+library(dygraphs)
+lungDeaths <- cbind(mdeaths, fdeaths)
+dygraph(lungDeaths) %>%
+  dySeries("mdeaths", label = "Male") %>%
+  dySeries("fdeaths", label = "Female")
+```
+
+## `dygraphs` package
+
+For example, here is the code to plot monthly deaths from lung diseases in the UK in the 1970s. 
+
+```{r echo = FALSE, fig.height = 3.5}
+library(dygraphs)
+lungDeaths <- cbind(mdeaths, fdeaths)
+dygraph(lungDeaths) %>%
+  dySeries("mdeaths", label = "Male") %>%
+  dySeries("fdeaths", label = "Female")
+```
+
+## `DT` package
+
+The `DT` package provides a way to create interactive tables in R using the JavaScript `DataTables` library. \bigskip
+
+We've already seen some examples of this output in some of the Shiny apps I showed last week. You can also use this package to include interactive tables in R Markdown documents you plan to render to HTML. \bigskip
+
+There is a website with more information on this package at http://rstudio.github.io/DT/. 
+
+## `DT` package
+
+```{r out.height = 200, out.width = 400, fig.width = 3}
+library(DT)
+datatable(worldcup)
+```
+
+
+## `networkD3` package
+
+The `networkd3` package allows you to create different networks. For example, a simple network: 
+
+```{r eval = FALSE}
+library(networkD3)
+src <- c("A", "A", "A", "A",
+        "B", "B", "C", "C", "D")
+target <- c("B", "C", "D", "J",
+            "E", "F", "G", "H", "I")
+networkData <- data.frame(src, target)
+simpleNetwork(networkData)
+```
+
+## `networkD3` package
+
+```{r echo = FALSE, fig.height = 4}
+library(networkD3)
+networkData <- tibble(str = c("A", "A", "A", "A",
+                              "B", "B", "C", "C", "D"),
+                      target = c("B", "C", "D", "J",
+                                 "E", "F", "G", "H", "I"))
+simpleNetwork(networkData)
+```
+
+## `networkD3` package
+
+A more complex network: 
+
+```{r eval = FALSE}
+data(MisLinks)
+data(MisNodes)
+forceNetwork(Links = MisLinks, Nodes = MisNodes,
+            Source = "source", Target = "target",
+            Value = "value", NodeID = "name",
+            Group = "group", opacity = 0.8)
+```
+
+## `networkD3` package
+
+```{r echo = FALSE, fig.height = 4}
+# Load data
+data(MisLinks)
+data(MisNodes)
+
+# Plot
+forceNetwork(Links = MisLinks, Nodes = MisNodes,
+            Source = "source", Target = "target",
+            Value = "value", NodeID = "name",
+            Group = "group", opacity = 0.8)
+```
+
+## `networkD3` package
+
+A Sankey diagram: 
+
+```{r eval = FALSE}
+URL <- paste0(
+        "https://cdn.rawgit.com/christophergandrud/networkD3/",
+        "master/JSONdata/energy.json")
+Energy <- jsonlite::fromJSON(URL)
+sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, 
+              Source = "source", Target = "target", 
+              Value = "value", NodeID = "name",
+              units = "TWh", fontSize = 12, 
+              nodeWidth = 30)
+```
+
+## `networkD3` package
+
+```{r echo = FALSE, fig.height = 4.5}
+URL <- paste0(
+        "https://cdn.rawgit.com/christophergandrud/networkD3/",
+        "master/JSONdata/energy.json")
+Energy <- jsonlite::fromJSON(URL)
+sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, Source = "source",
+             Target = "target", Value = "value", NodeID = "name",
+             units = "TWh", fontSize = 12, nodeWidth = 30)
+```
+
+
+## Creating your own widget
+
+If you find a JavaScript visualization library and would like to create bindings to R, you can create your own package for a new htmlWidget. \bigskip
+
+There is advice on creating your own widget for R available at http://www.htmlwidgets.org/develop_intro.html.

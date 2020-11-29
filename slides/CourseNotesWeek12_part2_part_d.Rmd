@@ -1,0 +1,184 @@
+---
+title: "Reporting data results #3"
+author: "Brooke Anderson"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r echo = FALSE}
+library(ggplot2)
+```
+
+# Introduction to plotly 
+
+
+## `plotly` package
+
+From the package documentation: 
+
+> "Easily translate `ggplot2` graphs to an interactive web-based version and / or create custom web-based visualizations directly from R."
+
+- Like many of the packages today, draws on functionality external to R, but within a package that allows you to work exclusively within R.
+- Allows you to create interactive graphs from R. The functions extend much of the `ggplot2` code you've learned.
+- Interactivity will only work within RStudio or on documents rendered to HTML.
+
+## `plotly` package
+
+The `plotly` package allows an interface to let you work with `plotly.js` code directly using R code. \bigskip
+
+`plotly.js` is an open source library for creating interactive graphs in JavaScript. This JavaScript library is built on `d3.js` (Data-Driven Documents), which is a key driver in interactive web-based data graphics today.
+
+## `plotly` package
+
+There are two main ways of create plots within `plotly`: 
+
+- Use one of the functions to create a customized interactive graphic: 
+    + `plot_ly`: Workhorse of `plotly`, renders most non-map types of graphs
+    + `plot_geo`, `plot_mapbax`: Specific functions for creating `plotly` maps. 
+- Create a `ggplot` object and then convert it to a `plotly` object using the `ggplotly` function.
+
+## `plotly` package
+
+```{r fig.width = 4, fig.height = 3.5, fig.align = "center"}
+library(faraway); data(worldcup); library(dplyr)
+library(plotly)
+a <- worldcup %>% ggplot(aes(x = Time, y = Shots)) + geom_point()
+ggplotly(a)
+```
+
+## `plotly` package
+
+```{r fig.width = 5, fig.height = 3.5, fig.align = "center"}
+a <- worldcup %>% ggplot(aes(x = Time, y = Shots, color = Position)) + 
+  geom_point()
+ggplotly(a)
+```
+
+## `plotly` package
+
+You can also use this with other `ggplot2` functionality, like faceting: 
+
+```{r eval = FALSE}
+shots_vs_time <- worldcup %>%
+  mutate(Name = rownames(worldcup)) %>%
+  filter(Team %in% c("Netherlands", "Germany", "Spain", "Uruguay")) %>%
+  ggplot(aes(x = Time, y = Shots, color = Position, group = Name)) + 
+  geom_point() + 
+  facet_wrap(~ Team)
+ggplotly(shots_vs_time)
+```
+
+## `plotly` package
+
+```{r echo = FALSE}
+shots_vs_time <- worldcup %>%
+  mutate(Name = rownames(worldcup)) %>%
+  filter(Team %in% c("Netherlands", "Germany", "Spain", "Uruguay")) %>%
+  ggplot(aes(x = Time, y = Shots, color = Position, group = Name)) + 
+  geom_point() + 
+  facet_wrap(~ Team)
+ggplotly(shots_vs_time)
+```
+
+
+## `plotly` package
+
+If you pipe to the `rangeslider` function, it allows the viewer to zoom in on part of the x range. (This can be particularly nice for time series.) \bigbreak
+
+You should have a dataset available through your R session named `USAccDeaths`. This gives a monthly county of accidental deaths in the US for 1973 to 1978. This code will plot it and add a range slider on the lower x-axis.
+
+```{r eval = FALSE}
+plot_ly(x = time(USAccDeaths), y = USAccDeaths) %>% 
+  add_lines() %>% rangeslider()
+```
+
+## `plotly` package
+
+```{r echo = FALSE}
+plot_ly(x = time(USAccDeaths), y = USAccDeaths) %>% 
+  add_lines() %>%
+  rangeslider()
+```
+
+## `plotly` package
+
+For a 3-D scatterplot, add a mapping to the `z` variable:
+
+```{r eval = FALSE}
+worldcup %>%
+  plot_ly(x = ~ Time, y = ~ Shots, z = ~ Passes,
+          color = ~ Position) %>%
+  add_markers()
+```
+
+## `plotly` package
+
+```{r echo = FALSE}
+worldcup %>%
+  plot_ly(x = ~ Time, y = ~ Shots, z = ~ Passes,
+          color = ~ Position) %>%
+  add_markers()
+```
+
+## `plotly` package
+
+The `volcano` data comes with R and is in a matrix format. Each value gives the elevation for a particular pair of x- and y-coordinates.
+
+```{r}
+dim(volcano)
+volcano[1:4, 1:4]
+```
+
+## `plotly` package
+
+```{r}
+plot_ly(z = ~ volcano, type = "surface")
+```
+
+## `plotly` package
+
+Mapping with `plotly` can build on some data that comes with base R or other packages you've likely added (or can add easily, as with the `map_data` function from `ggplot2`). For example, we can map state capitals and cities with > 40,000 people using data in the `us.cities` dataframe in the `maps` package:
+
+```{r}
+head(maps::us.cities, 3)
+```
+
+
+## `plotly` package
+
+Here is code you can use to map all of these cities on a US map:
+
+```{r eval = FALSE}
+ggplot2::map_data("state") %>%
+   group_by(group) %>% 
+   plot_ly(x = ~long, y = ~lat) %>%
+   add_polygons(hoverinfo = "none") %>%
+   add_markers(text = ~paste(name, "<br />", pop), hoverinfo = "text",
+               alpha = 0.25,
+     data = filter(maps::us.cities, -125 < long & long < -60 &
+                     25 < lat & lat < 52)) %>%
+   layout(showlegend = FALSE)
+```
+
+## `plotly` package
+
+```{r echo = FALSE}
+ggplot2::map_data("world", "usa") %>%
+   group_by(group) %>% filter(-125 < long & long < -60 &
+                                25 < lat & lat < 52) %>%
+   plot_ly(x = ~long, y = ~lat) %>%
+   add_polygons(hoverinfo = "none") %>%
+   add_markers(text = ~paste(name, "<br />", pop), hoverinfo = "text",
+               alpha = 0.25,
+     data = filter(maps::us.cities, -125 < long & long < -60 &
+                     25 < lat & lat < 52)) %>%
+   layout(showlegend = FALSE)
+```
+
+
+## `plotly` package
+
+The creator of the R `plotly` package has written a bookdown book on the package that you can read [here](https://cpsievert.github.io/plotly_book/). It provides extensive details and examples for using `plotly`.
