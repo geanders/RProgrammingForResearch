@@ -24,7 +24,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2021-08-30" />
+<meta name="date" content="2021-11-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -707,43 +707,43 @@ a pdf of the lecture slides for this video.</p>
 <li><code>full_join(x, y)</code>: Keep all rows from both <code>x</code> and <code>y</code>, whether they have a match in the other dataset or not.</li>
 </ul>
 <p>In the examples, I’ll use two datasets, <code>x</code> and <code>y</code>. Both datasets include the column <code>course</code>. The other column in <code>x</code> is <code>grade</code>, while the other column in <code>y</code> is <code>day</code>. Observations exist for courses <code>x</code> and <code>y</code> in both datasets, but for <code>w</code> and <code>z</code> in only one dataset.</p>
-<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb524-1"><a href="entering-and-cleaning-data-2.html#cb524-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">course =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;z&quot;</span>),</span>
-<span id="cb524-2"><a href="entering-and-cleaning-data-2.html#cb524-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">grade =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">82</span>, <span class="dv">78</span>))</span>
-<span id="cb524-3"><a href="entering-and-cleaning-data-2.html#cb524-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">course =</span> <span class="fu">c</span>(<span class="st">&quot;w&quot;</span>, <span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>),</span>
-<span id="cb524-4"><a href="entering-and-cleaning-data-2.html#cb524-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">day =</span> <span class="fu">c</span>(<span class="st">&quot;Tues&quot;</span>, <span class="st">&quot;Mon / Fri&quot;</span>, <span class="st">&quot;Tue&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="entering-and-cleaning-data-2.html#cb534-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">course =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;z&quot;</span>),</span>
+<span id="cb534-2"><a href="entering-and-cleaning-data-2.html#cb534-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">grade =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">82</span>, <span class="dv">78</span>))</span>
+<span id="cb534-3"><a href="entering-and-cleaning-data-2.html#cb534-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">course =</span> <span class="fu">c</span>(<span class="st">&quot;w&quot;</span>, <span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>),</span>
+<span id="cb534-4"><a href="entering-and-cleaning-data-2.html#cb534-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">day =</span> <span class="fu">c</span>(<span class="st">&quot;Tues&quot;</span>, <span class="st">&quot;Mon / Fri&quot;</span>, <span class="st">&quot;Tue&quot;</span>))</span></code></pre></div>
 <p>Here is what these two example datasets look like:</p>
-<div class="sourceCode" id="cb525"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb525-1"><a href="entering-and-cleaning-data-2.html#cb525-1" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div>
+<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb535-1"><a href="entering-and-cleaning-data-2.html#cb535-1" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div>
 <pre><code>##   course grade
 ## 1      x    90
 ## 2      y    82
 ## 3      z    78</code></pre>
-<div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb527-1"><a href="entering-and-cleaning-data-2.html#cb527-1" aria-hidden="true" tabindex="-1"></a>y</span></code></pre></div>
+<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="entering-and-cleaning-data-2.html#cb537-1" aria-hidden="true" tabindex="-1"></a>y</span></code></pre></div>
 <pre><code>##   course       day
 ## 1      w      Tues
 ## 2      x Mon / Fri
 ## 3      y       Tue</code></pre>
 <p>With <code>inner_join</code>, you’ll only get the observations that show up in both datasets. That means you’ll lose data on <code>z</code> (only in the first dataset) and <code>w</code> (only in the second dataset).</p>
-<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb529-1"><a href="entering-and-cleaning-data-2.html#cb529-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inner_join</span>(x, y)</span></code></pre></div>
+<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb539-1"><a href="entering-and-cleaning-data-2.html#cb539-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inner_join</span>(x, y)</span></code></pre></div>
 <pre><code>## Joining, by = &quot;course&quot;</code></pre>
 <pre><code>##   course grade       day
 ## 1      x    90 Mon / Fri
 ## 2      y    82       Tue</code></pre>
 <p>With <code>left_join</code>, you’ll keep everything in <code>x</code> (the “left” dataset), but not keep things in <code>y</code> that don’t match something in <code>x</code>. That means that, here, you’ll lose <code>w</code>:</p>
-<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb532-1"><a href="entering-and-cleaning-data-2.html#cb532-1" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(x, y)</span></code></pre></div>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="entering-and-cleaning-data-2.html#cb542-1" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(x, y)</span></code></pre></div>
 <pre><code>## Joining, by = &quot;course&quot;</code></pre>
 <pre><code>##   course grade       day
 ## 1      x    90 Mon / Fri
 ## 2      y    82       Tue
 ## 3      z    78      &lt;NA&gt;</code></pre>
 <p><code>right_join</code> is the opposite:</p>
-<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb535-1"><a href="entering-and-cleaning-data-2.html#cb535-1" aria-hidden="true" tabindex="-1"></a><span class="fu">right_join</span>(x, y)</span></code></pre></div>
+<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="entering-and-cleaning-data-2.html#cb545-1" aria-hidden="true" tabindex="-1"></a><span class="fu">right_join</span>(x, y)</span></code></pre></div>
 <pre><code>## Joining, by = &quot;course&quot;</code></pre>
 <pre><code>##   course grade       day
 ## 1      x    90 Mon / Fri
 ## 2      y    82       Tue
 ## 3      w    NA      Tues</code></pre>
 <p><code>full_join</code> keeps everything from both datasets:</p>
-<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb538-1"><a href="entering-and-cleaning-data-2.html#cb538-1" aria-hidden="true" tabindex="-1"></a><span class="fu">full_join</span>(x, y)</span></code></pre></div>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="entering-and-cleaning-data-2.html#cb548-1" aria-hidden="true" tabindex="-1"></a><span class="fu">full_join</span>(x, y)</span></code></pre></div>
 <pre><code>## Joining, by = &quot;course&quot;</code></pre>
 <pre><code>##   course grade       day
 ## 1      x    90 Mon / Fri
@@ -764,51 +764,51 @@ a pdf of the lecture slides for this video.</p>
 </ul>
 <p>The following examples are show the effects of making a dataset longer or wider.</p>
 <p>Here is some simulated wide data:</p>
-<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb541-1"><a href="entering-and-cleaning-data-2.html#cb541-1" aria-hidden="true" tabindex="-1"></a>wide_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span></code></pre></div>
+<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="entering-and-cleaning-data-2.html#cb551-1" aria-hidden="true" tabindex="-1"></a>wide_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01  0.684 -0.867  4.29
-## 2 2009-01-02  0.879 -2.16   2.07
-## 3 2009-01-03 -0.510  0.274 -4.69</code></pre>
+##   time            X      Y       Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1 2009-01-01  0.330 -0.759  2.01  
+## 2 2009-01-02  1.15   0.970 -0.0454
+## 3 2009-01-03 -1.60   1.22  -0.226</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy,” because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
-<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb543-1"><a href="entering-and-cleaning-data-2.html#cb543-1" aria-hidden="true" tabindex="-1"></a>wide_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span></code></pre></div>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="entering-and-cleaning-data-2.html#cb553-1" aria-hidden="true" tabindex="-1"></a>wide_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01  0.684 -0.867  4.29
-## 2 2009-01-02  0.879 -2.16   2.07
-## 3 2009-01-03 -0.510  0.274 -4.69</code></pre>
+##   time            X      Y       Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1 2009-01-01  0.330 -0.759  2.01  
+## 2 2009-01-02  1.15   0.970 -0.0454
+## 3 2009-01-03 -1.60   1.22  -0.226</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>pivot_longer</code> to convert wide data to long data:</p>
-<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="entering-and-cleaning-data-2.html#cb545-1" aria-hidden="true" tabindex="-1"></a>long_stocks <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(<span class="at">data =</span> wide_stocks,</span>
-<span id="cb545-2"><a href="entering-and-cleaning-data-2.html#cb545-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">cols =</span> <span class="sc">-</span>time,</span>
-<span id="cb545-3"><a href="entering-and-cleaning-data-2.html#cb545-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">names_to =</span> <span class="st">&quot;stock&quot;</span>,</span>
-<span id="cb545-4"><a href="entering-and-cleaning-data-2.html#cb545-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">values_to =</span> <span class="st">&quot;price&quot;</span>)</span>
-<span id="cb545-5"><a href="entering-and-cleaning-data-2.html#cb545-5" aria-hidden="true" tabindex="-1"></a>long_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]</span></code></pre></div>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="entering-and-cleaning-data-2.html#cb555-1" aria-hidden="true" tabindex="-1"></a>long_stocks <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(<span class="at">data =</span> wide_stocks,</span>
+<span id="cb555-2"><a href="entering-and-cleaning-data-2.html#cb555-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">cols =</span> <span class="sc">-</span>time,</span>
+<span id="cb555-3"><a href="entering-and-cleaning-data-2.html#cb555-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">names_to =</span> <span class="st">&quot;stock&quot;</span>,</span>
+<span id="cb555-4"><a href="entering-and-cleaning-data-2.html#cb555-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">values_to =</span> <span class="st">&quot;price&quot;</span>)</span>
+<span id="cb555-5"><a href="entering-and-cleaning-data-2.html#cb555-5" aria-hidden="true" tabindex="-1"></a>long_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X      0.684
-## 2 2009-01-01 Y     -0.867
-## 3 2009-01-01 Z      4.29 
-## 4 2009-01-02 X      0.879
-## 5 2009-01-02 Y     -2.16</code></pre>
+## 1 2009-01-01 X      0.330
+## 2 2009-01-01 Y     -0.759
+## 3 2009-01-01 Z      2.01 
+## 4 2009-01-02 X      1.15 
+## 5 2009-01-02 Y      0.970</code></pre>
 <p>In this “longer” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
-<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb547-1"><a href="entering-and-cleaning-data-2.html#cb547-1" aria-hidden="true" tabindex="-1"></a>long_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]</span></code></pre></div>
+<div class="sourceCode" id="cb557"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb557-1"><a href="entering-and-cleaning-data-2.html#cb557-1" aria-hidden="true" tabindex="-1"></a>long_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   time       stock  price
 ##   &lt;date&gt;     &lt;chr&gt;  &lt;dbl&gt;
-## 1 2009-01-01 X      0.684
-## 2 2009-01-01 Y     -0.867
-## 3 2009-01-01 Z      4.29 
-## 4 2009-01-02 X      0.879
-## 5 2009-01-02 Y     -2.16</code></pre>
+## 1 2009-01-01 X      0.330
+## 2 2009-01-01 Y     -0.759
+## 3 2009-01-01 Z      2.01 
+## 4 2009-01-02 X      1.15 
+## 5 2009-01-02 Y      0.970</code></pre>
 <p>The format for a <code>pivots_longer</code> call is:</p>
-<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="entering-and-cleaning-data-2.html#cb549-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generic code</span></span>
-<span id="cb549-2"><a href="entering-and-cleaning-data-2.html#cb549-2" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(old_df,</span>
-<span id="cb549-3"><a href="entering-and-cleaning-data-2.html#cb549-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cols =</span> [<span class="fu">name</span>(s) of the columns you want to make longer],</span>
-<span id="cb549-4"><a href="entering-and-cleaning-data-2.html#cb549-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">names_to =</span> [name of new column to store the old column names],</span>
-<span id="cb549-5"><a href="entering-and-cleaning-data-2.html#cb549-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">values_to =</span> [name of new column to store the old values])</span></code></pre></div>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="entering-and-cleaning-data-2.html#cb559-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generic code</span></span>
+<span id="cb559-2"><a href="entering-and-cleaning-data-2.html#cb559-2" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(old_df,</span>
+<span id="cb559-3"><a href="entering-and-cleaning-data-2.html#cb559-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cols =</span> [<span class="fu">name</span>(s) of the columns you want to make longer],</span>
+<span id="cb559-4"><a href="entering-and-cleaning-data-2.html#cb559-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">names_to =</span> [name of new column to store the old column names],</span>
+<span id="cb559-5"><a href="entering-and-cleaning-data-2.html#cb559-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">values_to =</span> [name of new column to store the old values])</span></code></pre></div>
 <p>Three important notes:</p>
 <ul>
 <li>Everything is pivoted into one of two columns – one column with the old column names, and one column with the old cell values</li>
@@ -816,45 +816,45 @@ a pdf of the lecture slides for this video.</p>
 <li>If there is a column you don’t want to include in the pivot (<code>date</code> in the example), use <code>-</code> to exclude it in the <code>cols</code> argument.</li>
 </ul>
 <p>Notice how easy it is, now that the data is longer, to use <code>stock</code> for aesthetics of faceting in a <code>ggplot2</code> call:</p>
-<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="entering-and-cleaning-data-2.html#cb550-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(long_stocks, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> price)) <span class="sc">+</span> </span>
-<span id="cb550-2"><a href="entering-and-cleaning-data-2.html#cb550-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb550-3"><a href="entering-and-cleaning-data-2.html#cb550-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> stock) <span class="sc">+</span></span>
-<span id="cb550-4"><a href="entering-and-cleaning-data-2.html#cb550-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="entering-and-cleaning-data-2.html#cb560-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(long_stocks, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> price)) <span class="sc">+</span> </span>
+<span id="cb560-2"><a href="entering-and-cleaning-data-2.html#cb560-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb560-3"><a href="entering-and-cleaning-data-2.html#cb560-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> stock) <span class="sc">+</span></span>
+<span id="cb560-4"><a href="entering-and-cleaning-data-2.html#cb560-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-328-1.png" width="672" /></p>
 <p>If you have data in a “longer” format and would like to make it “wider,” you can use <code>pivot_wider</code> to do that:</p>
-<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="entering-and-cleaning-data-2.html#cb551-1" aria-hidden="true" tabindex="-1"></a>stocks <span class="ot">&lt;-</span> <span class="fu">pivot_wider</span>(long_stocks,</span>
-<span id="cb551-2"><a href="entering-and-cleaning-data-2.html#cb551-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">names_from =</span> <span class="st">&quot;stock&quot;</span>,</span>
-<span id="cb551-3"><a href="entering-and-cleaning-data-2.html#cb551-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">values_from =</span> price)</span>
-<span id="cb551-4"><a href="entering-and-cleaning-data-2.html#cb551-4" aria-hidden="true" tabindex="-1"></a>stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]</span></code></pre></div>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="entering-and-cleaning-data-2.html#cb561-1" aria-hidden="true" tabindex="-1"></a>stocks <span class="ot">&lt;-</span> <span class="fu">pivot_wider</span>(long_stocks,</span>
+<span id="cb561-2"><a href="entering-and-cleaning-data-2.html#cb561-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">names_from =</span> <span class="st">&quot;stock&quot;</span>,</span>
+<span id="cb561-3"><a href="entering-and-cleaning-data-2.html#cb561-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">values_from =</span> price)</span>
+<span id="cb561-4"><a href="entering-and-cleaning-data-2.html#cb561-4" aria-hidden="true" tabindex="-1"></a>stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
-##   time            X      Y     Z
-##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 2009-01-01  0.684 -0.867  4.29
-## 2 2009-01-02  0.879 -2.16   2.07
-## 3 2009-01-03 -0.510  0.274 -4.69
-## 4 2009-01-04 -0.887  3.58   1.19
-## 5 2009-01-05 -2.28  -0.517  6.38</code></pre>
+##   time            X      Y       Z
+##   &lt;date&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1 2009-01-01  0.330 -0.759  2.01  
+## 2 2009-01-02  1.15   0.970 -0.0454
+## 3 2009-01-03 -1.60   1.22  -0.226 
+## 4 2009-01-04  0.378 -0.730  4.69  
+## 5 2009-01-05 -0.600  2.08   0.636</code></pre>
 <p>Notice that this reverses the action of <code>pivot_longer</code>.</p>
 <p>The “wider” your data the less likely it is to be tidy, so won’t use <code>pivot_wider</code> frequently when you are preparing data for analysis. However, <code>pivot_wider</code> can be very helpful in creating tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>pivot_wider</code> to rearrange the final summary to create an attractive table.</p>
-<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="entering-and-cleaning-data-2.html#cb553-1" aria-hidden="true" tabindex="-1"></a>stock_summary <span class="ot">&lt;-</span> long_stocks <span class="sc">%&gt;%</span> </span>
-<span id="cb553-2"><a href="entering-and-cleaning-data-2.html#cb553-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stock) <span class="sc">%&gt;%</span></span>
-<span id="cb553-3"><a href="entering-and-cleaning-data-2.html#cb553-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">N =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">mean</span>(price), <span class="at">sd =</span> <span class="fu">sd</span>(price))</span>
-<span id="cb553-4"><a href="entering-and-cleaning-data-2.html#cb553-4" aria-hidden="true" tabindex="-1"></a>stock_summary</span></code></pre></div>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="entering-and-cleaning-data-2.html#cb563-1" aria-hidden="true" tabindex="-1"></a>stock_summary <span class="ot">&lt;-</span> long_stocks <span class="sc">%&gt;%</span> </span>
+<span id="cb563-2"><a href="entering-and-cleaning-data-2.html#cb563-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stock) <span class="sc">%&gt;%</span></span>
+<span id="cb563-3"><a href="entering-and-cleaning-data-2.html#cb563-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">N =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">mean</span>(price), <span class="at">sd =</span> <span class="fu">sd</span>(price))</span>
+<span id="cb563-4"><a href="entering-and-cleaning-data-2.html#cb563-4" aria-hidden="true" tabindex="-1"></a>stock_summary</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   stock     N  mean    sd
-## * &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10 0.372  1.50
-## 2 Y        10 0.154  1.71
-## 3 Z        10 2.50   4.31</code></pre>
-<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="entering-and-cleaning-data-2.html#cb555-1" aria-hidden="true" tabindex="-1"></a>stock_summary <span class="sc">%&gt;%</span></span>
-<span id="cb555-2"><a href="entering-and-cleaning-data-2.html#cb555-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</span>
-<span id="cb555-3"><a href="entering-and-cleaning-data-2.html#cb555-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb555-4"><a href="entering-and-cleaning-data-2.html#cb555-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span> mean, <span class="sc">-</span> sd) <span class="sc">%&gt;%</span></span>
-<span id="cb555-5"><a href="entering-and-cleaning-data-2.html#cb555-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">N =</span> <span class="fu">as.character</span>(N)) <span class="sc">%&gt;%</span> <span class="co"># might be able to deal with this in pivot_longer call</span></span>
-<span id="cb555-6"><a href="entering-and-cleaning-data-2.html#cb555-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>stock, <span class="at">names_to =</span> <span class="st">&quot;Statistic&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;Value&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb555-7"><a href="entering-and-cleaning-data-2.html#cb555-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">&quot;stock&quot;</span>, <span class="at">values_from =</span> <span class="st">&quot;Value&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb555-8"><a href="entering-and-cleaning-data-2.html#cb555-8" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div>
+##   stock     N    mean    sd
+## * &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 X        10  0.0671 0.978
+## 2 Y        10  0.834  1.36 
+## 3 Z        10 -0.575  3.27</code></pre>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="entering-and-cleaning-data-2.html#cb565-1" aria-hidden="true" tabindex="-1"></a>stock_summary <span class="sc">%&gt;%</span></span>
+<span id="cb565-2"><a href="entering-and-cleaning-data-2.html#cb565-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</span>
+<span id="cb565-3"><a href="entering-and-cleaning-data-2.html#cb565-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb565-4"><a href="entering-and-cleaning-data-2.html#cb565-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span> mean, <span class="sc">-</span> sd) <span class="sc">%&gt;%</span></span>
+<span id="cb565-5"><a href="entering-and-cleaning-data-2.html#cb565-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">N =</span> <span class="fu">as.character</span>(N)) <span class="sc">%&gt;%</span> <span class="co"># might be able to deal with this in pivot_longer call</span></span>
+<span id="cb565-6"><a href="entering-and-cleaning-data-2.html#cb565-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>stock, <span class="at">names_to =</span> <span class="st">&quot;Statistic&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;Value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb565-7"><a href="entering-and-cleaning-data-2.html#cb565-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">&quot;stock&quot;</span>, <span class="at">values_from =</span> <span class="st">&quot;Value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb565-8"><a href="entering-and-cleaning-data-2.html#cb565-8" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -873,9 +873,9 @@ a pdf of the lecture slides for this video.</p>
 </tr>
 <tr class="even">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">0.37 (1.5)</td>
-<td align="left">0.15 (1.71)</td>
-<td align="left">2.5 (4.31)</td>
+<td align="left">0.07 (0.98)</td>
+<td align="left">0.83 (1.36)</td>
+<td align="left">-0.58 (3.27)</td>
 </tr>
 </tbody>
 </table>
@@ -895,53 +895,53 @@ a pdf of the lecture slides for this video.</p>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_6.pdf">Download</a>
 a pdf of the lecture slides for this video.</p>
 <p>Hadley Wickham has developed a package called <code>forcats</code> that helps you work with categorical variables (factors). I’ll show some examples of its functions using the <code>worldcup</code> dataset:</p>
-<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="entering-and-cleaning-data-2.html#cb556-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
-<span id="cb556-2"><a href="entering-and-cleaning-data-2.html#cb556-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(faraway)</span>
-<span id="cb556-3"><a href="entering-and-cleaning-data-2.html#cb556-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(worldcup)</span></code></pre></div>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="entering-and-cleaning-data-2.html#cb566-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb566-2"><a href="entering-and-cleaning-data-2.html#cb566-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(faraway)</span>
+<span id="cb566-3"><a href="entering-and-cleaning-data-2.html#cb566-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(worldcup)</span></code></pre></div>
 <p>The <code>fct_recode</code> function can be used to change the labels of a function (along the lines of using <code>factor</code> with <code>levels</code> and <code>labels</code> to reset factor labels).</p>
 <p>One big advantage is that <code>fct_recode</code> lets you change labels for some, but not all, levels. For example, here are the team names:</p>
-<div class="sourceCode" id="cb557"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb557-1"><a href="entering-and-cleaning-data-2.html#cb557-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb557-2"><a href="entering-and-cleaning-data-2.html#cb557-2" aria-hidden="true" tabindex="-1"></a>worldcup <span class="sc">%&gt;%</span></span>
-<span id="cb557-3"><a href="entering-and-cleaning-data-2.html#cb557-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Team, <span class="st">&quot;^US&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb557-4"><a href="entering-and-cleaning-data-2.html#cb557-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(Team, Position, Time)</span></code></pre></div>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="entering-and-cleaning-data-2.html#cb567-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb567-2"><a href="entering-and-cleaning-data-2.html#cb567-2" aria-hidden="true" tabindex="-1"></a>worldcup <span class="sc">%&gt;%</span></span>
+<span id="cb567-3"><a href="entering-and-cleaning-data-2.html#cb567-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Team, <span class="st">&quot;^US&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb567-4"><a href="entering-and-cleaning-data-2.html#cb567-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(Team, Position, Time)</span></code></pre></div>
 <pre><code>##           Team   Position Time
 ## Beasley    USA Midfielder   10
 ## Bocanegra  USA   Defender  390
 ## Bornstein  USA   Defender  200</code></pre>
 <p>If you just want to change “USA” to “United States,” you can run:</p>
-<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="entering-and-cleaning-data-2.html#cb559-1" aria-hidden="true" tabindex="-1"></a>worldcup <span class="ot">&lt;-</span> worldcup <span class="sc">%&gt;%</span></span>
-<span id="cb559-2"><a href="entering-and-cleaning-data-2.html#cb559-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Team =</span> <span class="fu">fct_recode</span>(Team, <span class="st">`</span><span class="at">United States</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;USA&quot;</span>))</span>
-<span id="cb559-3"><a href="entering-and-cleaning-data-2.html#cb559-3" aria-hidden="true" tabindex="-1"></a>worldcup <span class="sc">%&gt;%</span></span>
-<span id="cb559-4"><a href="entering-and-cleaning-data-2.html#cb559-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Team, <span class="st">&quot;^Un&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb559-5"><a href="entering-and-cleaning-data-2.html#cb559-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(Team, Position, Time)</span></code></pre></div>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="entering-and-cleaning-data-2.html#cb569-1" aria-hidden="true" tabindex="-1"></a>worldcup <span class="ot">&lt;-</span> worldcup <span class="sc">%&gt;%</span></span>
+<span id="cb569-2"><a href="entering-and-cleaning-data-2.html#cb569-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Team =</span> <span class="fu">fct_recode</span>(Team, <span class="st">`</span><span class="at">United States</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;USA&quot;</span>))</span>
+<span id="cb569-3"><a href="entering-and-cleaning-data-2.html#cb569-3" aria-hidden="true" tabindex="-1"></a>worldcup <span class="sc">%&gt;%</span></span>
+<span id="cb569-4"><a href="entering-and-cleaning-data-2.html#cb569-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Team, <span class="st">&quot;^Un&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb569-5"><a href="entering-and-cleaning-data-2.html#cb569-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(Team, Position, Time)</span></code></pre></div>
 <pre><code>##                    Team   Position Time
 ## Beasley   United States Midfielder   10
 ## Bocanegra United States   Defender  390
 ## Bornstein United States   Defender  200</code></pre>
 <p>You can use the <code>fct_lump</code> function to lump uncommon factors into an “Other” category. For example, to lump the two least common positions together, you can run (<code>n</code> specifies how many categories to keep outside of “Other”):</p>
-<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="entering-and-cleaning-data-2.html#cb561-1" aria-hidden="true" tabindex="-1"></a>worldcup <span class="sc">%&gt;%</span></span>
-<span id="cb561-2"><a href="entering-and-cleaning-data-2.html#cb561-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Position =</span> forcats<span class="sc">::</span><span class="fu">fct_lump</span>(Position, <span class="at">n =</span> <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb561-3"><a href="entering-and-cleaning-data-2.html#cb561-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Position)</span></code></pre></div>
+<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="entering-and-cleaning-data-2.html#cb571-1" aria-hidden="true" tabindex="-1"></a>worldcup <span class="sc">%&gt;%</span></span>
+<span id="cb571-2"><a href="entering-and-cleaning-data-2.html#cb571-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Position =</span> forcats<span class="sc">::</span><span class="fu">fct_lump</span>(Position, <span class="at">n =</span> <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb571-3"><a href="entering-and-cleaning-data-2.html#cb571-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Position)</span></code></pre></div>
 <pre><code>##     Position   n
 ## 1   Defender 188
 ## 2 Midfielder 228
 ## 3      Other 179</code></pre>
 <p>You can use the <code>fct_infreq</code> function to reorder the levels of a factor from most common to least common:</p>
-<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="entering-and-cleaning-data-2.html#cb563-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(worldcup<span class="sc">$</span>Position)</span></code></pre></div>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="entering-and-cleaning-data-2.html#cb573-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(worldcup<span class="sc">$</span>Position)</span></code></pre></div>
 <pre><code>## [1] &quot;Defender&quot;   &quot;Forward&quot;    &quot;Goalkeeper&quot; &quot;Midfielder&quot;</code></pre>
-<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="entering-and-cleaning-data-2.html#cb565-1" aria-hidden="true" tabindex="-1"></a>worldcup <span class="ot">&lt;-</span> worldcup <span class="sc">%&gt;%</span></span>
-<span id="cb565-2"><a href="entering-and-cleaning-data-2.html#cb565-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Position =</span> <span class="fu">fct_infreq</span>(Position))</span>
-<span id="cb565-3"><a href="entering-and-cleaning-data-2.html#cb565-3" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(worldcup<span class="sc">$</span>Position)</span></code></pre></div>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="entering-and-cleaning-data-2.html#cb575-1" aria-hidden="true" tabindex="-1"></a>worldcup <span class="ot">&lt;-</span> worldcup <span class="sc">%&gt;%</span></span>
+<span id="cb575-2"><a href="entering-and-cleaning-data-2.html#cb575-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Position =</span> <span class="fu">fct_infreq</span>(Position))</span>
+<span id="cb575-3"><a href="entering-and-cleaning-data-2.html#cb575-3" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(worldcup<span class="sc">$</span>Position)</span></code></pre></div>
 <pre><code>## [1] &quot;Midfielder&quot; &quot;Defender&quot;   &quot;Forward&quot;    &quot;Goalkeeper&quot;</code></pre>
 <p>If you want to reorder one factor by another variable (ascending order), you can use <code>fct_reorder</code> (e.g., homework 3). For example, to relevel <code>Position</code> by the average shots on goals for each position, you can run:</p>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="entering-and-cleaning-data-2.html#cb567-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(worldcup<span class="sc">$</span>Position)</span></code></pre></div>
+<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="entering-and-cleaning-data-2.html#cb577-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(worldcup<span class="sc">$</span>Position)</span></code></pre></div>
 <pre><code>## [1] &quot;Midfielder&quot; &quot;Defender&quot;   &quot;Forward&quot;    &quot;Goalkeeper&quot;</code></pre>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="entering-and-cleaning-data-2.html#cb569-1" aria-hidden="true" tabindex="-1"></a>worldcup <span class="ot">&lt;-</span> worldcup <span class="sc">%&gt;%</span></span>
-<span id="cb569-2"><a href="entering-and-cleaning-data-2.html#cb569-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Position) <span class="sc">%&gt;%</span></span>
-<span id="cb569-3"><a href="entering-and-cleaning-data-2.html#cb569-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ave_shots =</span> <span class="fu">mean</span>(Shots)) <span class="sc">%&gt;%</span></span>
-<span id="cb569-4"><a href="entering-and-cleaning-data-2.html#cb569-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb569-5"><a href="entering-and-cleaning-data-2.html#cb569-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Position =</span> <span class="fu">fct_reorder</span>(Position, ave_shots))</span>
-<span id="cb569-6"><a href="entering-and-cleaning-data-2.html#cb569-6" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(worldcup<span class="sc">$</span>Position)</span></code></pre></div>
+<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="entering-and-cleaning-data-2.html#cb579-1" aria-hidden="true" tabindex="-1"></a>worldcup <span class="ot">&lt;-</span> worldcup <span class="sc">%&gt;%</span></span>
+<span id="cb579-2"><a href="entering-and-cleaning-data-2.html#cb579-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Position) <span class="sc">%&gt;%</span></span>
+<span id="cb579-3"><a href="entering-and-cleaning-data-2.html#cb579-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ave_shots =</span> <span class="fu">mean</span>(Shots)) <span class="sc">%&gt;%</span></span>
+<span id="cb579-4"><a href="entering-and-cleaning-data-2.html#cb579-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb579-5"><a href="entering-and-cleaning-data-2.html#cb579-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Position =</span> <span class="fu">fct_reorder</span>(Position, ave_shots))</span>
+<span id="cb579-6"><a href="entering-and-cleaning-data-2.html#cb579-6" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(worldcup<span class="sc">$</span>Position)</span></code></pre></div>
 <pre><code>## [1] &quot;Goalkeeper&quot; &quot;Defender&quot;   &quot;Midfielder&quot; &quot;Forward&quot;</code></pre>
 </div>
 <div id="string-operations-and-regular-expressions" class="section level2" number="6.5">
@@ -955,22 +955,22 @@ a pdf of the lecture slides for this video.</p>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week6_part_9.pdf">Download</a>
 a pdf of the lecture slides for this video.</p>
 <p>For these examples, we’ll use some data on passengers of the Titanic. You can load this data using:</p>
-<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="entering-and-cleaning-data-2.html#cb571-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;titanic&quot;)</span></span>
-<span id="cb571-2"><a href="entering-and-cleaning-data-2.html#cb571-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(titanic)</span>
-<span id="cb571-3"><a href="entering-and-cleaning-data-2.html#cb571-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;titanic_train&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="entering-and-cleaning-data-2.html#cb581-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;titanic&quot;)</span></span>
+<span id="cb581-2"><a href="entering-and-cleaning-data-2.html#cb581-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(titanic)</span>
+<span id="cb581-3"><a href="entering-and-cleaning-data-2.html#cb581-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;titanic_train&quot;</span>)</span></code></pre></div>
 <p>We will be using the <code>stringr</code> package:</p>
-<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="entering-and-cleaning-data-2.html#cb572-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span></code></pre></div>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="entering-and-cleaning-data-2.html#cb582-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span></code></pre></div>
 <p>This data includes a column called “Name” with passenger names. This column is somewhat messy and includes several elements that we might want to separate (last name, first name, title). Here are the first few values of “Name”:</p>
-<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="entering-and-cleaning-data-2.html#cb573-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span> <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb583-1"><a href="entering-and-cleaning-data-2.html#cb583-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span> <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                                  Name
 ## 1                             Braund, Mr. Owen Harris
 ## 2 Cumings, Mrs. John Bradley (Florence Briggs Thayer)
 ## 3                              Heikkinen, Miss. Laina</code></pre>
 <p>We’ve already done some things to manipulate strings. For example, if we wanted to separate “Name” into last name and first name (including title), we could actually do that with the <code>separate</code> function:</p>
-<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="entering-and-cleaning-data-2.html#cb575-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span> </span>
-<span id="cb575-2"><a href="entering-and-cleaning-data-2.html#cb575-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span> </span>
-<span id="cb575-3"><a href="entering-and-cleaning-data-2.html#cb575-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb575-4"><a href="entering-and-cleaning-data-2.html#cb575-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(Name, <span class="fu">c</span>(<span class="st">&quot;last_name&quot;</span>, <span class="st">&quot;first_name&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;, &quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb585-1"><a href="entering-and-cleaning-data-2.html#cb585-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span> </span>
+<span id="cb585-2"><a href="entering-and-cleaning-data-2.html#cb585-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span> </span>
+<span id="cb585-3"><a href="entering-and-cleaning-data-2.html#cb585-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb585-4"><a href="entering-and-cleaning-data-2.html#cb585-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(Name, <span class="fu">c</span>(<span class="st">&quot;last_name&quot;</span>, <span class="st">&quot;first_name&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;, &quot;</span>)</span></code></pre></div>
 <pre><code>##   last_name                                 first_name
 ## 1    Braund                            Mr. Owen Harris
 ## 2   Cumings Mrs. John Bradley (Florence Briggs Thayer)
@@ -982,23 +982,23 @@ a pdf of the lecture slides for this video.</p>
 str_detect(string = [vector you want to check], 
            pattern = [pattern you want to check for])</code></pre>
 <p>For example, to create a logical vector specifying which of the Titanic passenger names include “Mrs.” you can call:</p>
-<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="entering-and-cleaning-data-2.html#cb578-1" aria-hidden="true" tabindex="-1"></a>mrs <span class="ot">&lt;-</span> <span class="fu">str_detect</span>(titanic_train<span class="sc">$</span>Name, <span class="st">&quot;Mrs.&quot;</span>)</span>
-<span id="cb578-2"><a href="entering-and-cleaning-data-2.html#cb578-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mrs)</span></code></pre></div>
+<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb588-1"><a href="entering-and-cleaning-data-2.html#cb588-1" aria-hidden="true" tabindex="-1"></a>mrs <span class="ot">&lt;-</span> <span class="fu">str_detect</span>(titanic_train<span class="sc">$</span>Name, <span class="st">&quot;Mrs.&quot;</span>)</span>
+<span id="cb588-2"><a href="entering-and-cleaning-data-2.html#cb588-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mrs)</span></code></pre></div>
 <pre><code>## [1] FALSE  TRUE FALSE  TRUE FALSE FALSE</code></pre>
 <p>The result is a logical vector, so <code>str_detect</code> can be used in <code>filter</code> to subset data to only rows where the passenger’s name includes “Mrs.”:</p>
-<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="entering-and-cleaning-data-2.html#cb580-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb580-2"><a href="entering-and-cleaning-data-2.html#cb580-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;Mrs.&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb580-3"><a href="entering-and-cleaning-data-2.html#cb580-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
-<span id="cb580-4"><a href="entering-and-cleaning-data-2.html#cb580-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb590"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb590-1"><a href="entering-and-cleaning-data-2.html#cb590-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb590-2"><a href="entering-and-cleaning-data-2.html#cb590-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;Mrs.&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb590-3"><a href="entering-and-cleaning-data-2.html#cb590-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
+<span id="cb590-4"><a href="entering-and-cleaning-data-2.html#cb590-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                                  Name
 ## 1 Cumings, Mrs. John Bradley (Florence Briggs Thayer)
 ## 2        Futrelle, Mrs. Jacques Heath (Lily May Peel)
 ## 3   Johnson, Mrs. Oscar W (Elisabeth Vilhelmina Berg)</code></pre>
 <p>There is an older, base R function called <code>grepl</code> that does something very similar (although note that the order of the arguments is reversed).</p>
-<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="entering-and-cleaning-data-2.html#cb582-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb582-2"><a href="entering-and-cleaning-data-2.html#cb582-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">&quot;Mrs.&quot;</span>, Name)) <span class="sc">%&gt;%</span></span>
-<span id="cb582-3"><a href="entering-and-cleaning-data-2.html#cb582-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
-<span id="cb582-4"><a href="entering-and-cleaning-data-2.html#cb582-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="entering-and-cleaning-data-2.html#cb592-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb592-2"><a href="entering-and-cleaning-data-2.html#cb592-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">&quot;Mrs.&quot;</span>, Name)) <span class="sc">%&gt;%</span></span>
+<span id="cb592-3"><a href="entering-and-cleaning-data-2.html#cb592-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
+<span id="cb592-4"><a href="entering-and-cleaning-data-2.html#cb592-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                                  Name
 ## 1 Cumings, Mrs. John Bradley (Florence Briggs Thayer)
 ## 2        Futrelle, Mrs. Jacques Heath (Lily May Peel)
@@ -1008,20 +1008,20 @@ str_detect(string = [vector you want to check],
 str_extract(string = [vector you want to check], 
            pattern = [pattern you want to check for])</code></pre>
 <p>For example, you might want to extract “Mrs.” if it exists in a passenger’s name:</p>
-<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb585-1"><a href="entering-and-cleaning-data-2.html#cb585-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb585-2"><a href="entering-and-cleaning-data-2.html#cb585-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mrs =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;Mrs.&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb585-3"><a href="entering-and-cleaning-data-2.html#cb585-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, mrs) <span class="sc">%&gt;%</span></span>
-<span id="cb585-4"><a href="entering-and-cleaning-data-2.html#cb585-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb595-1"><a href="entering-and-cleaning-data-2.html#cb595-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb595-2"><a href="entering-and-cleaning-data-2.html#cb595-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mrs =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;Mrs.&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb595-3"><a href="entering-and-cleaning-data-2.html#cb595-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, mrs) <span class="sc">%&gt;%</span></span>
+<span id="cb595-4"><a href="entering-and-cleaning-data-2.html#cb595-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                                  Name  mrs
 ## 1                             Braund, Mr. Owen Harris &lt;NA&gt;
 ## 2 Cumings, Mrs. John Bradley (Florence Briggs Thayer) Mrs.
 ## 3                              Heikkinen, Miss. Laina &lt;NA&gt;</code></pre>
 <p>Notice that now we’re creating a new column (<code>mrs</code>) that either has “Mrs.” (if there’s a match) or is missing (<code>NA</code>) if there’s not a match.</p>
 <p>For this first example, we were looking for an exact string (“Mrs”). However, you can use patterns that match a particular pattern, but not an exact string. For example, we could expand the regular expression to find “Mr.” or “Mrs.”:</p>
-<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb587-1"><a href="entering-and-cleaning-data-2.html#cb587-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb587-2"><a href="entering-and-cleaning-data-2.html#cb587-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;Mr</span><span class="sc">\\</span><span class="st">.|Mrs</span><span class="sc">\\</span><span class="st">.&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb587-3"><a href="entering-and-cleaning-data-2.html#cb587-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, title) <span class="sc">%&gt;%</span></span>
-<span id="cb587-4"><a href="entering-and-cleaning-data-2.html#cb587-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb597-1"><a href="entering-and-cleaning-data-2.html#cb597-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb597-2"><a href="entering-and-cleaning-data-2.html#cb597-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;Mr</span><span class="sc">\\</span><span class="st">.|Mrs</span><span class="sc">\\</span><span class="st">.&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb597-3"><a href="entering-and-cleaning-data-2.html#cb597-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, title) <span class="sc">%&gt;%</span></span>
+<span id="cb597-4"><a href="entering-and-cleaning-data-2.html#cb597-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                                  Name title
 ## 1                             Braund, Mr. Owen Harris   Mr.
 ## 2 Cumings, Mrs. John Bradley (Florence Briggs Thayer)  Mrs.
@@ -1038,20 +1038,20 @@ a pdf of the lecture slides for this video.</p>
 <p>As a note, in regular expressions, all of the following characters are special characters that need to be escaped with backslashes if you want to use them literally:</p>
 <pre><code>. * + ^ ? $ \ | ( ) [ ] { }</code></pre>
 <p>Notice that “Mr.” and “Mrs.” both start with “Mr,” end with “.” and may or may not have an “s” in between.</p>
-<div class="sourceCode" id="cb590"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb590-1"><a href="entering-and-cleaning-data-2.html#cb590-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb590-2"><a href="entering-and-cleaning-data-2.html#cb590-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;Mr(s)*</span><span class="sc">\\</span><span class="st">.&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb590-3"><a href="entering-and-cleaning-data-2.html#cb590-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, title) <span class="sc">%&gt;%</span></span>
-<span id="cb590-4"><a href="entering-and-cleaning-data-2.html#cb590-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb600-1"><a href="entering-and-cleaning-data-2.html#cb600-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb600-2"><a href="entering-and-cleaning-data-2.html#cb600-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;Mr(s)*</span><span class="sc">\\</span><span class="st">.&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb600-3"><a href="entering-and-cleaning-data-2.html#cb600-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, title) <span class="sc">%&gt;%</span></span>
+<span id="cb600-4"><a href="entering-and-cleaning-data-2.html#cb600-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                                  Name title
 ## 1                             Braund, Mr. Owen Harris   Mr.
 ## 2 Cumings, Mrs. John Bradley (Florence Briggs Thayer)  Mrs.
 ## 3                              Heikkinen, Miss. Laina  &lt;NA&gt;</code></pre>
 <p>This pattern uses <code>(s)*</code> to match zero or more “s”s at this spot in the pattern.</p>
 <p>In the previous code, we found “Mr.” and “Mrs.” but missed “Miss.” We could tweak the pattern again to try to capture that, as well. For all three, we have the pattern that it starts with “M,” has some lowercase letters, and then ends with “.”</p>
-<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="entering-and-cleaning-data-2.html#cb592-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb592-2"><a href="entering-and-cleaning-data-2.html#cb592-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;M[a-z]+</span><span class="sc">\\</span><span class="st">.&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb592-3"><a href="entering-and-cleaning-data-2.html#cb592-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, title) <span class="sc">%&gt;%</span></span>
-<span id="cb592-4"><a href="entering-and-cleaning-data-2.html#cb592-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb602-1"><a href="entering-and-cleaning-data-2.html#cb602-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb602-2"><a href="entering-and-cleaning-data-2.html#cb602-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;M[a-z]+</span><span class="sc">\\</span><span class="st">.&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb602-3"><a href="entering-and-cleaning-data-2.html#cb602-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, title) <span class="sc">%&gt;%</span></span>
+<span id="cb602-4"><a href="entering-and-cleaning-data-2.html#cb602-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                                  Name title
 ## 1                             Braund, Mr. Owen Harris   Mr.
 ## 2 Cumings, Mrs. John Bradley (Florence Briggs Thayer)  Mrs.
@@ -1060,18 +1060,18 @@ a pdf of the lecture slides for this video.</p>
 <p>You can also match digits (<code>[0-9]</code>), uppercase letters (<code>[A-Z]</code>), just some letters (<code>[aeiou]</code>), etc. </p>
 <p>You can negate a character class by starting it with <code>^</code>. For example, <code>[^0-9]</code> will match anything that <strong>isn’t</strong> a digit.</p>
 <p>Sometimes, you want to match a pattern, but then only subset a part of it. For example, each passenger seems to have a title (“Mr.” “Mrs.” etc.) that comes after “,” and before “.” We can use this pattern to find the title, but then we get some extra stuff with the match:</p>
-<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb594-1"><a href="entering-and-cleaning-data-2.html#cb594-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb594-2"><a href="entering-and-cleaning-data-2.html#cb594-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;,</span><span class="sc">\\</span><span class="st">s[A-Za-z]*</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">s&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb594-3"><a href="entering-and-cleaning-data-2.html#cb594-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title) <span class="sc">%&gt;%</span></span>
-<span id="cb594-4"><a href="entering-and-cleaning-data-2.html#cb594-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb604-1"><a href="entering-and-cleaning-data-2.html#cb604-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb604-2"><a href="entering-and-cleaning-data-2.html#cb604-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> <span class="fu">str_extract</span>(Name, <span class="st">&quot;,</span><span class="sc">\\</span><span class="st">s[A-Za-z]*</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">s&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb604-3"><a href="entering-and-cleaning-data-2.html#cb604-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title) <span class="sc">%&gt;%</span></span>
+<span id="cb604-4"><a href="entering-and-cleaning-data-2.html#cb604-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##      title
 ## 1   , Mr. 
 ## 2  , Mrs. 
 ## 3 , Miss.</code></pre>
 <p>As a note, in this pattern, <code>\\s</code> is used to match a space.</p>
 <p>We are getting things like “, Mr. ,” when we really want “Mr.” We can use the <code>str_match</code> function to do this. We group what we want to extract from the pattern in parentheses, and then the function returns a matrix. The first column is the full pattern match, and each following column gives just what matches within the groups.</p>
-<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb596-1"><a href="entering-and-cleaning-data-2.html#cb596-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">str_match</span>(titanic_train<span class="sc">$</span>Name,</span>
-<span id="cb596-2"><a href="entering-and-cleaning-data-2.html#cb596-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">pattern =</span> <span class="st">&quot;,</span><span class="sc">\\</span><span class="st">s([A-Za-z]*)</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">s&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb606-1"><a href="entering-and-cleaning-data-2.html#cb606-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">str_match</span>(titanic_train<span class="sc">$</span>Name,</span>
+<span id="cb606-2"><a href="entering-and-cleaning-data-2.html#cb606-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">pattern =</span> <span class="st">&quot;,</span><span class="sc">\\</span><span class="st">s([A-Za-z]*)</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">s&quot;</span>))</span></code></pre></div>
 <pre><code>##      [,1]       [,2]  
 ## [1,] &quot;, Mr. &quot;   &quot;Mr&quot;  
 ## [2,] &quot;, Mrs. &quot;  &quot;Mrs&quot; 
@@ -1080,22 +1080,22 @@ a pdf of the lecture slides for this video.</p>
 ## [5,] &quot;, Mr. &quot;   &quot;Mr&quot;  
 ## [6,] &quot;, Mr. &quot;   &quot;Mr&quot;</code></pre>
 <p>To get just the title, then, we can run:</p>
-<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb598-1"><a href="entering-and-cleaning-data-2.html#cb598-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb598-2"><a href="entering-and-cleaning-data-2.html#cb598-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> </span>
-<span id="cb598-3"><a href="entering-and-cleaning-data-2.html#cb598-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_match</span>(Name, <span class="st">&quot;,</span><span class="sc">\\</span><span class="st">s([A-Za-z]*)</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">s&quot;</span>)[ , <span class="dv">2</span>]) <span class="sc">%&gt;%</span></span>
-<span id="cb598-4"><a href="entering-and-cleaning-data-2.html#cb598-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, title) <span class="sc">%&gt;%</span></span>
-<span id="cb598-5"><a href="entering-and-cleaning-data-2.html#cb598-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb608-1"><a href="entering-and-cleaning-data-2.html#cb608-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb608-2"><a href="entering-and-cleaning-data-2.html#cb608-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> </span>
+<span id="cb608-3"><a href="entering-and-cleaning-data-2.html#cb608-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_match</span>(Name, <span class="st">&quot;,</span><span class="sc">\\</span><span class="st">s([A-Za-z]*)</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">s&quot;</span>)[ , <span class="dv">2</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb608-4"><a href="entering-and-cleaning-data-2.html#cb608-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name, title) <span class="sc">%&gt;%</span></span>
+<span id="cb608-5"><a href="entering-and-cleaning-data-2.html#cb608-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                                  Name title
 ## 1                             Braund, Mr. Owen Harris    Mr
 ## 2 Cumings, Mrs. John Bradley (Florence Briggs Thayer)   Mrs
 ## 3                              Heikkinen, Miss. Laina  Miss</code></pre>
 <p>The <code>[ , 2]</code> pulls out just the second column from the matrix returned by <code>str_match</code>.</p>
 <p>Here are some of the most common titles:</p>
-<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb600-1"><a href="entering-and-cleaning-data-2.html#cb600-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb600-2"><a href="entering-and-cleaning-data-2.html#cb600-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> </span>
-<span id="cb600-3"><a href="entering-and-cleaning-data-2.html#cb600-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_match</span>(Name, <span class="st">&quot;,</span><span class="sc">\\</span><span class="st">s([A-Za-z]*)</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">s&quot;</span>)[ , <span class="dv">2</span>]) <span class="sc">%&gt;%</span></span>
-<span id="cb600-4"><a href="entering-and-cleaning-data-2.html#cb600-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(title) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb600-5"><a href="entering-and-cleaning-data-2.html#cb600-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb610-1"><a href="entering-and-cleaning-data-2.html#cb610-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb610-2"><a href="entering-and-cleaning-data-2.html#cb610-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> </span>
+<span id="cb610-3"><a href="entering-and-cleaning-data-2.html#cb610-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_match</span>(Name, <span class="st">&quot;,</span><span class="sc">\\</span><span class="st">s([A-Za-z]*)</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">s&quot;</span>)[ , <span class="dv">2</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb610-4"><a href="entering-and-cleaning-data-2.html#cb610-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(title) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb610-5"><a href="entering-and-cleaning-data-2.html#cb610-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 2
 ##   title      n
 ##   &lt;chr&gt;  &lt;int&gt;
@@ -1106,26 +1106,26 @@ a pdf of the lecture slides for this video.</p>
 ## 5 Dr         7</code></pre>
 <p>Here are a few other examples of regular expressions in action with this dataset.</p>
 <p>Get just names that start with (“^”) the letter “A”:</p>
-<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb602-1"><a href="entering-and-cleaning-data-2.html#cb602-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb602-2"><a href="entering-and-cleaning-data-2.html#cb602-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;^A&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb602-3"><a href="entering-and-cleaning-data-2.html#cb602-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
-<span id="cb602-4"><a href="entering-and-cleaning-data-2.html#cb602-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb612-1"><a href="entering-and-cleaning-data-2.html#cb612-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb612-2"><a href="entering-and-cleaning-data-2.html#cb612-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;^A&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb612-3"><a href="entering-and-cleaning-data-2.html#cb612-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
+<span id="cb612-4"><a href="entering-and-cleaning-data-2.html#cb612-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                                        Name
 ## 1                                  Allen, Mr. William Henry
 ## 2                               Andersson, Mr. Anders Johan
 ## 3 Asplund, Mrs. Carl Oscar (Selma Augusta Emilia Johansson)</code></pre>
 <p>Get names with “II” or “III” (<code>{2,}</code> says to match at least two times):</p>
-<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb604-1"><a href="entering-and-cleaning-data-2.html#cb604-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb604-2"><a href="entering-and-cleaning-data-2.html#cb604-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;I{2,}&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb604-3"><a href="entering-and-cleaning-data-2.html#cb604-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
-<span id="cb604-4"><a href="entering-and-cleaning-data-2.html#cb604-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb614-1"><a href="entering-and-cleaning-data-2.html#cb614-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb614-2"><a href="entering-and-cleaning-data-2.html#cb614-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;I{2,}&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb614-3"><a href="entering-and-cleaning-data-2.html#cb614-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
+<span id="cb614-4"><a href="entering-and-cleaning-data-2.html#cb614-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                                   Name
 ## 1  Carter, Master. William Thornton II
 ## 2 Roebling, Mr. Washington Augustus II</code></pre>
 <p>Get names with “Andersen” or “Anderson” (alternatives in square brackets):</p>
-<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb606-1"><a href="entering-and-cleaning-data-2.html#cb606-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb606-2"><a href="entering-and-cleaning-data-2.html#cb606-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;Anders[eo]n&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb606-3"><a href="entering-and-cleaning-data-2.html#cb606-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name)</span></code></pre></div>
+<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb616-1"><a href="entering-and-cleaning-data-2.html#cb616-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb616-2"><a href="entering-and-cleaning-data-2.html#cb616-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;Anders[eo]n&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb616-3"><a href="entering-and-cleaning-data-2.html#cb616-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name)</span></code></pre></div>
 <pre><code>##                                              Name
 ## 1 Andersen-Jensen, Miss. Carla Christine Nielsine
 ## 2                             Anderson, Mr. Harry
@@ -1133,18 +1133,18 @@ a pdf of the lecture slides for this video.</p>
 ## 4                     Olsvigen, Mr. Thor Anderson
 ## 5      Soholt, Mr. Peter Andreas Lauritz Andersen</code></pre>
 <p>Get names that start with (“^” outside of brackets) the letters “A” and “B”:</p>
-<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb608-1"><a href="entering-and-cleaning-data-2.html#cb608-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb608-2"><a href="entering-and-cleaning-data-2.html#cb608-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;^[AB]&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb608-3"><a href="entering-and-cleaning-data-2.html#cb608-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
-<span id="cb608-4"><a href="entering-and-cleaning-data-2.html#cb608-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb618-1"><a href="entering-and-cleaning-data-2.html#cb618-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb618-2"><a href="entering-and-cleaning-data-2.html#cb618-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;^[AB]&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb618-3"><a href="entering-and-cleaning-data-2.html#cb618-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
+<span id="cb618-4"><a href="entering-and-cleaning-data-2.html#cb618-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                       Name
 ## 1  Braund, Mr. Owen Harris
 ## 2 Allen, Mr. William Henry
 ## 3 Bonnell, Miss. Elizabeth</code></pre>
 <p>Get names that end with (“$”) the letter “b” (either lowercase or uppercase):</p>
-<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb610-1"><a href="entering-and-cleaning-data-2.html#cb610-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb610-2"><a href="entering-and-cleaning-data-2.html#cb610-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;[bB]$&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb610-3"><a href="entering-and-cleaning-data-2.html#cb610-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) </span></code></pre></div>
+<div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb620-1"><a href="entering-and-cleaning-data-2.html#cb620-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb620-2"><a href="entering-and-cleaning-data-2.html#cb620-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Name, <span class="st">&quot;[bB]$&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb620-3"><a href="entering-and-cleaning-data-2.html#cb620-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) </span></code></pre></div>
 <pre><code>##                        Name
 ## 1   Emir, Mr. Farred Chehab
 ## 2 Goldschmidt, Mr. George B
@@ -1208,31 +1208,31 @@ a pdf of the lecture slides for this video.</p>
 a pdf of the lecture slides for this video.</p>
 <p>There are <a href="https://dplyr.tidyverse.org/reference/select.html"><code>tidyverse</code></a> functions to make selecting variables more straightforwards. You can call these functions as arguments of the <code>select</code> function to streamline variable selection. Examples include: <code>starts_with()</code>, <code>ends_with()</code>, and <code>contains()</code>.</p>
 <p>Here we use <code>starts_with("t")</code> to select all variables that begin with <code>t</code>.</p>
-<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb612-1"><a href="entering-and-cleaning-data-2.html#cb612-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb612-2"><a href="entering-and-cleaning-data-2.html#cb612-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">&quot;t&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb612-3"><a href="entering-and-cleaning-data-2.html#cb612-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb622-1"><a href="entering-and-cleaning-data-2.html#cb622-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb622-2"><a href="entering-and-cleaning-data-2.html#cb622-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">&quot;t&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb622-3"><a href="entering-and-cleaning-data-2.html#cb622-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##             Ticket
 ## 1        A/5 21171
 ## 2         PC 17599
 ## 3 STON/O2. 3101282</code></pre>
 <p>The are also tidyverse functions that allow us to easily operate on a selection of variables. These functions are called <a href="https://dplyr.tidyverse.org/reference/scoped.html"><code>scoped varients</code></a>. You can identify these functions by these <code>_all</code>, <code>_at</code>, and <code>_if</code> suffixes.</p>
 <p>Here we use <code>select_if</code> to select all the numeric variables in a dataframe and covert their names to lower case (a handy function to tidy the variable names).</p>
-<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb614-1"><a href="entering-and-cleaning-data-2.html#cb614-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb614-2"><a href="entering-and-cleaning-data-2.html#cb614-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric, tolower) <span class="sc">%&gt;%</span></span>
-<span id="cb614-3"><a href="entering-and-cleaning-data-2.html#cb614-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb624-1"><a href="entering-and-cleaning-data-2.html#cb624-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb624-2"><a href="entering-and-cleaning-data-2.html#cb624-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric, tolower) <span class="sc">%&gt;%</span></span>
+<span id="cb624-3"><a href="entering-and-cleaning-data-2.html#cb624-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##   passengerid survived pclass age sibsp parch    fare
 ## 1           1        0      3  22     1     0  7.2500
 ## 2           2        1      1  38     1     0 71.2833
 ## 3           3        1      3  26     0     0  7.9250</code></pre>
 <p>The <code>select_if</code> function takes the following form.</p>
-<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb616-1"><a href="entering-and-cleaning-data-2.html#cb616-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generic code</span></span>
-<span id="cb616-2"><a href="entering-and-cleaning-data-2.html#cb616-2" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">select_if</span>(old_df,</span>
-<span id="cb616-3"><a href="entering-and-cleaning-data-2.html#cb616-3" aria-hidden="true" tabindex="-1"></a>                    .predicate [selects the variable to keep], </span>
-<span id="cb616-4"><a href="entering-and-cleaning-data-2.html#cb616-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">.funs =</span> [the <span class="cf">function</span> to apply to the selected columns])</span></code></pre></div>
+<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb626-1"><a href="entering-and-cleaning-data-2.html#cb626-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generic code</span></span>
+<span id="cb626-2"><a href="entering-and-cleaning-data-2.html#cb626-2" aria-hidden="true" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">select_if</span>(old_df,</span>
+<span id="cb626-3"><a href="entering-and-cleaning-data-2.html#cb626-3" aria-hidden="true" tabindex="-1"></a>                    .predicate [selects the variable to keep], </span>
+<span id="cb626-4"><a href="entering-and-cleaning-data-2.html#cb626-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">.funs =</span> [the <span class="cf">function</span> to apply to the selected columns])</span></code></pre></div>
 <p>Here we use <code>select_at</code> to select all the variables that contain <code>ss</code> in their name and then covert their names to lower case (a handy function to tidy the variable names).</p>
-<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb617-1"><a href="entering-and-cleaning-data-2.html#cb617-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
-<span id="cb617-2"><a href="entering-and-cleaning-data-2.html#cb617-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_at</span>(<span class="fu">vars</span>(<span class="fu">contains</span>(<span class="st">&quot;ss&quot;</span>)), tolower) <span class="sc">%&gt;%</span></span>
-<span id="cb617-3"><a href="entering-and-cleaning-data-2.html#cb617-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb627-1"><a href="entering-and-cleaning-data-2.html#cb627-1" aria-hidden="true" tabindex="-1"></a>titanic_train <span class="sc">%&gt;%</span></span>
+<span id="cb627-2"><a href="entering-and-cleaning-data-2.html#cb627-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_at</span>(<span class="fu">vars</span>(<span class="fu">contains</span>(<span class="st">&quot;ss&quot;</span>)), tolower) <span class="sc">%&gt;%</span></span>
+<span id="cb627-3"><a href="entering-and-cleaning-data-2.html#cb627-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##   passengerid pclass
 ## 1           1      3
 ## 2           2      1
@@ -1280,9 +1280,9 @@ If you want to use these data further, you should go back and pull them from the
 </p>
 </div>
 <p>Here are some of the packages you will need for this exercise:</p>
-<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb619-1"><a href="entering-and-cleaning-data-2.html#cb619-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb619-2"><a href="entering-and-cleaning-data-2.html#cb619-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
-<span id="cb619-3"><a href="entering-and-cleaning-data-2.html#cb619-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span></code></pre></div>
+<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb629-1"><a href="entering-and-cleaning-data-2.html#cb629-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb629-2"><a href="entering-and-cleaning-data-2.html#cb629-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
+<span id="cb629-3"><a href="entering-and-cleaning-data-2.html#cb629-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span></code></pre></div>
 <div id="designing-tidy-data" class="section level3" number="6.7.1">
 <h3><span class="header-section-number">6.7.1</span> Designing tidy data</h3>
 <ol style="list-style-type: decimal">
@@ -1305,10 +1305,10 @@ If you want to use these data further, you should go back and pull them from the
 <div id="example-r-code-10" class="section level4" number="6.7.2.1">
 <h4><span class="header-section-number">6.7.2.1</span> Example R code</h4>
 <p>Use <code>read_csv</code> to read the mexico data (exposure and mortality) directly from GitHub into your R session. Call the dataframes <code>mex_deaths</code> and <code>mex_exp</code>:</p>
-<div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb620-1"><a href="entering-and-cleaning-data-2.html#cb620-1" aria-hidden="true" tabindex="-1"></a>deaths_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://github.com/geanders/RProgrammingForResearch/&quot;</span>,</span>
-<span id="cb620-2"><a href="entering-and-cleaning-data-2.html#cb620-2" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&quot;raw/master/data/mexico_deaths.csv&quot;</span>)</span>
-<span id="cb620-3"><a href="entering-and-cleaning-data-2.html#cb620-3" aria-hidden="true" tabindex="-1"></a>mex_deaths <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(deaths_url)</span>
-<span id="cb620-4"><a href="entering-and-cleaning-data-2.html#cb620-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mex_deaths)</span></code></pre></div>
+<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb630-1"><a href="entering-and-cleaning-data-2.html#cb630-1" aria-hidden="true" tabindex="-1"></a>deaths_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://github.com/geanders/RProgrammingForResearch/&quot;</span>,</span>
+<span id="cb630-2"><a href="entering-and-cleaning-data-2.html#cb630-2" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&quot;raw/master/data/mexico_deaths.csv&quot;</span>)</span>
+<span id="cb630-3"><a href="entering-and-cleaning-data-2.html#cb630-3" aria-hidden="true" tabindex="-1"></a>mex_deaths <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(deaths_url)</span>
+<span id="cb630-4"><a href="entering-and-cleaning-data-2.html#cb630-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mex_deaths)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 2
 ##   day    deaths
 ##   &lt;chr&gt;   &lt;dbl&gt;
@@ -1318,10 +1318,10 @@ If you want to use these data further, you should go back and pull them from the
 ## 4 1/4/08    300
 ## 5 1/5/08    327
 ## 6 1/6/08    332</code></pre>
-<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb622-1"><a href="entering-and-cleaning-data-2.html#cb622-1" aria-hidden="true" tabindex="-1"></a>exposure_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://github.com/geanders/RProgrammingForResearch/&quot;</span>,</span>
-<span id="cb622-2"><a href="entering-and-cleaning-data-2.html#cb622-2" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;raw/master/data/mexico_exposure.csv&quot;</span>)</span>
-<span id="cb622-3"><a href="entering-and-cleaning-data-2.html#cb622-3" aria-hidden="true" tabindex="-1"></a>mex_exp <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(exposure_url)</span>
-<span id="cb622-4"><a href="entering-and-cleaning-data-2.html#cb622-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mex_exp)</span></code></pre></div>
+<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb632-1"><a href="entering-and-cleaning-data-2.html#cb632-1" aria-hidden="true" tabindex="-1"></a>exposure_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://github.com/geanders/RProgrammingForResearch/&quot;</span>,</span>
+<span id="cb632-2"><a href="entering-and-cleaning-data-2.html#cb632-2" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;raw/master/data/mexico_exposure.csv&quot;</span>)</span>
+<span id="cb632-3"><a href="entering-and-cleaning-data-2.html#cb632-3" aria-hidden="true" tabindex="-1"></a>mex_exp <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(exposure_url)</span>
+<span id="cb632-4"><a href="entering-and-cleaning-data-2.html#cb632-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mex_exp)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 14
 ##   day   temp_min temp_max temp_mean humidity  wind      NO    NO2    NOX      O3
 ##   &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
@@ -1333,33 +1333,33 @@ If you want to use these data further, you should go back and pull them from the
 ## 6 1/6/…      7.2     22.1     14.3      40.8 0.854 0.0286  0.051  0.0795  0.0249
 ## # … with 4 more variables: CO &lt;dbl&gt;, SO2 &lt;dbl&gt;, PM10 &lt;dbl&gt;, PM25 &lt;dbl&gt;</code></pre>
 <p>Check if there are any values of the <code>day</code> column in <code>mex_deaths</code> that are not present in the <code>day</code> column of <code>mex_exp</code> and vice-versa.</p>
-<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb624-1"><a href="entering-and-cleaning-data-2.html#cb624-1" aria-hidden="true" tabindex="-1"></a>mex_deaths <span class="sc">%&gt;%</span> </span>
-<span id="cb624-2"><a href="entering-and-cleaning-data-2.html#cb624-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(day <span class="sc">%in%</span> mex_exp<span class="sc">$</span>day))</span></code></pre></div>
+<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="entering-and-cleaning-data-2.html#cb634-1" aria-hidden="true" tabindex="-1"></a>mex_deaths <span class="sc">%&gt;%</span> </span>
+<span id="cb634-2"><a href="entering-and-cleaning-data-2.html#cb634-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(day <span class="sc">%in%</span> mex_exp<span class="sc">$</span>day))</span></code></pre></div>
 <pre><code>## # A tibble: 0 x 2
 ## # … with 2 variables: day &lt;chr&gt;, deaths &lt;dbl&gt;</code></pre>
-<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb626-1"><a href="entering-and-cleaning-data-2.html#cb626-1" aria-hidden="true" tabindex="-1"></a>mex_exp <span class="sc">%&gt;%</span> </span>
-<span id="cb626-2"><a href="entering-and-cleaning-data-2.html#cb626-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(day <span class="sc">%in%</span> mex_deaths<span class="sc">$</span>day))</span></code></pre></div>
+<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="entering-and-cleaning-data-2.html#cb636-1" aria-hidden="true" tabindex="-1"></a>mex_exp <span class="sc">%&gt;%</span> </span>
+<span id="cb636-2"><a href="entering-and-cleaning-data-2.html#cb636-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(day <span class="sc">%in%</span> mex_deaths<span class="sc">$</span>day))</span></code></pre></div>
 <pre><code>## # A tibble: 0 x 14
 ## # … with 14 variables: day &lt;chr&gt;, temp_min &lt;dbl&gt;, temp_max &lt;dbl&gt;,
 ## #   temp_mean &lt;dbl&gt;, humidity &lt;dbl&gt;, wind &lt;dbl&gt;, NO &lt;dbl&gt;, NO2 &lt;dbl&gt;,
 ## #   NOX &lt;dbl&gt;, O3 &lt;dbl&gt;, CO &lt;dbl&gt;, SO2 &lt;dbl&gt;, PM10 &lt;dbl&gt;, PM25 &lt;dbl&gt;</code></pre>
 <p>One important note is that, when you’re doing this check, you do <em>not</em> want to overwrite your original dataframe, so be sure that you do not reassign this output to <code>mex_deaths</code> or <code>mex_exp</code>.</p>
 <p>An even quicker way to do check this is to create a logical vector that checks this and use <code>sum</code> to add up the values in the logical vector. If the sum is zero, that tells you that the logical check is never true, so there are no cases where there is a <code>day</code> value in one dataframe that is not also in the other dataframe.</p>
-<div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb628-1"><a href="entering-and-cleaning-data-2.html#cb628-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="sc">!</span>(mex_deaths<span class="sc">$</span>day <span class="sc">%in%</span> mex_exp<span class="sc">$</span>day))</span></code></pre></div>
+<div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb638-1"><a href="entering-and-cleaning-data-2.html#cb638-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="sc">!</span>(mex_deaths<span class="sc">$</span>day <span class="sc">%in%</span> mex_exp<span class="sc">$</span>day))</span></code></pre></div>
 <pre><code>## [1] 0</code></pre>
-<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb630-1"><a href="entering-and-cleaning-data-2.html#cb630-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="sc">!</span>(mex_exp<span class="sc">$</span>day <span class="sc">%in%</span> mex_deaths<span class="sc">$</span>day))</span></code></pre></div>
+<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="entering-and-cleaning-data-2.html#cb640-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="sc">!</span>(mex_exp<span class="sc">$</span>day <span class="sc">%in%</span> mex_deaths<span class="sc">$</span>day))</span></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <p>Merge the two datasets together to create the dataframe <code>mexico</code>. Exclude all columns except the outcome (deaths), date, and mean temperature.</p>
-<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb632-1"><a href="entering-and-cleaning-data-2.html#cb632-1" aria-hidden="true" tabindex="-1"></a>mexico <span class="ot">&lt;-</span> <span class="fu">full_join</span>(mex_deaths, mex_exp, <span class="at">by =</span> <span class="st">&quot;day&quot;</span>) </span>
-<span id="cb632-2"><a href="entering-and-cleaning-data-2.html#cb632-2" aria-hidden="true" tabindex="-1"></a>mexico <span class="ot">&lt;-</span> <span class="fu">select</span>(mexico, day, deaths, temp_mean)</span></code></pre></div>
+<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="entering-and-cleaning-data-2.html#cb642-1" aria-hidden="true" tabindex="-1"></a>mexico <span class="ot">&lt;-</span> <span class="fu">full_join</span>(mex_deaths, mex_exp, <span class="at">by =</span> <span class="st">&quot;day&quot;</span>) </span>
+<span id="cb642-2"><a href="entering-and-cleaning-data-2.html#cb642-2" aria-hidden="true" tabindex="-1"></a>mexico <span class="ot">&lt;-</span> <span class="fu">select</span>(mexico, day, deaths, temp_mean)</span></code></pre></div>
 <p>Convert the date to a date class.</p>
-<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb633-1"><a href="entering-and-cleaning-data-2.html#cb633-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate) <span class="do">## For parsing dates</span></span>
-<span id="cb633-2"><a href="entering-and-cleaning-data-2.html#cb633-2" aria-hidden="true" tabindex="-1"></a>mexico <span class="ot">&lt;-</span> <span class="fu">mutate</span>(mexico, <span class="at">day =</span> <span class="fu">mdy</span>(day))</span></code></pre></div>
+<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb643-1"><a href="entering-and-cleaning-data-2.html#cb643-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate) <span class="do">## For parsing dates</span></span>
+<span id="cb643-2"><a href="entering-and-cleaning-data-2.html#cb643-2" aria-hidden="true" tabindex="-1"></a>mexico <span class="ot">&lt;-</span> <span class="fu">mutate</span>(mexico, <span class="at">day =</span> <span class="fu">mdy</span>(day))</span></code></pre></div>
 <p>Try combining all the steps in the previous task into one “chained” command:</p>
-<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="entering-and-cleaning-data-2.html#cb634-1" aria-hidden="true" tabindex="-1"></a>mexico <span class="ot">&lt;-</span> <span class="fu">full_join</span>(mex_deaths, mex_exp, <span class="at">by =</span> <span class="st">&quot;day&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb634-2"><a href="entering-and-cleaning-data-2.html#cb634-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(day, deaths, temp_mean) <span class="sc">%&gt;%</span></span>
-<span id="cb634-3"><a href="entering-and-cleaning-data-2.html#cb634-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">mdy</span>(day))</span>
-<span id="cb634-4"><a href="entering-and-cleaning-data-2.html#cb634-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mexico)</span></code></pre></div>
+<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb644-1"><a href="entering-and-cleaning-data-2.html#cb644-1" aria-hidden="true" tabindex="-1"></a>mexico <span class="ot">&lt;-</span> <span class="fu">full_join</span>(mex_deaths, mex_exp, <span class="at">by =</span> <span class="st">&quot;day&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb644-2"><a href="entering-and-cleaning-data-2.html#cb644-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(day, deaths, temp_mean) <span class="sc">%&gt;%</span></span>
+<span id="cb644-3"><a href="entering-and-cleaning-data-2.html#cb644-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">mdy</span>(day))</span>
+<span id="cb644-4"><a href="entering-and-cleaning-data-2.html#cb644-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mexico)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 3
 ##   day        deaths temp_mean
 ##   &lt;date&gt;      &lt;dbl&gt;     &lt;dbl&gt;
@@ -1371,12 +1371,12 @@ If you want to use these data further, you should go back and pull them from the
 ## 6 2008-01-06    332     14.3</code></pre>
 <p>Note that, in this case, all the values of <code>day</code> in <code>mex_deaths</code> have one and only one matching value in <code>mex_exp</code>, and vice-versa. Because of this, we would have gotten the same <code>mexico</code> dataframe if we’d used <code>inner_join</code>, <code>left_join</code> or <code>right_join</code> instead of <code>full_join</code>. The differences between these <code>*_join</code> functions come into play when you have some values of your matching column that aren’t in both of the dataframes you’re joining.</p>
 <p>Use this new dataframe to plot deaths by date using <code>ggplot</code>:</p>
-<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="entering-and-cleaning-data-2.html#cb636-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mexico) <span class="sc">+</span> </span>
-<span id="cb636-2"><a href="entering-and-cleaning-data-2.html#cb636-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> deaths),</span>
-<span id="cb636-3"><a href="entering-and-cleaning-data-2.html#cb636-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb636-4"><a href="entering-and-cleaning-data-2.html#cb636-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Date in 2008&quot;</span>, <span class="at">y =</span> <span class="st">&quot;# of deaths&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb636-5"><a href="entering-and-cleaning-data-2.html#cb636-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggtitle</span>(<span class="st">&quot;Deaths by date&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb636-6"><a href="entering-and-cleaning-data-2.html#cb636-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_few</span>() </span></code></pre></div>
+<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="entering-and-cleaning-data-2.html#cb646-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mexico) <span class="sc">+</span> </span>
+<span id="cb646-2"><a href="entering-and-cleaning-data-2.html#cb646-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> deaths),</span>
+<span id="cb646-3"><a href="entering-and-cleaning-data-2.html#cb646-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb646-4"><a href="entering-and-cleaning-data-2.html#cb646-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Date in 2008&quot;</span>, <span class="at">y =</span> <span class="st">&quot;# of deaths&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb646-5"><a href="entering-and-cleaning-data-2.html#cb646-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggtitle</span>(<span class="st">&quot;Deaths by date&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb646-6"><a href="entering-and-cleaning-data-2.html#cb646-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_few</span>() </span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-366-1.png" width="384" /></p>
 </div>
 </div>
@@ -1434,11 +1434,11 @@ If you want to use these data further, you should go back and pull them from the
 <div id="example-r-code-11" class="section level4" number="6.7.3.1">
 <h4><span class="header-section-number">6.7.3.1</span> Example R code</h4>
 <p>Read the data in using <code>read_csv</code>.</p>
-<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="entering-and-cleaning-data-2.html#cb640-1" aria-hidden="true" tabindex="-1"></a>ebola_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://github.com/geanders/RProgrammingForResearch/&quot;</span>,</span>
-<span id="cb640-2"><a href="entering-and-cleaning-data-2.html#cb640-2" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;raw/master/data/country_timeseries.csv&quot;</span>)</span>
-<span id="cb640-3"><a href="entering-and-cleaning-data-2.html#cb640-3" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(ebola_url)</span>
-<span id="cb640-4"><a href="entering-and-cleaning-data-2.html#cb640-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb640-5"><a href="entering-and-cleaning-data-2.html#cb640-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
+<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb650-1"><a href="entering-and-cleaning-data-2.html#cb650-1" aria-hidden="true" tabindex="-1"></a>ebola_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://github.com/geanders/RProgrammingForResearch/&quot;</span>,</span>
+<span id="cb650-2"><a href="entering-and-cleaning-data-2.html#cb650-2" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;raw/master/data/country_timeseries.csv&quot;</span>)</span>
+<span id="cb650-3"><a href="entering-and-cleaning-data-2.html#cb650-3" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(ebola_url)</span>
+<span id="cb650-4"><a href="entering-and-cleaning-data-2.html#cb650-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb650-5"><a href="entering-and-cleaning-data-2.html#cb650-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 18
 ##   Date         Day Cases_Guinea Cases_Liberia Cases_SierraLeone Cases_Nigeria
 ##   &lt;chr&gt;      &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;         &lt;dbl&gt;
@@ -1454,9 +1454,9 @@ If you want to use these data further, you should go back and pull them from the
 ## #   Deaths_Senegal &lt;dbl&gt;, Deaths_UnitedStates &lt;dbl&gt;, Deaths_Spain &lt;dbl&gt;,
 ## #   Deaths_Mali &lt;dbl&gt;</code></pre>
 <p>Change the data to long data using the <code>pivoter_longer</code> function from <code>tidyr</code>:</p>
-<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="entering-and-cleaning-data-2.html#cb642-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> ebola <span class="sc">%&gt;%</span></span>
-<span id="cb642-2"><a href="entering-and-cleaning-data-2.html#cb642-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="sc">-</span>Date, <span class="sc">-</span>Day), <span class="at">names_to =</span> <span class="st">&quot;variable&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>)</span>
-<span id="cb642-3"><a href="entering-and-cleaning-data-2.html#cb642-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
+<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="entering-and-cleaning-data-2.html#cb652-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> ebola <span class="sc">%&gt;%</span></span>
+<span id="cb652-2"><a href="entering-and-cleaning-data-2.html#cb652-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="sc">-</span>Date, <span class="sc">-</span>Day), <span class="at">names_to =</span> <span class="st">&quot;variable&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>)</span>
+<span id="cb652-3"><a href="entering-and-cleaning-data-2.html#cb652-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 4
 ##   Date       Day variable           count
 ##   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt;
@@ -1467,9 +1467,9 @@ If you want to use these data further, you should go back and pull them from the
 ## 5 1/5/2015   289 Cases_Senegal         NA
 ## 6 1/5/2015   289 Cases_UnitedStates    NA</code></pre>
 <p>Convert <code>Date</code> to a date class:</p>
-<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb644-1"><a href="entering-and-cleaning-data-2.html#cb644-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> ebola <span class="sc">%&gt;%</span></span>
-<span id="cb644-2"><a href="entering-and-cleaning-data-2.html#cb644-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">mdy</span>(Date))</span>
-<span id="cb644-3"><a href="entering-and-cleaning-data-2.html#cb644-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
+<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="entering-and-cleaning-data-2.html#cb654-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> ebola <span class="sc">%&gt;%</span></span>
+<span id="cb654-2"><a href="entering-and-cleaning-data-2.html#cb654-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">mdy</span>(Date))</span>
+<span id="cb654-3"><a href="entering-and-cleaning-data-2.html#cb654-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 4
 ##   Date         Day variable           count
 ##   &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt;
@@ -1480,10 +1480,10 @@ If you want to use these data further, you should go back and pull them from the
 ## 5 2015-01-05   289 Cases_Senegal         NA
 ## 6 2015-01-05   289 Cases_UnitedStates    NA</code></pre>
 <p>Split <code>variable</code> into <code>type</code> and <code>country</code>:</p>
-<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="entering-and-cleaning-data-2.html#cb646-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> ebola <span class="sc">%&gt;%</span> </span>
-<span id="cb646-2"><a href="entering-and-cleaning-data-2.html#cb646-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(variable, <span class="fu">c</span>(<span class="st">&quot;type&quot;</span>, <span class="st">&quot;country&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)</span>
-<span id="cb646-3"><a href="entering-and-cleaning-data-2.html#cb646-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb646-4"><a href="entering-and-cleaning-data-2.html#cb646-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
+<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb656-1"><a href="entering-and-cleaning-data-2.html#cb656-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> ebola <span class="sc">%&gt;%</span> </span>
+<span id="cb656-2"><a href="entering-and-cleaning-data-2.html#cb656-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(variable, <span class="fu">c</span>(<span class="st">&quot;type&quot;</span>, <span class="st">&quot;country&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)</span>
+<span id="cb656-3"><a href="entering-and-cleaning-data-2.html#cb656-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb656-4"><a href="entering-and-cleaning-data-2.html#cb656-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ##   Date         Day type  country      count
 ##   &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;
@@ -1494,8 +1494,8 @@ If you want to use these data further, you should go back and pull them from the
 ## 5 2015-01-05   289 Cases Senegal         NA
 ## 6 2015-01-05   289 Cases UnitedStates    NA</code></pre>
 <p>Convert the data so you have separate columns for the two variables of numbers of <code>Cases</code> and <code>Deaths</code>:</p>
-<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb648-1"><a href="entering-and-cleaning-data-2.html#cb648-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">pivot_wider</span>(ebola, <span class="at">names_from =</span> type, <span class="at">values_from =</span> count)</span>
-<span id="cb648-2"><a href="entering-and-cleaning-data-2.html#cb648-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
+<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="entering-and-cleaning-data-2.html#cb658-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">pivot_wider</span>(ebola, <span class="at">names_from =</span> type, <span class="at">values_from =</span> count)</span>
+<span id="cb658-2"><a href="entering-and-cleaning-data-2.html#cb658-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ##   Date         Day country      Cases Deaths
 ##   &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;
@@ -1506,8 +1506,8 @@ If you want to use these data further, you should go back and pull them from the
 ## 5 2015-01-05   289 Senegal         NA     NA
 ## 6 2015-01-05   289 UnitedStates    NA     NA</code></pre>
 <p>Remove any observations where counts of cases or deaths are missing for that country:</p>
-<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb650-1"><a href="entering-and-cleaning-data-2.html#cb650-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">filter</span>(ebola, <span class="sc">!</span><span class="fu">is.na</span>(Cases) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(Deaths))</span>
-<span id="cb650-2"><a href="entering-and-cleaning-data-2.html#cb650-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
+<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="entering-and-cleaning-data-2.html#cb660-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">filter</span>(ebola, <span class="sc">!</span><span class="fu">is.na</span>(Cases) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(Deaths))</span>
+<span id="cb660-2"><a href="entering-and-cleaning-data-2.html#cb660-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ##   Date         Day country     Cases Deaths
 ##   &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;
@@ -1518,58 +1518,58 @@ If you want to use these data further, you should go back and pull them from the
 ## 5 2015-01-03   287 Guinea       2769   1767
 ## 6 2015-01-03   287 Liberia      8166   3496</code></pre>
 <p>Now that your data is tidy, create one plot showing ebola cases by date, faceted by country, and one showing ebola deaths by date, also faceted by country:</p>
-<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="entering-and-cleaning-data-2.html#cb652-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Cases)) <span class="sc">+</span> </span>
-<span id="cb652-2"><a href="entering-and-cleaning-data-2.html#cb652-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb652-3"><a href="entering-and-cleaning-data-2.html#cb652-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
-<span id="cb652-4"><a href="entering-and-cleaning-data-2.html#cb652-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb662-1"><a href="entering-and-cleaning-data-2.html#cb662-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Cases)) <span class="sc">+</span> </span>
+<span id="cb662-2"><a href="entering-and-cleaning-data-2.html#cb662-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb662-3"><a href="entering-and-cleaning-data-2.html#cb662-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb662-4"><a href="entering-and-cleaning-data-2.html#cb662-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-378-1.png" width="768" /></p>
-<div class="sourceCode" id="cb653"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb653-1"><a href="entering-and-cleaning-data-2.html#cb653-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Deaths)) <span class="sc">+</span> </span>
-<span id="cb653-2"><a href="entering-and-cleaning-data-2.html#cb653-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb653-3"><a href="entering-and-cleaning-data-2.html#cb653-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
-<span id="cb653-4"><a href="entering-and-cleaning-data-2.html#cb653-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="entering-and-cleaning-data-2.html#cb663-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Deaths)) <span class="sc">+</span> </span>
+<span id="cb663-2"><a href="entering-and-cleaning-data-2.html#cb663-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb663-3"><a href="entering-and-cleaning-data-2.html#cb663-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb663-4"><a href="entering-and-cleaning-data-2.html#cb663-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-378-2.png" width="768" /></p>
 <p>Try using the option <code>scales = "free_y"</code> in the <code>facet_wrap()</code> function (in the <code>gridExtra</code> package) and see how that changes these graphs:</p>
-<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="entering-and-cleaning-data-2.html#cb654-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Cases)) <span class="sc">+</span> </span>
-<span id="cb654-2"><a href="entering-and-cleaning-data-2.html#cb654-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb654-3"><a href="entering-and-cleaning-data-2.html#cb654-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb654-4"><a href="entering-and-cleaning-data-2.html#cb654-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="entering-and-cleaning-data-2.html#cb664-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Cases)) <span class="sc">+</span> </span>
+<span id="cb664-2"><a href="entering-and-cleaning-data-2.html#cb664-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb664-3"><a href="entering-and-cleaning-data-2.html#cb664-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb664-4"><a href="entering-and-cleaning-data-2.html#cb664-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-379-1.png" width="768" /></p>
-<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb655-1"><a href="entering-and-cleaning-data-2.html#cb655-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Deaths)) <span class="sc">+</span> </span>
-<span id="cb655-2"><a href="entering-and-cleaning-data-2.html#cb655-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb655-3"><a href="entering-and-cleaning-data-2.html#cb655-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb655-4"><a href="entering-and-cleaning-data-2.html#cb655-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="entering-and-cleaning-data-2.html#cb665-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Deaths)) <span class="sc">+</span> </span>
+<span id="cb665-2"><a href="entering-and-cleaning-data-2.html#cb665-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb665-3"><a href="entering-and-cleaning-data-2.html#cb665-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb665-4"><a href="entering-and-cleaning-data-2.html#cb665-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-379-2.png" width="768" /></p>
 <p>Put all of the steps of this cleaning process into just a few “chaining” calls.</p>
-<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb656-1"><a href="entering-and-cleaning-data-2.html#cb656-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(ebola_url) <span class="sc">%&gt;%</span></span>
-<span id="cb656-2"><a href="entering-and-cleaning-data-2.html#cb656-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="sc">-</span>Date, <span class="sc">-</span>Day), <span class="at">names_to =</span> <span class="st">&quot;variable&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb656-3"><a href="entering-and-cleaning-data-2.html#cb656-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">mdy</span>(Date)) <span class="sc">%&gt;%</span></span>
-<span id="cb656-4"><a href="entering-and-cleaning-data-2.html#cb656-4" aria-hidden="true" tabindex="-1"></a>         <span class="fu">separate</span>(variable, <span class="fu">c</span>(<span class="st">&quot;type&quot;</span>, <span class="st">&quot;country&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb656-5"><a href="entering-and-cleaning-data-2.html#cb656-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> type, <span class="at">values_from =</span> count) <span class="sc">%&gt;%</span></span>
-<span id="cb656-6"><a href="entering-and-cleaning-data-2.html#cb656-6" aria-hidden="true" tabindex="-1"></a>         <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Cases) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(Deaths))</span>
-<span id="cb656-7"><a href="entering-and-cleaning-data-2.html#cb656-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb656-8"><a href="entering-and-cleaning-data-2.html#cb656-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Cases)) <span class="sc">+</span> </span>
-<span id="cb656-9"><a href="entering-and-cleaning-data-2.html#cb656-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb656-10"><a href="entering-and-cleaning-data-2.html#cb656-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
-<span id="cb656-11"><a href="entering-and-cleaning-data-2.html#cb656-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="entering-and-cleaning-data-2.html#cb666-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(ebola_url) <span class="sc">%&gt;%</span></span>
+<span id="cb666-2"><a href="entering-and-cleaning-data-2.html#cb666-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="sc">-</span>Date, <span class="sc">-</span>Day), <span class="at">names_to =</span> <span class="st">&quot;variable&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb666-3"><a href="entering-and-cleaning-data-2.html#cb666-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">mdy</span>(Date)) <span class="sc">%&gt;%</span></span>
+<span id="cb666-4"><a href="entering-and-cleaning-data-2.html#cb666-4" aria-hidden="true" tabindex="-1"></a>         <span class="fu">separate</span>(variable, <span class="fu">c</span>(<span class="st">&quot;type&quot;</span>, <span class="st">&quot;country&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb666-5"><a href="entering-and-cleaning-data-2.html#cb666-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> type, <span class="at">values_from =</span> count) <span class="sc">%&gt;%</span></span>
+<span id="cb666-6"><a href="entering-and-cleaning-data-2.html#cb666-6" aria-hidden="true" tabindex="-1"></a>         <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Cases) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(Deaths))</span>
+<span id="cb666-7"><a href="entering-and-cleaning-data-2.html#cb666-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb666-8"><a href="entering-and-cleaning-data-2.html#cb666-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Cases)) <span class="sc">+</span> </span>
+<span id="cb666-9"><a href="entering-and-cleaning-data-2.html#cb666-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb666-10"><a href="entering-and-cleaning-data-2.html#cb666-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb666-11"><a href="entering-and-cleaning-data-2.html#cb666-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-380-1.png" width="768" /></p>
-<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="entering-and-cleaning-data-2.html#cb657-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Deaths)) <span class="sc">+</span> </span>
-<span id="cb657-2"><a href="entering-and-cleaning-data-2.html#cb657-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb657-3"><a href="entering-and-cleaning-data-2.html#cb657-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
-<span id="cb657-4"><a href="entering-and-cleaning-data-2.html#cb657-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="entering-and-cleaning-data-2.html#cb667-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Deaths)) <span class="sc">+</span> </span>
+<span id="cb667-2"><a href="entering-and-cleaning-data-2.html#cb667-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb667-3"><a href="entering-and-cleaning-data-2.html#cb667-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> country, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb667-4"><a href="entering-and-cleaning-data-2.html#cb667-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-380-2.png" width="768" /></p>
 <p>Use the <code>fct_reorder</code> function inside the <code>facet_wrap</code> function call to reorder the small-multiple graphs.</p>
-<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="entering-and-cleaning-data-2.html#cb658-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
-<span id="cb658-2"><a href="entering-and-cleaning-data-2.html#cb658-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Cases)) <span class="sc">+</span> </span>
-<span id="cb658-3"><a href="entering-and-cleaning-data-2.html#cb658-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb658-4"><a href="entering-and-cleaning-data-2.html#cb658-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">fct_reorder</span>(country, Cases, <span class="at">.fun =</span> max, <span class="at">.desc =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb658-5"><a href="entering-and-cleaning-data-2.html#cb658-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
-<span id="cb658-6"><a href="entering-and-cleaning-data-2.html#cb658-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="entering-and-cleaning-data-2.html#cb668-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb668-2"><a href="entering-and-cleaning-data-2.html#cb668-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Cases)) <span class="sc">+</span> </span>
+<span id="cb668-3"><a href="entering-and-cleaning-data-2.html#cb668-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb668-4"><a href="entering-and-cleaning-data-2.html#cb668-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">fct_reorder</span>(country, Cases, <span class="at">.fun =</span> max, <span class="at">.desc =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb668-5"><a href="entering-and-cleaning-data-2.html#cb668-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb668-6"><a href="entering-and-cleaning-data-2.html#cb668-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-381-1.png" width="768" /></p>
-<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="entering-and-cleaning-data-2.html#cb659-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Deaths)) <span class="sc">+</span> </span>
-<span id="cb659-2"><a href="entering-and-cleaning-data-2.html#cb659-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb659-3"><a href="entering-and-cleaning-data-2.html#cb659-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">fct_reorder</span>(country, Deaths, <span class="at">.fun =</span> max, <span class="at">.desc =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb659-4"><a href="entering-and-cleaning-data-2.html#cb659-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
-<span id="cb659-5"><a href="entering-and-cleaning-data-2.html#cb659-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="entering-and-cleaning-data-2.html#cb669-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ebola, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Deaths)) <span class="sc">+</span> </span>
+<span id="cb669-2"><a href="entering-and-cleaning-data-2.html#cb669-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb669-3"><a href="entering-and-cleaning-data-2.html#cb669-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">fct_reorder</span>(country, Deaths, <span class="at">.fun =</span> max, <span class="at">.desc =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb669-4"><a href="entering-and-cleaning-data-2.html#cb669-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb669-5"><a href="entering-and-cleaning-data-2.html#cb669-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-381-2.png" width="768" /></p>
 </div>
 </div>
@@ -1611,9 +1611,9 @@ show this.</li>
 <div id="example-r-code-12" class="section level4" number="6.7.5.1">
 <h4><span class="header-section-number">6.7.5.1</span> Example R code</h4>
 <p>Install and load the <code>babynames</code> package and its “babynames” dataframe:</p>
-<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="entering-and-cleaning-data-2.html#cb660-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;babynames&quot;)</span></span>
-<span id="cb660-2"><a href="entering-and-cleaning-data-2.html#cb660-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(babynames)</span>
-<span id="cb660-3"><a href="entering-and-cleaning-data-2.html#cb660-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;babynames&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="entering-and-cleaning-data-2.html#cb670-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;babynames&quot;)</span></span>
+<span id="cb670-2"><a href="entering-and-cleaning-data-2.html#cb670-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(babynames)</span>
+<span id="cb670-3"><a href="entering-and-cleaning-data-2.html#cb670-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;babynames&quot;</span>)</span></code></pre></div>
 <p>Remember that you can use <code>?babynames</code> to find out more about this dataframe.</p>
 <p>Check out patterns in your own name. Is your name included in this
 dataset? You can use <code>filter</code> to create a subset of this data where you’ve
@@ -1623,10 +1623,10 @@ up, then you will have 0 rows in the new dataframe. As long as there’s at leas
 one row, your name shows up somewhere. (If your name is not in here, try
 your middle or last name, or the name of a fictional character you like, for
 the rest of these exercises.)</p>
-<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="entering-and-cleaning-data-2.html#cb661-1" aria-hidden="true" tabindex="-1"></a>my_name <span class="ot">&lt;-</span> babynames <span class="sc">%&gt;%</span> </span>
-<span id="cb661-2"><a href="entering-and-cleaning-data-2.html#cb661-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">==</span> <span class="st">&quot;Brooke&quot;</span>)</span>
-<span id="cb661-3"><a href="entering-and-cleaning-data-2.html#cb661-3" aria-hidden="true" tabindex="-1"></a>my_name <span class="sc">%&gt;%</span> </span>
-<span id="cb661-4"><a href="entering-and-cleaning-data-2.html#cb661-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb671-1"><a href="entering-and-cleaning-data-2.html#cb671-1" aria-hidden="true" tabindex="-1"></a>my_name <span class="ot">&lt;-</span> babynames <span class="sc">%&gt;%</span> </span>
+<span id="cb671-2"><a href="entering-and-cleaning-data-2.html#cb671-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">==</span> <span class="st">&quot;Brooke&quot;</span>)</span>
+<span id="cb671-3"><a href="entering-and-cleaning-data-2.html#cb671-3" aria-hidden="true" tabindex="-1"></a>my_name <span class="sc">%&gt;%</span> </span>
+<span id="cb671-4"><a href="entering-and-cleaning-data-2.html#cb671-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 1
 ##       n
 ##   &lt;int&gt;
@@ -1636,9 +1636,9 @@ the dataset with rows with your name by the <code>sex</code> column and then use
 count the number of rows in the dataset for males and females. If your name has
 only been used for one gender, then only one row will result from running this
 code (for an example, try my first name, “Georgiana”).</p>
-<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="entering-and-cleaning-data-2.html#cb663-1" aria-hidden="true" tabindex="-1"></a>my_name <span class="sc">%&gt;%</span> </span>
-<span id="cb663-2"><a href="entering-and-cleaning-data-2.html#cb663-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">%&gt;%</span> </span>
-<span id="cb663-3"><a href="entering-and-cleaning-data-2.html#cb663-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb673-1"><a href="entering-and-cleaning-data-2.html#cb673-1" aria-hidden="true" tabindex="-1"></a>my_name <span class="sc">%&gt;%</span> </span>
+<span id="cb673-2"><a href="entering-and-cleaning-data-2.html#cb673-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb673-3"><a href="entering-and-cleaning-data-2.html#cb673-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ## # Groups:   sex [2]
 ##   sex       n
@@ -1652,23 +1652,23 @@ versus year (<code>year</code>). You can use color to show these patterns for ma
 females separately. I’ve done some extra things here to (1) relabel the <code>sex</code>
 factor, so the label shows up with clearer names and (2) change the labels for the
 x-, y-, and color scales.</p>
-<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="entering-and-cleaning-data-2.html#cb665-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
-<span id="cb665-2"><a href="entering-and-cleaning-data-2.html#cb665-2" aria-hidden="true" tabindex="-1"></a>my_name <span class="sc">%&gt;%</span> </span>
-<span id="cb665-3"><a href="entering-and-cleaning-data-2.html#cb665-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">fct_recode</span>(sex, <span class="at">Male =</span> <span class="st">&quot;M&quot;</span>, <span class="at">Female =</span> <span class="st">&quot;F&quot;</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb665-4"><a href="entering-and-cleaning-data-2.html#cb665-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> prop, <span class="at">color =</span> sex)) <span class="sc">+</span> </span>
-<span id="cb665-5"><a href="entering-and-cleaning-data-2.html#cb665-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb665-6"><a href="entering-and-cleaning-data-2.html#cb665-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Proportion of babies</span><span class="sc">\n</span><span class="st">of each sex named &#39;Brooke&#39;&quot;</span>,</span>
-<span id="cb665-7"><a href="entering-and-cleaning-data-2.html#cb665-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="entering-and-cleaning-data-2.html#cb675-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb675-2"><a href="entering-and-cleaning-data-2.html#cb675-2" aria-hidden="true" tabindex="-1"></a>my_name <span class="sc">%&gt;%</span> </span>
+<span id="cb675-3"><a href="entering-and-cleaning-data-2.html#cb675-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">fct_recode</span>(sex, <span class="at">Male =</span> <span class="st">&quot;M&quot;</span>, <span class="at">Female =</span> <span class="st">&quot;F&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb675-4"><a href="entering-and-cleaning-data-2.html#cb675-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> prop, <span class="at">color =</span> sex)) <span class="sc">+</span> </span>
+<span id="cb675-5"><a href="entering-and-cleaning-data-2.html#cb675-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb675-6"><a href="entering-and-cleaning-data-2.html#cb675-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Proportion of babies</span><span class="sc">\n</span><span class="st">of each sex named &#39;Brooke&#39;&quot;</span>,</span>
+<span id="cb675-7"><a href="entering-and-cleaning-data-2.html#cb675-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-385-1.png" width="576" /></p>
 <p>In the year you were born, what were the 5 most popular baby names for males
 and females?</p>
-<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="entering-and-cleaning-data-2.html#cb666-1" aria-hidden="true" tabindex="-1"></a>top_my_year <span class="ot">&lt;-</span> babynames <span class="sc">%&gt;%</span> </span>
-<span id="cb666-2"><a href="entering-and-cleaning-data-2.html#cb666-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">1981</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb666-3"><a href="entering-and-cleaning-data-2.html#cb666-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">%&gt;%</span> </span>
-<span id="cb666-4"><a href="entering-and-cleaning-data-2.html#cb666-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(prop)) <span class="sc">%&gt;%</span> </span>
-<span id="cb666-5"><a href="entering-and-cleaning-data-2.html#cb666-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
-<span id="cb666-6"><a href="entering-and-cleaning-data-2.html#cb666-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb666-7"><a href="entering-and-cleaning-data-2.html#cb666-7" aria-hidden="true" tabindex="-1"></a>top_my_year</span></code></pre></div>
+<div class="sourceCode" id="cb676"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb676-1"><a href="entering-and-cleaning-data-2.html#cb676-1" aria-hidden="true" tabindex="-1"></a>top_my_year <span class="ot">&lt;-</span> babynames <span class="sc">%&gt;%</span> </span>
+<span id="cb676-2"><a href="entering-and-cleaning-data-2.html#cb676-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">1981</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb676-3"><a href="entering-and-cleaning-data-2.html#cb676-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb676-4"><a href="entering-and-cleaning-data-2.html#cb676-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(prop)) <span class="sc">%&gt;%</span> </span>
+<span id="cb676-5"><a href="entering-and-cleaning-data-2.html#cb676-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb676-6"><a href="entering-and-cleaning-data-2.html#cb676-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb676-7"><a href="entering-and-cleaning-data-2.html#cb676-7" aria-hidden="true" tabindex="-1"></a>top_my_year</span></code></pre></div>
 <pre><code>## # A tibble: 10 x 5
 ## # Groups:   sex [2]
 ##     year sex   name            n   prop
@@ -1684,16 +1684,16 @@ and females?</p>
 ##  9  1981 M     Jason       41932 0.0225
 ## 10  1981 M     David       40659 0.0218</code></pre>
 <p>If you’d like to show this in a prettier way, you could show this as a table:</p>
-<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="entering-and-cleaning-data-2.html#cb668-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb668-2"><a href="entering-and-cleaning-data-2.html#cb668-2" aria-hidden="true" tabindex="-1"></a>top_my_year <span class="sc">%&gt;%</span> </span>
-<span id="cb668-3"><a href="entering-and-cleaning-data-2.html#cb668-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rank =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># Since the data is grouped by sex, this will rank</span></span>
-<span id="cb668-4"><a href="entering-and-cleaning-data-2.html#cb668-4" aria-hidden="true" tabindex="-1"></a>                           <span class="co"># separately for females and males</span></span>
-<span id="cb668-5"><a href="entering-and-cleaning-data-2.html#cb668-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> <span class="co"># You have to ungroup before you can run `mutate` on `sex`</span></span>
-<span id="cb668-6"><a href="entering-and-cleaning-data-2.html#cb668-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">fct_recode</span>(sex, <span class="at">Male =</span> <span class="st">&quot;M&quot;</span>, <span class="at">Female =</span> <span class="st">&quot;F&quot;</span>),</span>
-<span id="cb668-7"><a href="entering-and-cleaning-data-2.html#cb668-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">percent =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> prop, <span class="dv">1</span>),</span>
-<span id="cb668-8"><a href="entering-and-cleaning-data-2.html#cb668-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">percent =</span> <span class="fu">paste</span>(percent, <span class="st">&quot;%&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb668-9"><a href="entering-and-cleaning-data-2.html#cb668-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex, rank, name, percent) <span class="sc">%&gt;%</span> </span>
-<span id="cb668-10"><a href="entering-and-cleaning-data-2.html#cb668-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="entering-and-cleaning-data-2.html#cb678-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb678-2"><a href="entering-and-cleaning-data-2.html#cb678-2" aria-hidden="true" tabindex="-1"></a>top_my_year <span class="sc">%&gt;%</span> </span>
+<span id="cb678-3"><a href="entering-and-cleaning-data-2.html#cb678-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rank =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># Since the data is grouped by sex, this will rank</span></span>
+<span id="cb678-4"><a href="entering-and-cleaning-data-2.html#cb678-4" aria-hidden="true" tabindex="-1"></a>                           <span class="co"># separately for females and males</span></span>
+<span id="cb678-5"><a href="entering-and-cleaning-data-2.html#cb678-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> <span class="co"># You have to ungroup before you can run `mutate` on `sex`</span></span>
+<span id="cb678-6"><a href="entering-and-cleaning-data-2.html#cb678-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">fct_recode</span>(sex, <span class="at">Male =</span> <span class="st">&quot;M&quot;</span>, <span class="at">Female =</span> <span class="st">&quot;F&quot;</span>),</span>
+<span id="cb678-7"><a href="entering-and-cleaning-data-2.html#cb678-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">percent =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> prop, <span class="dv">1</span>),</span>
+<span id="cb678-8"><a href="entering-and-cleaning-data-2.html#cb678-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">percent =</span> <span class="fu">paste</span>(percent, <span class="st">&quot;%&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb678-9"><a href="entering-and-cleaning-data-2.html#cb678-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sex, rank, name, percent) <span class="sc">%&gt;%</span> </span>
+<span id="cb678-10"><a href="entering-and-cleaning-data-2.html#cb678-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1767,19 +1767,19 @@ and females?</p>
 </tbody>
 </table>
 <p>You could also show it as a figure:</p>
-<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="entering-and-cleaning-data-2.html#cb669-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb669-2"><a href="entering-and-cleaning-data-2.html#cb669-2" aria-hidden="true" tabindex="-1"></a>top_my_year <span class="sc">%&gt;%</span> </span>
-<span id="cb669-3"><a href="entering-and-cleaning-data-2.html#cb669-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb669-4"><a href="entering-and-cleaning-data-2.html#cb669-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">fct_reorder</span>(name, prop, <span class="at">.desc =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb669-5"><a href="entering-and-cleaning-data-2.html#cb669-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">sex =</span> <span class="fu">fct_recode</span>(sex, <span class="at">Male =</span> <span class="st">&quot;M&quot;</span>, <span class="at">Female =</span> <span class="st">&quot;F&quot;</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb669-6"><a href="entering-and-cleaning-data-2.html#cb669-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> name)) <span class="sc">+</span> </span>
-<span id="cb669-7"><a href="entering-and-cleaning-data-2.html#cb669-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">weight =</span> prop)) <span class="sc">+</span> </span>
-<span id="cb669-8"><a href="entering-and-cleaning-data-2.html#cb669-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> </span>
-<span id="cb669-9"><a href="entering-and-cleaning-data-2.html#cb669-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Percent of babies with name in 1981&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb669-10"><a href="entering-and-cleaning-data-2.html#cb669-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb669-11"><a href="entering-and-cleaning-data-2.html#cb669-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> percent) <span class="sc">+</span> </span>
-<span id="cb669-12"><a href="entering-and-cleaning-data-2.html#cb669-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> sex, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb669-13"><a href="entering-and-cleaning-data-2.html#cb669-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="entering-and-cleaning-data-2.html#cb679-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb679-2"><a href="entering-and-cleaning-data-2.html#cb679-2" aria-hidden="true" tabindex="-1"></a>top_my_year <span class="sc">%&gt;%</span> </span>
+<span id="cb679-3"><a href="entering-and-cleaning-data-2.html#cb679-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb679-4"><a href="entering-and-cleaning-data-2.html#cb679-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">fct_reorder</span>(name, prop, <span class="at">.desc =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb679-5"><a href="entering-and-cleaning-data-2.html#cb679-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">sex =</span> <span class="fu">fct_recode</span>(sex, <span class="at">Male =</span> <span class="st">&quot;M&quot;</span>, <span class="at">Female =</span> <span class="st">&quot;F&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb679-6"><a href="entering-and-cleaning-data-2.html#cb679-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> name)) <span class="sc">+</span> </span>
+<span id="cb679-7"><a href="entering-and-cleaning-data-2.html#cb679-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">weight =</span> prop)) <span class="sc">+</span> </span>
+<span id="cb679-8"><a href="entering-and-cleaning-data-2.html#cb679-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> </span>
+<span id="cb679-9"><a href="entering-and-cleaning-data-2.html#cb679-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Percent of babies with name in 1981&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb679-10"><a href="entering-and-cleaning-data-2.html#cb679-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb679-11"><a href="entering-and-cleaning-data-2.html#cb679-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> percent) <span class="sc">+</span> </span>
+<span id="cb679-12"><a href="entering-and-cleaning-data-2.html#cb679-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> sex, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb679-13"><a href="entering-and-cleaning-data-2.html#cb679-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-388-1.png" width="576" /></p>
 
 </div>
