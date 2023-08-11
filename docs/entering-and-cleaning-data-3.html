@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 10 Entering and cleaning data #3 | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 10 Entering and cleaning data #3 | R Programming for Research" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
@@ -24,7 +23,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2022-08-21" />
+<meta name="date" content="2023-08-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,6 @@
   
 <link rel="prev" href="reproducible-research-2.html"/>
 <link rel="next" href="exploring-data-3.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,15 +49,16 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.2/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <link href="libs/bokehjs-0.12.5/bokeh.min.css" rel="stylesheet" />
 <link href="libs/bokehjs-0.12.5/loader.css" rel="stylesheet" />
 <script src="libs/bokehjs-0.12.5/bokeh.min.js"></script>
@@ -72,10 +71,10 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.20/datatables.js"></script>
-<link href="libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.28/datatables.js"></script>
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-36719749-2"></script>
 <script>
@@ -91,6 +90,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -124,7 +124,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -137,7 +137,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -151,6 +151,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -605,14 +609,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="entering-and-cleaning-data-3" class="section level1" number="10">
-<h1><span class="header-section-number">Chapter 10</span> Entering and cleaning data #3</h1>
+<div id="entering-and-cleaning-data-3" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">Chapter 10</span> Entering and cleaning data #3<a href="entering-and-cleaning-data-3.html#entering-and-cleaning-data-3" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week10new.pdf">Download</a> a pdf of the lecture slides covering this topic.</p>
-<div id="pulling-online-data" class="section level2" number="10.1">
-<h2><span class="header-section-number">10.1</span> Pulling online data</h2>
-<div id="apis" class="section level3" number="10.1.1">
-<h3><span class="header-section-number">10.1.1</span> APIs</h3>
-<p><em>APIs</em> are “Application Program Interfaces.”
+<div id="pulling-online-data" class="section level2 hasAnchor" number="10.1">
+<h2><span class="header-section-number">10.1</span> Pulling online data<a href="entering-and-cleaning-data-3.html#pulling-online-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="apis" class="section level3 hasAnchor" number="10.1.1">
+<h3><span class="header-section-number">10.1.1</span> APIs<a href="entering-and-cleaning-data-3.html#apis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><em>APIs</em> are “Application Program Interfaces”.
 An API provides the rules for software applications to interact. In the case of open data APIs, they provide the rules you need to know to write R code to request and pull data from the organization’s web server into your R session.
 Often, an API can help you avoid downloading all available data, and instead only download the subset you need.</p>
 <p>The basic strategy for using APIs from R is:</p>
@@ -629,23 +633,23 @@ Often, an API can help you avoid downloading all available data, and instead onl
 <p>You should keep this key private. In particular, make sure you do not include it in code that is posted to GitHub.</p>
 <p>The <code>riem</code> package, developed by Maelle Salmon and an ROpenSci package, is an excellent and straightforward example of how you can use R to pull open data through a web API.
 This package allows you to pull weather data from airports around the world directly from the <a href="https://mesonet.agron.iastate.edu">Iowa Environmental Mesonet</a>.</p>
-<p>To get a certain set of weather data from the Iowa Environmental Mesonet, you can send an HTTP request specifying a base URL, “<a href="https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/" class="uri">https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/</a>,” as well as some parameters describing the subset of dataset you want (e.g., date ranges, weather variables, output format). </p>
+<p>To get a certain set of weather data from the Iowa Environmental Mesonet, you can send an HTTP request specifying a base URL, “<a href="https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/" class="uri">https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/</a>”, as well as some parameters describing the subset of dataset you want (e.g., date ranges, weather variables, output format). </p>
 <p>Once you know the rules for the names and possible values of these parameters (more on that below), you can submit an HTTP GET request using the <code>GET</code> function from the <code>httr</code> package.</p>
 <p><img src="figures/mesonet_example.png" width="556" style="display: block; margin: auto;" /></p>
 <p><a href="https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=DEN&amp;data=sknt&amp;year1=2016&amp;month1=6&amp;day1=1&amp;year2=2016&amp;month2=6&amp;day2=30&amp;tz=America%2FDenver&amp;format=comma&amp;latlon=no&amp;direct=no&amp;report_type=1&amp;report_type=2" class="uri">https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=DEN&amp;data=sknt&amp;year1=2016&amp;month1=6&amp;day1=1&amp;year2=2016&amp;month2=6&amp;day2=30&amp;tz=America%2FDenver&amp;format=comma&amp;latlon=no&amp;direct=no&amp;report_type=1&amp;report_type=2</a></p>
 <p>When you are making an HTTP request using the <code>GET</code> or <code>POST</code> functions from the <code>httr</code> package, you can include the key-value pairs for any query parameters as a list object in the <code>query</code> argurment of the function.</p>
-<div class="sourceCode" id="cb1046"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1046-1"><a href="entering-and-cleaning-data-3.html#cb1046-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
-<span id="cb1046-2"><a href="entering-and-cleaning-data-3.html#cb1046-2" aria-hidden="true" tabindex="-1"></a>meso_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://mesonet.agron.iastate.edu/&quot;</span>,</span>
-<span id="cb1046-3"><a href="entering-and-cleaning-data-3.html#cb1046-3" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;cgi-bin/request/asos.py/&quot;</span>)</span>
-<span id="cb1046-4"><a href="entering-and-cleaning-data-3.html#cb1046-4" aria-hidden="true" tabindex="-1"></a>denver <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="at">url =</span> meso_url,</span>
-<span id="cb1046-5"><a href="entering-and-cleaning-data-3.html#cb1046-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">query =</span> <span class="fu">list</span>(<span class="at">station =</span> <span class="st">&quot;DEN&quot;</span>, <span class="at">data =</span> <span class="st">&quot;sped&quot;</span>,</span>
-<span id="cb1046-6"><a href="entering-and-cleaning-data-3.html#cb1046-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">year1 =</span> <span class="st">&quot;2016&quot;</span>, <span class="at">month1 =</span> <span class="st">&quot;6&quot;</span>,</span>
-<span id="cb1046-7"><a href="entering-and-cleaning-data-3.html#cb1046-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">day1 =</span> <span class="st">&quot;1&quot;</span>, <span class="at">year2 =</span> <span class="st">&quot;2016&quot;</span>,</span>
-<span id="cb1046-8"><a href="entering-and-cleaning-data-3.html#cb1046-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">month2 =</span> <span class="st">&quot;6&quot;</span>, <span class="at">day2 =</span> <span class="st">&quot;30&quot;</span>,</span>
-<span id="cb1046-9"><a href="entering-and-cleaning-data-3.html#cb1046-9" aria-hidden="true" tabindex="-1"></a>                           <span class="at">tz =</span> <span class="st">&quot;America/Denver&quot;</span>,</span>
-<span id="cb1046-10"><a href="entering-and-cleaning-data-3.html#cb1046-10" aria-hidden="true" tabindex="-1"></a>                           <span class="at">format =</span> <span class="st">&quot;comma&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb1046"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1046-1"><a href="entering-and-cleaning-data-3.html#cb1046-1" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
+<span id="cb1046-2"><a href="entering-and-cleaning-data-3.html#cb1046-2" tabindex="-1"></a>meso_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://mesonet.agron.iastate.edu/&quot;</span>,</span>
+<span id="cb1046-3"><a href="entering-and-cleaning-data-3.html#cb1046-3" tabindex="-1"></a>                   <span class="st">&quot;cgi-bin/request/asos.py/&quot;</span>)</span>
+<span id="cb1046-4"><a href="entering-and-cleaning-data-3.html#cb1046-4" tabindex="-1"></a>denver <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="at">url =</span> meso_url,</span>
+<span id="cb1046-5"><a href="entering-and-cleaning-data-3.html#cb1046-5" tabindex="-1"></a>              <span class="at">query =</span> <span class="fu">list</span>(<span class="at">station =</span> <span class="st">&quot;DEN&quot;</span>, <span class="at">data =</span> <span class="st">&quot;sped&quot;</span>,</span>
+<span id="cb1046-6"><a href="entering-and-cleaning-data-3.html#cb1046-6" tabindex="-1"></a>                           <span class="at">year1 =</span> <span class="st">&quot;2016&quot;</span>, <span class="at">month1 =</span> <span class="st">&quot;6&quot;</span>,</span>
+<span id="cb1046-7"><a href="entering-and-cleaning-data-3.html#cb1046-7" tabindex="-1"></a>                           <span class="at">day1 =</span> <span class="st">&quot;1&quot;</span>, <span class="at">year2 =</span> <span class="st">&quot;2016&quot;</span>,</span>
+<span id="cb1046-8"><a href="entering-and-cleaning-data-3.html#cb1046-8" tabindex="-1"></a>                           <span class="at">month2 =</span> <span class="st">&quot;6&quot;</span>, <span class="at">day2 =</span> <span class="st">&quot;30&quot;</span>,</span>
+<span id="cb1046-9"><a href="entering-and-cleaning-data-3.html#cb1046-9" tabindex="-1"></a>                           <span class="at">tz =</span> <span class="st">&quot;America/Denver&quot;</span>,</span>
+<span id="cb1046-10"><a href="entering-and-cleaning-data-3.html#cb1046-10" tabindex="-1"></a>                           <span class="at">format =</span> <span class="st">&quot;comma&quot;</span>))</span></code></pre></div>
 <p>The <code>GET</code> call will return a special type of list object with elements that include the url you queried and the content of the page at that url:</p>
-<div class="sourceCode" id="cb1047"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1047-1"><a href="entering-and-cleaning-data-3.html#cb1047-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(denver, <span class="at">max.level =</span> <span class="dv">1</span>, <span class="at">list.len =</span> <span class="dv">6</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1047"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1047-1"><a href="entering-and-cleaning-data-3.html#cb1047-1" tabindex="-1"></a><span class="fu">str</span>(denver, <span class="at">max.level =</span> <span class="dv">1</span>, <span class="at">list.len =</span> <span class="dv">6</span>)</span></code></pre></div>
 <pre><code>## List of 10
 ##  $ url        : chr &quot;https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py/?station=DEN&amp;data=sped&amp;year1=2016&amp;month1=6&amp;day1=1&amp;yea&quot;| __truncated__
 ##  $ status_code: int 200
@@ -664,9 +668,9 @@ This package allows you to pull weather data from airports around the world dire
 </ul>
 <p><em>Note:</em> For some fun examples of 404 pages, see <a href="https://www.creativebloq.com/web-design/best-404-pages-812505" class="uri">https://www.creativebloq.com/web-design/best-404-pages-812505</a></p>
 <p>You can use <code>content</code> from <code>httr</code> to retrieve the contents of the HTTP request we made. For this particular web data, the requested data is a comma-separated file, so you can convert it to a dataframe with <code>read_csv</code>:</p>
-<div class="sourceCode" id="cb1049"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1049-1"><a href="entering-and-cleaning-data-3.html#cb1049-1" aria-hidden="true" tabindex="-1"></a>denver <span class="sc">%&gt;%</span> <span class="fu">content</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb1049-2"><a href="entering-and-cleaning-data-3.html#cb1049-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">skip =</span> <span class="dv">5</span>, <span class="at">na =</span> <span class="st">&quot;M&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb1049-3"><a href="entering-and-cleaning-data-3.html#cb1049-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1049"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1049-1"><a href="entering-and-cleaning-data-3.html#cb1049-1" tabindex="-1"></a>denver <span class="sc">%&gt;%</span> <span class="fu">content</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb1049-2"><a href="entering-and-cleaning-data-3.html#cb1049-2" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">skip =</span> <span class="dv">5</span>, <span class="at">na =</span> <span class="st">&quot;M&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1049-3"><a href="entering-and-cleaning-data-3.html#cb1049-3" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## Rows: 9108 Columns: 3
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
@@ -684,18 +688,18 @@ This package allows you to pull weather data from airports around the world dire
 ## 3 DEN     2016-06-01 00:10:00   6.9</code></pre>
 <p>The <code>riem</code> package wraps up this whole process, so you can call a single function to get in
 the data you want from the API:</p>
-<div class="sourceCode" id="cb1052"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1052-1"><a href="entering-and-cleaning-data-3.html#cb1052-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(riem)</span>
-<span id="cb1052-2"><a href="entering-and-cleaning-data-3.html#cb1052-2" aria-hidden="true" tabindex="-1"></a>denver_2 <span class="ot">&lt;-</span> <span class="fu">riem_measures</span>(<span class="at">station =</span> <span class="st">&quot;DEN&quot;</span>, </span>
-<span id="cb1052-3"><a href="entering-and-cleaning-data-3.html#cb1052-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">date_start =</span> <span class="st">&quot;2016-06-01&quot;</span>,</span>
-<span id="cb1052-4"><a href="entering-and-cleaning-data-3.html#cb1052-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">date_end =</span> <span class="st">&quot;2016-06-30&quot;</span>)</span>
-<span id="cb1052-5"><a href="entering-and-cleaning-data-3.html#cb1052-5" aria-hidden="true" tabindex="-1"></a>denver_2 <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb1052"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1052-1"><a href="entering-and-cleaning-data-3.html#cb1052-1" tabindex="-1"></a><span class="fu">library</span>(riem)</span>
+<span id="cb1052-2"><a href="entering-and-cleaning-data-3.html#cb1052-2" tabindex="-1"></a>denver_2 <span class="ot">&lt;-</span> <span class="fu">riem_measures</span>(<span class="at">station =</span> <span class="st">&quot;DEN&quot;</span>, </span>
+<span id="cb1052-3"><a href="entering-and-cleaning-data-3.html#cb1052-3" tabindex="-1"></a>                          <span class="at">date_start =</span> <span class="st">&quot;2016-06-01&quot;</span>,</span>
+<span id="cb1052-4"><a href="entering-and-cleaning-data-3.html#cb1052-4" tabindex="-1"></a>                          <span class="at">date_end =</span> <span class="st">&quot;2016-06-30&quot;</span>)</span>
+<span id="cb1052-5"><a href="entering-and-cleaning-data-3.html#cb1052-5" tabindex="-1"></a>denver_2 <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) </span></code></pre></div>
 <pre><code>## # A tibble: 3 × 32
 ##   station valid                 lon   lat  tmpf  dwpf  relh  drct  sknt  p01i
 ##   &lt;chr&gt;   &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1 DEN     2016-06-01 00:00:00 -105.  39.8    NA    NA    NA    70     7    NA
 ## 2 DEN     2016-06-01 00:05:00 -105.  39.8    NA    NA    NA    80     8    NA
 ## 3 DEN     2016-06-01 00:10:00 -105.  39.8    NA    NA    NA    80     9    NA
-## # … with 22 more variables: alti &lt;dbl&gt;, mslp &lt;dbl&gt;, vsby &lt;dbl&gt;, gust &lt;dbl&gt;,
+## # ℹ 22 more variables: alti &lt;dbl&gt;, mslp &lt;dbl&gt;, vsby &lt;dbl&gt;, gust &lt;dbl&gt;,
 ## #   skyc1 &lt;chr&gt;, skyc2 &lt;chr&gt;, skyc3 &lt;chr&gt;, skyc4 &lt;chr&gt;, skyl1 &lt;dbl&gt;,
 ## #   skyl2 &lt;dbl&gt;, skyl3 &lt;dbl&gt;, skyl4 &lt;dbl&gt;, wxcodes &lt;chr&gt;,
 ## #   ice_accretion_1hr &lt;lgl&gt;, ice_accretion_3hr &lt;lgl&gt;, ice_accretion_6hr &lt;lgl&gt;,
@@ -703,8 +707,8 @@ the data you want from the API:</p>
 ## #   feel &lt;dbl&gt;, metar &lt;chr&gt;, snowdepth &lt;lgl&gt;</code></pre>
 </div>
 </div>
-<div id="example-r-api-wrapper-packages" class="section level2" number="10.2">
-<h2><span class="header-section-number">10.2</span> Example R API wrapper packages</h2>
+<div id="example-r-api-wrapper-packages" class="section level2 hasAnchor" number="10.2">
+<h2><span class="header-section-number">10.2</span> Example R API wrapper packages<a href="entering-and-cleaning-data-3.html#example-r-api-wrapper-packages" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The <code>tigris</code> package is a very useful example of an API wrapper. It retrieves geographic
 boundary data from the U.S. Census for a number of different geographies:</p>
 <ul>
@@ -735,18 +739,18 @@ boundary data from the U.S. Census for a number of different geographies:</p>
 </ul></li>
 </ul>
 </div>
-<div id="tigris-package" class="section level2" number="10.3">
-<h2><span class="header-section-number">10.3</span> <code>tigris</code> package</h2>
+<div id="tigris-package" class="section level2 hasAnchor" number="10.3">
+<h2><span class="header-section-number">10.3</span> <code>tigris</code> package<a href="entering-and-cleaning-data-3.html#tigris-package" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The following plot is an example of the kinds of maps you can create using the <code>tigris</code>
 package. This map comes from: <em>Kyle Walker. 2016. “tigris: An R Package to Access and Work
 with Geographic Data from the US
-Census Bureau.” The R Journal.</em> This is a great article to read to find out more about
+Census Bureau”. The R Journal.</em> This is a great article to read to find out more about
 <code>tigris</code>.</p>
 <p><img src="figures/tigris_example.png" width="300" style="display: block; margin: auto;" /></p>
 <p>A number of other R packages also help you access and use data from the U.S. Census:</p>
 <ul>
 <li><code>acs</code>: Download, manipulate, and present American Community Survey and Decennial data from the US Census (see “Working with the American Community Survey in R: A Guide to Using the
-acs Package,” a book available free online through the CSU library)</li>
+acs Package”, a book available free online through the CSU library)</li>
 <li><code>USABoundaries</code>: Historical and contemporary boundaries of the United States of America</li>
 <li><code>idbr</code>: R interface to the US Census Bureau International Data Base API (e.g., populations of other countries)</li>
 </ul>
@@ -780,8 +784,8 @@ data useful for scientific research</p>
 <li>Severe Weather Data Inventory (SWDI)</li>
 </ul>
 </div>
-<div id="countyweather" class="section level2" number="10.4">
-<h2><span class="header-section-number">10.4</span> <code>countyweather</code></h2>
+<div id="countyweather" class="section level2 hasAnchor" number="10.4">
+<h2><span class="header-section-number">10.4</span> <code>countyweather</code><a href="entering-and-cleaning-data-3.html#countyweather" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The <code>countyweather</code> package, developed by a student here at CSU, wraps the <code>rnoaa</code> package to
 let you pull and aggregate weather at the county level in the U.S. For example, you can pull
 all data from Miami during Hurricane Andrew:</p>
@@ -811,11 +815,11 @@ can be accessed through: <a href="https://owi.usgs.gov/R/" class="uri">https://o
 <li><code>blsAPI</code>: Bureau of Labor Statistics</li>
 <li><code>rtimes</code>: New York Times</li>
 </ul>
-<p>Find out more about writing API packages with this vignette for the httr package: <a href="https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html" class="uri">https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html</a>. 
+<p>Find out more about writing API packages with this vignette for the httr package: <a href="https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html" class="uri">https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html</a>.
 This document includes advice on error handling within R code that accesses data through an open API.</p>
 </div>
-<div id="cleaning-very-messy-data" class="section level2" number="10.5">
-<h2><span class="header-section-number">10.5</span> Cleaning very messy data</h2>
+<div id="cleaning-very-messy-data" class="section level2 hasAnchor" number="10.5">
+<h2><span class="header-section-number">10.5</span> Cleaning very messy data<a href="entering-and-cleaning-data-3.html#cleaning-very-messy-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>One version of Atlantic basin hurricane tracks is available here: <a href="https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2017-050118.txt" class="uri">https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2017-050118.txt</a>. The data is not in a classic delimited format:</p>
 <p><img src="figures/hurrtrackformat.png" width="\textwidth" style="display: block; margin: auto;" /></p>
 <p>This data is formatted in the following way:</p>
@@ -836,51 +840,51 @@ This document includes advice on error handling within R code that accesses data
 <p>Note: Base R has <code>readLines</code>, which is very similar.</p>
 <p>The <code>read_lines</code> function from <code>readr</code> will read in lines from a text file directly, without trying to separate into columns. You can use the <code>n_max</code> argument to specify the number of lines to read it. </p>
 <p>For example, to read in three lines from the hurricane tracking data, you can run:</p>
-<div class="sourceCode" id="cb1054"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1054-1"><a href="entering-and-cleaning-data-3.html#cb1054-1" aria-hidden="true" tabindex="-1"></a>tracks_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;http://www.nhc.noaa.gov/data/hurdat/&quot;</span>,</span>
-<span id="cb1054-2"><a href="entering-and-cleaning-data-3.html#cb1054-2" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&quot;hurdat2-1851-2017-050118.txt&quot;</span>)</span>
-<span id="cb1054-3"><a href="entering-and-cleaning-data-3.html#cb1054-3" aria-hidden="true" tabindex="-1"></a>hurr_tracks <span class="ot">&lt;-</span> <span class="fu">read_lines</span>(tracks_url, <span class="at">n_max =</span> <span class="dv">3</span>)</span>
-<span id="cb1054-4"><a href="entering-and-cleaning-data-3.html#cb1054-4" aria-hidden="true" tabindex="-1"></a>hurr_tracks</span></code></pre></div>
+<div class="sourceCode" id="cb1054"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1054-1"><a href="entering-and-cleaning-data-3.html#cb1054-1" tabindex="-1"></a>tracks_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;http://www.nhc.noaa.gov/data/hurdat/&quot;</span>,</span>
+<span id="cb1054-2"><a href="entering-and-cleaning-data-3.html#cb1054-2" tabindex="-1"></a>                     <span class="st">&quot;hurdat2-1851-2017-050118.txt&quot;</span>)</span>
+<span id="cb1054-3"><a href="entering-and-cleaning-data-3.html#cb1054-3" tabindex="-1"></a>hurr_tracks <span class="ot">&lt;-</span> <span class="fu">read_lines</span>(tracks_url, <span class="at">n_max =</span> <span class="dv">3</span>)</span>
+<span id="cb1054-4"><a href="entering-and-cleaning-data-3.html#cb1054-4" tabindex="-1"></a>hurr_tracks</span></code></pre></div>
 <pre><code>## [1] &quot;AL011851,            UNNAMED,     14,&quot;                                                                                   
 ## [2] &quot;18510625, 0000,  , HU, 28.0N,  94.8W,  80, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999,&quot;
 ## [3] &quot;18510625, 0600,  , HU, 28.0N,  95.4W,  80, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999,&quot;</code></pre>
 <p>The data has been read in as a vector, rather than a dataframe:</p>
-<div class="sourceCode" id="cb1056"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1056-1"><a href="entering-and-cleaning-data-3.html#cb1056-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(hurr_tracks)</span></code></pre></div>
+<div class="sourceCode" id="cb1056"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1056-1"><a href="entering-and-cleaning-data-3.html#cb1056-1" tabindex="-1"></a><span class="fu">class</span>(hurr_tracks)</span></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb1058"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1058-1"><a href="entering-and-cleaning-data-3.html#cb1058-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(hurr_tracks)</span></code></pre></div>
+<div class="sourceCode" id="cb1058"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1058-1"><a href="entering-and-cleaning-data-3.html#cb1058-1" tabindex="-1"></a><span class="fu">length</span>(hurr_tracks)</span></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb1060"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1060-1"><a href="entering-and-cleaning-data-3.html#cb1060-1" aria-hidden="true" tabindex="-1"></a>hurr_tracks[<span class="dv">1</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1060"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1060-1"><a href="entering-and-cleaning-data-3.html#cb1060-1" tabindex="-1"></a>hurr_tracks[<span class="dv">1</span>]</span></code></pre></div>
 <pre><code>## [1] &quot;AL011851,            UNNAMED,     14,&quot;</code></pre>
 <p>You can use regular expressions to break each line up. For example, you can use <code>str_split</code> from the <code>stringr</code> package to break the first line of the hurricane track data into its three separate components:</p>
-<div class="sourceCode" id="cb1062"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1062-1"><a href="entering-and-cleaning-data-3.html#cb1062-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb1062-2"><a href="entering-and-cleaning-data-3.html#cb1062-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_split</span>(hurr_tracks[<span class="dv">1</span>], <span class="at">pattern =</span> <span class="st">&quot;,&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1062"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1062-1"><a href="entering-and-cleaning-data-3.html#cb1062-1" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1062-2"><a href="entering-and-cleaning-data-3.html#cb1062-2" tabindex="-1"></a><span class="fu">str_split</span>(hurr_tracks[<span class="dv">1</span>], <span class="at">pattern =</span> <span class="st">&quot;,&quot;</span>)</span></code></pre></div>
 <pre><code>## [[1]]
 ## [1] &quot;AL011851&quot;            &quot;            UNNAMED&quot; &quot;     14&quot;            
 ## [4] &quot;&quot;</code></pre>
 <p>You can use this to create a list where each element of the list has the split-up version of a line of the original data. First, read in all of the data:</p>
-<div class="sourceCode" id="cb1064"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1064-1"><a href="entering-and-cleaning-data-3.html#cb1064-1" aria-hidden="true" tabindex="-1"></a>tracks_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;http://www.nhc.noaa.gov/data/hurdat/&quot;</span>,</span>
-<span id="cb1064-2"><a href="entering-and-cleaning-data-3.html#cb1064-2" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&quot;hurdat2-1851-2017-050118.txt&quot;</span>)</span>
-<span id="cb1064-3"><a href="entering-and-cleaning-data-3.html#cb1064-3" aria-hidden="true" tabindex="-1"></a>hurr_tracks <span class="ot">&lt;-</span> <span class="fu">read_lines</span>(tracks_url)</span>
-<span id="cb1064-4"><a href="entering-and-cleaning-data-3.html#cb1064-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(hurr_tracks)</span></code></pre></div>
+<div class="sourceCode" id="cb1064"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1064-1"><a href="entering-and-cleaning-data-3.html#cb1064-1" tabindex="-1"></a>tracks_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;http://www.nhc.noaa.gov/data/hurdat/&quot;</span>,</span>
+<span id="cb1064-2"><a href="entering-and-cleaning-data-3.html#cb1064-2" tabindex="-1"></a>                     <span class="st">&quot;hurdat2-1851-2017-050118.txt&quot;</span>)</span>
+<span id="cb1064-3"><a href="entering-and-cleaning-data-3.html#cb1064-3" tabindex="-1"></a>hurr_tracks <span class="ot">&lt;-</span> <span class="fu">read_lines</span>(tracks_url)</span>
+<span id="cb1064-4"><a href="entering-and-cleaning-data-3.html#cb1064-4" tabindex="-1"></a><span class="fu">length</span>(hurr_tracks)</span></code></pre></div>
 <pre><code>## [1] 52151</code></pre>
 <p>Next, use <code>map</code> with <code>str_split</code> to split each line of the data at the commas:</p>
-<div class="sourceCode" id="cb1066"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1066-1"><a href="entering-and-cleaning-data-3.html#cb1066-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
-<span id="cb1066-2"><a href="entering-and-cleaning-data-3.html#cb1066-2" aria-hidden="true" tabindex="-1"></a>hurr_tracks <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(hurr_tracks, str_split,</span>
-<span id="cb1066-3"><a href="entering-and-cleaning-data-3.html#cb1066-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">pattern =</span> <span class="st">&quot;,&quot;</span>, <span class="at">simplify =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1066-4"><a href="entering-and-cleaning-data-3.html#cb1066-4" aria-hidden="true" tabindex="-1"></a>hurr_tracks[[<span class="dv">1</span>]]</span></code></pre></div>
+<div class="sourceCode" id="cb1066"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1066-1"><a href="entering-and-cleaning-data-3.html#cb1066-1" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1066-2"><a href="entering-and-cleaning-data-3.html#cb1066-2" tabindex="-1"></a>hurr_tracks <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(hurr_tracks, str_split,</span>
+<span id="cb1066-3"><a href="entering-and-cleaning-data-3.html#cb1066-3" tabindex="-1"></a>                   <span class="at">pattern =</span> <span class="st">&quot;,&quot;</span>, <span class="at">simplify =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1066-4"><a href="entering-and-cleaning-data-3.html#cb1066-4" tabindex="-1"></a>hurr_tracks[[<span class="dv">1</span>]]</span></code></pre></div>
 <pre><code>##      [,1]       [,2]                  [,3]      [,4]
 ## [1,] &quot;AL011851&quot; &quot;            UNNAMED&quot; &quot;     14&quot; &quot;&quot;</code></pre>
-<div class="sourceCode" id="cb1068"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1068-1"><a href="entering-and-cleaning-data-3.html#cb1068-1" aria-hidden="true" tabindex="-1"></a>hurr_tracks[[<span class="dv">2</span>]][<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1068"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1068-1"><a href="entering-and-cleaning-data-3.html#cb1068-1" tabindex="-1"></a>hurr_tracks[[<span class="dv">2</span>]][<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div>
 <pre><code>## [1] &quot;18510625&quot; &quot; 0000&quot;</code></pre>
 <p>Next, you want to split this list into two lists, one with the shorter “meta-data” lines and one with the longer “observation” lines. You can use <code>map_int</code> to create a vector with the length of each line. You will later use this to identify which lines are short or long.</p>
-<div class="sourceCode" id="cb1070"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1070-1"><a href="entering-and-cleaning-data-3.html#cb1070-1" aria-hidden="true" tabindex="-1"></a>hurr_lengths <span class="ot">&lt;-</span> <span class="fu">map_int</span>(hurr_tracks, length)</span>
-<span id="cb1070-2"><a href="entering-and-cleaning-data-3.html#cb1070-2" aria-hidden="true" tabindex="-1"></a>hurr_lengths[<span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1070"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1070-1"><a href="entering-and-cleaning-data-3.html#cb1070-1" tabindex="-1"></a>hurr_lengths <span class="ot">&lt;-</span> <span class="fu">map_int</span>(hurr_tracks, length)</span>
+<span id="cb1070-2"><a href="entering-and-cleaning-data-3.html#cb1070-2" tabindex="-1"></a>hurr_lengths[<span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>]</span></code></pre></div>
 <pre><code>##  [1]  4 21 21 21 21 21 21 21 21 21 21 21 21 21 21  4 21</code></pre>
-<div class="sourceCode" id="cb1072"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1072-1"><a href="entering-and-cleaning-data-3.html#cb1072-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(hurr_lengths)</span></code></pre></div>
+<div class="sourceCode" id="cb1072"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1072-1"><a href="entering-and-cleaning-data-3.html#cb1072-1" tabindex="-1"></a><span class="fu">unique</span>(hurr_lengths)</span></code></pre></div>
 <pre><code>## [1]  4 21</code></pre>
 <p>You can use bracket indexing to split the <code>hurr_tracks</code> into two lists: one with the shorter lines that start each observation (<code>hurr_meta</code>) and one with the storm observations (<code>hurr_obs</code>). Use bracket indexing with the <code>hurr_lengths</code> vector you just created to make that split.</p>
-<div class="sourceCode" id="cb1074"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1074-1"><a href="entering-and-cleaning-data-3.html#cb1074-1" aria-hidden="true" tabindex="-1"></a>hurr_meta <span class="ot">&lt;-</span> hurr_tracks[hurr_lengths <span class="sc">==</span> <span class="dv">4</span>]</span>
-<span id="cb1074-2"><a href="entering-and-cleaning-data-3.html#cb1074-2" aria-hidden="true" tabindex="-1"></a>hurr_obs <span class="ot">&lt;-</span> hurr_tracks[hurr_lengths <span class="sc">==</span> <span class="dv">21</span>]</span></code></pre></div>
-<div class="sourceCode" id="cb1075"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1075-1"><a href="entering-and-cleaning-data-3.html#cb1075-1" aria-hidden="true" tabindex="-1"></a>hurr_meta[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1074"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1074-1"><a href="entering-and-cleaning-data-3.html#cb1074-1" tabindex="-1"></a>hurr_meta <span class="ot">&lt;-</span> hurr_tracks[hurr_lengths <span class="sc">==</span> <span class="dv">4</span>]</span>
+<span id="cb1074-2"><a href="entering-and-cleaning-data-3.html#cb1074-2" tabindex="-1"></a>hurr_obs <span class="ot">&lt;-</span> hurr_tracks[hurr_lengths <span class="sc">==</span> <span class="dv">21</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1075"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1075-1"><a href="entering-and-cleaning-data-3.html#cb1075-1" tabindex="-1"></a>hurr_meta[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code></pre></div>
 <pre><code>## [[1]]
 ##      [,1]       [,2]                  [,3]      [,4]
 ## [1,] &quot;AL011851&quot; &quot;            UNNAMED&quot; &quot;     14&quot; &quot;&quot;  
@@ -892,7 +896,7 @@ This document includes advice on error handling within R code that accesses data
 ## [[3]]
 ##      [,1]       [,2]                  [,3]      [,4]
 ## [1,] &quot;AL031851&quot; &quot;            UNNAMED&quot; &quot;      1&quot; &quot;&quot;</code></pre>
-<div class="sourceCode" id="cb1077"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1077-1"><a href="entering-and-cleaning-data-3.html#cb1077-1" aria-hidden="true" tabindex="-1"></a>hurr_obs[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1077"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1077-1"><a href="entering-and-cleaning-data-3.html#cb1077-1" tabindex="-1"></a>hurr_obs[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div>
 <pre><code>## [[1]]
 ##      [,1]       [,2]    [,3] [,4]  [,5]     [,6]      [,7]   [,8]    [,9]   
 ## [1,] &quot;18510625&quot; &quot; 0000&quot; &quot;  &quot; &quot; HU&quot; &quot; 28.0N&quot; &quot;  94.8W&quot; &quot;  80&quot; &quot; -999&quot; &quot; -999&quot;
@@ -909,15 +913,19 @@ This document includes advice on error handling within R code that accesses data
 ##      [,19]   [,20]   [,21]
 ## [1,] &quot; -999&quot; &quot; -999&quot; &quot;&quot;</code></pre>
 <p>Now, you can use <code>bind_rows</code> from <code>dplyr</code> to change the list of metadata into a dataframe. (You first need to use <code>as_tibble</code> with <code>map</code> to convert all elements of the list from matrices to dataframes.)</p>
-<div class="sourceCode" id="cb1079"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1079-1"><a href="entering-and-cleaning-data-3.html#cb1079-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr); <span class="fu">library</span>(tibble)</span>
-<span id="cb1079-2"><a href="entering-and-cleaning-data-3.html#cb1079-2" aria-hidden="true" tabindex="-1"></a>hurr_meta <span class="ot">&lt;-</span> hurr_meta <span class="sc">%&gt;%</span> </span>
-<span id="cb1079-3"><a href="entering-and-cleaning-data-3.html#cb1079-3" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map</span>(as_tibble) <span class="sc">%&gt;%</span> </span>
-<span id="cb1079-4"><a href="entering-and-cleaning-data-3.html#cb1079-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>()</span></code></pre></div>
-<pre><code>## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.
-## Using compatibility `.name_repair`.
+<div class="sourceCode" id="cb1079"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1079-1"><a href="entering-and-cleaning-data-3.html#cb1079-1" tabindex="-1"></a><span class="fu">library</span>(dplyr); <span class="fu">library</span>(tibble)</span>
+<span id="cb1079-2"><a href="entering-and-cleaning-data-3.html#cb1079-2" tabindex="-1"></a>hurr_meta <span class="ot">&lt;-</span> hurr_meta <span class="sc">%&gt;%</span> </span>
+<span id="cb1079-3"><a href="entering-and-cleaning-data-3.html#cb1079-3" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map</span>(as_tibble) <span class="sc">%&gt;%</span> </span>
+<span id="cb1079-4"><a href="entering-and-cleaning-data-3.html#cb1079-4" tabindex="-1"></a>  <span class="fu">bind_rows</span>()</span></code></pre></div>
+<pre><code>## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
+## `.name_repair` is omitted as of tibble 2.0.0.
+## ℹ Using compatibility `.name_repair`.
+## ℹ The deprecated feature was likely used in the purrr package.
+##   Please report the issue at &lt;https://github.com/tidyverse/purrr/issues&gt;.
 ## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
-<div class="sourceCode" id="cb1081"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1081-1"><a href="entering-and-cleaning-data-3.html#cb1081-1" aria-hidden="true" tabindex="-1"></a>hurr_meta <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
+<div class="sourceCode" id="cb1081"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1081-1"><a href="entering-and-cleaning-data-3.html#cb1081-1" tabindex="-1"></a>hurr_meta <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 4
 ##   V1       V2                    V3        V4   
 ##   &lt;chr&gt;    &lt;chr&gt;                 &lt;chr&gt;     &lt;chr&gt;
@@ -928,22 +936,22 @@ This document includes advice on error handling within R code that accesses data
 <ul>
 <li>First, the fourth column doesn’t have any non-missing values, so you can get rid of it:</li>
 </ul>
-<div class="sourceCode" id="cb1083"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1083-1"><a href="entering-and-cleaning-data-3.html#cb1083-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(hurr_meta<span class="sc">$</span>V4)</span></code></pre></div>
+<div class="sourceCode" id="cb1083"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1083-1"><a href="entering-and-cleaning-data-3.html#cb1083-1" tabindex="-1"></a><span class="fu">unique</span>(hurr_meta<span class="sc">$</span>V4)</span></code></pre></div>
 <pre><code>## [1] &quot;&quot;</code></pre>
 <ul>
 <li>Second, the second and third columns include a lot of leading whitespace:</li>
 </ul>
-<div class="sourceCode" id="cb1085"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1085-1"><a href="entering-and-cleaning-data-3.html#cb1085-1" aria-hidden="true" tabindex="-1"></a>hurr_meta<span class="sc">$</span>V2[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1085"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1085-1"><a href="entering-and-cleaning-data-3.html#cb1085-1" tabindex="-1"></a>hurr_meta<span class="sc">$</span>V2[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div>
 <pre><code>## [1] &quot;            UNNAMED&quot; &quot;            UNNAMED&quot;</code></pre>
 <ul>
 <li>Last, we want to name the columns.</li>
 </ul>
-<div class="sourceCode" id="cb1087"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1087-1"><a href="entering-and-cleaning-data-3.html#cb1087-1" aria-hidden="true" tabindex="-1"></a>hurr_meta <span class="ot">&lt;-</span> hurr_meta <span class="sc">%&gt;%</span></span>
-<span id="cb1087-2"><a href="entering-and-cleaning-data-3.html#cb1087-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>V4) <span class="sc">%&gt;%</span></span>
-<span id="cb1087-3"><a href="entering-and-cleaning-data-3.html#cb1087-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">storm_id =</span> V1, <span class="at">storm_name =</span> V2, <span class="at">n_obs =</span> V3) <span class="sc">%&gt;%</span></span>
-<span id="cb1087-4"><a href="entering-and-cleaning-data-3.html#cb1087-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">storm_name =</span> <span class="fu">str_trim</span>(storm_name),</span>
-<span id="cb1087-5"><a href="entering-and-cleaning-data-3.html#cb1087-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">n_obs =</span> <span class="fu">as.numeric</span>(n_obs))</span>
-<span id="cb1087-6"><a href="entering-and-cleaning-data-3.html#cb1087-6" aria-hidden="true" tabindex="-1"></a>hurr_meta <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1087"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1087-1"><a href="entering-and-cleaning-data-3.html#cb1087-1" tabindex="-1"></a>hurr_meta <span class="ot">&lt;-</span> hurr_meta <span class="sc">%&gt;%</span></span>
+<span id="cb1087-2"><a href="entering-and-cleaning-data-3.html#cb1087-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>V4) <span class="sc">%&gt;%</span></span>
+<span id="cb1087-3"><a href="entering-and-cleaning-data-3.html#cb1087-3" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">storm_id =</span> V1, <span class="at">storm_name =</span> V2, <span class="at">n_obs =</span> V3) <span class="sc">%&gt;%</span></span>
+<span id="cb1087-4"><a href="entering-and-cleaning-data-3.html#cb1087-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">storm_name =</span> <span class="fu">str_trim</span>(storm_name),</span>
+<span id="cb1087-5"><a href="entering-and-cleaning-data-3.html#cb1087-5" tabindex="-1"></a>         <span class="at">n_obs =</span> <span class="fu">as.numeric</span>(n_obs))</span>
+<span id="cb1087-6"><a href="entering-and-cleaning-data-3.html#cb1087-6" tabindex="-1"></a>hurr_meta <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 3
 ##   storm_id storm_name n_obs
 ##   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
@@ -951,18 +959,18 @@ This document includes advice on error handling within R code that accesses data
 ## 2 AL021851 UNNAMED        1
 ## 3 AL031851 UNNAMED        1</code></pre>
 <p>Now you can do the same idea with the hurricane observations. First, we’ll want to add storm identifiers to that data. The “meta” data includes storm ids and the number of observations per storm. We can take advantage of that to make a <code>storm_id</code> vector that will line up with the storm observations.</p>
-<div class="sourceCode" id="cb1089"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1089-1"><a href="entering-and-cleaning-data-3.html#cb1089-1" aria-hidden="true" tabindex="-1"></a>storm_id <span class="ot">&lt;-</span> <span class="fu">rep</span>(hurr_meta<span class="sc">$</span>storm_id, <span class="at">times =</span> hurr_meta<span class="sc">$</span>n_obs)</span>
-<span id="cb1089-2"><a href="entering-and-cleaning-data-3.html#cb1089-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(storm_id, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1089"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1089-1"><a href="entering-and-cleaning-data-3.html#cb1089-1" tabindex="-1"></a>storm_id <span class="ot">&lt;-</span> <span class="fu">rep</span>(hurr_meta<span class="sc">$</span>storm_id, <span class="at">times =</span> hurr_meta<span class="sc">$</span>n_obs)</span>
+<span id="cb1089-2"><a href="entering-and-cleaning-data-3.html#cb1089-2" tabindex="-1"></a><span class="fu">head</span>(storm_id, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;AL011851&quot; &quot;AL011851&quot; &quot;AL011851&quot;</code></pre>
-<div class="sourceCode" id="cb1091"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1091-1"><a href="entering-and-cleaning-data-3.html#cb1091-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(storm_id)</span></code></pre></div>
+<div class="sourceCode" id="cb1091"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1091-1"><a href="entering-and-cleaning-data-3.html#cb1091-1" tabindex="-1"></a><span class="fu">length</span>(storm_id)</span></code></pre></div>
 <pre><code>## [1] 50303</code></pre>
-<div class="sourceCode" id="cb1093"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1093-1"><a href="entering-and-cleaning-data-3.html#cb1093-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(hurr_obs)</span></code></pre></div>
+<div class="sourceCode" id="cb1093"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1093-1"><a href="entering-and-cleaning-data-3.html#cb1093-1" tabindex="-1"></a><span class="fu">length</span>(hurr_obs)</span></code></pre></div>
 <pre><code>## [1] 50303</code></pre>
-<div class="sourceCode" id="cb1095"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1095-1"><a href="entering-and-cleaning-data-3.html#cb1095-1" aria-hidden="true" tabindex="-1"></a>hurr_obs <span class="ot">&lt;-</span> hurr_obs <span class="sc">%&gt;%</span> </span>
-<span id="cb1095-2"><a href="entering-and-cleaning-data-3.html#cb1095-2" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map</span>(as_tibble) <span class="sc">%&gt;%</span> </span>
-<span id="cb1095-3"><a href="entering-and-cleaning-data-3.html#cb1095-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb1095-4"><a href="entering-and-cleaning-data-3.html#cb1095-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">storm_id =</span> storm_id)</span>
-<span id="cb1095-5"><a href="entering-and-cleaning-data-3.html#cb1095-5" aria-hidden="true" tabindex="-1"></a>hurr_obs <span class="sc">%&gt;%</span> <span class="fu">select</span>(V1<span class="sc">:</span>V2, V5<span class="sc">:</span>V6, storm_id) <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1095"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1095-1"><a href="entering-and-cleaning-data-3.html#cb1095-1" tabindex="-1"></a>hurr_obs <span class="ot">&lt;-</span> hurr_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb1095-2"><a href="entering-and-cleaning-data-3.html#cb1095-2" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map</span>(as_tibble) <span class="sc">%&gt;%</span> </span>
+<span id="cb1095-3"><a href="entering-and-cleaning-data-3.html#cb1095-3" tabindex="-1"></a>  <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb1095-4"><a href="entering-and-cleaning-data-3.html#cb1095-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">storm_id =</span> storm_id)</span>
+<span id="cb1095-5"><a href="entering-and-cleaning-data-3.html#cb1095-5" tabindex="-1"></a>hurr_obs <span class="sc">%&gt;%</span> <span class="fu">select</span>(V1<span class="sc">:</span>V2, V5<span class="sc">:</span>V6, storm_id) <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 5
 ##   V1       V2      V5       V6        storm_id
 ##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;   
@@ -970,17 +978,17 @@ This document includes advice on error handling within R code that accesses data
 ## 2 18510625 &quot; 0600&quot; &quot; 28.0N&quot; &quot;  95.4W&quot; AL011851
 ## 3 18510625 &quot; 1200&quot; &quot; 28.0N&quot; &quot;  96.0W&quot; AL011851</code></pre>
 </div>
-<div id="in-course-exercise-chapter-10" class="section level2" number="10.6">
-<h2><span class="header-section-number">10.6</span> In-course exercise Chapter 10</h2>
-<div id="working-with-an-api-wrapper-package" class="section level3" number="10.6.1">
-<h3><span class="header-section-number">10.6.1</span> Working with an API wrapper package</h3>
+<div id="in-course-exercise-chapter-10" class="section level2 hasAnchor" number="10.6">
+<h2><span class="header-section-number">10.6</span> In-course exercise Chapter 10<a href="entering-and-cleaning-data-3.html#in-course-exercise-chapter-10" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="working-with-an-api-wrapper-package" class="section level3 hasAnchor" number="10.6.1">
+<h3><span class="header-section-number">10.6.1</span> Working with an API wrapper package<a href="entering-and-cleaning-data-3.html#working-with-an-api-wrapper-package" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The <code>rplos</code> package provides a wrapper to the Public Library of Science (PLoS)’s API. PLOS
 has a collection of academic journals spanning a variety of topics.</p>
 <ul>
 <li>Check out this page of documentation for this API: <a href="http://api.plos.org/solr/search-fields/" class="uri">http://api.plos.org/solr/search-fields/</a>
 Look through the potential search terms.</li>
 <li>Use the <code>searchplos</code> function to search articles in the PLoS collection for the term
-“West Nile.” Pull the publication date, title, abstract, article type, subject,
+“West Nile”. Pull the publication date, title, abstract, article type, subject,
 and journal of each
 matching article
 and save the result to an R object called <code>wn_papers</code>. You may find it helpful to look at the
@@ -1002,101 +1010,102 @@ make sure it has the same number of rows as the number of articles that match th
 <li>Create a plot of the number of articles published per year. Use color to show which
 articles are Research Articles versus other types of articles.</li>
 <li>Determine which journals have published these articles and the number of articles published
-in each journal. You may notice that sometimes “PLoS” is used and sometimes “PLOS.” See if you
+in each journal. You may notice that sometimes “PLoS” is used and sometimes “PLOS”. See if you
 can fix this in R to get the count of articles per journal without this capitalization
 difference causing problems.</li>
 <li>Explore the list of packages on ROpenSci, those through the USGS, and those related to
 the U.S. Census. See if you can identify any other packages that might provide access to
 data relevant to West Nile virus.</li>
 </ul>
-<div id="example-r-code-23" class="section level4" number="10.6.1.1">
-<h4><span class="header-section-number">10.6.1.1</span> Example R code</h4>
-<div class="sourceCode" id="cb1097"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1097-1"><a href="entering-and-cleaning-data-3.html#cb1097-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rplos)</span>
-<span id="cb1097-2"><a href="entering-and-cleaning-data-3.html#cb1097-2" aria-hidden="true" tabindex="-1"></a>wn_papers <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;West Nile&quot;</span>, </span>
-<span id="cb1097-3"><a href="entering-and-cleaning-data-3.html#cb1097-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
-<span id="cb1097-4"><a href="entering-and-cleaning-data-3.html#cb1097-4" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</span></code></pre></div>
+<div id="example-r-code-23" class="section level4 hasAnchor" number="10.6.1.1">
+<h4><span class="header-section-number">10.6.1.1</span> Example R code<a href="entering-and-cleaning-data-3.html#example-r-code-23" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb1097"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1097-1"><a href="entering-and-cleaning-data-3.html#cb1097-1" tabindex="-1"></a><span class="fu">library</span>(rplos)</span>
+<span id="cb1097-2"><a href="entering-and-cleaning-data-3.html#cb1097-2" tabindex="-1"></a>wn_papers <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;West Nile&quot;</span>, </span>
+<span id="cb1097-3"><a href="entering-and-cleaning-data-3.html#cb1097-3" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
+<span id="cb1097-4"><a href="entering-and-cleaning-data-3.html#cb1097-4" tabindex="-1"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</span></code></pre></div>
 <p>Confirm the structure of the returned object:</p>
-<div class="sourceCode" id="cb1098"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1098-1"><a href="entering-and-cleaning-data-3.html#cb1098-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wn_papers)</span></code></pre></div>
+<div class="sourceCode" id="cb1098"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1098-1"><a href="entering-and-cleaning-data-3.html#cb1098-1" tabindex="-1"></a><span class="fu">str</span>(wn_papers)</span></code></pre></div>
 <pre><code>## List of 2
 ##  $ meta: tibble [1 × 2] (S3: tbl_df/tbl/data.frame)
-##   ..$ numFound: int 3896
+##   ..$ numFound: int 4118
 ##   ..$ start   : int 0
 ##  $ data: tibble [10 × 6] (S3: tbl_df/tbl/data.frame)
-##   ..$ journal         : chr [1:10] &quot;PLOS Neglected Tropical Diseases&quot; &quot;PLOS Pathogens&quot; &quot;PLOS Neglected Tropical Diseases&quot; &quot;PLOS ONE&quot; ...
-##   ..$ publication_date: chr [1:10] &quot;2021-05-06T00:00:00Z&quot; &quot;2019-10-31T00:00:00Z&quot; &quot;2022-01-10T00:00:00Z&quot; &quot;2015-12-30T00:00:00Z&quot; ...
-##   ..$ article_type    : chr [1:10] &quot;Review&quot; &quot;Review&quot; &quot;Research Article&quot; &quot;Research Article&quot; ...
-##   ..$ abstract        : chr [1:10] &quot;\nAfter the unexpected arrival of West Nile virus (WNV) in the United States in 1999, the mosquito-borne virus &quot;| __truncated__ &quot;\nIt has been 20 years since West Nile virus first emerged in the Americas, and since then, little progress has&quot;| __truncated__ &quot;Background: West Nile virus is a mosquito-borne flavivirus which has been posing continuous challenges to publi&quot;| __truncated__ &quot;\nWest Nile virus (WNV) is a mosquito-transmitted Flavivirus belonging to the Japanese encephalitis antigenic c&quot;| __truncated__ ...
-##   ..$ title           : chr [1:10] &quot;A 20-year historical review of West Nile virus since its initial emergence in North America: Has West Nile viru&quot;| __truncated__ &quot;Twenty years of West Nile virus spread and evolution in the Americas visualized by Nextstrain&quot; &quot;Epidemiology of West Nile virus in Africa: An underestimated threat&quot; &quot;Spatio-Temporal Identification of Areas Suitable for West Nile Disease in the Mediterranean Basin and Central Europe&quot; ...
-##   ..$ subject         : chr [1:10] &quot;/Biology and life sciences/Anatomy/Body fluids/Blood,/Biology and life sciences/Immunology/Vaccination and immu&quot;| __truncated__ &quot;/Biology and life sciences/Biogeography/Phylogeography,/Biology and life sciences/Evolutionary biology/Evolutio&quot;| __truncated__ &quot;/Biology and life sciences/Microbiology/Medical microbiology/Microbial pathogens/Viral pathogens/Flaviviruses/W&quot;| __truncated__ &quot;/Biology and life sciences/Developmental biology/Life cycles/Larvae,/Biology and life sciences/Microbiology/Med&quot;| __truncated__ ...
-##   ..- attr(*, &quot;numFound&quot;)= int 3896
+##   ..$ journal         : chr [1:10] &quot;PLOS Neglected Tropical Diseases&quot; &quot;PLOS Pathogens&quot; &quot;PLOS Climate&quot; &quot;PLOS Neglected Tropical Diseases&quot; ...
+##   ..$ publication_date: chr [1:10] &quot;2021-05-06T00:00:00Z&quot; &quot;2019-10-31T00:00:00Z&quot; &quot;2023-05-01T00:00:00Z&quot; &quot;2022-01-10T00:00:00Z&quot; ...
+##   ..$ article_type    : chr [1:10] &quot;Review&quot; &quot;Review&quot; &quot;Review&quot; &quot;Research Article&quot; ...
+##   ..$ abstract        : chr [1:10] &quot;\nAfter the unexpected arrival of West Nile virus (WNV) in the United States in 1999, the mosquito-borne virus &quot;| __truncated__ &quot;\nIt has been 20 years since West Nile virus first emerged in the Americas, and since then, little progress has&quot;| __truncated__ &quot;\nWest Nile virus (WNV) is an arbovirus with a wide geographical distribution. It is maintained in an enzootic &quot;| __truncated__ &quot;Background: West Nile virus is a mosquito-borne flavivirus which has been posing continuous challenges to publi&quot;| __truncated__ ...
+##   ..$ title           : chr [1:10] &quot;A 20-year historical review of West Nile virus since its initial emergence in North America: Has West Nile viru&quot;| __truncated__ &quot;Twenty years of West Nile virus spread and evolution in the Americas visualized by Nextstrain&quot; &quot;West Nile virus eco-epidemiology and climate change&quot; &quot;Epidemiology of West Nile virus in Africa: An underestimated threat&quot; ...
+##   ..$ subject         : chr [1:10] &quot;/Biology and life sciences/Anatomy/Body fluids/Blood,/Biology and life sciences/Immunology/Vaccination and immu&quot;| __truncated__ &quot;/Biology and life sciences/Biogeography/Phylogeography,/Biology and life sciences/Evolutionary biology/Evolutio&quot;| __truncated__ &quot;/Biology and life sciences/Microbiology/Medical microbiology/Microbial pathogens/Viral pathogens/Flaviviruses/W&quot;| __truncated__ &quot;/Biology and life sciences/Microbiology/Medical microbiology/Microbial pathogens/Viral pathogens/Flaviviruses/W&quot;| __truncated__ ...
+##   ..- attr(*, &quot;numFound&quot;)= int 4118
 ##   ..- attr(*, &quot;start&quot;)= int 0</code></pre>
 <p>Look at the meta data:</p>
-<div class="sourceCode" id="cb1100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1100-1"><a href="entering-and-cleaning-data-3.html#cb1100-1" aria-hidden="true" tabindex="-1"></a>wn_papers<span class="sc">$</span>meta</span></code></pre></div>
+<div class="sourceCode" id="cb1100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1100-1"><a href="entering-and-cleaning-data-3.html#cb1100-1" tabindex="-1"></a>wn_papers<span class="sc">$</span>meta</span></code></pre></div>
 <pre><code>## # A tibble: 1 × 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1     3896     0</code></pre>
+## 1     4118     0</code></pre>
 <p>Query for just articles with “West Nile” in the title:</p>
-<div class="sourceCode" id="cb1102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1102-1"><a href="entering-and-cleaning-data-3.html#cb1102-1" aria-hidden="true" tabindex="-1"></a>wn_papers_titles <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
-<span id="cb1102-2"><a href="entering-and-cleaning-data-3.html#cb1102-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
-<span id="cb1102-3"><a href="entering-and-cleaning-data-3.html#cb1102-3" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb1102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1102-1"><a href="entering-and-cleaning-data-3.html#cb1102-1" tabindex="-1"></a>wn_papers_titles <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
+<span id="cb1102-2"><a href="entering-and-cleaning-data-3.html#cb1102-2" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
+<span id="cb1102-3"><a href="entering-and-cleaning-data-3.html#cb1102-3" tabindex="-1"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>))</span></code></pre></div>
 <p>Look at the metadata:</p>
-<div class="sourceCode" id="cb1103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1103-1"><a href="entering-and-cleaning-data-3.html#cb1103-1" aria-hidden="true" tabindex="-1"></a>wn_papers_titles<span class="sc">$</span>meta</span></code></pre></div>
+<div class="sourceCode" id="cb1103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1103-1"><a href="entering-and-cleaning-data-3.html#cb1103-1" tabindex="-1"></a>wn_papers_titles<span class="sc">$</span>meta</span></code></pre></div>
 <pre><code>## # A tibble: 1 × 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1      239     0</code></pre>
+## 1      248     0</code></pre>
 <p>Re-run the query using an appropriate limit to get all the matching articles:</p>
-<div class="sourceCode" id="cb1105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1105-1"><a href="entering-and-cleaning-data-3.html#cb1105-1" aria-hidden="true" tabindex="-1"></a>wn_papers_titles <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
-<span id="cb1105-2"><a href="entering-and-cleaning-data-3.html#cb1105-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
-<span id="cb1105-3"><a href="entering-and-cleaning-data-3.html#cb1105-3" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>),</span>
-<span id="cb1105-4"><a href="entering-and-cleaning-data-3.html#cb1105-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">limit =</span> <span class="dv">190</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1105-1"><a href="entering-and-cleaning-data-3.html#cb1105-1" tabindex="-1"></a>wn_papers_titles <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
+<span id="cb1105-2"><a href="entering-and-cleaning-data-3.html#cb1105-2" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
+<span id="cb1105-3"><a href="entering-and-cleaning-data-3.html#cb1105-3" tabindex="-1"></a>                               <span class="st">&quot;abstract&quot;</span>, <span class="st">&quot;article_type&quot;</span>),</span>
+<span id="cb1105-4"><a href="entering-and-cleaning-data-3.html#cb1105-4" tabindex="-1"></a>                        <span class="at">limit =</span> <span class="dv">190</span>)</span></code></pre></div>
 <p>Check the number of rows:</p>
-<div class="sourceCode" id="cb1106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1106-1"><a href="entering-and-cleaning-data-3.html#cb1106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(wn_papers_titles<span class="sc">$</span>data)</span></code></pre></div>
+<div class="sourceCode" id="cb1106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1106-1"><a href="entering-and-cleaning-data-3.html#cb1106-1" tabindex="-1"></a><span class="fu">nrow</span>(wn_papers_titles<span class="sc">$</span>data)</span></code></pre></div>
 <pre><code>## [1] 190</code></pre>
 <p>Create a plot of the number of articles in the PLoS journals with “West Nile” in the title
 by year:</p>
-<div class="sourceCode" id="cb1108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1108-1"><a href="entering-and-cleaning-data-3.html#cb1108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb1108-2"><a href="entering-and-cleaning-data-3.html#cb1108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1108-3"><a href="entering-and-cleaning-data-3.html#cb1108-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1108-4"><a href="entering-and-cleaning-data-3.html#cb1108-4" aria-hidden="true" tabindex="-1"></a>wn_papers_titles<span class="sc">$</span>data <span class="sc">%&gt;%</span> </span>
-<span id="cb1108-5"><a href="entering-and-cleaning-data-3.html#cb1108-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">publication_date =</span> <span class="fu">ymd_hms</span>(publication_date),</span>
-<span id="cb1108-6"><a href="entering-and-cleaning-data-3.html#cb1108-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">pub_year =</span> <span class="fu">year</span>(publication_date),</span>
-<span id="cb1108-7"><a href="entering-and-cleaning-data-3.html#cb1108-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">research_article =</span> article_type <span class="sc">==</span> <span class="st">&quot;Research Article&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb1108-8"><a href="entering-and-cleaning-data-3.html#cb1108-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pub_year, research_article) <span class="sc">%&gt;%</span> </span>
-<span id="cb1108-9"><a href="entering-and-cleaning-data-3.html#cb1108-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb1108-10"><a href="entering-and-cleaning-data-3.html#cb1108-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pub_year, <span class="at">y =</span> n, <span class="at">fill =</span> research_article)) <span class="sc">+</span> </span>
-<span id="cb1108-11"><a href="entering-and-cleaning-data-3.html#cb1108-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> </span>
-<span id="cb1108-12"><a href="entering-and-cleaning-data-3.html#cb1108-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Year of publication&quot;</span>, </span>
-<span id="cb1108-13"><a href="entering-and-cleaning-data-3.html#cb1108-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Number of articles published&quot;</span>,</span>
-<span id="cb1108-14"><a href="entering-and-cleaning-data-3.html#cb1108-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">&quot;Research article&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb1108-15"><a href="entering-and-cleaning-data-3.html#cb1108-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;West Nile articles published in PLoS journals&quot;</span>,</span>
-<span id="cb1108-16"><a href="entering-and-cleaning-data-3.html#cb1108-16" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">&quot;Based on articles with &#39;West Nile&#39; in the title&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1108-1"><a href="entering-and-cleaning-data-3.html#cb1108-1" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1108-2"><a href="entering-and-cleaning-data-3.html#cb1108-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1108-3"><a href="entering-and-cleaning-data-3.html#cb1108-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1108-4"><a href="entering-and-cleaning-data-3.html#cb1108-4" tabindex="-1"></a>wn_papers_titles<span class="sc">$</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb1108-5"><a href="entering-and-cleaning-data-3.html#cb1108-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">publication_date =</span> <span class="fu">ymd_hms</span>(publication_date),</span>
+<span id="cb1108-6"><a href="entering-and-cleaning-data-3.html#cb1108-6" tabindex="-1"></a>         <span class="at">pub_year =</span> <span class="fu">year</span>(publication_date),</span>
+<span id="cb1108-7"><a href="entering-and-cleaning-data-3.html#cb1108-7" tabindex="-1"></a>         <span class="at">research_article =</span> article_type <span class="sc">==</span> <span class="st">&quot;Research Article&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1108-8"><a href="entering-and-cleaning-data-3.html#cb1108-8" tabindex="-1"></a>  <span class="fu">group_by</span>(pub_year, research_article) <span class="sc">%&gt;%</span> </span>
+<span id="cb1108-9"><a href="entering-and-cleaning-data-3.html#cb1108-9" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb1108-10"><a href="entering-and-cleaning-data-3.html#cb1108-10" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pub_year, <span class="at">y =</span> n, <span class="at">fill =</span> research_article)) <span class="sc">+</span> </span>
+<span id="cb1108-11"><a href="entering-and-cleaning-data-3.html#cb1108-11" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> </span>
+<span id="cb1108-12"><a href="entering-and-cleaning-data-3.html#cb1108-12" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Year of publication&quot;</span>, </span>
+<span id="cb1108-13"><a href="entering-and-cleaning-data-3.html#cb1108-13" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Number of articles published&quot;</span>,</span>
+<span id="cb1108-14"><a href="entering-and-cleaning-data-3.html#cb1108-14" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">&quot;Research article&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb1108-15"><a href="entering-and-cleaning-data-3.html#cb1108-15" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;West Nile articles published in PLoS journals&quot;</span>,</span>
+<span id="cb1108-16"><a href="entering-and-cleaning-data-3.html#cb1108-16" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">&quot;Based on articles with &#39;West Nile&#39; in the title&quot;</span>)</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/unnamed-chunk-618-1.png" width="672" /></p>
 <p>Determine which journals have published these articles and the number of articles published
 in each journal:</p>
-<div class="sourceCode" id="cb1109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1109-1"><a href="entering-and-cleaning-data-3.html#cb1109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
-<span id="cb1109-2"><a href="entering-and-cleaning-data-3.html#cb1109-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb1109-3"><a href="entering-and-cleaning-data-3.html#cb1109-3" aria-hidden="true" tabindex="-1"></a>wn_papers_titles<span class="sc">$</span>data <span class="sc">%&gt;%</span> </span>
-<span id="cb1109-4"><a href="entering-and-cleaning-data-3.html#cb1109-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">journal =</span> <span class="fu">str_replace</span>(journal, <span class="st">&quot;PLOS&quot;</span>, <span class="st">&quot;PLoS&quot;</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb1109-5"><a href="entering-and-cleaning-data-3.html#cb1109-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(journal) <span class="sc">%&gt;%</span> </span>
-<span id="cb1109-6"><a href="entering-and-cleaning-data-3.html#cb1109-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb1109-7"><a href="entering-and-cleaning-data-3.html#cb1109-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb1109-8"><a href="entering-and-cleaning-data-3.html#cb1109-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(journal)) <span class="sc">%&gt;%</span> </span>
-<span id="cb1109-9"><a href="entering-and-cleaning-data-3.html#cb1109-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code></pre></div>
-<pre><code>## # A tibble: 6 × 2
+<div class="sourceCode" id="cb1109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1109-1"><a href="entering-and-cleaning-data-3.html#cb1109-1" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb1109-2"><a href="entering-and-cleaning-data-3.html#cb1109-2" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1109-3"><a href="entering-and-cleaning-data-3.html#cb1109-3" tabindex="-1"></a>wn_papers_titles<span class="sc">$</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb1109-4"><a href="entering-and-cleaning-data-3.html#cb1109-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">journal =</span> <span class="fu">str_replace</span>(journal, <span class="st">&quot;PLOS&quot;</span>, <span class="st">&quot;PLoS&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1109-5"><a href="entering-and-cleaning-data-3.html#cb1109-5" tabindex="-1"></a>  <span class="fu">group_by</span>(journal) <span class="sc">%&gt;%</span> </span>
+<span id="cb1109-6"><a href="entering-and-cleaning-data-3.html#cb1109-6" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb1109-7"><a href="entering-and-cleaning-data-3.html#cb1109-7" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb1109-8"><a href="entering-and-cleaning-data-3.html#cb1109-8" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(journal)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1109-9"><a href="entering-and-cleaning-data-3.html#cb1109-9" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code></pre></div>
+<pre><code>## # A tibble: 7 × 2
 ##   journal                              n
 ##   &lt;chr&gt;                            &lt;int&gt;
-## 1 PLoS ONE                           101
-## 2 PLoS Neglected Tropical Diseases    45
-## 3 PLoS Pathogens                      29
+## 1 PLoS ONE                            98
+## 2 PLoS Neglected Tropical Diseases    48
+## 3 PLoS Pathogens                      28
 ## 4 PLoS Computational Biology           3
 ## 5 PLoS Medicine                        3
-## 6 PLoS Biology                         2</code></pre>
+## 6 PLoS Biology                         2
+## 7 PLoS Climate                         1</code></pre>
 </div>
 </div>
-<div id="cleaning-very-messy-data-1" class="section level3" number="10.6.2">
-<h3><span class="header-section-number">10.6.2</span> Cleaning very messy data</h3>
+<div id="cleaning-very-messy-data-1" class="section level3 hasAnchor" number="10.6.2">
+<h3><span class="header-section-number">10.6.2</span> Cleaning very messy data<a href="entering-and-cleaning-data-3.html#cleaning-very-messy-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>With your groups, create an R script that does all the steps described so far to pull the
 messy hurricane tracks data from online and clean it.</p>
 <p>Then try the following further cleaning steps:</p>
@@ -1177,7 +1186,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 11 Exploring data #3 | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 11 Exploring data #3 | R Programming for Research" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
@@ -24,7 +23,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2022-08-21" />
+<meta name="date" content="2023-08-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,6 @@
   
 <link rel="prev" href="entering-and-cleaning-data-3.html"/>
 <link rel="next" href="reporting-data-results-3.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,15 +49,16 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.2/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <link href="libs/bokehjs-0.12.5/bokeh.min.css" rel="stylesheet" />
 <link href="libs/bokehjs-0.12.5/loader.css" rel="stylesheet" />
 <script src="libs/bokehjs-0.12.5/bokeh.min.js"></script>
@@ -72,10 +71,10 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.20/datatables.js"></script>
-<link href="libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.28/datatables.js"></script>
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-36719749-2"></script>
 <script>
@@ -91,6 +90,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -124,7 +124,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -137,7 +137,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -151,6 +151,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -605,13 +609,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="exploring-data-3" class="section level1" number="11">
-<h1><span class="header-section-number">Chapter 11</span> Exploring data #3</h1>
+<div id="exploring-data-3" class="section level1 hasAnchor" number="11">
+<h1><span class="header-section-number">Chapter 11</span> Exploring data #3<a href="exploring-data-3.html#exploring-data-3" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week11.pdf">Download</a> a pdf of the lecture slides covering this topic.</p>
-<div id="simulations" class="section level2" number="11.1">
-<h2><span class="header-section-number">11.1</span> Simulations</h2>
-<div id="the-lady-tasting-tea" class="section level3" number="11.1.1">
-<h3><span class="header-section-number">11.1.1</span> The lady tasting tea</h3>
+<div id="simulations" class="section level2 hasAnchor" number="11.1">
+<h2><span class="header-section-number">11.1</span> Simulations<a href="exploring-data-3.html#simulations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="the-lady-tasting-tea" class="section level3 hasAnchor" number="11.1.1">
+<h3><span class="header-section-number">11.1.1</span> The lady tasting tea<a href="exploring-data-3.html#the-lady-tasting-tea" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><img src="figures/Ronald_Fisher.jpg" width="0.4\textwidth" style="display: block; margin: auto;" /></p>
 <p>Source: Flikr commons, <a href="https://www.flickr.com/photos/internetarchivebookimages/20150531109/" class="uri">https://www.flickr.com/photos/internetarchivebookimages/20150531109/</a></p>
 <blockquote>
@@ -624,67 +628,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>One way to figure this out is to run a <em>simulation</em>.</p>
 <p>In R, <code>sample</code> can be a very helpful function for simulations. It lets you randomly draw values from a vector, with or without replacement.</p>
-<div class="sourceCode" id="cb1111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1111-1"><a href="exploring-data-3.html#cb1111-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generic code</span></span>
-<span id="cb1111-2"><a href="exploring-data-3.html#cb1111-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> [vector to sample from], </span>
-<span id="cb1111-3"><a href="exploring-data-3.html#cb1111-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">size =</span> [number of samples to take],</span>
-<span id="cb1111-4"><a href="exploring-data-3.html#cb1111-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">replace =</span> [logical<span class="sc">--</span> should values <span class="cf">in</span> the </span>
-<span id="cb1111-5"><a href="exploring-data-3.html#cb1111-5" aria-hidden="true" tabindex="-1"></a>                  vector be replaced?],</span>
-<span id="cb1111-6"><a href="exploring-data-3.html#cb1111-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">prob =</span> [vector of probability weights])</span></code></pre></div>
+<div class="sourceCode" id="cb1111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1111-1"><a href="exploring-data-3.html#cb1111-1" tabindex="-1"></a><span class="do">## Generic code</span></span>
+<span id="cb1111-2"><a href="exploring-data-3.html#cb1111-2" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> [vector to sample from], </span>
+<span id="cb1111-3"><a href="exploring-data-3.html#cb1111-3" tabindex="-1"></a>       <span class="at">size =</span> [number of samples to take],</span>
+<span id="cb1111-4"><a href="exploring-data-3.html#cb1111-4" tabindex="-1"></a>       <span class="at">replace =</span> [logical<span class="sc">--</span> should values <span class="cf">in</span> the </span>
+<span id="cb1111-5"><a href="exploring-data-3.html#cb1111-5" tabindex="-1"></a>                  vector be replaced?],</span>
+<span id="cb1111-6"><a href="exploring-data-3.html#cb1111-6" tabindex="-1"></a>       <span class="at">prob =</span> [vector of probability weights])</span></code></pre></div>
 <p>Create vectors of the true and guessed values, in order, for the cups of tea:</p>
-<div class="sourceCode" id="cb1112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1112-1"><a href="exploring-data-3.html#cb1112-1" aria-hidden="true" tabindex="-1"></a>n_cups <span class="ot">&lt;-</span> <span class="dv">8</span></span>
-<span id="cb1112-2"><a href="exploring-data-3.html#cb1112-2" aria-hidden="true" tabindex="-1"></a>cups <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="at">each =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span>
-<span id="cb1112-3"><a href="exploring-data-3.html#cb1112-3" aria-hidden="true" tabindex="-1"></a>cups</span></code></pre></div>
-<pre><code>## [1] &quot;tea&quot;  &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;  &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;  &quot;tea&quot;</code></pre>
-<div class="sourceCode" id="cb1114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1114-1"><a href="exploring-data-3.html#cb1114-1" aria-hidden="true" tabindex="-1"></a>guesses <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="at">each =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span>
-<span id="cb1114-2"><a href="exploring-data-3.html#cb1114-2" aria-hidden="true" tabindex="-1"></a>guesses</span></code></pre></div>
-<pre><code>## [1] &quot;milk&quot; &quot;tea&quot;  &quot;milk&quot; &quot;tea&quot;  &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot; &quot;milk&quot;</code></pre>
+<div class="sourceCode" id="cb1112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1112-1"><a href="exploring-data-3.html#cb1112-1" tabindex="-1"></a>n_cups <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="cb1112-2"><a href="exploring-data-3.html#cb1112-2" tabindex="-1"></a>cups <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="at">each =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb1112-3"><a href="exploring-data-3.html#cb1112-3" tabindex="-1"></a>cups</span></code></pre></div>
+<pre><code>## [1] &quot;milk&quot; &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;  &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot; &quot;tea&quot;</code></pre>
+<div class="sourceCode" id="cb1114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1114-1"><a href="exploring-data-3.html#cb1114-1" tabindex="-1"></a>guesses <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="at">each =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb1114-2"><a href="exploring-data-3.html#cb1114-2" tabindex="-1"></a>guesses</span></code></pre></div>
+<pre><code>## [1] &quot;tea&quot;  &quot;milk&quot; &quot;tea&quot;  &quot;tea&quot;  &quot;milk&quot; &quot;milk&quot; &quot;tea&quot;  &quot;milk&quot;</code></pre>
 <p>For this simulation, determine how many cups she got right (i.e., guess equals the true value):</p>
-<div class="sourceCode" id="cb1116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1116-1"><a href="exploring-data-3.html#cb1116-1" aria-hidden="true" tabindex="-1"></a>cup_results <span class="ot">&lt;-</span> cups <span class="sc">==</span> guesses</span>
-<span id="cb1116-2"><a href="exploring-data-3.html#cb1116-2" aria-hidden="true" tabindex="-1"></a>cup_results</span></code></pre></div>
-<pre><code>## [1] FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE</code></pre>
-<div class="sourceCode" id="cb1118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1118-1"><a href="exploring-data-3.html#cb1118-1" aria-hidden="true" tabindex="-1"></a>n_right <span class="ot">&lt;-</span> <span class="fu">sum</span>(cup_results)</span>
-<span id="cb1118-2"><a href="exploring-data-3.html#cb1118-2" aria-hidden="true" tabindex="-1"></a>n_right</span></code></pre></div>
+<div class="sourceCode" id="cb1116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1116-1"><a href="exploring-data-3.html#cb1116-1" tabindex="-1"></a>cup_results <span class="ot">&lt;-</span> cups <span class="sc">==</span> guesses</span>
+<span id="cb1116-2"><a href="exploring-data-3.html#cb1116-2" tabindex="-1"></a>cup_results</span></code></pre></div>
+<pre><code>## [1] FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE</code></pre>
+<div class="sourceCode" id="cb1118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1118-1"><a href="exploring-data-3.html#cb1118-1" tabindex="-1"></a>n_right <span class="ot">&lt;-</span> <span class="fu">sum</span>(cup_results)</span>
+<span id="cb1118-2"><a href="exploring-data-3.html#cb1118-2" tabindex="-1"></a>n_right</span></code></pre></div>
 <pre><code>## [1] 2</code></pre>
 <p>Write a function that will run one simulation. It takes the argument <code>n_cups</code>— in real life, they used eight cups (<code>n_cups = 8</code>). Note that this function just wraps the code we just walked through.</p>
-<div class="sourceCode" id="cb1120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1120-1"><a href="exploring-data-3.html#cb1120-1" aria-hidden="true" tabindex="-1"></a>sim_null_tea <span class="ot">&lt;-</span> <span class="cf">function</span>(n_cups){</span>
-<span id="cb1120-2"><a href="exploring-data-3.html#cb1120-2" aria-hidden="true" tabindex="-1"></a>  cups <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="at">each =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span>
-<span id="cb1120-3"><a href="exploring-data-3.html#cb1120-3" aria-hidden="true" tabindex="-1"></a>  guesses <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="at">each =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span>
-<span id="cb1120-4"><a href="exploring-data-3.html#cb1120-4" aria-hidden="true" tabindex="-1"></a>  cup_results <span class="ot">&lt;-</span> cups <span class="sc">==</span> guesses</span>
-<span id="cb1120-5"><a href="exploring-data-3.html#cb1120-5" aria-hidden="true" tabindex="-1"></a>  n_right <span class="ot">&lt;-</span> <span class="fu">sum</span>(cup_results)</span>
-<span id="cb1120-6"><a href="exploring-data-3.html#cb1120-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(n_right)</span>
-<span id="cb1120-7"><a href="exploring-data-3.html#cb1120-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1120-8"><a href="exploring-data-3.html#cb1120-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_null_tea</span>(<span class="at">n_cups =</span> <span class="dv">8</span>)</span></code></pre></div>
-<pre><code>## [1] 2</code></pre>
+<div class="sourceCode" id="cb1120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1120-1"><a href="exploring-data-3.html#cb1120-1" tabindex="-1"></a>sim_null_tea <span class="ot">&lt;-</span> <span class="cf">function</span>(n_cups){</span>
+<span id="cb1120-2"><a href="exploring-data-3.html#cb1120-2" tabindex="-1"></a>  cups <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="at">each =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb1120-3"><a href="exploring-data-3.html#cb1120-3" tabindex="-1"></a>  guesses <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;milk&quot;</span>, <span class="st">&quot;tea&quot;</span>), <span class="at">each =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb1120-4"><a href="exploring-data-3.html#cb1120-4" tabindex="-1"></a>  cup_results <span class="ot">&lt;-</span> cups <span class="sc">==</span> guesses</span>
+<span id="cb1120-5"><a href="exploring-data-3.html#cb1120-5" tabindex="-1"></a>  n_right <span class="ot">&lt;-</span> <span class="fu">sum</span>(cup_results)</span>
+<span id="cb1120-6"><a href="exploring-data-3.html#cb1120-6" tabindex="-1"></a>  <span class="fu">return</span>(n_right)</span>
+<span id="cb1120-7"><a href="exploring-data-3.html#cb1120-7" tabindex="-1"></a>}</span>
+<span id="cb1120-8"><a href="exploring-data-3.html#cb1120-8" tabindex="-1"></a><span class="fu">sim_null_tea</span>(<span class="at">n_cups =</span> <span class="dv">8</span>)</span></code></pre></div>
+<pre><code>## [1] 6</code></pre>
 <p>Now, we need to run a lot of simulations, to see what happens on average if she guesses. You can use the <code>replicate</code> function to do that.</p>
-<div class="sourceCode" id="cb1122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1122-1"><a href="exploring-data-3.html#cb1122-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generic code</span></span>
-<span id="cb1122-2"><a href="exploring-data-3.html#cb1122-2" aria-hidden="true" tabindex="-1"></a><span class="fu">replicate</span>(<span class="at">n =</span> [number of replications to run],</span>
-<span id="cb1122-3"><a href="exploring-data-3.html#cb1122-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">eval =</span> [code to replicate each time])</span></code></pre></div>
-<div class="sourceCode" id="cb1123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1123-1"><a href="exploring-data-3.html#cb1123-1" aria-hidden="true" tabindex="-1"></a>tea_sims <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5</span>, <span class="fu">sim_null_tea</span>(<span class="at">n_cups =</span> <span class="dv">8</span>))</span>
-<span id="cb1123-2"><a href="exploring-data-3.html#cb1123-2" aria-hidden="true" tabindex="-1"></a>tea_sims</span></code></pre></div>
-<pre><code>## [1] 2 4 6 6 2</code></pre>
+<div class="sourceCode" id="cb1122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1122-1"><a href="exploring-data-3.html#cb1122-1" tabindex="-1"></a><span class="do">## Generic code</span></span>
+<span id="cb1122-2"><a href="exploring-data-3.html#cb1122-2" tabindex="-1"></a><span class="fu">replicate</span>(<span class="at">n =</span> [number of replications to run],</span>
+<span id="cb1122-3"><a href="exploring-data-3.html#cb1122-3" tabindex="-1"></a>          <span class="at">eval =</span> [code to replicate each time])</span></code></pre></div>
+<div class="sourceCode" id="cb1123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1123-1"><a href="exploring-data-3.html#cb1123-1" tabindex="-1"></a>tea_sims <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5</span>, <span class="fu">sim_null_tea</span>(<span class="at">n_cups =</span> <span class="dv">8</span>))</span>
+<span id="cb1123-2"><a href="exploring-data-3.html#cb1123-2" tabindex="-1"></a>tea_sims</span></code></pre></div>
+<pre><code>## [1] 2 4 4 4 4</code></pre>
 <p>This call gives a vector with the number of cups she got right for each simulation. You can replicate the simulation many times to get a better idea of what to expect if she just guesses, including what percent of the time she gets all cups right.</p>
-<div class="sourceCode" id="cb1125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1125-1"><a href="exploring-data-3.html#cb1125-1" aria-hidden="true" tabindex="-1"></a>tea_sims <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">sim_null_tea</span>(<span class="at">n_cups =</span> <span class="dv">8</span>))</span>
-<span id="cb1125-2"><a href="exploring-data-3.html#cb1125-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(tea_sims)</span></code></pre></div>
-<pre><code>## [1] 4.002</code></pre>
-<div class="sourceCode" id="cb1127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1127-1"><a href="exploring-data-3.html#cb1127-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(tea_sims, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb1125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1125-1"><a href="exploring-data-3.html#cb1125-1" tabindex="-1"></a>tea_sims <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">sim_null_tea</span>(<span class="at">n_cups =</span> <span class="dv">8</span>))</span>
+<span id="cb1125-2"><a href="exploring-data-3.html#cb1125-2" tabindex="-1"></a><span class="fu">mean</span>(tea_sims)</span></code></pre></div>
+<pre><code>## [1] 4.012</code></pre>
+<div class="sourceCode" id="cb1127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1127-1"><a href="exploring-data-3.html#cb1127-1" tabindex="-1"></a><span class="fu">quantile</span>(tea_sims, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div>
 <pre><code>##  2.5% 97.5% 
 ##     2     6</code></pre>
-<div class="sourceCode" id="cb1129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1129-1"><a href="exploring-data-3.html#cb1129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(tea_sims <span class="sc">==</span> <span class="dv">8</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1129-1"><a href="exploring-data-3.html#cb1129-1" tabindex="-1"></a><span class="fu">mean</span>(tea_sims <span class="sc">==</span> <span class="dv">8</span>)</span></code></pre></div>
 <pre><code>## [1] 0.015</code></pre>
 <p>Now we’d like to know, for different numbers of cups of tea, what is the probability that the lady will get all cups right?</p>
 <p>For this, we can apply the replication code across different values of <code>n_cups</code>:</p>
-<div class="sourceCode" id="cb1131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1131-1"><a href="exploring-data-3.html#cb1131-1" aria-hidden="true" tabindex="-1"></a>n_cups <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">2</span>, <span class="at">to =</span> <span class="dv">14</span>, <span class="at">by =</span> <span class="dv">2</span>)</span>
-<span id="cb1131-2"><a href="exploring-data-3.html#cb1131-2" aria-hidden="true" tabindex="-1"></a>perc_all_right <span class="ot">&lt;-</span> <span class="fu">sapply</span>(n_cups, <span class="at">FUN =</span> <span class="cf">function</span>(n_cups){</span>
-<span id="cb1131-3"><a href="exploring-data-3.html#cb1131-3" aria-hidden="true" tabindex="-1"></a>  cups_right <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">sim_null_tea</span>(n_cups))</span>
-<span id="cb1131-4"><a href="exploring-data-3.html#cb1131-4" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">mean</span>(cups_right <span class="sc">==</span> n_cups)</span>
-<span id="cb1131-5"><a href="exploring-data-3.html#cb1131-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
-<span id="cb1131-6"><a href="exploring-data-3.html#cb1131-6" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb1131-7"><a href="exploring-data-3.html#cb1131-7" aria-hidden="true" tabindex="-1"></a>perc_all_right</span></code></pre></div>
-<pre><code>## [1] 0.488 0.177 0.035 0.016 0.004 0.001 0.001</code></pre>
-<div class="sourceCode" id="cb1133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1133-1"><a href="exploring-data-3.html#cb1133-1" aria-hidden="true" tabindex="-1"></a>tea_sims <span class="ot">&lt;-</span> <span class="fu">data_frame</span>(n_cups, perc_all_right)</span>
-<span id="cb1133-2"><a href="exploring-data-3.html#cb1133-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(tea_sims, <span class="fu">aes</span>(<span class="at">x =</span> n_cups, <span class="at">y =</span> perc_all_right)) <span class="sc">+</span> </span>
-<span id="cb1133-3"><a href="exploring-data-3.html#cb1133-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;# of cups tested&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb1133-4"><a href="exploring-data-3.html#cb1133-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Probability of getting</span><span class="sc">\n</span><span class="st">all cups right if guessing&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1131-1"><a href="exploring-data-3.html#cb1131-1" tabindex="-1"></a>n_cups <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">2</span>, <span class="at">to =</span> <span class="dv">14</span>, <span class="at">by =</span> <span class="dv">2</span>)</span>
+<span id="cb1131-2"><a href="exploring-data-3.html#cb1131-2" tabindex="-1"></a>perc_all_right <span class="ot">&lt;-</span> <span class="fu">sapply</span>(n_cups, <span class="at">FUN =</span> <span class="cf">function</span>(n_cups){</span>
+<span id="cb1131-3"><a href="exploring-data-3.html#cb1131-3" tabindex="-1"></a>  cups_right <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">sim_null_tea</span>(n_cups))</span>
+<span id="cb1131-4"><a href="exploring-data-3.html#cb1131-4" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">mean</span>(cups_right <span class="sc">==</span> n_cups)</span>
+<span id="cb1131-5"><a href="exploring-data-3.html#cb1131-5" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
+<span id="cb1131-6"><a href="exploring-data-3.html#cb1131-6" tabindex="-1"></a>})</span>
+<span id="cb1131-7"><a href="exploring-data-3.html#cb1131-7" tabindex="-1"></a>perc_all_right</span></code></pre></div>
+<pre><code>## [1] 0.530 0.176 0.050 0.013 0.004 0.002 0.000</code></pre>
+<div class="sourceCode" id="cb1133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1133-1"><a href="exploring-data-3.html#cb1133-1" tabindex="-1"></a>tea_sims <span class="ot">&lt;-</span> <span class="fu">data_frame</span>(n_cups, perc_all_right)</span>
+<span id="cb1133-2"><a href="exploring-data-3.html#cb1133-2" tabindex="-1"></a><span class="fu">ggplot</span>(tea_sims, <span class="fu">aes</span>(<span class="at">x =</span> n_cups, <span class="at">y =</span> perc_all_right)) <span class="sc">+</span> </span>
+<span id="cb1133-3"><a href="exploring-data-3.html#cb1133-3" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;# of cups tested&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb1133-4"><a href="exploring-data-3.html#cb1133-4" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Probability of getting</span><span class="sc">\n</span><span class="st">all cups right if guessing&quot;</span>)</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/q-1.png" width="0.6\textwidth" style="display: block; margin: auto;" /></p>
 <p>You can answer this question analytically using the hypergeometric distribution:</p>
 <p><span class="math display">\[
@@ -721,16 +725,16 @@ P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n
 </tbody>
 </table>
 <p>In R, you can use <code>dhyper</code> to get the density of the hypergeometric function:</p>
-<div class="sourceCode" id="cb1134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1134-1"><a href="exploring-data-3.html#cb1134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dhyper</span>(<span class="at">x =</span> [<span class="co"># of cups she guesses have milk first that do],</span></span>
-<span id="cb1134-2"><a href="exploring-data-3.html#cb1134-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">m =</span> [<span class="co"># of cups with milk first],</span></span>
-<span id="cb1134-3"><a href="exploring-data-3.html#cb1134-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">n =</span> [<span class="co"># of cups with tea first],</span></span>
-<span id="cb1134-4"><a href="exploring-data-3.html#cb1134-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">k =</span> [<span class="co"># of cups she guesses have milk first])</span></span></code></pre></div>
+<div class="sourceCode" id="cb1134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1134-1"><a href="exploring-data-3.html#cb1134-1" tabindex="-1"></a><span class="fu">dhyper</span>(<span class="at">x =</span> [<span class="co"># of cups she guesses have milk first that do],</span></span>
+<span id="cb1134-2"><a href="exploring-data-3.html#cb1134-2" tabindex="-1"></a>       <span class="at">m =</span> [<span class="co"># of cups with milk first],</span></span>
+<span id="cb1134-3"><a href="exploring-data-3.html#cb1134-3" tabindex="-1"></a>       <span class="at">n =</span> [<span class="co"># of cups with tea first],</span></span>
+<span id="cb1134-4"><a href="exploring-data-3.html#cb1134-4" tabindex="-1"></a>       <span class="at">k =</span> [<span class="co"># of cups she guesses have milk first])</span></span></code></pre></div>
 <p>Probability she gets three “milk” cups right if she’s just guessing and there are eight cups, four with milk first and four with tea first:</p>
-<div class="sourceCode" id="cb1135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1135-1"><a href="exploring-data-3.html#cb1135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dhyper</span>(<span class="at">x =</span> <span class="dv">3</span>, <span class="at">m =</span> <span class="dv">4</span>, <span class="at">n =</span> <span class="dv">4</span>, <span class="at">k =</span> <span class="dv">4</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1135-1"><a href="exploring-data-3.html#cb1135-1" tabindex="-1"></a><span class="fu">dhyper</span>(<span class="at">x =</span> <span class="dv">3</span>, <span class="at">m =</span> <span class="dv">4</span>, <span class="at">n =</span> <span class="dv">4</span>, <span class="at">k =</span> <span class="dv">4</span>)</span></code></pre></div>
 <pre><code>## [1] 0.2285714</code></pre>
 <p>Probability she gets three or more “milk” cups right if she’s just guessing:</p>
-<div class="sourceCode" id="cb1137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1137-1"><a href="exploring-data-3.html#cb1137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dhyper</span>(<span class="at">x =</span> <span class="dv">3</span>, <span class="at">m =</span> <span class="dv">4</span>, <span class="at">n =</span> <span class="dv">4</span>, <span class="at">k =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
-<span id="cb1137-2"><a href="exploring-data-3.html#cb1137-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dhyper</span>(<span class="at">x =</span> <span class="dv">4</span>, <span class="at">m =</span> <span class="dv">4</span>, <span class="at">n =</span> <span class="dv">4</span>, <span class="at">k =</span> <span class="dv">4</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1137-1"><a href="exploring-data-3.html#cb1137-1" tabindex="-1"></a><span class="fu">dhyper</span>(<span class="at">x =</span> <span class="dv">3</span>, <span class="at">m =</span> <span class="dv">4</span>, <span class="at">n =</span> <span class="dv">4</span>, <span class="at">k =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb1137-2"><a href="exploring-data-3.html#cb1137-2" tabindex="-1"></a>  <span class="fu">dhyper</span>(<span class="at">x =</span> <span class="dv">4</span>, <span class="at">m =</span> <span class="dv">4</span>, <span class="at">n =</span> <span class="dv">4</span>, <span class="at">k =</span> <span class="dv">4</span>)</span></code></pre></div>
 <pre><code>## [1] 0.2428571</code></pre>
 <p>Other density functions:</p>
 <ul>
@@ -742,15 +746,15 @@ P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n
 <li><code>dunif</code>: Uniform</li>
 </ul>
 <p>You can get the analytical result for each of the number of cups we simulated and compare those values to our simulations:</p>
-<div class="sourceCode" id="cb1139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1139-1"><a href="exploring-data-3.html#cb1139-1" aria-hidden="true" tabindex="-1"></a>analytical_results <span class="ot">&lt;-</span> <span class="fu">data_frame</span>(<span class="at">n_cups =</span> <span class="fu">seq</span>(<span class="dv">2</span>, <span class="dv">14</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb1139-2"><a href="exploring-data-3.html#cb1139-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">perc_all_right =</span> <span class="fu">dhyper</span>(<span class="at">x =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>,</span>
-<span id="cb1139-3"><a href="exploring-data-3.html#cb1139-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">m =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>,</span>
-<span id="cb1139-4"><a href="exploring-data-3.html#cb1139-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">n =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>,</span>
-<span id="cb1139-5"><a href="exploring-data-3.html#cb1139-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">k =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span></code></pre></div>
-<div class="sourceCode" id="cb1140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1140-1"><a href="exploring-data-3.html#cb1140-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(analytical_results, <span class="fu">aes</span>(<span class="at">x =</span> n_cups, <span class="at">y =</span> perc_all_right)) <span class="sc">+</span> </span>
-<span id="cb1140-2"><a href="exploring-data-3.html#cb1140-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="sc">+</span></span>
-<span id="cb1140-3"><a href="exploring-data-3.html#cb1140-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> tea_sims) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;# of cups tested&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb1140-4"><a href="exploring-data-3.html#cb1140-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Probability of getting</span><span class="sc">\n</span><span class="st">all cups right if guessing&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1139-1"><a href="exploring-data-3.html#cb1139-1" tabindex="-1"></a>analytical_results <span class="ot">&lt;-</span> <span class="fu">data_frame</span>(<span class="at">n_cups =</span> <span class="fu">seq</span>(<span class="dv">2</span>, <span class="dv">14</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1139-2"><a href="exploring-data-3.html#cb1139-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">perc_all_right =</span> <span class="fu">dhyper</span>(<span class="at">x =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb1139-3"><a href="exploring-data-3.html#cb1139-3" tabindex="-1"></a>                                 <span class="at">m =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb1139-4"><a href="exploring-data-3.html#cb1139-4" tabindex="-1"></a>                                 <span class="at">n =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb1139-5"><a href="exploring-data-3.html#cb1139-5" tabindex="-1"></a>                                 <span class="at">k =</span> n_cups <span class="sc">/</span> <span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb1140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1140-1"><a href="exploring-data-3.html#cb1140-1" tabindex="-1"></a><span class="fu">ggplot</span>(analytical_results, <span class="fu">aes</span>(<span class="at">x =</span> n_cups, <span class="at">y =</span> perc_all_right)) <span class="sc">+</span> </span>
+<span id="cb1140-2"><a href="exploring-data-3.html#cb1140-2" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="sc">+</span></span>
+<span id="cb1140-3"><a href="exploring-data-3.html#cb1140-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> tea_sims) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;# of cups tested&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb1140-4"><a href="exploring-data-3.html#cb1140-4" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Probability of getting</span><span class="sc">\n</span><span class="st">all cups right if guessing&quot;</span>)</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/w-1.png" width="0.6\textwidth" style="display: block; margin: auto;" /></p>
 <p>For more on this story (and R.A. Fisher), see:</p>
 <ul>
@@ -759,8 +763,8 @@ P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n
 <li><a href="https://priceonomics.com/why-the-father-of-modern-statistics-didnt-believe/" class="uri">https://priceonomics.com/why-the-father-of-modern-statistics-didnt-believe/</a></li>
 </ul>
 </div>
-<div id="playing-darts" class="section level3" number="11.1.2">
-<h3><span class="header-section-number">11.1.2</span> Playing darts</h3>
+<div id="playing-darts" class="section level3 hasAnchor" number="11.1.2">
+<h3><span class="header-section-number">11.1.2</span> Playing darts<a href="exploring-data-3.html#playing-darts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><strong>Research question: Is a person skilled at playing darts?</strong></p>
 <p>Here’s our dart board– the numbers are the number of points you win for a hit in each area.</p>
 <pre><code>## 
@@ -778,24 +782,24 @@ P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n
 </ul>
 <p>Let’s use R to answer the first question: what would the null look like?</p>
 <p>First, create some random throws (the square goes from -1 to 1 on both sides):</p>
-<div class="sourceCode" id="cb1143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1143-1"><a href="exploring-data-3.html#cb1143-1" aria-hidden="true" tabindex="-1"></a>n.throws <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb1143-2"><a href="exploring-data-3.html#cb1143-2" aria-hidden="true" tabindex="-1"></a>throw.x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n.throws, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>)</span>
-<span id="cb1143-3"><a href="exploring-data-3.html#cb1143-3" aria-hidden="true" tabindex="-1"></a>throw.y <span class="ot">&lt;-</span> <span class="fu">runif</span>(n.throws, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>)</span>
-<span id="cb1143-4"><a href="exploring-data-3.html#cb1143-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">cbind</span>(throw.x, throw.y))</span></code></pre></div>
-<pre><code>##         throw.x     throw.y
-## [1,]  0.5629361  0.16855213
-## [2,] -0.5821559  0.69946958
-## [3,]  0.9255013 -0.11151054
-## [4,]  0.4659144 -0.92009700
-## [5,]  0.6884379 -0.78960383
-## [6,]  0.9513981  0.03924943</code></pre>
-<div class="sourceCode" id="cb1145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1145-1"><a href="exploring-data-3.html#cb1145-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="at">type =</span> <span class="st">&quot;n&quot;</span>, <span class="at">asp=</span><span class="dv">1</span>,</span>
-<span id="cb1145-2"><a href="exploring-data-3.html#cb1145-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="at">axes =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1145-3"><a href="exploring-data-3.html#cb1145-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rect</span>( <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>) </span>
-<span id="cb1145-4"><a href="exploring-data-3.html#cb1145-4" aria-hidden="true" tabindex="-1"></a><span class="fu">draw.circle</span>( <span class="dv">0</span>, <span class="dv">0</span>, .<span class="dv">75</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
-<span id="cb1145-5"><a href="exploring-data-3.html#cb1145-5" aria-hidden="true" tabindex="-1"></a><span class="fu">draw.circle</span>( <span class="dv">0</span>, <span class="dv">0</span>, .<span class="dv">5</span>, <span class="at">col =</span> <span class="st">&quot;white&quot;</span>)</span>
-<span id="cb1145-6"><a href="exploring-data-3.html#cb1145-6" aria-hidden="true" tabindex="-1"></a><span class="fu">draw.circle</span>( <span class="dv">0</span>, <span class="dv">0</span>, .<span class="dv">25</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
-<span id="cb1145-7"><a href="exploring-data-3.html#cb1145-7" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(throw.x, throw.y, <span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1143-1"><a href="exploring-data-3.html#cb1143-1" tabindex="-1"></a>n.throws <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb1143-2"><a href="exploring-data-3.html#cb1143-2" tabindex="-1"></a>throw.x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n.throws, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>)</span>
+<span id="cb1143-3"><a href="exploring-data-3.html#cb1143-3" tabindex="-1"></a>throw.y <span class="ot">&lt;-</span> <span class="fu">runif</span>(n.throws, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>)</span>
+<span id="cb1143-4"><a href="exploring-data-3.html#cb1143-4" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">cbind</span>(throw.x, throw.y))</span></code></pre></div>
+<pre><code>##          throw.x    throw.y
+## [1,] -0.39175542  0.2227358
+## [2,] -0.16426481 -0.9384839
+## [3,]  0.86467365 -0.8062765
+## [4,] -0.26586248 -0.6368454
+## [5,]  0.53469421 -0.5700847
+## [6,] -0.09190854 -0.8693639</code></pre>
+<div class="sourceCode" id="cb1145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1145-1"><a href="exploring-data-3.html#cb1145-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="at">type =</span> <span class="st">&quot;n&quot;</span>, <span class="at">asp=</span><span class="dv">1</span>,</span>
+<span id="cb1145-2"><a href="exploring-data-3.html#cb1145-2" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="at">axes =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1145-3"><a href="exploring-data-3.html#cb1145-3" tabindex="-1"></a><span class="fu">rect</span>( <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>) </span>
+<span id="cb1145-4"><a href="exploring-data-3.html#cb1145-4" tabindex="-1"></a><span class="fu">draw.circle</span>( <span class="dv">0</span>, <span class="dv">0</span>, .<span class="dv">75</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb1145-5"><a href="exploring-data-3.html#cb1145-5" tabindex="-1"></a><span class="fu">draw.circle</span>( <span class="dv">0</span>, <span class="dv">0</span>, .<span class="dv">5</span>, <span class="at">col =</span> <span class="st">&quot;white&quot;</span>)</span>
+<span id="cb1145-6"><a href="exploring-data-3.html#cb1145-6" tabindex="-1"></a><span class="fu">draw.circle</span>( <span class="dv">0</span>, <span class="dv">0</span>, .<span class="dv">25</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb1145-7"><a href="exploring-data-3.html#cb1145-7" tabindex="-1"></a><span class="fu">points</span>(throw.x, throw.y, <span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span></code></pre></div>
 <p><img src="RProgrammingForResearch_files/figure-html/z-1.png" width="336" style="display: block; margin: auto;" /></p>
 <p>Next, let’s tally up the score for this simulation of what would happen under the null.</p>
 <p>To score each throw, we calculate how far the point is from (0, 0), and then use the following rules:</p>
@@ -806,23 +810,23 @@ P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n
 <li><strong>0 points</strong>: <span class="math inline">\(0.75 &lt; \sqrt{x^2 + y^2} \le 1.41\)</span></li>
 </ul>
 <p>Use these rules to “score” each random throw:</p>
-<div class="sourceCode" id="cb1146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1146-1"><a href="exploring-data-3.html#cb1146-1" aria-hidden="true" tabindex="-1"></a>throw.dist <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(throw.x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> throw.y<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb1146-2"><a href="exploring-data-3.html#cb1146-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(throw.dist)</span></code></pre></div>
-<pre><code>## [1] 0.5876282 0.9100347 0.9321948 1.0313364 1.0475786 0.9522073</code></pre>
-<div class="sourceCode" id="cb1148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1148-1"><a href="exploring-data-3.html#cb1148-1" aria-hidden="true" tabindex="-1"></a>throw.score <span class="ot">&lt;-</span> <span class="fu">cut</span>(throw.dist,</span>
-<span id="cb1148-2"><a href="exploring-data-3.html#cb1148-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">5</span>, .<span class="dv">75</span>, <span class="fl">1.5</span>),</span>
-<span id="cb1148-3"><a href="exploring-data-3.html#cb1148-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;20&quot;</span>, <span class="st">&quot;15&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;0&quot;</span>),</span>
-<span id="cb1148-4"><a href="exploring-data-3.html#cb1148-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">right =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1148-5"><a href="exploring-data-3.html#cb1148-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(throw.score)</span></code></pre></div>
-<pre><code>## [1] 10 0  0  0  0  0 
+<div class="sourceCode" id="cb1146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1146-1"><a href="exploring-data-3.html#cb1146-1" tabindex="-1"></a>throw.dist <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(throw.x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> throw.y<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1146-2"><a href="exploring-data-3.html#cb1146-2" tabindex="-1"></a><span class="fu">head</span>(throw.dist)</span></code></pre></div>
+<pre><code>## [1] 0.4506479 0.9527513 1.1822615 0.6901122 0.7815974 0.8742087</code></pre>
+<div class="sourceCode" id="cb1148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1148-1"><a href="exploring-data-3.html#cb1148-1" tabindex="-1"></a>throw.score <span class="ot">&lt;-</span> <span class="fu">cut</span>(throw.dist,</span>
+<span id="cb1148-2"><a href="exploring-data-3.html#cb1148-2" tabindex="-1"></a>                   <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">5</span>, .<span class="dv">75</span>, <span class="fl">1.5</span>),</span>
+<span id="cb1148-3"><a href="exploring-data-3.html#cb1148-3" tabindex="-1"></a>                   <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;20&quot;</span>, <span class="st">&quot;15&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;0&quot;</span>),</span>
+<span id="cb1148-4"><a href="exploring-data-3.html#cb1148-4" tabindex="-1"></a>                   <span class="at">right =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1148-5"><a href="exploring-data-3.html#cb1148-5" tabindex="-1"></a><span class="fu">head</span>(throw.score)</span></code></pre></div>
+<pre><code>## [1] 15 0  0  10 0  0 
 ## Levels: 20 15 10 0</code></pre>
 <p>Now that we’ve scored each throw, let’s tally up the total:</p>
-<div class="sourceCode" id="cb1150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1150-1"><a href="exploring-data-3.html#cb1150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(throw.score)</span></code></pre></div>
+<div class="sourceCode" id="cb1150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1150-1"><a href="exploring-data-3.html#cb1150-1" tabindex="-1"></a><span class="fu">table</span>(throw.score)</span></code></pre></div>
 <pre><code>## throw.score
 ## 20 15 10  0 
-##  1  2  5 12</code></pre>
-<div class="sourceCode" id="cb1152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1152-1"><a href="exploring-data-3.html#cb1152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">as.numeric</span>(<span class="fu">as.character</span>(throw.score)))</span></code></pre></div>
-<pre><code>## [1] 5</code></pre>
+##  1  2  2 15</code></pre>
+<div class="sourceCode" id="cb1152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1152-1"><a href="exploring-data-3.html#cb1152-1" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">as.numeric</span>(<span class="fu">as.character</span>(throw.score)))</span></code></pre></div>
+<pre><code>## [1] 3.5</code></pre>
 <p>So, this just showed <em>one</em> example of what might happen under the null. If we had a lot of examples like this (someone with no skill throwing 20 darts), what would we expect the mean scores to be?</p>
 <p><em>Questions to consider:</em></p>
 <ul>
@@ -837,10 +841,10 @@ P(n_{11} = t) = \frac{{n_{1+} \choose t} {n_{2+} \choose n_{+1}-t}}{{n \choose n
 <li><strong>Simulation.</strong> Simulate a lot of examples using R and calculate the mean of the mean score from these.</li>
 </ul>
 <p>The expected value of the mean, <span class="math inline">\(E[\bar{X}]\)</span>, is the expected value of <span class="math inline">\(X\)</span>, <span class="math inline">\(E[X]\)</span>. To calculate the expected value of <span class="math inline">\(X\)</span>, use the formula:</p>
-<p><span class="math display">\[ 
+<p><span class="math display">\[
 E[X] = \sum_x xp(x)
 \]</span></p>
-<p><span class="math display">\[ 
+<p><span class="math display">\[
 E[X] = 20 * p(X = 20) + 15 * p(X = 15) + 10 * p(X = 10) + 0 * p(X = 0)
 \]</span>
 So we just need to figure out <span class="math inline">\(p(X = x)\)</span> for <span class="math inline">\(x = 20, 15, 10\)</span>.</p>
@@ -871,48 +875,52 @@ Var(X) = 77.175 - (5.635)^2 = 45.42
 Var(\bar X) = \sigma^2 / n = 45.42 / 20 = 2.27
 \]</span></p>
 <p>Note that we can use the Central Limit Theorem to calculate a 95% confidence interval for the mean score when someone with no skill (null hypothesis) throws 20 darts:</p>
-<div class="sourceCode" id="cb1154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1154-1"><a href="exploring-data-3.html#cb1154-1" aria-hidden="true" tabindex="-1"></a><span class="fl">5.635</span> <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qnorm</span>(.<span class="dv">975</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="fl">2.27</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1154-1"><a href="exploring-data-3.html#cb1154-1" tabindex="-1"></a><span class="fl">5.635</span> <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qnorm</span>(.<span class="dv">975</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="fl">2.27</span>)</span></code></pre></div>
 <pre><code>## [1] 2.682017 8.587983</code></pre>
 <p>We can check our math by running simulations– we should get the same values of <span class="math inline">\(E[\bar{X}]\)</span> and <span class="math inline">\(Var(\bar{X})\)</span> (which we can calculate directly from the simulations using R).</p>
-<div class="sourceCode" id="cb1156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1156-1"><a href="exploring-data-3.html#cb1156-1" aria-hidden="true" tabindex="-1"></a>n.throws <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb1156-2"><a href="exploring-data-3.html#cb1156-2" aria-hidden="true" tabindex="-1"></a>n.sims <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
-<span id="cb1156-3"><a href="exploring-data-3.html#cb1156-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1156-4"><a href="exploring-data-3.html#cb1156-4" aria-hidden="true" tabindex="-1"></a>x.throws <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n.throws <span class="sc">*</span> n.sims, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb1156-5"><a href="exploring-data-3.html#cb1156-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol =</span> n.throws, <span class="at">nrow =</span> n.sims)</span>
-<span id="cb1156-6"><a href="exploring-data-3.html#cb1156-6" aria-hidden="true" tabindex="-1"></a>y.throws <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n.throws <span class="sc">*</span> n.sims, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb1156-7"><a href="exploring-data-3.html#cb1156-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol =</span> n.throws, <span class="at">nrow =</span> n.sims)</span>
-<span id="cb1156-8"><a href="exploring-data-3.html#cb1156-8" aria-hidden="true" tabindex="-1"></a>dist.throws <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(x.throws<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> y.throws<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb1156-9"><a href="exploring-data-3.html#cb1156-9" aria-hidden="true" tabindex="-1"></a>score.throws <span class="ot">&lt;-</span> <span class="fu">apply</span>(dist.throws, <span class="dv">2</span>, cut,</span>
-<span id="cb1156-10"><a href="exploring-data-3.html#cb1156-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">5</span>, .<span class="dv">75</span>, <span class="fl">1.5</span>),</span>
-<span id="cb1156-11"><a href="exploring-data-3.html#cb1156-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;20&quot;</span>, <span class="st">&quot;15&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;0&quot;</span>),</span>
-<span id="cb1156-12"><a href="exploring-data-3.html#cb1156-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">right =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb1157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1157-1"><a href="exploring-data-3.html#cb1157-1" aria-hidden="true" tabindex="-1"></a>dist.throws[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
-<pre><code>##          [,1]      [,2]      [,3]      [,4]      [,5]
-## [1,] 1.386183 1.0916286 0.7195169 0.9162722 0.9683295
-## [2,] 0.241537 1.2896943 0.4126017 0.2446219 0.5719682
-## [3,] 1.114393 0.7756554 0.7415835 0.6107462 0.9170912</code></pre>
-<div class="sourceCode" id="cb1159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1159-1"><a href="exploring-data-3.html#cb1159-1" aria-hidden="true" tabindex="-1"></a>score.throws[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb1156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1156-1"><a href="exploring-data-3.html#cb1156-1" tabindex="-1"></a>n.throws <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb1156-2"><a href="exploring-data-3.html#cb1156-2" tabindex="-1"></a>n.sims <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb1156-3"><a href="exploring-data-3.html#cb1156-3" tabindex="-1"></a></span>
+<span id="cb1156-4"><a href="exploring-data-3.html#cb1156-4" tabindex="-1"></a>x.throws <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n.throws <span class="sc">*</span> n.sims, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb1156-5"><a href="exploring-data-3.html#cb1156-5" tabindex="-1"></a>                   <span class="at">ncol =</span> n.throws, <span class="at">nrow =</span> n.sims)</span>
+<span id="cb1156-6"><a href="exploring-data-3.html#cb1156-6" tabindex="-1"></a>y.throws <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n.throws <span class="sc">*</span> n.sims, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb1156-7"><a href="exploring-data-3.html#cb1156-7" tabindex="-1"></a>                   <span class="at">ncol =</span> n.throws, <span class="at">nrow =</span> n.sims)</span>
+<span id="cb1156-8"><a href="exploring-data-3.html#cb1156-8" tabindex="-1"></a>dist.throws <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(x.throws<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> y.throws<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1156-9"><a href="exploring-data-3.html#cb1156-9" tabindex="-1"></a>score.throws <span class="ot">&lt;-</span> <span class="fu">apply</span>(dist.throws, <span class="dv">2</span>, cut,</span>
+<span id="cb1156-10"><a href="exploring-data-3.html#cb1156-10" tabindex="-1"></a>                   <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">5</span>, .<span class="dv">75</span>, <span class="fl">1.5</span>),</span>
+<span id="cb1156-11"><a href="exploring-data-3.html#cb1156-11" tabindex="-1"></a>                   <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;20&quot;</span>, <span class="st">&quot;15&quot;</span>, <span class="st">&quot;10&quot;</span>, <span class="st">&quot;0&quot;</span>),</span>
+<span id="cb1156-12"><a href="exploring-data-3.html#cb1156-12" tabindex="-1"></a>                   <span class="at">right =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1157-1"><a href="exploring-data-3.html#cb1157-1" tabindex="-1"></a>dist.throws[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
+<pre><code>##           [,1]      [,2]      [,3]      [,4]      [,5]
+## [1,] 0.6622484 0.6513009 0.6446185 1.3240470 1.0989700
+## [2,] 0.8626369 0.9323341 0.7004775 0.9176685 1.1450081
+## [3,] 0.7562491 0.8718807 1.1082575 0.7500703 0.9781415</code></pre>
+<div class="sourceCode" id="cb1159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1159-1"><a href="exploring-data-3.html#cb1159-1" tabindex="-1"></a>score.throws[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
 <pre><code>##      [,1] [,2] [,3] [,4] [,5]
-## [1,] &quot;0&quot;  &quot;0&quot;  &quot;10&quot; &quot;0&quot;  &quot;0&quot; 
-## [2,] &quot;20&quot; &quot;0&quot;  &quot;15&quot; &quot;20&quot; &quot;10&quot;
-## [3,] &quot;0&quot;  &quot;0&quot;  &quot;10&quot; &quot;10&quot; &quot;0&quot;</code></pre>
-<div class="sourceCode" id="cb1161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1161-1"><a href="exploring-data-3.html#cb1161-1" aria-hidden="true" tabindex="-1"></a>mean.scores <span class="ot">&lt;-</span> <span class="fu">apply</span>(score.throws, <span class="at">MARGIN =</span> <span class="dv">1</span>,</span>
-<span id="cb1161-2"><a href="exploring-data-3.html#cb1161-2" aria-hidden="true" tabindex="-1"></a>                     <span class="cf">function</span>(x){</span>
-<span id="cb1161-3"><a href="exploring-data-3.html#cb1161-3" aria-hidden="true" tabindex="-1"></a>                             out <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">as.numeric</span>(</span>
-<span id="cb1161-4"><a href="exploring-data-3.html#cb1161-4" aria-hidden="true" tabindex="-1"></a>                                     <span class="fu">as.character</span>(x)))</span>
-<span id="cb1161-5"><a href="exploring-data-3.html#cb1161-5" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">return</span>(out)</span>
-<span id="cb1161-6"><a href="exploring-data-3.html#cb1161-6" aria-hidden="true" tabindex="-1"></a>                     })</span>
-<span id="cb1161-7"><a href="exploring-data-3.html#cb1161-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mean.scores)</span></code></pre></div>
-<pre><code>## [1] 5.75 7.25 5.25 4.00 3.50 9.50</code></pre>
+## [1,] &quot;10&quot; &quot;10&quot; &quot;10&quot; &quot;0&quot;  &quot;0&quot; 
+## [2,] &quot;0&quot;  &quot;0&quot;  &quot;10&quot; &quot;0&quot;  &quot;0&quot; 
+## [3,] &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;</code></pre>
+<div class="sourceCode" id="cb1161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1161-1"><a href="exploring-data-3.html#cb1161-1" tabindex="-1"></a>mean.scores <span class="ot">&lt;-</span> <span class="fu">apply</span>(score.throws, <span class="at">MARGIN =</span> <span class="dv">1</span>,</span>
+<span id="cb1161-2"><a href="exploring-data-3.html#cb1161-2" tabindex="-1"></a>                     <span class="cf">function</span>(x){</span>
+<span id="cb1161-3"><a href="exploring-data-3.html#cb1161-3" tabindex="-1"></a>                             out <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">as.numeric</span>(</span>
+<span id="cb1161-4"><a href="exploring-data-3.html#cb1161-4" tabindex="-1"></a>                                     <span class="fu">as.character</span>(x)))</span>
+<span id="cb1161-5"><a href="exploring-data-3.html#cb1161-5" tabindex="-1"></a>                             <span class="fu">return</span>(out)</span>
+<span id="cb1161-6"><a href="exploring-data-3.html#cb1161-6" tabindex="-1"></a>                     })</span>
+<span id="cb1161-7"><a href="exploring-data-3.html#cb1161-7" tabindex="-1"></a><span class="fu">head</span>(mean.scores)</span></code></pre></div>
+<pre><code>## [1] 7.00 5.50 4.75 9.25 6.50 5.50</code></pre>
+<pre><code>## Warning: `qplot()` was deprecated in ggplot2 3.4.0.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
 <p><img src="RProgrammingForResearch_files/figure-html/gg-1.png" width="0.8\textwidth" style="display: block; margin: auto;" /></p>
 <p>Let’s check the simulated mean and variance against the theoretical values:</p>
-<div class="sourceCode" id="cb1163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1163-1"><a href="exploring-data-3.html#cb1163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(mean.scores) <span class="do">## Theoretical: 5.635</span></span></code></pre></div>
-<pre><code>## [1] 5.6303</code></pre>
-<div class="sourceCode" id="cb1165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1165-1"><a href="exploring-data-3.html#cb1165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(mean.scores) <span class="do">## Theoretical: 2.27</span></span></code></pre></div>
-<pre><code>## [1] 2.273512</code></pre>
+<div class="sourceCode" id="cb1164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1164-1"><a href="exploring-data-3.html#cb1164-1" tabindex="-1"></a><span class="fu">mean</span>(mean.scores) <span class="do">## Theoretical: 5.635</span></span></code></pre></div>
+<pre><code>## [1] 5.668975</code></pre>
+<div class="sourceCode" id="cb1166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1166-1"><a href="exploring-data-3.html#cb1166-1" tabindex="-1"></a><span class="fu">var</span>(mean.scores) <span class="do">## Theoretical: 2.27</span></span></code></pre></div>
+<pre><code>## [1] 2.273581</code></pre>
 </div>
-<div id="simulations-in-research" class="section level3" number="11.1.3">
-<h3><span class="header-section-number">11.1.3</span> Simulations in research</h3>
+<div id="simulations-in-research" class="section level3 hasAnchor" number="11.1.3">
+<h3><span class="header-section-number">11.1.3</span> Simulations in research<a href="exploring-data-3.html#simulations-in-research" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Simulations in the wild (just a few examples):</p>
 <ul>
 <li>The Manhattan Project</li>
@@ -921,10 +929,10 @@ Var(\bar X) = \sigma^2 / n = 45.42 / 20 = 2.27
 </ul>
 </div>
 </div>
-<div id="other-computationally-intensive-approaches" class="section level2" number="11.2">
-<h2><span class="header-section-number">11.2</span> Other computationally-intensive approaches</h2>
-<div id="bootstrap-and-friends" class="section level3" number="11.2.1">
-<h3><span class="header-section-number">11.2.1</span> Bootstrap and friends</h3>
+<div id="other-computationally-intensive-approaches" class="section level2 hasAnchor" number="11.2">
+<h2><span class="header-section-number">11.2</span> Other computationally-intensive approaches<a href="exploring-data-3.html#other-computationally-intensive-approaches" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="bootstrap-and-friends" class="section level3 hasAnchor" number="11.2.1">
+<h3><span class="header-section-number">11.2.1</span> Bootstrap and friends<a href="exploring-data-3.html#bootstrap-and-friends" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li><strong>Bootstraping:</strong> Sample the dataset with replacement and reestimate the statistical parameter(s) each time.</li>
 <li><strong>Jackknifing:</strong> Rake out one observation at a time and reestimate the statistical parameter(s) with the rest of the data.</li>
@@ -932,8 +940,8 @@ Var(\bar X) = \sigma^2 / n = 45.42 / 20 = 2.27
 <li><strong>Cross-validation:</strong> See how well your model performs if you pick a subset of the data, build the model just on that subset, and then test how well it predicts for the rest of the data, and repeat that many times.</li>
 </ul>
 </div>
-<div id="bayesian-analysis" class="section level3" number="11.2.2">
-<h3><span class="header-section-number">11.2.2</span> Bayesian analysis</h3>
+<div id="bayesian-analysis" class="section level3 hasAnchor" number="11.2.2">
+<h3><span class="header-section-number">11.2.2</span> Bayesian analysis<a href="exploring-data-3.html#bayesian-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Suggested books for learning more about Bayesian analysis in R:</p>
 <ul>
 <li><em>Doing Bayesian Data Analysis, Second Edition: A Tutorial with R, JAGS, and Stan.</em> John Kruschke.</li>
@@ -947,8 +955,8 @@ Var(\bar X) = \sigma^2 / n = 45.42 / 20 = 2.27
 <li>STAN</li>
 </ul>
 </div>
-<div id="ensemble-models-and-friends" class="section level3" number="11.2.3">
-<h3><span class="header-section-number">11.2.3</span> Ensemble models and friends</h3>
+<div id="ensemble-models-and-friends" class="section level3 hasAnchor" number="11.2.3">
+<h3><span class="header-section-number">11.2.3</span> Ensemble models and friends<a href="exploring-data-3.html#ensemble-models-and-friends" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li><strong>Bagging:</strong> Sample data with replacement and build a tree model. Repeat many times. To predict, predict from all models and take the majority vote.</li>
 <li><strong>Random forest:</strong> Same as bagging, for picking each node of a tree, only consider a random subset of variables.</li>
@@ -1033,7 +1041,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

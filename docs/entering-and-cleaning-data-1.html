@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 Entering and cleaning data #1 | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 Entering and cleaning data #1 | R Programming for Research" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
@@ -24,7 +23,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2022-08-21" />
+<meta name="date" content="2023-08-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,6 @@
   
 <link rel="prev" href="r-preliminaries.html"/>
 <link rel="next" href="exploring-data-1.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,15 +49,16 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.2/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <link href="libs/bokehjs-0.12.5/bokeh.min.css" rel="stylesheet" />
 <link href="libs/bokehjs-0.12.5/loader.css" rel="stylesheet" />
 <script src="libs/bokehjs-0.12.5/bokeh.min.js"></script>
@@ -72,10 +71,10 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.20/datatables.js"></script>
-<link href="libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.28/datatables.js"></script>
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-36719749-2"></script>
 <script>
@@ -91,6 +90,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -124,7 +124,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -137,7 +137,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -151,6 +151,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -605,13 +609,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="entering-and-cleaning-data-1" class="section level1" number="2">
-<h1><span class="header-section-number">Chapter 2</span> Entering and cleaning data #1</h1>
+<div id="entering-and-cleaning-data-1" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Entering and cleaning data #1<a href="entering-and-cleaning-data-1.html#entering-and-cleaning-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>The video lectures for this chapter are embedded at relevant places in the text,
 with links to download a pdf of the associated slides for each video.
 You can also access <a href="https://www.youtube.com/playlist?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl">a full playlist for the videos for this chapter</a>.</p>
-<div id="objectives-1" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Objectives</h2>
+<div id="objectives-1" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Objectives<a href="entering-and-cleaning-data-1.html#objectives-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>After this chapter, you should (know / understand / be able to ):</p>
 <ul>
 <li>Understand what a flat file is and how it differs from data stored in a binary file format</li>
@@ -631,8 +635,8 @@ You can also access <a href="https://www.youtube.com/playlist?list=PLuGPtwgRXxqI
 <li>Use piping to apply multiple <code>dplyr</code> functions in sequence to a dataframe</li>
 </ul>
 </div>
-<div id="overview" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Overview</h2>
+<div id="overview" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Overview<a href="entering-and-cleaning-data-1.html#overview" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <iframe width="768" height="480" src="https://www.youtube.com/embed/HIWxtOK0-DI?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_1.pdf">Download</a>
@@ -651,8 +655,8 @@ using the file path you figured out in step 1</li>
 deeper into some related topics you should learn now to make your life easier as
 you get started using R for research.</p>
 </div>
-<div id="reading-data-into-r" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> Reading data into R</h2>
+<div id="reading-data-into-r" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Reading data into R<a href="entering-and-cleaning-data-1.html#reading-data-into-r" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Data comes in files of all shapes and sizes. R has the capability to read data
 in from many of these, even proprietary files for other software (e.g., Excel
 and SAS files). As a small sample, here are some of the types of data files that
@@ -677,8 +681,8 @@ section of the course) to clean up each line as it comes in. In over a decade of
 coding in R, I think the only time I’ve come across a data file I couldn’t get
 into R was for proprietary precision agriculture data collected at harvest by a
 combine.</p>
-<div id="reading-local-flat-files" class="section level3" number="2.3.1">
-<h3><span class="header-section-number">2.3.1</span> Reading local flat files</h3>
+<div id="reading-local-flat-files" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Reading local flat files<a href="entering-and-cleaning-data-1.html#reading-local-flat-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Much of the data that you will want to read in will be in flat files. Basically,
 these are files that you can open using a text editor; the most common type
 you’ll work with are probably comma-separated files (often with a <code>.csv</code> or
@@ -689,7 +693,7 @@ you’ll work with are probably comma-separated files (often with a <code>.csv</
 </ol>
 <ul>
 <li>“.csv”: Comma-separated values</li>
-<li>“.tab,” “.tsv”: Tab-separated values</li>
+<li>“.tab”, “.tsv”: Tab-separated values</li>
 <li>Other possible delimiters: colon, semicolon, pipe (“|”)</li>
 </ul>
 <p><em>Fixed width files</em> are files where a column always has the same width, for all
@@ -765,11 +769,11 @@ file), therefore, you can save yourself some typing.</p>
 <p>For example, to read in the Ebola data, which is comma-delimited, you could
 either use <code>read_table</code> with a <code>delim</code> argument specified or use <code>read_csv</code>, in
 which case you don’t have to specify <code>delim</code>:</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="entering-and-cleaning-data-1.html#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;readr&quot;</span>)</span>
-<span id="cb185-2"><a href="entering-and-cleaning-data-1.html#cb185-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb185-3"><a href="entering-and-cleaning-data-1.html#cb185-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The following two calls do the same thing</span></span>
-<span id="cb185-4"><a href="entering-and-cleaning-data-1.html#cb185-4" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>, <span class="at">delim =</span> <span class="st">&quot;,&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="entering-and-cleaning-data-1.html#cb186-1" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="entering-and-cleaning-data-1.html#cb185-1" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;readr&quot;</span>)</span>
+<span id="cb185-2"><a href="entering-and-cleaning-data-1.html#cb185-2" tabindex="-1"></a></span>
+<span id="cb185-3"><a href="entering-and-cleaning-data-1.html#cb185-3" tabindex="-1"></a><span class="co"># The following two calls do the same thing</span></span>
+<span id="cb185-4"><a href="entering-and-cleaning-data-1.html#cb185-4" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="at">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>, <span class="at">delim =</span> <span class="st">&quot;,&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="entering-and-cleaning-data-1.html#cb186-1" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>)</span></code></pre></div>
 <pre><code>## Rows: 122 Columns: 18
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
@@ -780,10 +784,17 @@ which case you don’t have to specify <code>delim</code>:</p>
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <div class="rmdtip">
 <p>
-The message that R prints after this call (“Parsed with column specification:..”) lets you know what classes were used for each column (this function tries to guess the appropriate class and typically gets it right). You can suppress the message using the <code>cols_types = cols()</code> argument.
+The message that R prints after this call (“Parsed with column
+specification:..”) lets you know what classes were used for each column
+(this function tries to guess the appropriate class and typically gets
+it right). You can suppress the message using the
+<code>cols_types = cols()</code> argument.
 </p>
 <p>
-If <code>readr</code> doesn’t correctly guess some of the columns classes you can use the <code>type_convert()</code> function to take another go at guessing them after you’ve tweaked the formats of the rogue columns.
+If <code>readr</code> doesn’t correctly guess some of the columns
+classes you can use the <code>type_convert()</code> function to take
+another go at guessing them after you’ve tweaked the formats of the
+rogue columns.
 </p>
 </div>
 <p>This family of functions has a few other helpful options you can specify. For example,
@@ -826,7 +837,11 @@ the most useful options common to the <code>read_delim</code> family of function
 </table>
 <div class="rmdnote">
 <p>
-Remember that you can always find out more about a function by looking at its help file. For example, check out <code>?read_delim</code> and <code>?read_fwf</code>. You can also use the help files to determine the default values of arguments for each function.
+Remember that you can always find out more about a function by
+looking at its help file. For example, check out
+<code>?read_delim</code> and <code>?read_fwf</code>. You can also use
+the help files to determine the default values of arguments for each
+function.
 </p>
 </div>
 <p>So far, we’ve only looked at functions from the <code>readr</code> package for reading in data
@@ -850,12 +865,26 @@ helpful to know what they are. Functions in the <code>read.table</code> family i
 </ul>
 <div class="rmdnote">
 <p>
-The <code>readr</code> package is a member of the tidyverse of packages. The <em>tidyverse</em> describes an evolving collection of R packages with a common philosophy, and they are unquestionably changing the way people code in R. Many were developed in part or full by Hadley Wickham and others at RStudio. Many of these packages are less than ten years old, but have been rapidly adapted by the R community. As a result, newer examples of R code will often look very different from the code in older R scripts, including examples in books that are more than a few years old. In this course, I’ll focus on “tidyverse” functions when possible, but I do put in details about base R equivalent functions or processes at some points—this will help you interpret older code. You can download all the tidyverse packages using <code>install.packages(“tidyverse”)</code>, <code>library(“tidyverse”)</code> makes all the tidyverse functions available for use.
+The <code>readr</code> package is a member of the tidyverse of
+packages. The <em>tidyverse</em> describes an evolving collection of R
+packages with a common philosophy, and they are unquestionably changing
+the way people code in R. Many were developed in part or full by Hadley
+Wickham and others at RStudio. Many of these packages are less than ten
+years old, but have been rapidly adapted by the R community. As a
+result, newer examples of R code will often look very different from the
+code in older R scripts, including examples in books that are more than
+a few years old. In this course, I’ll focus on “tidyverse” functions
+when possible, but I do put in details about base R equivalent functions
+or processes at some points—this will help you interpret older code. You
+can download all the tidyverse packages using
+<code>install.packages(“tidyverse”)</code>,
+<code>library(“tidyverse”)</code> makes all the tidyverse functions
+available for use.
 </p>
 </div>
 </div>
-<div id="reading-in-other-file-types" class="section level3" number="2.3.2">
-<h3><span class="header-section-number">2.3.2</span> Reading in other file types</h3>
+<div id="reading-in-other-file-types" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> Reading in other file types<a href="entering-and-cleaning-data-1.html#reading-in-other-file-types" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Later in the course, we’ll talk about how to open a variety of other file types
 in R. However, you might find it immediately useful to be able to read in files
 from other statistical programs.</p>
@@ -894,10 +923,10 @@ They allow you to read in files from the following formats:</p>
 </table>
 </div>
 </div>
-<div id="directories-and-pathnames" class="section level2" number="2.4">
-<h2><span class="header-section-number">2.4</span> Directories and pathnames</h2>
-<div id="directory-structure" class="section level3" number="2.4.1">
-<h3><span class="header-section-number">2.4.1</span> Directory structure</h3>
+<div id="directories-and-pathnames" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Directories and pathnames<a href="entering-and-cleaning-data-1.html#directories-and-pathnames" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="directory-structure" class="section level3 hasAnchor" number="2.4.1">
+<h3><span class="header-section-number">2.4.1</span> Directory structure<a href="entering-and-cleaning-data-1.html#directory-structure" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <iframe width="768" height="480" src="https://www.youtube.com/embed/Ll5seRpzekY?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_3.pdf">Download</a>
@@ -978,15 +1007,15 @@ Figure <a href="entering-and-cleaning-data-1.html#fig:filedirstructure">2.1</a>,
 <code>/Users/brookeanderson</code>. I’ll describe just a bit later how you can figure out
 what your own home directory is on your own computer.</p>
 </div>
-<div id="working-directory" class="section level3" number="2.4.2">
-<h3><span class="header-section-number">2.4.2</span> Working directory</h3>
+<div id="working-directory" class="section level3 hasAnchor" number="2.4.2">
+<h3><span class="header-section-number">2.4.2</span> Working directory<a href="entering-and-cleaning-data-1.html#working-directory" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>When you run R, it’s always running from within some working directory, which
 will be one of the directories somewhere in your computer’s directory structure.
 At any time, you can figure out which directory R is working in by running the
 command <code>getwd()</code> (short for “get working directory”). For example, my R session
 is currently running in the following directory:</p>
-<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="entering-and-cleaning-data-1.html#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
-<pre><code>## [1] &quot;/Users/georgianaanderson/Documents/my_books/RProgrammingForResearch&quot;</code></pre>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="entering-and-cleaning-data-1.html#cb189-1" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
+<pre><code>## [1] &quot;C:/Users/rseverso/Documents/RProgrammingForResearch&quot;</code></pre>
 <p>This means that, for my current R session, R is working in the
 <code>RProgrammingForResearch</code> subdirectory of my <code>brookeanderson</code> directory (which
 is my home directory).</p>
@@ -999,12 +1028,12 @@ of the data you’ll be reading in for that script is somewhere near where the
 script file is saved in the directory structure. If you open R by
 double-clicking on the R icon in “Applications” (or something similar on a PC),
 R will start in its default working directory. You can find out what this is, or
-change it, in RStudio’s “Preferences.” Finally, if you open
+change it, in RStudio’s “Preferences”. Finally, if you open
 an R Project, R will start in that project’s working directory (the directory in
 which the <code>.Rproj</code> file for the project is stored).</p>
 </div>
-<div id="file-and-directory-pathnames" class="section level3" number="2.4.3">
-<h3><span class="header-section-number">2.4.3</span> File and directory pathnames</h3>
+<div id="file-and-directory-pathnames" class="section level3 hasAnchor" number="2.4.3">
+<h3><span class="header-section-number">2.4.3</span> File and directory pathnames<a href="entering-and-cleaning-data-1.html#file-and-directory-pathnames" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <iframe width="768" height="480" src="https://www.youtube.com/embed/vutYRvQj36c?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_4.pdf">Download</a>
@@ -1036,7 +1065,7 @@ of your current working directory, because it gives directions from the
 root—it will always be clear to R exactly what file you’re talking about.
 Here’s the code to use to read that file in using the <code>read.csv</code> function with
 the file’s absolute pathname:</p>
-<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="entering-and-cleaning-data-1.html#cb192-1" aria-hidden="true" tabindex="-1"></a>heat_mort <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;/Users/brookeanderson/Desktop/RCourseFall2015/CourseText/heat_mort.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="entering-and-cleaning-data-1.html#cb192-1" tabindex="-1"></a>heat_mort <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;/Users/brookeanderson/Desktop/RCourseFall2015/CourseText/heat_mort.csv&quot;</span>)</span></code></pre></div>
 <p>The <em>relative pathname</em>, on the other hand, gives R the directions for how to
 get to a directory or file from the current working directory. If the file or
 directory you’re looking for is pretty close to your current working directory
@@ -1054,7 +1083,7 @@ need to look in the subdirectory <code>CourseText</code>, where you could find
 would be:</p>
 <pre><code>&quot;CourseText/heat_mort.csv&quot;</code></pre>
 <p>You can use this relative pathname to tell R where to find and read in the file:</p>
-<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="entering-and-cleaning-data-1.html#cb194-1" aria-hidden="true" tabindex="-1"></a>heat_mort <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;CourseText/heat_mort.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="entering-and-cleaning-data-1.html#cb194-1" tabindex="-1"></a>heat_mort <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;CourseText/heat_mort.csv&quot;</span>)</span></code></pre></div>
 <p>While this pathname is much shorter than the absolute pathname, it is important
 to remember that if you are working in a different working directory, this
 relative pathname would no longer work.</p>
@@ -1127,8 +1156,8 @@ relative pathname you’re using, it’s often helpful to use <code>list.files()
 sure the file you’re trying to load is in the directory that the relative
 pathname you’re using is directing R to.</p>
 </div>
-<div id="diversion-paste" class="section level3" number="2.4.4">
-<h3><span class="header-section-number">2.4.4</span> Diversion: <code>paste</code></h3>
+<div id="diversion-paste" class="section level3 hasAnchor" number="2.4.4">
+<h3><span class="header-section-number">2.4.4</span> Diversion: <code>paste</code><a href="entering-and-cleaning-data-1.html#diversion-paste" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This is a good opportunity to explain how to use some functions that can be very
 helpful when you’re using relative or absolute pathnames: <code>paste()</code> and
 <code>paste0()</code>.</p>
@@ -1150,11 +1179,11 @@ vector will only be one element long, for basic uses of <code>paste()</code>, wh
 inputs will be several different character stings.) You separate all the
 different things you want to paste together using with commas in the function
 call. For example:</p>
-<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="entering-and-cleaning-data-1.html#cb199-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="entering-and-cleaning-data-1.html#cb199-1" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;Sunday Monday Tuesday&quot;</code></pre>
-<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="entering-and-cleaning-data-1.html#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="entering-and-cleaning-data-1.html#cb201-1" tabindex="-1"></a><span class="fu">length</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>))</span></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="entering-and-cleaning-data-1.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="at">x =</span> <span class="fu">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="entering-and-cleaning-data-1.html#cb203-1" tabindex="-1"></a><span class="fu">length</span>(<span class="at">x =</span> <span class="fu">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>))</span></code></pre></div>
 <pre><code>## [1] 1</code></pre>
 <p>The <code>paste()</code> function has an option called <code>sep =</code>. This tells R what you want
 to use to separate the values you’re pasting together in the output. The default
@@ -1162,13 +1191,13 @@ is for R to use a space, as shown in the example above. To change the separator,
 you can change this option, and you can put in just about anything you want. For
 example, if you wanted to paste all the values together without spaces, you
 could use <code>sep = ""</code>:</p>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="entering-and-cleaning-data-1.html#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="entering-and-cleaning-data-1.html#cb205-1" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;SundayMondayTuesday&quot;</code></pre>
 <p>As a shortcut, instead of using the <code>sep = ""</code> option, you could achieve the
 same thing using the <code>paste0</code> function. This function is almost exactly like
 <code>paste</code>, but it defaults to <code>""</code> (i.e., no space) as the separator between
 values by default:</p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="entering-and-cleaning-data-1.html#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="entering-and-cleaning-data-1.html#cb207-1" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;SundayMondayTuesday&quot;</code></pre>
 <p>With pathnames, you will usually not want spaces. Therefore, you could think
 about using <code>paste0()</code> to write an object with the pathname you want to
@@ -1182,8 +1211,8 @@ heat_mort &lt;- read_csv(file = my_file)</code></pre>
 this is a good example of how you can start using these functions to start to
 get a feel for them.</p>
 </div>
-<div id="reading-online-flat-files" class="section level3" number="2.4.5">
-<h3><span class="header-section-number">2.4.5</span> Reading online flat files</h3>
+<div id="reading-online-flat-files" class="section level3 hasAnchor" number="2.4.5">
+<h3><span class="header-section-number">2.4.5</span> Reading online flat files<a href="entering-and-cleaning-data-1.html#reading-online-flat-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>So far, I’ve only shown you how to read in data from files that are saved to
 your computer. R can also read in data directly from the web. If a flat file is
 posted online, you can read it into R in almost exactly the same way that you
@@ -1196,11 +1225,11 @@ Dropbox.</p>
 <p>For example, to read in data from this <a href="https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv">GitHub repository of Ebola
 data</a>,
 you can run:</p>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="entering-and-cleaning-data-1.html#cb210-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
-<span id="cb210-2"><a href="entering-and-cleaning-data-1.html#cb210-2" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://raw.githubusercontent.com/cmrivers/&quot;</span>,</span>
-<span id="cb210-3"><a href="entering-and-cleaning-data-1.html#cb210-3" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;ebola/master/country_timeseries.csv&quot;</span>)</span>
-<span id="cb210-4"><a href="entering-and-cleaning-data-1.html#cb210-4" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> url)</span>
-<span id="cb210-5"><a href="entering-and-cleaning-data-1.html#cb210-5" aria-hidden="true" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> (<span class="fu">select</span>(<span class="at">.data =</span> ebola, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)), <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="entering-and-cleaning-data-1.html#cb210-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb210-2"><a href="entering-and-cleaning-data-1.html#cb210-2" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;https://raw.githubusercontent.com/cmrivers/&quot;</span>,</span>
+<span id="cb210-3"><a href="entering-and-cleaning-data-1.html#cb210-3" tabindex="-1"></a>              <span class="st">&quot;ebola/master/country_timeseries.csv&quot;</span>)</span>
+<span id="cb210-4"><a href="entering-and-cleaning-data-1.html#cb210-4" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> url)</span>
+<span id="cb210-5"><a href="entering-and-cleaning-data-1.html#cb210-5" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> (<span class="fu">select</span>(<span class="at">.data =</span> ebola, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)), <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 3
 ##   Date       Day Cases_Guinea
 ##   &lt;chr&gt;    &lt;dbl&gt;        &lt;dbl&gt;
@@ -1209,8 +1238,8 @@ you can run:</p>
 ## 3 1/3/2015   287         2769</code></pre>
 </div>
 </div>
-<div id="data-cleaning" class="section level2" number="2.5">
-<h2><span class="header-section-number">2.5</span> Data cleaning</h2>
+<div id="data-cleaning" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Data cleaning<a href="entering-and-cleaning-data-1.html#data-cleaning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <iframe width="768" height="480" src="https://www.youtube.com/embed/uimHCVdYgwM?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_5.pdf">Download</a>
@@ -1252,10 +1281,10 @@ sections of the course, we’ll go much deeper into how to clean messier data.</
 Daily Show. To follow along with these examples, you’ll want to load that data,
 as well as load the <code>dplyr</code> package (install it using <code>install.packages</code> if you
 have not already):</p>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="entering-and-cleaning-data-1.html#cb212-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
-<span id="cb212-2"><a href="entering-and-cleaning-data-1.html#cb212-2" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>, <span class="at">skip =</span> <span class="dv">4</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="entering-and-cleaning-data-1.html#cb212-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb212-2"><a href="entering-and-cleaning-data-1.html#cb212-2" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>, <span class="at">skip =</span> <span class="dv">4</span>)</span></code></pre></div>
 <p>I’ve used this data in previous examples, but as a reminder, here’s what it looks like:</p>
-<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="entering-and-cleaning-data-1.html#cb213-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> daily_show)</span></code></pre></div>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="entering-and-cleaning-data-1.html#cb213-1" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> daily_show)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 5
 ##    YEAR GoogleKnowlege_Occupation Show    Group  Raw_Guest_List  
 ##   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;           
@@ -1265,8 +1294,8 @@ have not already):</p>
 ## 4  1999 film actress              1/14/99 Acting Gillian Anderson
 ## 5  1999 actor                     1/18/99 Acting David Alan Grier
 ## 6  1999 actor                     1/19/99 Acting William Baldwin</code></pre>
-<div id="renaming-columns" class="section level3" number="2.5.1">
-<h3><span class="header-section-number">2.5.1</span> Renaming columns</h3>
+<div id="renaming-columns" class="section level3 hasAnchor" number="2.5.1">
+<h3><span class="header-section-number">2.5.1</span> Renaming columns<a href="entering-and-cleaning-data-1.html#renaming-columns" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>A first step is often re-naming the columns of the dataframe. It can be hard to
 work with a column name that:</p>
 <ul>
@@ -1277,26 +1306,26 @@ work with a column name that:</p>
 <p>You can check out the column names for a dataframe using the <code>colnames</code>
 function, with the dataframe object as the argument. Several of the column names
 in <code>daily_show</code> have some of these issues:</p>
-<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="entering-and-cleaning-data-1.html#cb215-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(<span class="at">x =</span> daily_show)</span></code></pre></div>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="entering-and-cleaning-data-1.html#cb215-1" tabindex="-1"></a><span class="fu">colnames</span>(<span class="at">x =</span> daily_show)</span></code></pre></div>
 <pre><code>## [1] &quot;YEAR&quot;                      &quot;GoogleKnowlege_Occupation&quot;
 ## [3] &quot;Show&quot;                      &quot;Group&quot;                    
 ## [5] &quot;Raw_Guest_List&quot;</code></pre>
 <p>To rename these columns, use <code>rename</code>. The basic syntax is:</p>
-<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="entering-and-cleaning-data-1.html#cb217-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generic code</span></span>
-<span id="cb217-2"><a href="entering-and-cleaning-data-1.html#cb217-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rename</span>(<span class="at">.data =</span> dataframe, </span>
-<span id="cb217-3"><a href="entering-and-cleaning-data-1.html#cb217-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">new_column_name_1 =</span> old_column_name_1,</span>
-<span id="cb217-4"><a href="entering-and-cleaning-data-1.html#cb217-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">new_column_name_2 =</span> old_column_name_2)</span></code></pre></div>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="entering-and-cleaning-data-1.html#cb217-1" tabindex="-1"></a><span class="do">## Generic code</span></span>
+<span id="cb217-2"><a href="entering-and-cleaning-data-1.html#cb217-2" tabindex="-1"></a><span class="fu">rename</span>(<span class="at">.data =</span> dataframe, </span>
+<span id="cb217-3"><a href="entering-and-cleaning-data-1.html#cb217-3" tabindex="-1"></a>       <span class="at">new_column_name_1 =</span> old_column_name_1,</span>
+<span id="cb217-4"><a href="entering-and-cleaning-data-1.html#cb217-4" tabindex="-1"></a>       <span class="at">new_column_name_2 =</span> old_column_name_2)</span></code></pre></div>
 <p>The first argument is the dataframe for which you’d like to rename columns. Then
 you list each pair of new versus old column names (in that order) for each of
 the columns you want to rename. To rename columns in the <code>daily_show</code> data using
 <code>rename</code>, for example, you would run:</p>
-<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="entering-and-cleaning-data-1.html#cb218-1" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">rename</span>(<span class="at">.data =</span> daily_show,</span>
-<span id="cb218-2"><a href="entering-and-cleaning-data-1.html#cb218-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">year =</span> YEAR,</span>
-<span id="cb218-3"><a href="entering-and-cleaning-data-1.html#cb218-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">job =</span> GoogleKnowlege_Occupation, </span>
-<span id="cb218-4"><a href="entering-and-cleaning-data-1.html#cb218-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">date =</span> Show, </span>
-<span id="cb218-5"><a href="entering-and-cleaning-data-1.html#cb218-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">category =</span> Group,</span>
-<span id="cb218-6"><a href="entering-and-cleaning-data-1.html#cb218-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">guest_name =</span> Raw_Guest_List)</span>
-<span id="cb218-7"><a href="entering-and-cleaning-data-1.html#cb218-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> daily_show, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="entering-and-cleaning-data-1.html#cb218-1" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">rename</span>(<span class="at">.data =</span> daily_show,</span>
+<span id="cb218-2"><a href="entering-and-cleaning-data-1.html#cb218-2" tabindex="-1"></a>                     <span class="at">year =</span> YEAR,</span>
+<span id="cb218-3"><a href="entering-and-cleaning-data-1.html#cb218-3" tabindex="-1"></a>                     <span class="at">job =</span> GoogleKnowlege_Occupation, </span>
+<span id="cb218-4"><a href="entering-and-cleaning-data-1.html#cb218-4" tabindex="-1"></a>                     <span class="at">date =</span> Show, </span>
+<span id="cb218-5"><a href="entering-and-cleaning-data-1.html#cb218-5" tabindex="-1"></a>                     <span class="at">category =</span> Group,</span>
+<span id="cb218-6"><a href="entering-and-cleaning-data-1.html#cb218-6" tabindex="-1"></a>                     <span class="at">guest_name =</span> Raw_Guest_List)</span>
+<span id="cb218-7"><a href="entering-and-cleaning-data-1.html#cb218-7" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> daily_show, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 5
 ##    year job                date    category guest_name     
 ##   &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;          
@@ -1305,12 +1334,20 @@ the columns you want to rename. To rename columns in the <code>daily_show</code>
 ## 3  1999 television actress 1/13/99 Acting   Tracey Ullman</code></pre>
 <div class="rmdwarning">
 <p>
-Many of the functions in tidyverse packages, including those in <code>dplyr</code>, provide exceptions to the general rule about when to use quotation marks versus when to leave them off. Unfortunately, this may make it a bit hard to learn when to use quotation marks versus when not to. One way to think about this, which is a bit of an oversimplification but can help as you’re learning, is to assume that anytime you’re using a <code>dplyr</code> function, every column in the dataframe you’re working with has been loaded to your R session as its own object.
+Many of the functions in tidyverse packages, including those in
+<code>dplyr</code>, provide exceptions to the general rule about when to
+use quotation marks versus when to leave them off. Unfortunately, this
+may make it a bit hard to learn when to use quotation marks versus when
+not to. One way to think about this, which is a bit of an
+oversimplification but can help as you’re learning, is to assume that
+anytime you’re using a <code>dplyr</code> function, every column in the
+dataframe you’re working with has been loaded to your R session as its
+own object.
 </p>
 </div>
 </div>
-<div id="selecting-columns" class="section level3" number="2.5.2">
-<h3><span class="header-section-number">2.5.2</span> Selecting columns</h3>
+<div id="selecting-columns" class="section level3 hasAnchor" number="2.5.2">
+<h3><span class="header-section-number">2.5.2</span> Selecting columns<a href="entering-and-cleaning-data-1.html#selecting-columns" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <iframe width="659" height="412" src="https://www.youtube.com/embed/yAYm_V6Y1Cw?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_6.pdf">Download</a>
@@ -1318,13 +1355,13 @@ a pdf of the lecture slides for this video.</p>
 <p>Next, you may want to select only some columns of the dataframe. You can use the
 <code>select</code> function from <code>dplyr</code> to subset the dataframe to certain columns. The
 basic structure of this command is:</p>
-<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="entering-and-cleaning-data-1.html#cb220-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generic code</span></span>
-<span id="cb220-2"><a href="entering-and-cleaning-data-1.html#cb220-2" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(<span class="at">.data =</span> dataframe, column_name_1, column_name_2, ...)</span></code></pre></div>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="entering-and-cleaning-data-1.html#cb220-1" tabindex="-1"></a><span class="do">## Generic code</span></span>
+<span id="cb220-2"><a href="entering-and-cleaning-data-1.html#cb220-2" tabindex="-1"></a><span class="fu">select</span>(<span class="at">.data =</span> dataframe, column_name_1, column_name_2, ...)</span></code></pre></div>
 <p>In this call, you first specify the dataframe to use and then list all of the
 column names to include in the output dataframe, with commas between each column
 name. For example, to select all columns in <code>daily_show</code> except <code>year</code> (since
 that information is already included in <code>date</code>), run:</p>
-<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="entering-and-cleaning-data-1.html#cb221-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(<span class="at">.data =</span> daily_show, job, date, category, guest_name)</span></code></pre></div>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="entering-and-cleaning-data-1.html#cb221-1" tabindex="-1"></a><span class="fu">select</span>(<span class="at">.data =</span> daily_show, job, date, category, guest_name)</span></code></pre></div>
 <pre><code>## # A tibble: 2,693 × 4
 ##    job                date    category guest_name      
 ##    &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;           
@@ -1338,17 +1375,24 @@ that information is already included in <code>date</code>), run:</p>
 ##  8 model              1/21/99 Media    Carmen Electra  
 ##  9 actor              1/25/99 Acting   Matthew Lillard 
 ## 10 stand-up comedian  1/26/99 Comedy   David Cross     
-## # … with 2,683 more rows</code></pre>
+## # ℹ 2,683 more rows</code></pre>
 <div class="rmdwarning">
 <p>
-Don’t forget that, if you want to change column names in the saved object, you must reassign the object to be the output of <code>rename</code>. If you run one of these cleaning functions without reassigning the object, R will print out the result, but the object itself won’t change. You can take advantage of this, as I’ve done in this example, to look at the result of applying a function to a dataframe without changing the original dataframe. This can be helpful as you’re figuring out how to write your code.
+Don’t forget that, if you want to change column names in the saved
+object, you must reassign the object to be the output of
+<code>rename</code>. If you run one of these cleaning functions without
+reassigning the object, R will print out the result, but the object
+itself won’t change. You can take advantage of this, as I’ve done in
+this example, to look at the result of applying a function to a
+dataframe without changing the original dataframe. This can be helpful
+as you’re figuring out how to write your code.
 </p>
 </div>
 <p>The <code>select</code> function also provides some time-saving tools. For example, in the
 last example, we wanted all the columns except one. Instead of writing out all
 the columns we want, we can use <code>-</code> with the columns we don’t want to save time:</p>
-<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="entering-and-cleaning-data-1.html#cb223-1" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">select</span>(<span class="at">.data =</span> daily_show, <span class="sc">-</span>year)</span>
-<span id="cb223-2"><a href="entering-and-cleaning-data-1.html#cb223-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> daily_show, <span class="at">n =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="entering-and-cleaning-data-1.html#cb223-1" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">select</span>(<span class="at">.data =</span> daily_show, <span class="sc">-</span>year)</span>
+<span id="cb223-2"><a href="entering-and-cleaning-data-1.html#cb223-2" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> daily_show, <span class="at">n =</span> <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 4
 ##   job                date    category guest_name     
 ##   &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;          
@@ -1356,8 +1400,8 @@ the columns we want, we can use <code>-</code> with the columns we don’t want 
 ## 2 Comedian           1/12/99 Comedy   Sandra Bernhard
 ## 3 television actress 1/13/99 Acting   Tracey Ullman</code></pre>
 </div>
-<div id="extracting-and-arranging-rows" class="section level3" number="2.5.3">
-<h3><span class="header-section-number">2.5.3</span> Extracting and arranging rows</h3>
+<div id="extracting-and-arranging-rows" class="section level3 hasAnchor" number="2.5.3">
+<h3><span class="header-section-number">2.5.3</span> Extracting and arranging rows<a href="entering-and-cleaning-data-1.html#extracting-and-arranging-rows" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <iframe width="659" height="412" src="https://www.youtube.com/embed/vIxlSmbFsQ0?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_7.pdf">Download</a>
@@ -1371,8 +1415,8 @@ a pdf of the lecture slides for this video.</p>
 </ul>
 <p>We’ll go through what each of these does and how to use them.</p>
 </div>
-<div id="slicing-and-sampling" class="section level3" number="2.5.4">
-<h3><span class="header-section-number">2.5.4</span> Slicing and sampling</h3>
+<div id="slicing-and-sampling" class="section level3 hasAnchor" number="2.5.4">
+<h3><span class="header-section-number">2.5.4</span> Slicing and sampling<a href="entering-and-cleaning-data-1.html#slicing-and-sampling" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The <code>slice</code> function from the <code>dplyr</code> package can extract certain rows based on
 their position in the dataframe.</p>
 <p>We already looked at this a bit in Chapter 1.
@@ -1380,8 +1424,8 @@ In the last chapter, you learned how to use the <code>slice</code> function
 to limit a dataframe to certain rows by row position.</p>
 <p>For example, to print the first three rows of the <code>daily_show</code> data, you can
 run:</p>
-<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="entering-and-cleaning-data-1.html#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
-<span id="cb225-2"><a href="entering-and-cleaning-data-1.html#cb225-2" aria-hidden="true" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> daily_show, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="entering-and-cleaning-data-1.html#cb225-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb225-2"><a href="entering-and-cleaning-data-1.html#cb225-2" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> daily_show, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 4
 ##   job                date    category guest_name     
 ##   &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;          
@@ -1393,27 +1437,27 @@ all from the “dplyr” package.</p>
 <p>For example, if you’d like to extract a random subset of <em>n</em> rows, you can use the
 <code>sample_n</code> function, with the <code>size</code> argument set to <em>n</em>.</p>
 <p>To extract two random rows from the <code>daily_show</code> dataframe, run:</p>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="entering-and-cleaning-data-1.html#cb227-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_n</span>(<span class="at">tbl =</span> daily_show, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="entering-and-cleaning-data-1.html#cb227-1" tabindex="-1"></a><span class="fu">sample_n</span>(<span class="at">tbl =</span> daily_show, <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 4
-##   job               date    category guest_name  
-##   &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;       
-## 1 Singer-songwriter 2/14/00 Musician Moby        
-## 2 journalist        1/24/08 Media    Gerri Willis</code></pre>
+##   job          date    category guest_name   
+##   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;        
+## 1 Screenwriter 7/2/09  Media    Robert Kenner
+## 2 journalist   4/10/08 Media    Aram Roston</code></pre>
 </div>
-<div id="arranging-rows" class="section level3" number="2.5.5">
-<h3><span class="header-section-number">2.5.5</span> Arranging rows</h3>
+<div id="arranging-rows" class="section level3 hasAnchor" number="2.5.5">
+<h3><span class="header-section-number">2.5.5</span> Arranging rows<a href="entering-and-cleaning-data-1.html#arranging-rows" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>There is also a function, <code>arrange</code>, you can use to re-order the rows in a
 dataframe based on the values in one of its columns. The syntax for this
 function is:</p>
-<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="entering-and-cleaning-data-1.html#cb229-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generic code</span></span>
-<span id="cb229-2"><a href="entering-and-cleaning-data-1.html#cb229-2" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(<span class="at">.data =</span> dataframe, column_to_order_by)</span></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="entering-and-cleaning-data-1.html#cb229-1" tabindex="-1"></a><span class="co"># Generic code</span></span>
+<span id="cb229-2"><a href="entering-and-cleaning-data-1.html#cb229-2" tabindex="-1"></a><span class="fu">arrange</span>(<span class="at">.data =</span> dataframe, column_to_order_by)</span></code></pre></div>
 <p>If you run this function to use a character vector to order, it will order the
 rows alphabetically by the values in that column. If you specify a numeric
 vector, it will order the rows by the numeric value.</p>
 <p>For example, we could reorder the <code>daily_show</code> data alphabetically by the values
 in the <code>category</code> column with the following call:</p>
-<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="entering-and-cleaning-data-1.html#cb230-1" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">arrange</span>(<span class="at">.data =</span> daily_show, category)</span>
-<span id="cb230-2"><a href="entering-and-cleaning-data-1.html#cb230-2" aria-hidden="true" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> daily_show, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="entering-and-cleaning-data-1.html#cb230-1" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">arrange</span>(<span class="at">.data =</span> daily_show, category)</span>
+<span id="cb230-2"><a href="entering-and-cleaning-data-1.html#cb230-2" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> daily_show, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 4
 ##   job       date    category guest_name       
 ##   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;            
@@ -1425,30 +1469,30 @@ vectors, from higher to lower for numeric, latest to earliest for a Date), you
 can include the <code>desc</code> function.</p>
 <p>For example, to reorder the <code>daily_show</code> data by job category in descending
 alphabetical order, you can run:</p>
-<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="entering-and-cleaning-data-1.html#cb232-1" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">arrange</span>(<span class="at">.data =</span> daily_show, </span>
-<span id="cb232-2"><a href="entering-and-cleaning-data-1.html#cb232-2" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">desc</span>(<span class="at">x =</span> category))</span>
-<span id="cb232-3"><a href="entering-and-cleaning-data-1.html#cb232-3" aria-hidden="true" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> daily_show, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="entering-and-cleaning-data-1.html#cb232-1" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">arrange</span>(<span class="at">.data =</span> daily_show, </span>
+<span id="cb232-2"><a href="entering-and-cleaning-data-1.html#cb232-2" tabindex="-1"></a>                      <span class="fu">desc</span>(<span class="at">x =</span> category))</span>
+<span id="cb232-3"><a href="entering-and-cleaning-data-1.html#cb232-3" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> daily_show, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 4
-##   job          date    category guest_name     
-##   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;          
-## 1 neurosurgeon 4/28/03 Science  Dr Sanjay Gupta
-## 2 scientist    1/13/04 Science  Catherine Weitz</code></pre>
+##   job         date     category guest_name   
+##   &lt;chr&gt;       &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;        
+## 1 news anchor 3/21/01  media    Jeff Varner  
+## 2 news anchor 10/15/02 media    Judy Woodruff</code></pre>
 </div>
-<div id="filtering-to-certain-rows" class="section level3" number="2.5.6">
-<h3><span class="header-section-number">2.5.6</span> Filtering to certain rows</h3>
+<div id="filtering-to-certain-rows" class="section level3 hasAnchor" number="2.5.6">
+<h3><span class="header-section-number">2.5.6</span> Filtering to certain rows<a href="entering-and-cleaning-data-1.html#filtering-to-certain-rows" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Next, you might want to filter the dataset down so that it only includes certain
 rows. For example, you might want to get a dataset with only the guests from
 2015, or only guests who are scientists.</p>
 <p>You can use the <code>filter</code> function from <code>dplyr</code> to filter a dataframe down to a
 subset of rows. The syntax is:</p>
-<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="entering-and-cleaning-data-1.html#cb234-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generic code</span></span>
-<span id="cb234-2"><a href="entering-and-cleaning-data-1.html#cb234-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="at">.data =</span> dataframe, logical expression)</span></code></pre></div>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="entering-and-cleaning-data-1.html#cb234-1" tabindex="-1"></a><span class="do">## Generic code</span></span>
+<span id="cb234-2"><a href="entering-and-cleaning-data-1.html#cb234-2" tabindex="-1"></a><span class="fu">filter</span>(<span class="at">.data =</span> dataframe, logical expression)</span></code></pre></div>
 <p>The <code>logical expression</code> in this call gives the condition that a row must meet to
 be included in the output data frame. For example, if you want to create a data
 frame that only includes guests who were scientists, you can run:</p>
-<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="entering-and-cleaning-data-1.html#cb235-1" aria-hidden="true" tabindex="-1"></a>scientists <span class="ot">&lt;-</span> <span class="fu">filter</span>(<span class="at">.data =</span> daily_show, </span>
-<span id="cb235-2"><a href="entering-and-cleaning-data-1.html#cb235-2" aria-hidden="true" tabindex="-1"></a>                     category <span class="sc">==</span> <span class="st">&quot;Science&quot;</span>)</span>
-<span id="cb235-3"><a href="entering-and-cleaning-data-1.html#cb235-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> scientists)</span></code></pre></div>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="entering-and-cleaning-data-1.html#cb235-1" tabindex="-1"></a>scientists <span class="ot">&lt;-</span> <span class="fu">filter</span>(<span class="at">.data =</span> daily_show, </span>
+<span id="cb235-2"><a href="entering-and-cleaning-data-1.html#cb235-2" tabindex="-1"></a>                     category <span class="sc">==</span> <span class="st">&quot;Science&quot;</span>)</span>
+<span id="cb235-3"><a href="entering-and-cleaning-data-1.html#cb235-3" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> scientists)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 4
 ##   job            date    category guest_name            
 ##   &lt;chr&gt;          &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;                 
@@ -1510,51 +1554,54 @@ logical operators. Some of the most commonly used ones are:</p>
 continues, so they’re worth learning by heart.</p>
 <div class="rmdwarning">
 <p>
-Two common errors with logical operators are: (1) Using <code>=</code> instead of <code>==</code> to check if two values are equal; and (2) Using <code>== NA</code> instead of <code>is.na</code> to check for missing observations.
+Two common errors with logical operators are: (1) Using
+<code>=</code> instead of <code>==</code> to check if two values are
+equal; and (2) Using <code>== NA</code> instead of <code>is.na</code> to
+check for missing observations.
 </p>
 </div>
 </div>
-<div id="add-or-change-columns" class="section level3" number="2.5.7">
-<h3><span class="header-section-number">2.5.7</span> Add or change columns</h3>
+<div id="add-or-change-columns" class="section level3 hasAnchor" number="2.5.7">
+<h3><span class="header-section-number">2.5.7</span> Add or change columns<a href="entering-and-cleaning-data-1.html#add-or-change-columns" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <iframe width="659" height="412" src="https://www.youtube.com/embed/_oC0WrrTf5Q?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_8.pdf">Download</a>
 a pdf of the lecture slides for this video.</p>
 <p>You can change a column or add a new column using the <code>mutate</code> function from the
 <code>dplyr</code> package. That function has the syntax:</p>
-<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="entering-and-cleaning-data-1.html#cb237-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generic code</span></span>
-<span id="cb237-2"><a href="entering-and-cleaning-data-1.html#cb237-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">.data =</span> dataframe,</span>
-<span id="cb237-3"><a href="entering-and-cleaning-data-1.html#cb237-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">changed_column =</span> <span class="cf">function</span>(changed_column),</span>
-<span id="cb237-4"><a href="entering-and-cleaning-data-1.html#cb237-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">new_column =</span> <span class="cf">function</span>(other arguments))</span></code></pre></div>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="entering-and-cleaning-data-1.html#cb237-1" tabindex="-1"></a><span class="co"># Generic code</span></span>
+<span id="cb237-2"><a href="entering-and-cleaning-data-1.html#cb237-2" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">.data =</span> dataframe,</span>
+<span id="cb237-3"><a href="entering-and-cleaning-data-1.html#cb237-3" tabindex="-1"></a>       <span class="at">changed_column =</span> <span class="cf">function</span>(changed_column),</span>
+<span id="cb237-4"><a href="entering-and-cleaning-data-1.html#cb237-4" tabindex="-1"></a>       <span class="at">new_column =</span> <span class="cf">function</span>(other arguments))</span></code></pre></div>
 <p>For example, the <code>job</code> column in <code>daily_show</code> sometimes uses upper case and
 sometimes does not (this call uses the <code>unique</code> function to list only unique
 values in this column):</p>
-<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="entering-and-cleaning-data-1.html#cb238-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> <span class="fu">unique</span>(<span class="at">x =</span> daily_show<span class="sc">$</span>job), <span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div>
-<pre><code>##  [1] &quot;neurosurgeon&quot;   &quot;scientist&quot;      &quot;physician&quot;      &quot;doctor&quot;        
-##  [5] &quot;astronaut&quot;      &quot;Astrophysicist&quot; &quot;Surgeon&quot;        &quot;Neuroscientist&quot;
-##  [9] &quot;primatologist&quot;  &quot;Neurologist&quot;</code></pre>
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="entering-and-cleaning-data-1.html#cb238-1" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> <span class="fu">unique</span>(<span class="at">x =</span> daily_show<span class="sc">$</span>job), <span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div>
+<pre><code>##  [1] &quot;news anchor&quot;    &quot;neurosurgeon&quot;   &quot;scientist&quot;      &quot;physician&quot;     
+##  [5] &quot;doctor&quot;         &quot;astronaut&quot;      &quot;Astrophysicist&quot; &quot;Surgeon&quot;       
+##  [9] &quot;Neuroscientist&quot; &quot;primatologist&quot;</code></pre>
 <p>To make all the observations in the <code>job</code> column lowercase, use the <code>str_to_lower</code> function from the <code>stringr</code> package within a <code>mutate</code> function:</p>
-<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="entering-and-cleaning-data-1.html#cb240-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;stringr&quot;</span>)</span>
-<span id="cb240-2"><a href="entering-and-cleaning-data-1.html#cb240-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">.data =</span> daily_show, </span>
-<span id="cb240-3"><a href="entering-and-cleaning-data-1.html#cb240-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">job =</span> <span class="fu">str_to_lower</span>(<span class="at">string =</span> job))</span></code></pre></div>
+<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="entering-and-cleaning-data-1.html#cb240-1" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;stringr&quot;</span>)</span>
+<span id="cb240-2"><a href="entering-and-cleaning-data-1.html#cb240-2" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">.data =</span> daily_show, </span>
+<span id="cb240-3"><a href="entering-and-cleaning-data-1.html#cb240-3" tabindex="-1"></a>       <span class="at">job =</span> <span class="fu">str_to_lower</span>(<span class="at">string =</span> job))</span></code></pre></div>
 <pre><code>## # A tibble: 2,693 × 4
-##    job            date    category guest_name            
-##    &lt;chr&gt;          &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;                 
-##  1 neurosurgeon   4/28/03 Science  Dr Sanjay Gupta       
-##  2 scientist      1/13/04 Science  Catherine Weitz       
-##  3 physician      6/15/04 Science  Hassan Ibrahim        
-##  4 doctor         9/6/05  Science  Dr. Marc Siegel       
-##  5 astronaut      2/13/06 Science  Astronaut Mike Mullane
-##  6 astrophysicist 1/30/07 Science  Neil deGrasse Tyson   
-##  7 surgeon        3/6/07  Science  Richard Jadick        
-##  8 physician      3/8/07  Science  Dr. Sharon Moalem     
-##  9 astrophysicist 7/23/07 Science  Neil deGrasse Tyson   
-## 10 neuroscientist 4/1/08  Science  Simon LeVay           
-## # … with 2,683 more rows</code></pre>
+##    job          date     category guest_name            
+##    &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;                 
+##  1 news anchor  3/21/01  media    Jeff Varner           
+##  2 news anchor  10/15/02 media    Judy Woodruff         
+##  3 news anchor  11/6/02  media    Candy Crowley         
+##  4 news anchor  4/9/02   media    Judy Woodruff         
+##  5 news anchor  3/24/11  media    Bret Baier            
+##  6 neurosurgeon 4/28/03  Science  Dr Sanjay Gupta       
+##  7 scientist    1/13/04  Science  Catherine Weitz       
+##  8 physician    6/15/04  Science  Hassan Ibrahim        
+##  9 doctor       9/6/05   Science  Dr. Marc Siegel       
+## 10 astronaut    2/13/06  Science  Astronaut Mike Mullane
+## # ℹ 2,683 more rows</code></pre>
 </div>
 </div>
-<div id="piping" class="section level2" number="2.6">
-<h2><span class="header-section-number">2.6</span> Piping</h2>
+<div id="piping" class="section level2 hasAnchor" number="2.6">
+<h2><span class="header-section-number">2.6</span> Piping<a href="entering-and-cleaning-data-1.html#piping" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <iframe width="659" height="412" src="https://www.youtube.com/embed/fSJR0cM1qT0?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_9.pdf">Download</a> a pdf of the lecture slides for this video.</p>
@@ -1564,45 +1611,45 @@ trick called “piping” that will let you clean up your code a bit when you’
 writing a script to clean data.</p>
 <p>If you look at the format of these <code>dplyr</code> functions, you’ll notice that they
 all take a dataframe as their first argument:</p>
-<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="entering-and-cleaning-data-1.html#cb242-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generic code</span></span>
-<span id="cb242-2"><a href="entering-and-cleaning-data-1.html#cb242-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rename</span>(<span class="at">.data =</span> dataframe, </span>
-<span id="cb242-3"><a href="entering-and-cleaning-data-1.html#cb242-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">new_column_name_1 =</span> old_column_name_1,</span>
-<span id="cb242-4"><a href="entering-and-cleaning-data-1.html#cb242-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">new_column_name_2 =</span> old_column_name_2)</span>
-<span id="cb242-5"><a href="entering-and-cleaning-data-1.html#cb242-5" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(<span class="at">.data =</span> dataframe, </span>
-<span id="cb242-6"><a href="entering-and-cleaning-data-1.html#cb242-6" aria-hidden="true" tabindex="-1"></a>       column_name_1, column_name_2)</span>
-<span id="cb242-7"><a href="entering-and-cleaning-data-1.html#cb242-7" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="at">.data =</span> dataframe, </span>
-<span id="cb242-8"><a href="entering-and-cleaning-data-1.html#cb242-8" aria-hidden="true" tabindex="-1"></a>       logical expression)</span>
-<span id="cb242-9"><a href="entering-and-cleaning-data-1.html#cb242-9" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">.data =</span> dataframe,</span>
-<span id="cb242-10"><a href="entering-and-cleaning-data-1.html#cb242-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">changed_column =</span> <span class="cf">function</span>(changed_column),</span>
-<span id="cb242-11"><a href="entering-and-cleaning-data-1.html#cb242-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">new_column =</span> <span class="cf">function</span>(other arguments))</span></code></pre></div>
+<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="entering-and-cleaning-data-1.html#cb242-1" tabindex="-1"></a><span class="co"># Generic code</span></span>
+<span id="cb242-2"><a href="entering-and-cleaning-data-1.html#cb242-2" tabindex="-1"></a><span class="fu">rename</span>(<span class="at">.data =</span> dataframe, </span>
+<span id="cb242-3"><a href="entering-and-cleaning-data-1.html#cb242-3" tabindex="-1"></a>       <span class="at">new_column_name_1 =</span> old_column_name_1,</span>
+<span id="cb242-4"><a href="entering-and-cleaning-data-1.html#cb242-4" tabindex="-1"></a>       <span class="at">new_column_name_2 =</span> old_column_name_2)</span>
+<span id="cb242-5"><a href="entering-and-cleaning-data-1.html#cb242-5" tabindex="-1"></a><span class="fu">select</span>(<span class="at">.data =</span> dataframe, </span>
+<span id="cb242-6"><a href="entering-and-cleaning-data-1.html#cb242-6" tabindex="-1"></a>       column_name_1, column_name_2)</span>
+<span id="cb242-7"><a href="entering-and-cleaning-data-1.html#cb242-7" tabindex="-1"></a><span class="fu">filter</span>(<span class="at">.data =</span> dataframe, </span>
+<span id="cb242-8"><a href="entering-and-cleaning-data-1.html#cb242-8" tabindex="-1"></a>       logical expression)</span>
+<span id="cb242-9"><a href="entering-and-cleaning-data-1.html#cb242-9" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">.data =</span> dataframe,</span>
+<span id="cb242-10"><a href="entering-and-cleaning-data-1.html#cb242-10" tabindex="-1"></a>       <span class="at">changed_column =</span> <span class="cf">function</span>(changed_column),</span>
+<span id="cb242-11"><a href="entering-and-cleaning-data-1.html#cb242-11" tabindex="-1"></a>       <span class="at">new_column =</span> <span class="cf">function</span>(other arguments))</span></code></pre></div>
 <p>Without piping, you have to reassign the dataframe object at each step of this
 cleaning if you want the changes saved in the object:</p>
-<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb243-1"><a href="entering-and-cleaning-data-1.html#cb243-1" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</span>
-<span id="cb243-2"><a href="entering-and-cleaning-data-1.html#cb243-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">skip =</span> <span class="dv">4</span>)</span>
-<span id="cb243-3"><a href="entering-and-cleaning-data-1.html#cb243-3" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">rename</span>(<span class="at">.data =</span> daily_show, </span>
-<span id="cb243-4"><a href="entering-and-cleaning-data-1.html#cb243-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">job =</span> GoogleKnowlege_Occupation,</span>
-<span id="cb243-5"><a href="entering-and-cleaning-data-1.html#cb243-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">date =</span> Show,</span>
-<span id="cb243-6"><a href="entering-and-cleaning-data-1.html#cb243-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">category =</span> Group,</span>
-<span id="cb243-7"><a href="entering-and-cleaning-data-1.html#cb243-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">guest_name =</span> Raw_Guest_List)</span>
-<span id="cb243-8"><a href="entering-and-cleaning-data-1.html#cb243-8" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">select</span>(<span class="at">.data =</span> daily_show, </span>
-<span id="cb243-9"><a href="entering-and-cleaning-data-1.html#cb243-9" aria-hidden="true" tabindex="-1"></a>                     <span class="sc">-</span>YEAR) </span>
-<span id="cb243-10"><a href="entering-and-cleaning-data-1.html#cb243-10" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">mutate</span>(<span class="at">.data =</span> daily_show, </span>
-<span id="cb243-11"><a href="entering-and-cleaning-data-1.html#cb243-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">job =</span> <span class="fu">str_to_lower</span>(job))</span>
-<span id="cb243-12"><a href="entering-and-cleaning-data-1.html#cb243-12" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">filter</span>(<span class="at">.data =</span> daily_show, </span>
-<span id="cb243-13"><a href="entering-and-cleaning-data-1.html#cb243-13" aria-hidden="true" tabindex="-1"></a>                     category <span class="sc">==</span> <span class="st">&quot;Science&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb243-1"><a href="entering-and-cleaning-data-1.html#cb243-1" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</span>
+<span id="cb243-2"><a href="entering-and-cleaning-data-1.html#cb243-2" tabindex="-1"></a>                      <span class="at">skip =</span> <span class="dv">4</span>)</span>
+<span id="cb243-3"><a href="entering-and-cleaning-data-1.html#cb243-3" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">rename</span>(<span class="at">.data =</span> daily_show, </span>
+<span id="cb243-4"><a href="entering-and-cleaning-data-1.html#cb243-4" tabindex="-1"></a>                     <span class="at">job =</span> GoogleKnowlege_Occupation,</span>
+<span id="cb243-5"><a href="entering-and-cleaning-data-1.html#cb243-5" tabindex="-1"></a>                     <span class="at">date =</span> Show,</span>
+<span id="cb243-6"><a href="entering-and-cleaning-data-1.html#cb243-6" tabindex="-1"></a>                     <span class="at">category =</span> Group,</span>
+<span id="cb243-7"><a href="entering-and-cleaning-data-1.html#cb243-7" tabindex="-1"></a>                     <span class="at">guest_name =</span> Raw_Guest_List)</span>
+<span id="cb243-8"><a href="entering-and-cleaning-data-1.html#cb243-8" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">select</span>(<span class="at">.data =</span> daily_show, </span>
+<span id="cb243-9"><a href="entering-and-cleaning-data-1.html#cb243-9" tabindex="-1"></a>                     <span class="sc">-</span>YEAR) </span>
+<span id="cb243-10"><a href="entering-and-cleaning-data-1.html#cb243-10" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">mutate</span>(<span class="at">.data =</span> daily_show, </span>
+<span id="cb243-11"><a href="entering-and-cleaning-data-1.html#cb243-11" tabindex="-1"></a>                     <span class="at">job =</span> <span class="fu">str_to_lower</span>(job))</span>
+<span id="cb243-12"><a href="entering-and-cleaning-data-1.html#cb243-12" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span> <span class="fu">filter</span>(<span class="at">.data =</span> daily_show, </span>
+<span id="cb243-13"><a href="entering-and-cleaning-data-1.html#cb243-13" tabindex="-1"></a>                     category <span class="sc">==</span> <span class="st">&quot;Science&quot;</span>)</span></code></pre></div>
 <p>Piping lets you clean this code up a bit. It can be used with any function that
 inputs a dataframe as its first argument. It <em>pipes</em> the dataframe created right
 before the pipe (<code>%&gt;%</code>) into the function right after the pipe. With piping,
 therefore, the same data cleaning looks like:</p>
-<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="entering-and-cleaning-data-1.html#cb244-1" aria-hidden="true" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</span>
-<span id="cb244-2"><a href="entering-and-cleaning-data-1.html#cb244-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">skip =</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb244-3"><a href="entering-and-cleaning-data-1.html#cb244-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">job =</span> GoogleKnowlege_Occupation,</span>
-<span id="cb244-4"><a href="entering-and-cleaning-data-1.html#cb244-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">date =</span> Show,</span>
-<span id="cb244-5"><a href="entering-and-cleaning-data-1.html#cb244-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">category =</span> Group,</span>
-<span id="cb244-6"><a href="entering-and-cleaning-data-1.html#cb244-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">guest_name =</span> Raw_Guest_List) <span class="sc">%&gt;%</span></span>
-<span id="cb244-7"><a href="entering-and-cleaning-data-1.html#cb244-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>YEAR) <span class="sc">%&gt;%</span></span>
-<span id="cb244-8"><a href="entering-and-cleaning-data-1.html#cb244-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">job =</span> <span class="fu">str_to_lower</span>(job)) <span class="sc">%&gt;%</span></span>
-<span id="cb244-9"><a href="entering-and-cleaning-data-1.html#cb244-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(category <span class="sc">==</span> <span class="st">&quot;Science&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="entering-and-cleaning-data-1.html#cb244-1" tabindex="-1"></a>daily_show <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/daily_show_guests.csv&quot;</span>,</span>
+<span id="cb244-2"><a href="entering-and-cleaning-data-1.html#cb244-2" tabindex="-1"></a>                      <span class="at">skip =</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb244-3"><a href="entering-and-cleaning-data-1.html#cb244-3" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">job =</span> GoogleKnowlege_Occupation,</span>
+<span id="cb244-4"><a href="entering-and-cleaning-data-1.html#cb244-4" tabindex="-1"></a>         <span class="at">date =</span> Show,</span>
+<span id="cb244-5"><a href="entering-and-cleaning-data-1.html#cb244-5" tabindex="-1"></a>         <span class="at">category =</span> Group,</span>
+<span id="cb244-6"><a href="entering-and-cleaning-data-1.html#cb244-6" tabindex="-1"></a>         <span class="at">guest_name =</span> Raw_Guest_List) <span class="sc">%&gt;%</span></span>
+<span id="cb244-7"><a href="entering-and-cleaning-data-1.html#cb244-7" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>YEAR) <span class="sc">%&gt;%</span></span>
+<span id="cb244-8"><a href="entering-and-cleaning-data-1.html#cb244-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">job =</span> <span class="fu">str_to_lower</span>(job)) <span class="sc">%&gt;%</span></span>
+<span id="cb244-9"><a href="entering-and-cleaning-data-1.html#cb244-9" tabindex="-1"></a>  <span class="fu">filter</span>(category <span class="sc">==</span> <span class="st">&quot;Science&quot;</span>)</span></code></pre></div>
 <p>Notice that, when piping, the first argument (the name of the dataframe) is
 excluded from all function calls that follow a pipe. This is because piping
 sends the dataframe from the last step into each of these functions as the
@@ -1610,8 +1657,8 @@ dataframe argument.</p>
 <iframe width="659" height="412" src="https://www.youtube.com/embed/sD94JyvOMn4?list=PLuGPtwgRXxqIXVqTKUrnMT9Mhpl7eqCxl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week2_part_10.pdf">Download</a> a pdf of the lecture slides for this video.</p>
-<div id="base-r-equivalents-to-dplyr-functions" class="section level3" number="2.6.1">
-<h3><span class="header-section-number">2.6.1</span> Base R equivalents to <code>dplyr</code> functions</h3>
+<div id="base-r-equivalents-to-dplyr-functions" class="section level3 hasAnchor" number="2.6.1">
+<h3><span class="header-section-number">2.6.1</span> Base R equivalents to <code>dplyr</code> functions<a href="entering-and-cleaning-data-1.html#base-r-equivalents-to-dplyr-functions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Just so you know, all of these <code>dplyr</code> functions have alternatives, either
 functions or processes, in base R:</p>
 <table>
@@ -1643,12 +1690,12 @@ functions or processes, in base R:</p>
 <p>You will see these alternatives used in older code examples.</p>
 </div>
 </div>
-<div id="in-course-exercise-chapter-2" class="section level2" number="2.7">
-<h2><span class="header-section-number">2.7</span> In-course Exercise Chapter 2</h2>
+<div id="in-course-exercise-chapter-2" class="section level2 hasAnchor" number="2.7">
+<h2><span class="header-section-number">2.7</span> In-course Exercise Chapter 2<a href="entering-and-cleaning-data-1.html#in-course-exercise-chapter-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Use the <code>sample</code> function to determine the order for your group to rotate in
 sharing screens.</p>
-<div id="downloading-and-checking-out-the-example-data" class="section level3" number="2.7.1">
-<h3><span class="header-section-number">2.7.1</span> Downloading and checking out the example data</h3>
+<div id="downloading-and-checking-out-the-example-data" class="section level3 hasAnchor" number="2.7.1">
+<h3><span class="header-section-number">2.7.1</span> Downloading and checking out the example data<a href="entering-and-cleaning-data-1.html#downloading-and-checking-out-the-example-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>First, you’ll download a directory from GitHub that has the data for this
 week’s exercise and explore the files in that directory.</p>
 <p>Have the first person in your group share their screen. Then take the following
@@ -1658,7 +1705,7 @@ screen and talk through what they’re doing as you do this):</p>
 <li>Create an R Project directory to use as you practice coding for this class.
 You may have already done this as you watched this week’s slides. If not,
 take these steps: (1) Open RStudio; (2) In RStudio, go to “File” -&gt; “New Project”
--&gt; “New Directory” -&gt; “New Project.” This will prompt you to pick a name for your
+-&gt; “New Directory” -&gt; “New Project”. This will prompt you to pick a name for your
 R Project directory and also select where to save it. You can use a name like
 “learn_r” for your Project and save it somewhere easy to find, like you Desktop
 or Documents folder.</li>
@@ -1667,7 +1714,7 @@ or Documents folder.</li>
 with data for this week’s exercise</a>
 and, in the top right, click on the green “Code” button near the top right. When
 you click on this green button, one of the choices that you see should be
-“Download ZIP.” Click on this. This will download a compressed file with the
+“Download ZIP”. Click on this. This will download a compressed file with the
 full directory of data, probably to your computer’s “Downloads” folder.</li>
 <li>Next, “unzip” the zipped downloaded file from GitHub. To do this, try
 double-clicking the file, or right click on the file and see if there’s a
@@ -1690,8 +1737,8 @@ structure of the file. Which flat files are <strong>delimited</strong> (one cate
 files), and what are their delimiters?</li>
 </ul>
 </div>
-<div id="reading-in-different-types-of-files" class="section level3" number="2.7.2">
-<h3><span class="header-section-number">2.7.2</span> Reading in different types of files</h3>
+<div id="reading-in-different-types-of-files" class="section level3 hasAnchor" number="2.7.2">
+<h3><span class="header-section-number">2.7.2</span> Reading in different types of files<a href="entering-and-cleaning-data-1.html#reading-in-different-types-of-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Now you’ll try reading in data from a variety of types of file formats. You will
 be working with the files you downloaded in the last part of the exercise.</p>
 <p>Switch the person in your group who is sharing their screen. Then try the
@@ -1706,13 +1753,13 @@ can read it in using a <code>readr</code> function (e.g., <code>read_delim</code
 <code>read_tsv</code>, <code>read_csv</code>—pick depending on the type of file you think this is)
 and save it as the R object <code>ld_genetics</code>. Use the <code>summary</code> function to check
 out basic statistics on the data.</li>
-<li>Check out the file “measles_data/02-09-2015.txt.” What type of flat file do
+<li>Check out the file “measles_data/02-09-2015.txt”. What type of flat file do
 you think it is? Since it’s in a subdirectory, to read it into R, you’ll need to
 tell R how to get to it from the project directory, using something called a
 <strong>relative pathname</strong>. Read this file into R as an object named <code>ca_measles</code>,
 using the relative pathname (“measles_data/02-09-2015.txt”) in place of the
 file name in the <code>read_tsv</code> function call. Use the <code>col_names</code> option to name
-the columns “city” and “count.” What would the default column names be if you
+the columns “city” and “count”. What would the default column names be if you
 didn’t use this option (try this out by running <code>read_csv</code> without the
 <code>col_names</code> option)?</li>
 <li>Read in the Excel file “icd-10.xls” and assign it to the object name <code>idc10</code>.
@@ -1723,10 +1770,10 @@ package</a>. Read the file into the R object
 <code>icu</code>.</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="entering-and-cleaning-data-1.html#cb245-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the `readr` package</span></span>
-<span id="cb245-2"><a href="entering-and-cleaning-data-1.html#cb245-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;readr&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="entering-and-cleaning-data-1.html#cb246-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use `read_tsv` to read this file. </span></span>
-<span id="cb246-2"><a href="entering-and-cleaning-data-1.html#cb246-2" aria-hidden="true" tabindex="-1"></a>ld_genetics <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="at">file =</span> <span class="st">&quot;ld_genetics.txt&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="entering-and-cleaning-data-1.html#cb245-1" tabindex="-1"></a><span class="co"># Load the `readr` package</span></span>
+<span id="cb245-2"><a href="entering-and-cleaning-data-1.html#cb245-2" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;readr&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="entering-and-cleaning-data-1.html#cb246-1" tabindex="-1"></a><span class="co"># Use `read_tsv` to read this file. </span></span>
+<span id="cb246-2"><a href="entering-and-cleaning-data-1.html#cb246-2" tabindex="-1"></a>ld_genetics <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="at">file =</span> <span class="st">&quot;ld_genetics.txt&quot;</span>)</span></code></pre></div>
 <pre><code>## Rows: 3503 Columns: 9
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
@@ -1734,7 +1781,7 @@ package</a>. Read the file into the R object
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="entering-and-cleaning-data-1.html#cb248-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="at">object =</span> ld_genetics)</span></code></pre></div>
+<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="entering-and-cleaning-data-1.html#cb248-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="at">object =</span> ld_genetics)</span></code></pre></div>
 <pre><code>##       pos                nA            nC              nG       
 ##  Min.   :    500   Min.   :185   Min.   :120.0   Min.   : 85.0  
 ##  1st Qu.: 876000   1st Qu.:288   1st Qu.:173.0   1st Qu.:172.0  
@@ -1756,11 +1803,11 @@ package</a>. Read the file into the R object
 ##  Mean   : 7855  
 ##  3rd Qu.:15036  
 ##  Max.   :19049</code></pre>
-<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="entering-and-cleaning-data-1.html#cb250-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use `read_tsv` to read this file. Because the first line</span></span>
-<span id="cb250-2"><a href="entering-and-cleaning-data-1.html#cb250-2" aria-hidden="true" tabindex="-1"></a><span class="co"># of the file is *not* the column names, you need to specify what the column</span></span>
-<span id="cb250-3"><a href="entering-and-cleaning-data-1.html#cb250-3" aria-hidden="true" tabindex="-1"></a><span class="co"># names should be with the `col_names` parameter. </span></span>
-<span id="cb250-4"><a href="entering-and-cleaning-data-1.html#cb250-4" aria-hidden="true" tabindex="-1"></a>ca_measles <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="at">file =</span> <span class="st">&quot;measles_data/02-09-2015.txt&quot;</span>,</span>
-<span id="cb250-5"><a href="entering-and-cleaning-data-1.html#cb250-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;count&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="entering-and-cleaning-data-1.html#cb250-1" tabindex="-1"></a><span class="co"># Use `read_tsv` to read this file. Because the first line</span></span>
+<span id="cb250-2"><a href="entering-and-cleaning-data-1.html#cb250-2" tabindex="-1"></a><span class="co"># of the file is *not* the column names, you need to specify what the column</span></span>
+<span id="cb250-3"><a href="entering-and-cleaning-data-1.html#cb250-3" tabindex="-1"></a><span class="co"># names should be with the `col_names` parameter. </span></span>
+<span id="cb250-4"><a href="entering-and-cleaning-data-1.html#cb250-4" tabindex="-1"></a>ca_measles <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="at">file =</span> <span class="st">&quot;measles_data/02-09-2015.txt&quot;</span>,</span>
+<span id="cb250-5"><a href="entering-and-cleaning-data-1.html#cb250-5" tabindex="-1"></a>                       <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;count&quot;</span>))</span></code></pre></div>
 <pre><code>## Rows: 13 Columns: 2
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
@@ -1769,7 +1816,7 @@ package</a>. Read the file into the R object
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="entering-and-cleaning-data-1.html#cb252-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ca_measles)</span></code></pre></div>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="entering-and-cleaning-data-1.html#cb252-1" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ca_measles)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 2
 ##   city               count
 ##   &lt;chr&gt;              &lt;dbl&gt;
@@ -1779,11 +1826,11 @@ package</a>. Read the file into the R object
 ## 4 City of Pasadena       4
 ## 5 MARIN                  2
 ## 6 ORANGE                34</code></pre>
-<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="entering-and-cleaning-data-1.html#cb254-1" aria-hidden="true" tabindex="-1"></a><span class="co"># You&#39;ll need the `readxl` package to read in the Excel file. Load that. </span></span>
-<span id="cb254-2"><a href="entering-and-cleaning-data-1.html#cb254-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;readxl&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="entering-and-cleaning-data-1.html#cb255-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the `read_excel` function to read in the file. </span></span>
-<span id="cb255-2"><a href="entering-and-cleaning-data-1.html#cb255-2" aria-hidden="true" tabindex="-1"></a>icd10 <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="at">path =</span> <span class="st">&quot;icd-10.xls&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="entering-and-cleaning-data-1.html#cb256-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> icd10)</span></code></pre></div>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="entering-and-cleaning-data-1.html#cb254-1" tabindex="-1"></a><span class="co"># You&#39;ll need the `readxl` package to read in the Excel file. Load that. </span></span>
+<span id="cb254-2"><a href="entering-and-cleaning-data-1.html#cb254-2" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;readxl&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="entering-and-cleaning-data-1.html#cb255-1" tabindex="-1"></a><span class="co"># Use the `read_excel` function to read in the file. </span></span>
+<span id="cb255-2"><a href="entering-and-cleaning-data-1.html#cb255-2" tabindex="-1"></a>icd10 <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="at">path =</span> <span class="st">&quot;icd-10.xls&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="entering-and-cleaning-data-1.html#cb256-1" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> icd10)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 2
 ##   Code    `ICD Title`                                       
 ##   &lt;chr&gt;   &lt;chr&gt;                                             
@@ -1793,12 +1840,12 @@ package</a>. Read the file into the R object
 ## 4 A00.0   Cholera due to Vibrio cholerae 01, biovar cholerae
 ## 5 A00.1   Cholera due to Vibrio cholerae 01, biovar eltor   
 ## 6 A00.9   Cholera, unspecified</code></pre>
-<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="entering-and-cleaning-data-1.html#cb258-1" aria-hidden="true" tabindex="-1"></a><span class="co"># You&#39;ll need the `haven` function to read in the SAS file. Load that.</span></span>
-<span id="cb258-2"><a href="entering-and-cleaning-data-1.html#cb258-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;haven&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb259-1"><a href="entering-and-cleaning-data-1.html#cb259-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the `read_sas` function to read in this file.</span></span>
-<span id="cb259-2"><a href="entering-and-cleaning-data-1.html#cb259-2" aria-hidden="true" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">read_sas</span>(<span class="at">data_file =</span> <span class="st">&quot;icu.sas7bdat&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="entering-and-cleaning-data-1.html#cb260-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;dplyr&quot;</span>)</span>
-<span id="cb260-2"><a href="entering-and-cleaning-data-1.html#cb260-2" aria-hidden="true" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> <span class="fu">select</span>(<span class="at">.data =</span> icu, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="entering-and-cleaning-data-1.html#cb258-1" tabindex="-1"></a><span class="co"># You&#39;ll need the `haven` function to read in the SAS file. Load that.</span></span>
+<span id="cb258-2"><a href="entering-and-cleaning-data-1.html#cb258-2" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;haven&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb259-1"><a href="entering-and-cleaning-data-1.html#cb259-1" tabindex="-1"></a><span class="co"># Use the `read_sas` function to read in this file.</span></span>
+<span id="cb259-2"><a href="entering-and-cleaning-data-1.html#cb259-2" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">read_sas</span>(<span class="at">data_file =</span> <span class="st">&quot;icu.sas7bdat&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="entering-and-cleaning-data-1.html#cb260-1" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb260-2"><a href="entering-and-cleaning-data-1.html#cb260-2" tabindex="-1"></a><span class="fu">slice</span>(<span class="at">.data =</span> <span class="fu">select</span>(<span class="at">.data =</span> icu, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 5 × 5
 ##      ID   STA   AGE GENDER  RACE
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -1808,8 +1855,8 @@ package</a>. Read the file into the R object
 ## 4    14     0    77      0     1
 ## 5    27     1    76      1     1</code></pre>
 </div>
-<div id="directory-structure-1" class="section level3" number="2.7.3">
-<h3><span class="header-section-number">2.7.3</span> Directory structure</h3>
+<div id="directory-structure-1" class="section level3 hasAnchor" number="2.7.3">
+<h3><span class="header-section-number">2.7.3</span> Directory structure<a href="entering-and-cleaning-data-1.html#directory-structure-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Next, you’ll explore your current working directory and the files in that working
 directory.</p>
 <p>Switch the person in your group who is sharing their screen. Then try the
@@ -1829,14 +1876,14 @@ own subdirectory (so, the “data” subdirectory of your project will have its 
 “measles” subdirectory, which will have those files).</li>
 <li>Check that you are, in fact, in the working directory you think you’re in. Run:</li>
 </ul>
-<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="entering-and-cleaning-data-1.html#cb262-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="entering-and-cleaning-data-1.html#cb262-1" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
 <p>Does it agree with the R project name in the top right hand corner of your R
 Studio window?</p>
 <ul>
 <li>Now, use the <code>list.files</code> function to print out which files or subdirectories
 you have in your current working directory (the R Project directory):</li>
 </ul>
-<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="entering-and-cleaning-data-1.html#cb263-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="entering-and-cleaning-data-1.html#cb263-1" tabindex="-1"></a><span class="fu">list.files</span>()</span></code></pre></div>
 <p>What results do you get when you run this call? Is this what you were expecting?</p>
 <ul>
 <li>While staying in the same working directory, use <code>list.files()</code> to print the
@@ -1858,34 +1905,34 @@ you get from this call on your computer.</p>
 <p>Next, while staying in the same working directory, use <code>list.files()</code> to print the
 names of the available files in the “data” subdirectory by using the <code>path</code>
 argument. How about in the “R” subdirectory (if you created one in your project)?</p>
-<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="entering-and-cleaning-data-1.html#cb264-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;data&quot;</span>)</span>
-<span id="cb264-2"><a href="entering-and-cleaning-data-1.html#cb264-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;R&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="entering-and-cleaning-data-1.html#cb264-1" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;data&quot;</span>)</span>
+<span id="cb264-2"><a href="entering-and-cleaning-data-1.html#cb264-2" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;R&quot;</span>)</span></code></pre></div>
 <p>Note that you can use <code>list.files</code> to list the files in your “data” subdirectory using either:
 + A relative pathname
 + An absolute pathname</p>
-<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="entering-and-cleaning-data-1.html#cb265-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;data&quot;</span>) <span class="co"># This is using a relative pathname</span></span>
-<span id="cb265-2"><a href="entering-and-cleaning-data-1.html#cb265-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;/Users/brookeanderson/Documents/r_course_2018/data&quot;</span>) <span class="co"># Absolute pathname</span></span>
-<span id="cb265-3"><a href="entering-and-cleaning-data-1.html#cb265-3" aria-hidden="true" tabindex="-1"></a>     <span class="co"># (Yours will be different and will depend on how your computer file</span></span>
-<span id="cb265-4"><a href="entering-and-cleaning-data-1.html#cb265-4" aria-hidden="true" tabindex="-1"></a>     <span class="co"># structure is set up.)</span></span></code></pre></div>
+<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="entering-and-cleaning-data-1.html#cb265-1" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;data&quot;</span>) <span class="co"># This is using a relative pathname</span></span>
+<span id="cb265-2"><a href="entering-and-cleaning-data-1.html#cb265-2" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;/Users/brookeanderson/Documents/r_course_2018/data&quot;</span>) <span class="co"># Absolute pathname</span></span>
+<span id="cb265-3"><a href="entering-and-cleaning-data-1.html#cb265-3" tabindex="-1"></a>     <span class="co"># (Yours will be different and will depend on how your computer file</span></span>
+<span id="cb265-4"><a href="entering-and-cleaning-data-1.html#cb265-4" tabindex="-1"></a>     <span class="co"># structure is set up.)</span></span></code></pre></div>
 <p>Now use a relative pathname along with <code>list.files()</code> to list all the files in
 the “measles_data” subdirectory.</p>
-<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="entering-and-cleaning-data-1.html#cb266-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;data/measles_data&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="entering-and-cleaning-data-1.html#cb266-1" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">&quot;data/measles_data&quot;</span>)</span></code></pre></div>
 <p>Read in the Ebola data in <code>country_timeseries.csv</code> from your current working
 directory using the appropriate <code>readr</code> function and a relative pathname. This
 will require you to use a relative filename to direct R to how to find that file
 in the “data” subdirectory of your current working directory.</p>
-<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="entering-and-cleaning-data-1.html#cb267-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;readr&quot;</span>)</span>
-<span id="cb267-2"><a href="entering-and-cleaning-data-1.html#cb267-2" aria-hidden="true" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="entering-and-cleaning-data-1.html#cb267-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;readr&quot;</span>)</span>
+<span id="cb267-2"><a href="entering-and-cleaning-data-1.html#cb267-2" tabindex="-1"></a>ebola <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>)</span></code></pre></div>
 <p>How many rows and columns does it have? What are the names of the columns?</p>
-<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="entering-and-cleaning-data-1.html#cb268-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="at">x =</span> ebola)    <span class="co"># Get the dimensions of the data (`nrow` and `ncol` would also work)</span></span>
-<span id="cb268-2"><a href="entering-and-cleaning-data-1.html#cb268-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(<span class="at">x =</span> ebola) <span class="co"># Get the column names (you can also just print the object: `ebola`)</span></span></code></pre></div>
+<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="entering-and-cleaning-data-1.html#cb268-1" tabindex="-1"></a><span class="fu">dim</span>(<span class="at">x =</span> ebola)    <span class="co"># Get the dimensions of the data (`nrow` and `ncol` would also work)</span></span>
+<span id="cb268-2"><a href="entering-and-cleaning-data-1.html#cb268-2" tabindex="-1"></a><span class="fu">colnames</span>(<span class="at">x =</span> ebola) <span class="co"># Get the column names (you can also just print the object: `ebola`)</span></span></code></pre></div>
 <p>If you have extra time:</p>
 <ul>
 <li>Find out some more about this Ebola dataset by checking out <a href="https://github.com/cmrivers/ebola">Caitlin Rivers’
 Ebola data GitHub repository</a>. Who is Caitlin
 Rivers? How did she put this dataset together?</li>
 <li>Search for R code related to Ebola research on GitHub. Go to the <a href="https://github.com">GitHub home
-page</a> and use the search bar to search for “ebola.” On the
+page</a> and use the search bar to search for “ebola”. On the
 results page, scroll down and use the “Language” sidebar on the left to choose
 repositories with R code. Did you find any interesting projects?</li>
 <li>When you <code>list.files()</code> for the “data” subdirectory, almost everything listed
@@ -1893,8 +1940,8 @@ has a file extension, like <code>.csv</code>, <code>.xls</code>, <code>.sas7bdat
 Which one? Why does this listing not have a file extension?</li>
 </ul>
 </div>
-<div id="cleaning-up-data-1" class="section level3" number="2.7.4">
-<h3><span class="header-section-number">2.7.4</span> Cleaning up data #1</h3>
+<div id="cleaning-up-data-1" class="section level3 hasAnchor" number="2.7.4">
+<h3><span class="header-section-number">2.7.4</span> Cleaning up data #1<a href="entering-and-cleaning-data-1.html#cleaning-up-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Switch the person in your group who is sharing their screen. Then try out the
 following tasks:</p>
 <ul>
@@ -1902,29 +1949,29 @@ following tasks:</p>
 add comments to each line of code describing what the code is doing. Use the
 helpfiles for functions as needed to figure out functions we haven’t covered yet.</li>
 </ul>
-<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="entering-and-cleaning-data-1.html#cb269-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy this code to an R script and add comments describing what each line is doing</span></span>
-<span id="cb269-2"><a href="entering-and-cleaning-data-1.html#cb269-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Install any packages that the code loads but that you don&#39;t have.</span></span>
-<span id="cb269-3"><a href="entering-and-cleaning-data-1.html#cb269-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;haven&quot;</span>)</span>
-<span id="cb269-4"><a href="entering-and-cleaning-data-1.html#cb269-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;forcats&quot;</span>)</span>
-<span id="cb269-5"><a href="entering-and-cleaning-data-1.html#cb269-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;stringr&quot;</span>)</span>
-<span id="cb269-6"><a href="entering-and-cleaning-data-1.html#cb269-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb269-7"><a href="entering-and-cleaning-data-1.html#cb269-7" aria-hidden="true" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">read_sas</span>(<span class="at">data_file =</span> <span class="st">&quot;data/icu.sas7bdat&quot;</span>)</span>
-<span id="cb269-8"><a href="entering-and-cleaning-data-1.html#cb269-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb269-9"><a href="entering-and-cleaning-data-1.html#cb269-9" aria-hidden="true" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">select</span>(<span class="at">.data =</span> icu, ID, AGE, GENDER)</span>
-<span id="cb269-10"><a href="entering-and-cleaning-data-1.html#cb269-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb269-11"><a href="entering-and-cleaning-data-1.html#cb269-11" aria-hidden="true" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">rename</span>(<span class="at">.data =</span> icu, </span>
-<span id="cb269-12"><a href="entering-and-cleaning-data-1.html#cb269-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">id =</span> ID,</span>
-<span id="cb269-13"><a href="entering-and-cleaning-data-1.html#cb269-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">age =</span> AGE,</span>
-<span id="cb269-14"><a href="entering-and-cleaning-data-1.html#cb269-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">gender =</span> GENDER)</span>
-<span id="cb269-15"><a href="entering-and-cleaning-data-1.html#cb269-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb269-16"><a href="entering-and-cleaning-data-1.html#cb269-16" aria-hidden="true" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">mutate</span>(<span class="at">.data =</span> icu,</span>
-<span id="cb269-17"><a href="entering-and-cleaning-data-1.html#cb269-17" aria-hidden="true" tabindex="-1"></a>              <span class="at">gender =</span> <span class="fu">as_factor</span>(<span class="at">x =</span> gender),</span>
-<span id="cb269-18"><a href="entering-and-cleaning-data-1.html#cb269-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">gender =</span> <span class="fu">fct_recode</span>(<span class="at">.f =</span> gender,</span>
-<span id="cb269-19"><a href="entering-and-cleaning-data-1.html#cb269-19" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">Male =</span> <span class="st">&quot;0&quot;</span>,</span>
-<span id="cb269-20"><a href="entering-and-cleaning-data-1.html#cb269-20" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">Female =</span> <span class="st">&quot;1&quot;</span>),</span>
-<span id="cb269-21"><a href="entering-and-cleaning-data-1.html#cb269-21" aria-hidden="true" tabindex="-1"></a>              <span class="at">id =</span> <span class="fu">str_c</span>(id)) </span>
-<span id="cb269-22"><a href="entering-and-cleaning-data-1.html#cb269-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb269-23"><a href="entering-and-cleaning-data-1.html#cb269-23" aria-hidden="true" tabindex="-1"></a>icu</span></code></pre></div>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="entering-and-cleaning-data-1.html#cb269-1" tabindex="-1"></a><span class="co"># Copy this code to an R script and add comments describing what each line is doing</span></span>
+<span id="cb269-2"><a href="entering-and-cleaning-data-1.html#cb269-2" tabindex="-1"></a><span class="co"># Install any packages that the code loads but that you don&#39;t have.</span></span>
+<span id="cb269-3"><a href="entering-and-cleaning-data-1.html#cb269-3" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;haven&quot;</span>)</span>
+<span id="cb269-4"><a href="entering-and-cleaning-data-1.html#cb269-4" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;forcats&quot;</span>)</span>
+<span id="cb269-5"><a href="entering-and-cleaning-data-1.html#cb269-5" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;stringr&quot;</span>)</span>
+<span id="cb269-6"><a href="entering-and-cleaning-data-1.html#cb269-6" tabindex="-1"></a></span>
+<span id="cb269-7"><a href="entering-and-cleaning-data-1.html#cb269-7" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">read_sas</span>(<span class="at">data_file =</span> <span class="st">&quot;data/icu.sas7bdat&quot;</span>)</span>
+<span id="cb269-8"><a href="entering-and-cleaning-data-1.html#cb269-8" tabindex="-1"></a></span>
+<span id="cb269-9"><a href="entering-and-cleaning-data-1.html#cb269-9" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">select</span>(<span class="at">.data =</span> icu, ID, AGE, GENDER)</span>
+<span id="cb269-10"><a href="entering-and-cleaning-data-1.html#cb269-10" tabindex="-1"></a></span>
+<span id="cb269-11"><a href="entering-and-cleaning-data-1.html#cb269-11" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">rename</span>(<span class="at">.data =</span> icu, </span>
+<span id="cb269-12"><a href="entering-and-cleaning-data-1.html#cb269-12" tabindex="-1"></a>              <span class="at">id =</span> ID,</span>
+<span id="cb269-13"><a href="entering-and-cleaning-data-1.html#cb269-13" tabindex="-1"></a>              <span class="at">age =</span> AGE,</span>
+<span id="cb269-14"><a href="entering-and-cleaning-data-1.html#cb269-14" tabindex="-1"></a>              <span class="at">gender =</span> GENDER)</span>
+<span id="cb269-15"><a href="entering-and-cleaning-data-1.html#cb269-15" tabindex="-1"></a></span>
+<span id="cb269-16"><a href="entering-and-cleaning-data-1.html#cb269-16" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">mutate</span>(<span class="at">.data =</span> icu,</span>
+<span id="cb269-17"><a href="entering-and-cleaning-data-1.html#cb269-17" tabindex="-1"></a>              <span class="at">gender =</span> <span class="fu">as_factor</span>(<span class="at">x =</span> gender),</span>
+<span id="cb269-18"><a href="entering-and-cleaning-data-1.html#cb269-18" tabindex="-1"></a>              <span class="at">gender =</span> <span class="fu">fct_recode</span>(<span class="at">.f =</span> gender,</span>
+<span id="cb269-19"><a href="entering-and-cleaning-data-1.html#cb269-19" tabindex="-1"></a>                                  <span class="at">Male =</span> <span class="st">&quot;0&quot;</span>,</span>
+<span id="cb269-20"><a href="entering-and-cleaning-data-1.html#cb269-20" tabindex="-1"></a>                                  <span class="at">Female =</span> <span class="st">&quot;1&quot;</span>),</span>
+<span id="cb269-21"><a href="entering-and-cleaning-data-1.html#cb269-21" tabindex="-1"></a>              <span class="at">id =</span> <span class="fu">str_c</span>(id)) </span>
+<span id="cb269-22"><a href="entering-and-cleaning-data-1.html#cb269-22" tabindex="-1"></a></span>
+<span id="cb269-23"><a href="entering-and-cleaning-data-1.html#cb269-23" tabindex="-1"></a>icu</span></code></pre></div>
 <ul>
 <li>Following previous parts of the in-course exercise, you have an R object
 called <code>ebola</code> (if you need to, use some code from earlier in this in-course
@@ -1937,13 +1984,13 @@ observations?</li>
 observation (i.e., death counts divided by case counts).</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="entering-and-cleaning-data-1.html#cb270-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the dplyr package</span></span>
-<span id="cb270-2"><a href="entering-and-cleaning-data-1.html#cb270-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;dplyr&quot;</span>)</span>
-<span id="cb270-3"><a href="entering-and-cleaning-data-1.html#cb270-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb270-4"><a href="entering-and-cleaning-data-1.html#cb270-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Create a subset with just the Liberia columns and Date</span></span>
-<span id="cb270-5"><a href="entering-and-cleaning-data-1.html#cb270-5" aria-hidden="true" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">select</span>(<span class="at">.data =</span> ebola, </span>
-<span id="cb270-6"><a href="entering-and-cleaning-data-1.html#cb270-6" aria-hidden="true" tabindex="-1"></a>                        Date, Cases_Liberia, Deaths_Liberia)</span>
-<span id="cb270-7"><a href="entering-and-cleaning-data-1.html#cb270-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
+<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="entering-and-cleaning-data-1.html#cb270-1" tabindex="-1"></a><span class="co"># Load the dplyr package</span></span>
+<span id="cb270-2"><a href="entering-and-cleaning-data-1.html#cb270-2" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb270-3"><a href="entering-and-cleaning-data-1.html#cb270-3" tabindex="-1"></a></span>
+<span id="cb270-4"><a href="entering-and-cleaning-data-1.html#cb270-4" tabindex="-1"></a><span class="do">## Create a subset with just the Liberia columns and Date</span></span>
+<span id="cb270-5"><a href="entering-and-cleaning-data-1.html#cb270-5" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">select</span>(<span class="at">.data =</span> ebola, </span>
+<span id="cb270-6"><a href="entering-and-cleaning-data-1.html#cb270-6" tabindex="-1"></a>                        Date, Cases_Liberia, Deaths_Liberia)</span>
+<span id="cb270-7"><a href="entering-and-cleaning-data-1.html#cb270-7" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 3
 ##   Date       Cases_Liberia Deaths_Liberia
 ##   &lt;chr&gt;              &lt;dbl&gt;          &lt;dbl&gt;
@@ -1953,17 +2000,17 @@ observation (i.e., death counts divided by case counts).</li>
 ## 4 1/2/2015            8157           3496
 ## 5 12/31/2014          8115           3471
 ## 6 12/28/2014          8018           3423</code></pre>
-<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="entering-and-cleaning-data-1.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="do">## How many colums and rows does the whole dataset have (could also use `dim`)?</span></span>
-<span id="cb272-2"><a href="entering-and-cleaning-data-1.html#cb272-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="entering-and-cleaning-data-1.html#cb272-1" tabindex="-1"></a><span class="do">## How many colums and rows does the whole dataset have (could also use `dim`)?</span></span>
+<span id="cb272-2"><a href="entering-and-cleaning-data-1.html#cb272-2" tabindex="-1"></a><span class="fu">ncol</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="entering-and-cleaning-data-1.html#cb274-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
+<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="entering-and-cleaning-data-1.html#cb274-1" tabindex="-1"></a><span class="fu">nrow</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
 <pre><code>## [1] 122</code></pre>
-<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb276-1"><a href="entering-and-cleaning-data-1.html#cb276-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Rename the columns</span></span>
-<span id="cb276-2"><a href="entering-and-cleaning-data-1.html#cb276-2" aria-hidden="true" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">rename</span>(<span class="at">.data =</span> ebola_liberia,</span>
-<span id="cb276-3"><a href="entering-and-cleaning-data-1.html#cb276-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">date =</span> Date,</span>
-<span id="cb276-4"><a href="entering-and-cleaning-data-1.html#cb276-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">cases =</span> Cases_Liberia,</span>
-<span id="cb276-5"><a href="entering-and-cleaning-data-1.html#cb276-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">deaths =</span> Deaths_Liberia)</span>
-<span id="cb276-6"><a href="entering-and-cleaning-data-1.html#cb276-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ebola_liberia)</span></code></pre></div>
+<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb276-1"><a href="entering-and-cleaning-data-1.html#cb276-1" tabindex="-1"></a><span class="do">## Rename the columns</span></span>
+<span id="cb276-2"><a href="entering-and-cleaning-data-1.html#cb276-2" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">rename</span>(<span class="at">.data =</span> ebola_liberia,</span>
+<span id="cb276-3"><a href="entering-and-cleaning-data-1.html#cb276-3" tabindex="-1"></a>                        <span class="at">date =</span> Date,</span>
+<span id="cb276-4"><a href="entering-and-cleaning-data-1.html#cb276-4" tabindex="-1"></a>                        <span class="at">cases =</span> Cases_Liberia,</span>
+<span id="cb276-5"><a href="entering-and-cleaning-data-1.html#cb276-5" tabindex="-1"></a>                        <span class="at">deaths =</span> Deaths_Liberia)</span>
+<span id="cb276-6"><a href="entering-and-cleaning-data-1.html#cb276-6" tabindex="-1"></a><span class="fu">head</span>(ebola_liberia)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 3
 ##   date       cases deaths
 ##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
@@ -1973,10 +2020,10 @@ observation (i.e., death counts divided by case counts).</li>
 ## 4 1/2/2015    8157   3496
 ## 5 12/31/2014  8115   3471
 ## 6 12/28/2014  8018   3423</code></pre>
-<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb278-1"><a href="entering-and-cleaning-data-1.html#cb278-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Add a `ratio` column</span></span>
-<span id="cb278-2"><a href="entering-and-cleaning-data-1.html#cb278-2" aria-hidden="true" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">mutate</span>(<span class="at">.data =</span> ebola_liberia, </span>
-<span id="cb278-3"><a href="entering-and-cleaning-data-1.html#cb278-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ratio =</span> deaths <span class="sc">/</span> cases)</span>
-<span id="cb278-4"><a href="entering-and-cleaning-data-1.html#cb278-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
+<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb278-1"><a href="entering-and-cleaning-data-1.html#cb278-1" tabindex="-1"></a><span class="do">## Add a `ratio` column</span></span>
+<span id="cb278-2"><a href="entering-and-cleaning-data-1.html#cb278-2" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">mutate</span>(<span class="at">.data =</span> ebola_liberia, </span>
+<span id="cb278-3"><a href="entering-and-cleaning-data-1.html#cb278-3" tabindex="-1"></a>                        <span class="at">ratio =</span> deaths <span class="sc">/</span> cases)</span>
+<span id="cb278-4"><a href="entering-and-cleaning-data-1.html#cb278-4" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 4
 ##   date       cases deaths  ratio
 ##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
@@ -1987,8 +2034,8 @@ observation (i.e., death counts divided by case counts).</li>
 ## 5 12/31/2014  8115   3471  0.428
 ## 6 12/28/2014  8018   3423  0.427</code></pre>
 </div>
-<div id="cleaning-up-data-2" class="section level3" number="2.7.5">
-<h3><span class="header-section-number">2.7.5</span> Cleaning up data #2</h3>
+<div id="cleaning-up-data-2" class="section level3 hasAnchor" number="2.7.5">
+<h3><span class="header-section-number">2.7.5</span> Cleaning up data #2<a href="entering-and-cleaning-data-1.html#cleaning-up-data-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Switch the person in your group who is sharing their screen. Then try out the
 following tasks:</p>
 <ul>
@@ -1999,10 +2046,10 @@ with the highest death counts in Liberia. What date in this dataset had the most
 deaths?</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="entering-and-cleaning-data-1.html#cb280-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter out the rows that are missing death counts for Liberia</span></span>
-<span id="cb280-2"><a href="entering-and-cleaning-data-1.html#cb280-2" aria-hidden="true" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">filter</span>(<span class="at">.data =</span> ebola_liberia, </span>
-<span id="cb280-3"><a href="entering-and-cleaning-data-1.html#cb280-3" aria-hidden="true" tabindex="-1"></a>                        <span class="sc">!</span><span class="fu">is.na</span>(deaths))</span>
-<span id="cb280-4"><a href="entering-and-cleaning-data-1.html#cb280-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
+<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="entering-and-cleaning-data-1.html#cb280-1" tabindex="-1"></a><span class="do">## Filter out the rows that are missing death counts for Liberia</span></span>
+<span id="cb280-2"><a href="entering-and-cleaning-data-1.html#cb280-2" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">filter</span>(<span class="at">.data =</span> ebola_liberia, </span>
+<span id="cb280-3"><a href="entering-and-cleaning-data-1.html#cb280-3" tabindex="-1"></a>                        <span class="sc">!</span><span class="fu">is.na</span>(deaths))</span>
+<span id="cb280-4"><a href="entering-and-cleaning-data-1.html#cb280-4" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 4
 ##   date       cases deaths ratio
 ##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -2012,14 +2059,14 @@ deaths?</li>
 ## 4 12/28/2014  8018   3423 0.427
 ## 5 12/24/2014  7977   3413 0.428
 ## 6 12/20/2014  7862   3384 0.430</code></pre>
-<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="entering-and-cleaning-data-1.html#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="entering-and-cleaning-data-1.html#cb282-1" tabindex="-1"></a><span class="fu">nrow</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
 <pre><code>## [1] 81</code></pre>
-<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="entering-and-cleaning-data-1.html#cb284-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Create an object with just the top five observations in terms of death counts</span></span>
-<span id="cb284-2"><a href="entering-and-cleaning-data-1.html#cb284-2" aria-hidden="true" tabindex="-1"></a>first_five <span class="ot">&lt;-</span> <span class="fu">arrange</span>(<span class="at">.data =</span> ebola_liberia, </span>
-<span id="cb284-3"><a href="entering-and-cleaning-data-1.html#cb284-3" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">desc</span>(deaths)) <span class="co"># First, rearrange the rows by deaths</span></span>
-<span id="cb284-4"><a href="entering-and-cleaning-data-1.html#cb284-4" aria-hidden="true" tabindex="-1"></a>first_five <span class="ot">&lt;-</span> <span class="fu">slice</span>(<span class="at">.data =</span> first_five, </span>
-<span id="cb284-5"><a href="entering-and-cleaning-data-1.html#cb284-5" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="co"># Limit the dataframe to the first five rows</span></span>
-<span id="cb284-6"><a href="entering-and-cleaning-data-1.html#cb284-6" aria-hidden="true" tabindex="-1"></a>first_five <span class="co"># Two days tied for the highest deaths counts (Jan. 2 and 3, 2015).</span></span></code></pre></div>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="entering-and-cleaning-data-1.html#cb284-1" tabindex="-1"></a><span class="do">## Create an object with just the top five observations in terms of death counts</span></span>
+<span id="cb284-2"><a href="entering-and-cleaning-data-1.html#cb284-2" tabindex="-1"></a>first_five <span class="ot">&lt;-</span> <span class="fu">arrange</span>(<span class="at">.data =</span> ebola_liberia, </span>
+<span id="cb284-3"><a href="entering-and-cleaning-data-1.html#cb284-3" tabindex="-1"></a>                      <span class="fu">desc</span>(deaths)) <span class="co"># First, rearrange the rows by deaths</span></span>
+<span id="cb284-4"><a href="entering-and-cleaning-data-1.html#cb284-4" tabindex="-1"></a>first_five <span class="ot">&lt;-</span> <span class="fu">slice</span>(<span class="at">.data =</span> first_five, </span>
+<span id="cb284-5"><a href="entering-and-cleaning-data-1.html#cb284-5" tabindex="-1"></a>                    <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="co"># Limit the dataframe to the first five rows</span></span>
+<span id="cb284-6"><a href="entering-and-cleaning-data-1.html#cb284-6" tabindex="-1"></a>first_five <span class="co"># Two days tied for the highest deaths counts (Jan. 2 and 3, 2015).</span></span></code></pre></div>
 <pre><code>## # A tibble: 5 × 4
 ##   date       cases deaths ratio
 ##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -2029,30 +2076,30 @@ deaths?</li>
 ## 4 12/28/2014  8018   3423 0.427
 ## 5 12/24/2014  7977   3413 0.428</code></pre>
 </div>
-<div id="piping-1" class="section level3" number="2.7.6">
-<h3><span class="header-section-number">2.7.6</span> Piping</h3>
+<div id="piping-1" class="section level3 hasAnchor" number="2.7.6">
+<h3><span class="header-section-number">2.7.6</span> Piping<a href="entering-and-cleaning-data-1.html#piping-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Switch the person in your group who is sharing their screen. Then try out the
 following tasks:</p>
 <ul>
 <li>Copy the following “piped” code into an R script. Figure out what each line
 does, and add comments to each line of code describing what the code is doing.</li>
 </ul>
-<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="entering-and-cleaning-data-1.html#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy this code to an R script and add comments describing what each line is doing</span></span>
-<span id="cb286-2"><a href="entering-and-cleaning-data-1.html#cb286-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;haven&quot;</span>)</span>
-<span id="cb286-3"><a href="entering-and-cleaning-data-1.html#cb286-3" aria-hidden="true" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">read_sas</span>(<span class="at">data_file =</span> <span class="st">&quot;data/icu.sas7bdat&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb286-4"><a href="entering-and-cleaning-data-1.html#cb286-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ID, AGE, GENDER) <span class="sc">%&gt;%</span> </span>
-<span id="cb286-5"><a href="entering-and-cleaning-data-1.html#cb286-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">id =</span> ID,</span>
-<span id="cb286-6"><a href="entering-and-cleaning-data-1.html#cb286-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">age =</span> AGE, </span>
-<span id="cb286-7"><a href="entering-and-cleaning-data-1.html#cb286-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">gender =</span> GENDER) <span class="sc">%&gt;%</span> </span>
-<span id="cb286-8"><a href="entering-and-cleaning-data-1.html#cb286-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gender =</span> <span class="fu">as_factor</span>(<span class="at">x =</span> gender),</span>
-<span id="cb286-9"><a href="entering-and-cleaning-data-1.html#cb286-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">gender =</span> <span class="fu">fct_recode</span>(<span class="at">.f =</span> gender, </span>
-<span id="cb286-10"><a href="entering-and-cleaning-data-1.html#cb286-10" aria-hidden="true" tabindex="-1"></a>                             <span class="at">Male =</span> <span class="st">&quot;0&quot;</span>,</span>
-<span id="cb286-11"><a href="entering-and-cleaning-data-1.html#cb286-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">Female =</span> <span class="st">&quot;1&quot;</span>),</span>
-<span id="cb286-12"><a href="entering-and-cleaning-data-1.html#cb286-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">id =</span> <span class="fu">str_c</span>(id)) <span class="sc">%&gt;%</span> </span>
-<span id="cb286-13"><a href="entering-and-cleaning-data-1.html#cb286-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(age) <span class="sc">%&gt;%</span> </span>
-<span id="cb286-14"><a href="entering-and-cleaning-data-1.html#cb286-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
-<span id="cb286-15"><a href="entering-and-cleaning-data-1.html#cb286-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb286-16"><a href="entering-and-cleaning-data-1.html#cb286-16" aria-hidden="true" tabindex="-1"></a>icu</span></code></pre></div>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="entering-and-cleaning-data-1.html#cb286-1" tabindex="-1"></a><span class="co"># Copy this code to an R script and add comments describing what each line is doing</span></span>
+<span id="cb286-2"><a href="entering-and-cleaning-data-1.html#cb286-2" tabindex="-1"></a><span class="fu">library</span>(<span class="at">package =</span> <span class="st">&quot;haven&quot;</span>)</span>
+<span id="cb286-3"><a href="entering-and-cleaning-data-1.html#cb286-3" tabindex="-1"></a>icu <span class="ot">&lt;-</span> <span class="fu">read_sas</span>(<span class="at">data_file =</span> <span class="st">&quot;data/icu.sas7bdat&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb286-4"><a href="entering-and-cleaning-data-1.html#cb286-4" tabindex="-1"></a>  <span class="fu">select</span>(ID, AGE, GENDER) <span class="sc">%&gt;%</span> </span>
+<span id="cb286-5"><a href="entering-and-cleaning-data-1.html#cb286-5" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">id =</span> ID,</span>
+<span id="cb286-6"><a href="entering-and-cleaning-data-1.html#cb286-6" tabindex="-1"></a>         <span class="at">age =</span> AGE, </span>
+<span id="cb286-7"><a href="entering-and-cleaning-data-1.html#cb286-7" tabindex="-1"></a>         <span class="at">gender =</span> GENDER) <span class="sc">%&gt;%</span> </span>
+<span id="cb286-8"><a href="entering-and-cleaning-data-1.html#cb286-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gender =</span> <span class="fu">as_factor</span>(<span class="at">x =</span> gender),</span>
+<span id="cb286-9"><a href="entering-and-cleaning-data-1.html#cb286-9" tabindex="-1"></a>         <span class="at">gender =</span> <span class="fu">fct_recode</span>(<span class="at">.f =</span> gender, </span>
+<span id="cb286-10"><a href="entering-and-cleaning-data-1.html#cb286-10" tabindex="-1"></a>                             <span class="at">Male =</span> <span class="st">&quot;0&quot;</span>,</span>
+<span id="cb286-11"><a href="entering-and-cleaning-data-1.html#cb286-11" tabindex="-1"></a>                             <span class="at">Female =</span> <span class="st">&quot;1&quot;</span>),</span>
+<span id="cb286-12"><a href="entering-and-cleaning-data-1.html#cb286-12" tabindex="-1"></a>         <span class="at">id =</span> <span class="fu">str_c</span>(id)) <span class="sc">%&gt;%</span> </span>
+<span id="cb286-13"><a href="entering-and-cleaning-data-1.html#cb286-13" tabindex="-1"></a>  <span class="fu">arrange</span>(age) <span class="sc">%&gt;%</span> </span>
+<span id="cb286-14"><a href="entering-and-cleaning-data-1.html#cb286-14" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb286-15"><a href="entering-and-cleaning-data-1.html#cb286-15" tabindex="-1"></a></span>
+<span id="cb286-16"><a href="entering-and-cleaning-data-1.html#cb286-16" tabindex="-1"></a>icu</span></code></pre></div>
 <ul>
 <li>In previous sections of the in-course exercise, you have created code to read
 in and clean the Ebola dataset to create <code>ebola_liberia</code>. This included the
@@ -2063,15 +2110,15 @@ Re-write this code to create and clean <code>ebola_liberia</code> as “piped”
 from reading in the raw data.</li>
 </ul>
 <p>Example R code:</p>
-<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb287-1"><a href="entering-and-cleaning-data-1.html#cb287-1" aria-hidden="true" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb287-2"><a href="entering-and-cleaning-data-1.html#cb287-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Date, Cases_Liberia, Deaths_Liberia) <span class="sc">%&gt;%</span>  </span>
-<span id="cb287-3"><a href="entering-and-cleaning-data-1.html#cb287-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">date =</span> Date, </span>
-<span id="cb287-4"><a href="entering-and-cleaning-data-1.html#cb287-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">cases =</span> Cases_Liberia, </span>
-<span id="cb287-5"><a href="entering-and-cleaning-data-1.html#cb287-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">deaths =</span> Deaths_Liberia) <span class="sc">%&gt;%</span> </span>
-<span id="cb287-6"><a href="entering-and-cleaning-data-1.html#cb287-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ratio =</span> deaths <span class="sc">/</span> cases) <span class="sc">%&gt;%</span> </span>
-<span id="cb287-7"><a href="entering-and-cleaning-data-1.html#cb287-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(<span class="at">x =</span> cases))</span>
-<span id="cb287-8"><a href="entering-and-cleaning-data-1.html#cb287-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb287-9"><a href="entering-and-cleaning-data-1.html#cb287-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
+<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb287-1"><a href="entering-and-cleaning-data-1.html#cb287-1" tabindex="-1"></a>ebola_liberia <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/country_timeseries.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb287-2"><a href="entering-and-cleaning-data-1.html#cb287-2" tabindex="-1"></a>  <span class="fu">select</span>(Date, Cases_Liberia, Deaths_Liberia) <span class="sc">%&gt;%</span>  </span>
+<span id="cb287-3"><a href="entering-and-cleaning-data-1.html#cb287-3" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">date =</span> Date, </span>
+<span id="cb287-4"><a href="entering-and-cleaning-data-1.html#cb287-4" tabindex="-1"></a>         <span class="at">cases =</span> Cases_Liberia, </span>
+<span id="cb287-5"><a href="entering-and-cleaning-data-1.html#cb287-5" tabindex="-1"></a>         <span class="at">deaths =</span> Deaths_Liberia) <span class="sc">%&gt;%</span> </span>
+<span id="cb287-6"><a href="entering-and-cleaning-data-1.html#cb287-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ratio =</span> deaths <span class="sc">/</span> cases) <span class="sc">%&gt;%</span> </span>
+<span id="cb287-7"><a href="entering-and-cleaning-data-1.html#cb287-7" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(<span class="at">x =</span> cases))</span>
+<span id="cb287-8"><a href="entering-and-cleaning-data-1.html#cb287-8" tabindex="-1"></a></span>
+<span id="cb287-9"><a href="entering-and-cleaning-data-1.html#cb287-9" tabindex="-1"></a><span class="fu">head</span>(<span class="at">x =</span> ebola_liberia)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 4
 ##   date       cases deaths ratio
 ##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -2151,7 +2198,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

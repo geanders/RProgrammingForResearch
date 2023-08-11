@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 5 Reproducible research #1 | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 5 Reproducible research #1 | R Programming for Research" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
@@ -24,7 +23,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2022-08-21" />
+<meta name="date" content="2023-08-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,6 @@
   
 <link rel="prev" href="reporting-data-results-1.html"/>
 <link rel="next" href="entering-and-cleaning-data-2.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,15 +49,16 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.2/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <link href="libs/bokehjs-0.12.5/bokeh.min.css" rel="stylesheet" />
 <link href="libs/bokehjs-0.12.5/loader.css" rel="stylesheet" />
 <script src="libs/bokehjs-0.12.5/bokeh.min.js"></script>
@@ -72,10 +71,10 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.20/datatables.js"></script>
-<link href="libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.28/datatables.js"></script>
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-36719749-2"></script>
 <script>
@@ -91,6 +90,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -124,7 +124,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -137,7 +137,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -151,6 +151,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -605,13 +609,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="reproducible-research-1" class="section level1" number="5">
-<h1><span class="header-section-number">Chapter 5</span> Reproducible research #1</h1>
+<div id="reproducible-research-1" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Reproducible research #1<a href="reproducible-research-1.html#reproducible-research-1" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>The video lectures for this chapter are embedded at relevant places in the text,
 with links to download a pdf of the associated slides for each video.
 You can also access <a href="https://www.youtube.com/playlist?list=PLuGPtwgRXxqLxoXGdKQYXq2bJgmZ8GHcQ">a full playlist for the videos for this chapter</a>.</p>
-<div id="what-is-reproducible-research" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> What is reproducible research?</h2>
+<div id="what-is-reproducible-research" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> What is reproducible research?<a href="reproducible-research-1.html#what-is-reproducible-research" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <iframe width="635" height="397" src="https://www.youtube.com/embed/gLoOQa7Z_7o?list=PLuGPtwgRXxqLxoXGdKQYXq2bJgmZ8GHcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week5_part_1.pdf">Download</a>
@@ -651,8 +655,8 @@ a pdf of the lecture slides for this video.</p>
 </ul>
 <p>In this section, I will focus on using <code>knitr</code> and RMarkdown files.</p>
 </div>
-<div id="markdown" class="section level2" number="5.2">
-<h2><span class="header-section-number">5.2</span> Markdown</h2>
+<div id="markdown" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Markdown<a href="reproducible-research-1.html#markdown" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <iframe width="635" height="397" src="https://www.youtube.com/embed/TBrgLrekZTA?list=PLuGPtwgRXxqLxoXGdKQYXq2bJgmZ8GHcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week5_part_2.pdf">Download</a>
@@ -727,8 +731,8 @@ Figure 5.2: Example of a rendered HTML file.
 </ul>
 <p>For more Markdown conventions, see <a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">RStudio’s R Markdown Reference Guide</a> (link also available through “Help” in RStudio).</p>
 </div>
-<div id="literate-programming-in-r" class="section level2" number="5.3">
-<h2><span class="header-section-number">5.3</span> Literate programming in R</h2>
+<div id="literate-programming-in-r" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Literate programming in R<a href="reproducible-research-1.html#literate-programming-in-r" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <iframe width="635" height="397" src="https://www.youtube.com/embed/okk3vbJZFMI?list=PLuGPtwgRXxqLxoXGdKQYXq2bJgmZ8GHcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week5_part_3.pdf">Download</a>
@@ -738,7 +742,7 @@ a pdf of the lecture slides for this video.</p>
 <p>Here are the basics of opening and rendering an R Markdown file in RStudio:</p>
 <ul>
 <li>To open a new R Markdown file, go to “File” -&gt; “New File” -&gt; “RMarkdown…” -&gt; for now, chose a “Document” in “HTML” format.</li>
-<li>This will open a new R Markdown file in RStudio. The file extension for R Markdown files is “.Rmd.”</li>
+<li>This will open a new R Markdown file in RStudio. The file extension for R Markdown files is “.Rmd”.</li>
 <li>The new file comes with some example code and text. You can run the file as-is to try out the example. You will ultimately delete this example code and text and replace it with your own.</li>
 <li>Once you “knit” the R Markdown file, R will render an HTML file with the output. This is automatically saved in the same directory where you saved your .Rmd file.</li>
 <li>Write everything besides R code using Markdown syntax.</li>
@@ -880,8 +884,8 @@ a pdf of the lecture slides for this video.</p>
 <li><em>Dynamic Documents with R and knitr</em>, Yihui Xie</li>
 </ul>
 </div>
-<div id="style-guidelines" class="section level2" number="5.4">
-<h2><span class="header-section-number">5.4</span> Style guidelines</h2>
+<div id="style-guidelines" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Style guidelines<a href="reproducible-research-1.html#style-guidelines" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <iframe width="635" height="397" src="https://www.youtube.com/embed/_CxTl9dWUkk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week5_part_5.pdf">Download</a>
@@ -915,88 +919,88 @@ a pdf of the lecture slides for this video.</p>
 <li>Verbs for functions (<code>make_groups</code> for the function to assign groups)</li>
 </ul></li>
 </ul>
-<div id="line-length" class="section level3" number="5.4.1">
-<h3><span class="header-section-number">5.4.1</span> Line length</h3>
+<div id="line-length" class="section level3 hasAnchor" number="5.4.1">
+<h3><span class="header-section-number">5.4.1</span> Line length<a href="reproducible-research-1.html#line-length" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Google: <strong>Keep lines to 80 characters or less</strong> </p>
-<p>To set your script pane to be limited to 80 characters, go to “RStudio” -&gt; “Preferences” -&gt; “Code” -&gt; “Display,” and set “Margin Column” to 80.</p>
-<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb512-1"><a href="reproducible-research-1.html#cb512-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do</span></span>
-<span id="cb512-2"><a href="reproducible-research-1.html#cb512-2" aria-hidden="true" tabindex="-1"></a>my_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">n =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
-<span id="cb512-3"><a href="reproducible-research-1.html#cb512-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">letter =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</span>
-<span id="cb512-4"><a href="reproducible-research-1.html#cb512-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">cap_letter =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</span>
-<span id="cb512-5"><a href="reproducible-research-1.html#cb512-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb512-6"><a href="reproducible-research-1.html#cb512-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Don&#39;t</span></span>
-<span id="cb512-7"><a href="reproducible-research-1.html#cb512-7" aria-hidden="true" tabindex="-1"></a>my_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">n =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">letter =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), <span class="at">cap_letter =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</span></code></pre></div>
+<p>To set your script pane to be limited to 80 characters, go to “RStudio” -&gt; “Preferences” -&gt; “Code” -&gt; “Display”, and set “Margin Column” to 80.</p>
+<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb511-1"><a href="reproducible-research-1.html#cb511-1" tabindex="-1"></a><span class="co"># Do</span></span>
+<span id="cb511-2"><a href="reproducible-research-1.html#cb511-2" tabindex="-1"></a>my_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">n =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
+<span id="cb511-3"><a href="reproducible-research-1.html#cb511-3" tabindex="-1"></a>                    <span class="at">letter =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</span>
+<span id="cb511-4"><a href="reproducible-research-1.html#cb511-4" tabindex="-1"></a>                    <span class="at">cap_letter =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</span>
+<span id="cb511-5"><a href="reproducible-research-1.html#cb511-5" tabindex="-1"></a></span>
+<span id="cb511-6"><a href="reproducible-research-1.html#cb511-6" tabindex="-1"></a><span class="co"># Don&#39;t</span></span>
+<span id="cb511-7"><a href="reproducible-research-1.html#cb511-7" tabindex="-1"></a>my_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">n =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">letter =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), <span class="at">cap_letter =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</span></code></pre></div>
 <p>This guideline helps ensure that your code is formatted in a way that you can see all of the code without scrolling horizontally (left and right).</p>
 </div>
-<div id="spacing" class="section level3" number="5.4.2">
-<h3><span class="header-section-number">5.4.2</span> Spacing</h3>
+<div id="spacing" class="section level3 hasAnchor" number="5.4.2">
+<h3><span class="header-section-number">5.4.2</span> Spacing<a href="reproducible-research-1.html#spacing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li>Binary operators (e.g., <code>&lt;-</code>, <code>+</code>, <code>-</code>) should have a space on either side</li>
 <li>A comma should have a space after it, but not before.</li>
 <li>Colons should not have a space on either side.</li>
 <li>Put spaces before and after <code>=</code> when assigning parameter arguments</li>
 </ul>
-<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb513-1"><a href="reproducible-research-1.html#cb513-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do</span></span>
-<span id="cb513-2"><a href="reproducible-research-1.html#cb513-2" aria-hidden="true" tabindex="-1"></a>shots_per_min <span class="ot">&lt;-</span> worldcup<span class="sc">$</span>Shots <span class="sc">/</span> worldcup<span class="sc">$</span>Time</span>
-<span id="cb513-3"><a href="reproducible-research-1.html#cb513-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Don&#39;t </span></span>
-<span id="cb513-4"><a href="reproducible-research-1.html#cb513-4" aria-hidden="true" tabindex="-1"></a>shots_per_min<span class="ot">&lt;-</span>worldcup<span class="sc">$</span>Shots<span class="sc">/</span>worldcup<span class="sc">$</span>Time</span>
-<span id="cb513-5"><a href="reproducible-research-1.html#cb513-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb513-6"><a href="reproducible-research-1.html#cb513-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Do</span></span>
-<span id="cb513-7"><a href="reproducible-research-1.html#cb513-7" aria-hidden="true" tabindex="-1"></a>ave_time <span class="ot">&lt;-</span> <span class="fu">mean</span>(worldcup[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span> , <span class="st">&quot;Time&quot;</span>])</span>
-<span id="cb513-8"><a href="reproducible-research-1.html#cb513-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Don&#39;t</span></span>
-<span id="cb513-9"><a href="reproducible-research-1.html#cb513-9" aria-hidden="true" tabindex="-1"></a>ave_time<span class="ot">&lt;-</span><span class="fu">mean</span>(worldcup[<span class="dv">1</span> <span class="sc">:</span> <span class="dv">10</span> ,<span class="st">&quot;Time&quot;</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb512-1"><a href="reproducible-research-1.html#cb512-1" tabindex="-1"></a><span class="co"># Do</span></span>
+<span id="cb512-2"><a href="reproducible-research-1.html#cb512-2" tabindex="-1"></a>shots_per_min <span class="ot">&lt;-</span> worldcup<span class="sc">$</span>Shots <span class="sc">/</span> worldcup<span class="sc">$</span>Time</span>
+<span id="cb512-3"><a href="reproducible-research-1.html#cb512-3" tabindex="-1"></a><span class="co">#Don&#39;t </span></span>
+<span id="cb512-4"><a href="reproducible-research-1.html#cb512-4" tabindex="-1"></a>shots_per_min<span class="ot">&lt;-</span>worldcup<span class="sc">$</span>Shots<span class="sc">/</span>worldcup<span class="sc">$</span>Time</span>
+<span id="cb512-5"><a href="reproducible-research-1.html#cb512-5" tabindex="-1"></a></span>
+<span id="cb512-6"><a href="reproducible-research-1.html#cb512-6" tabindex="-1"></a><span class="co">#Do</span></span>
+<span id="cb512-7"><a href="reproducible-research-1.html#cb512-7" tabindex="-1"></a>ave_time <span class="ot">&lt;-</span> <span class="fu">mean</span>(worldcup[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span> , <span class="st">&quot;Time&quot;</span>])</span>
+<span id="cb512-8"><a href="reproducible-research-1.html#cb512-8" tabindex="-1"></a><span class="co">#Don&#39;t</span></span>
+<span id="cb512-9"><a href="reproducible-research-1.html#cb512-9" tabindex="-1"></a>ave_time<span class="ot">&lt;-</span><span class="fu">mean</span>(worldcup[<span class="dv">1</span> <span class="sc">:</span> <span class="dv">10</span> ,<span class="st">&quot;Time&quot;</span>])</span></code></pre></div>
 </div>
-<div id="semicolons" class="section level3" number="5.4.3">
-<h3><span class="header-section-number">5.4.3</span> Semicolons</h3>
+<div id="semicolons" class="section level3 hasAnchor" number="5.4.3">
+<h3><span class="header-section-number">5.4.3</span> Semicolons<a href="reproducible-research-1.html#semicolons" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Although you can use a semicolon to put two lines of code on the same line, you should avoid it.</p>
-<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="reproducible-research-1.html#cb514-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do</span></span>
-<span id="cb514-2"><a href="reproducible-research-1.html#cb514-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
-<span id="cb514-3"><a href="reproducible-research-1.html#cb514-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb514-4"><a href="reproducible-research-1.html#cb514-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb514-5"><a href="reproducible-research-1.html#cb514-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Don&#39;t</span></span>
-<span id="cb514-6"><a href="reproducible-research-1.html#cb514-6" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>; b <span class="ot">&lt;-</span> <span class="dv">3</span></span></code></pre></div>
+<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb513-1"><a href="reproducible-research-1.html#cb513-1" tabindex="-1"></a><span class="co"># Do</span></span>
+<span id="cb513-2"><a href="reproducible-research-1.html#cb513-2" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb513-3"><a href="reproducible-research-1.html#cb513-3" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb513-4"><a href="reproducible-research-1.html#cb513-4" tabindex="-1"></a></span>
+<span id="cb513-5"><a href="reproducible-research-1.html#cb513-5" tabindex="-1"></a><span class="co"># Don&#39;t</span></span>
+<span id="cb513-6"><a href="reproducible-research-1.html#cb513-6" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>; b <span class="ot">&lt;-</span> <span class="dv">3</span></span></code></pre></div>
 </div>
-<div id="commenting" class="section level3" number="5.4.4">
-<h3><span class="header-section-number">5.4.4</span> Commenting</h3>
+<div id="commenting" class="section level3 hasAnchor" number="5.4.4">
+<h3><span class="header-section-number">5.4.4</span> Commenting<a href="reproducible-research-1.html#commenting" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li>For a comment on its own line, use <code>#</code>. Follow with a space, then the comment.</li>
 <li>You can put a short comment at the end of a line of R code. In this case, put two spaces after the end of the code, one <code>#</code>, and one more space before the comment.</li>
-<li>If it helps make it easier to read your code, separate sections using a comment character followed by many hyphens (e.g., <code>#------------</code>). Anything after the comment character is “muted.”</li>
+<li>If it helps make it easier to read your code, separate sections using a comment character followed by many hyphens (e.g., <code>#------------</code>). Anything after the comment character is “muted”.</li>
 </ul>
-<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb515-1"><a href="reproducible-research-1.html#cb515-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in health data ---------------------------</span></span>
-<span id="cb515-2"><a href="reproducible-research-1.html#cb515-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb515-3"><a href="reproducible-research-1.html#cb515-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean exposure data ---------------------------</span></span></code></pre></div>
+<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="reproducible-research-1.html#cb514-1" tabindex="-1"></a><span class="co"># Read in health data ---------------------------</span></span>
+<span id="cb514-2"><a href="reproducible-research-1.html#cb514-2" tabindex="-1"></a></span>
+<span id="cb514-3"><a href="reproducible-research-1.html#cb514-3" tabindex="-1"></a><span class="co"># Clean exposure data ---------------------------</span></span></code></pre></div>
 </div>
-<div id="indentation" class="section level3" number="5.4.5">
-<h3><span class="header-section-number">5.4.5</span> Indentation</h3>
+<div id="indentation" class="section level3 hasAnchor" number="5.4.5">
+<h3><span class="header-section-number">5.4.5</span> Indentation<a href="reproducible-research-1.html#indentation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Google:</p>
 <ul>
 <li>Within function calls, line up new lines with first letter after opening parenthesis for parameters to function calls:</li>
 </ul>
 <p>Example:</p>
-<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="reproducible-research-1.html#cb516-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Relabel sex variable</span></span>
-<span id="cb516-2"><a href="reproducible-research-1.html#cb516-2" aria-hidden="true" tabindex="-1"></a>nepali<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(nepali<span class="sc">$</span>sex, </span>
-<span id="cb516-3"><a href="reproducible-research-1.html#cb516-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb516-4"><a href="reproducible-research-1.html#cb516-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb515-1"><a href="reproducible-research-1.html#cb515-1" tabindex="-1"></a><span class="co"># Relabel sex variable</span></span>
+<span id="cb515-2"><a href="reproducible-research-1.html#cb515-2" tabindex="-1"></a>nepali<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(nepali<span class="sc">$</span>sex, </span>
+<span id="cb515-3"><a href="reproducible-research-1.html#cb515-3" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb515-4"><a href="reproducible-research-1.html#cb515-4" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>))</span></code></pre></div>
 </div>
-<div id="code-grouping" class="section level3" number="5.4.6">
-<h3><span class="header-section-number">5.4.6</span> Code grouping</h3>
+<div id="code-grouping" class="section level3 hasAnchor" number="5.4.6">
+<h3><span class="header-section-number">5.4.6</span> Code grouping<a href="reproducible-research-1.html#code-grouping" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li>Group related pieces of code together.</li>
 <li>Separate blocks of code by empty spaces.</li>
 </ul>
-<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb517-1"><a href="reproducible-research-1.html#cb517-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
-<span id="cb517-2"><a href="reproducible-research-1.html#cb517-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(faraway)</span>
-<span id="cb517-3"><a href="reproducible-research-1.html#cb517-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(nepali)</span>
-<span id="cb517-4"><a href="reproducible-research-1.html#cb517-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb517-5"><a href="reproducible-research-1.html#cb517-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Relabel sex variable</span></span>
-<span id="cb517-6"><a href="reproducible-research-1.html#cb517-6" aria-hidden="true" tabindex="-1"></a>nepali<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(nepali<span class="sc">$</span>sex, </span>
-<span id="cb517-7"><a href="reproducible-research-1.html#cb517-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb517-8"><a href="reproducible-research-1.html#cb517-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="reproducible-research-1.html#cb516-1" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb516-2"><a href="reproducible-research-1.html#cb516-2" tabindex="-1"></a><span class="fu">library</span>(faraway)</span>
+<span id="cb516-3"><a href="reproducible-research-1.html#cb516-3" tabindex="-1"></a><span class="fu">data</span>(nepali)</span>
+<span id="cb516-4"><a href="reproducible-research-1.html#cb516-4" tabindex="-1"></a></span>
+<span id="cb516-5"><a href="reproducible-research-1.html#cb516-5" tabindex="-1"></a><span class="co"># Relabel sex variable</span></span>
+<span id="cb516-6"><a href="reproducible-research-1.html#cb516-6" tabindex="-1"></a>nepali<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(nepali<span class="sc">$</span>sex, </span>
+<span id="cb516-7"><a href="reproducible-research-1.html#cb516-7" tabindex="-1"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb516-8"><a href="reproducible-research-1.html#cb516-8" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Male&quot;</span>, <span class="st">&quot;Female&quot;</span>))</span></code></pre></div>
 <p>Note that this grouping often happens naturally when using tidyverse functions, since they encourage piping (<code>%&gt;%</code> and <code>+</code>).</p>
 </div>
-<div id="broader-guidelines" class="section level3" number="5.4.7">
-<h3><span class="header-section-number">5.4.7</span> Broader guidelines</h3>
+<div id="broader-guidelines" class="section level3 hasAnchor" number="5.4.7">
+<h3><span class="header-section-number">5.4.7</span> Broader guidelines<a href="reproducible-research-1.html#broader-guidelines" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <ul>
 <li>Omit needless code.</li>
 <li>Don’t repeat yourself.</li>
@@ -1004,14 +1008,14 @@ a pdf of the lecture slides for this video.</p>
 <p>We’ll learn more about satisfying these guidelines when we talk about writing your own functions in the next part of the class.</p>
 </div>
 </div>
-<div id="more-with-knitr" class="section level2" number="5.5">
-<h2><span class="header-section-number">5.5</span> More with knitr</h2>
+<div id="more-with-knitr" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> More with knitr<a href="reproducible-research-1.html#more-with-knitr" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <iframe width="669" height="418" src="https://www.youtube.com/embed/m2Bmb0OQfiY?list=PLuGPtwgRXxqLxoXGdKQYXq2bJgmZ8GHcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://github.com/geanders/RProgrammingForResearch/raw/master/slides/CourseNotes_Week5_part_6.pdf">Download</a>
 a pdf of the lecture slides for this video.</p>
-<div id="equations-in-knitr" class="section level3" number="5.5.1">
-<h3><span class="header-section-number">5.5.1</span> Equations in <code>knitr</code></h3>
+<div id="equations-in-knitr" class="section level3 hasAnchor" number="5.5.1">
+<h3><span class="header-section-number">5.5.1</span> Equations in <code>knitr</code><a href="reproducible-research-1.html#equations-in-knitr" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>You can write equations in RMarkdown documents by setting them apart with dollar signs (<code>$</code>). For an equation on a line by itself (<strong>display equation</strong>), you two <code>$</code>s before and after the equation, on separate lines, then use LaTex syntax for writing the equations.</p>
 <p>To help with this, you may want to use this <a href="http://reu.dimacs.rutgers.edu/Symbols.pdf">LaTex math cheat sheet.</a>. You may also find an online LaTex equation editor like <a href="https://www.codecogs.com/latex/eqneditor.php">Codecogs.com</a> helpful.</p>
 <p>Note: Equations denoted this way will always compile for pdf documents, but won’t always come through on Markdown files (for example, GitHub won’t compile math equations).</p>
@@ -1028,17 +1032,17 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 <p>The rendered document will show up as: </p>
 <p>“We are trying to model <span class="math inline">\(E(Y_{t})\)</span>.”</p>
 </div>
-<div id="figures-from-file" class="section level3" number="5.5.2">
-<h3><span class="header-section-number">5.5.2</span> Figures from file</h3>
+<div id="figures-from-file" class="section level3 hasAnchor" number="5.5.2">
+<h3><span class="header-section-number">5.5.2</span> Figures from file<a href="reproducible-research-1.html#figures-from-file" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>You can include not only figures that you create with R, but also figures that you have saved on your computer.</p>
 <p>The best way to do that is with the <code>include_graphics</code> function in <code>knitr</code>:</p>
-<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="reproducible-research-1.html#cb520-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb520-2"><a href="reproducible-research-1.html#cb520-2" aria-hidden="true" tabindex="-1"></a><span class="fu">include_graphics</span>(<span class="st">&quot;figures/CSU_ram.png&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb519"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb519-1"><a href="reproducible-research-1.html#cb519-1" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb519-2"><a href="reproducible-research-1.html#cb519-2" tabindex="-1"></a><span class="fu">include_graphics</span>(<span class="st">&quot;figures/CSU_ram.png&quot;</span>)</span></code></pre></div>
 <p><img src="figures/CSU_ram.png" width="0.3\textwidth" style="display: block; margin: auto;" /></p>
 <p>This example would include a figure with the filename “MyFigure.png” that is saved in the “figures” sub-directory of the parent directory of the directory where your .Rmd is saved. Don’t forget that you will need to give an absolute pathway or the relative pathway <strong>from the directory where the .Rmd file is saved</strong>.</p>
 </div>
-<div id="saving-graphics-files" class="section level3" number="5.5.3">
-<h3><span class="header-section-number">5.5.3</span> Saving graphics files</h3>
+<div id="saving-graphics-files" class="section level3 hasAnchor" number="5.5.3">
+<h3><span class="header-section-number">5.5.3</span> Saving graphics files<a href="reproducible-research-1.html#saving-graphics-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>You can save figures that you create in R. Typically, you won’t need to save figures for an R Markdown file, since you can include figure code directly. However, you will sometimes want to save a figure from a script. You have two options:</p>
 <ul>
 <li>Use the “Export” choice in RStudio</li>
@@ -1052,11 +1056,11 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 <li>Close the graphics device using <code>dev.off()</code>.</li>
 </ol>
 <p>For example, the following code would save a scatterplot of time versus passes as a pdf named “MyFigure” in the “figures” subdirectory of the current working directory:</p>
-<div class="sourceCode" id="cb521"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb521-1"><a href="reproducible-research-1.html#cb521-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pdf</span>(<span class="st">&quot;figures/MyFigure.pdf&quot;</span>, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb521-2"><a href="reproducible-research-1.html#cb521-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(worldcup, <span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> Passes)) <span class="sc">+</span> </span>
-<span id="cb521-3"><a href="reproducible-research-1.html#cb521-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> Position)) <span class="sc">+</span> </span>
-<span id="cb521-4"><a href="reproducible-research-1.html#cb521-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>()</span>
-<span id="cb521-5"><a href="reproducible-research-1.html#cb521-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="reproducible-research-1.html#cb520-1" tabindex="-1"></a><span class="fu">pdf</span>(<span class="st">&quot;figures/MyFigure.pdf&quot;</span>, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb520-2"><a href="reproducible-research-1.html#cb520-2" tabindex="-1"></a><span class="fu">ggplot</span>(worldcup, <span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> Passes)) <span class="sc">+</span> </span>
+<span id="cb520-3"><a href="reproducible-research-1.html#cb520-3" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> Position)) <span class="sc">+</span> </span>
+<span id="cb520-4"><a href="reproducible-research-1.html#cb520-4" tabindex="-1"></a>        <span class="fu">theme_bw</span>()</span>
+<span id="cb520-5"><a href="reproducible-research-1.html#cb520-5" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
 <p>If you create multiple plots before you close the device, they’ll all save to different pages of the same pdf file.</p>
 <p>You can open a number of different graphics devices. Here are some of the functions you can use to open graphics devices:</p>
 <ul>
@@ -1070,12 +1074,12 @@ E(Y_{t}) \sim \beta_{0} + \beta_{1}X_{1}
 <p>You will use a device-specific function to open a graphics device (e.g., <code>pdf</code>). However, you will always close these devices with <code>dev.off</code>.</p>
 <p>Most of the functions to open graphics devices include parameters like <code>height</code> and <code>width</code>. These can be used to specify the size of the output figure. The units for these depend on the device (e.g., inches for <code>pdf</code>, pixels by default for <code>png</code>). Use the helpfile for the function to determine these details.</p>
 </div>
-<div id="tables-in-r-markdown" class="section level3" number="5.5.4">
-<h3><span class="header-section-number">5.5.4</span> Tables in R Markdown</h3>
+<div id="tables-in-r-markdown" class="section level3 hasAnchor" number="5.5.4">
+<h3><span class="header-section-number">5.5.4</span> Tables in R Markdown<a href="reproducible-research-1.html#tables-in-r-markdown" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>If you want to create a nice, formatted table from an R dataframe, you can do that using <code>kable</code> from the <code>knitr</code> package.</p>
-<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="reproducible-research-1.html#cb522-1" aria-hidden="true" tabindex="-1"></a>my_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">letters =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</span>
-<span id="cb522-2"><a href="reproducible-research-1.html#cb522-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">numbers =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
-<span id="cb522-3"><a href="reproducible-research-1.html#cb522-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(my_df)</span></code></pre></div>
+<div class="sourceCode" id="cb521"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb521-1"><a href="reproducible-research-1.html#cb521-1" tabindex="-1"></a>my_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">letters =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</span>
+<span id="cb521-2"><a href="reproducible-research-1.html#cb521-2" tabindex="-1"></a>                    <span class="at">numbers =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb521-3"><a href="reproducible-research-1.html#cb521-3" tabindex="-1"></a><span class="fu">kable</span>(my_df)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1119,7 +1123,7 @@ dataframe)</td>
 <tr class="even">
 <td align="right"><code>align</code></td>
 <td align="left">A vector giving the alignment for each column
-(‘l,’ ‘c,’ ‘r’)</td>
+(‘l’, ‘c’, ‘r’)</td>
 </tr>
 <tr class="odd">
 <td align="right"><code>caption</code></td>
@@ -1133,12 +1137,12 @@ element for each column.</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb523"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb523-1"><a href="reproducible-research-1.html#cb523-1" aria-hidden="true" tabindex="-1"></a>my.df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">letters =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</span>
-<span id="cb523-2"><a href="reproducible-research-1.html#cb523-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">numbers =</span> <span class="fu">rnorm</span>(<span class="dv">3</span>))</span>
-<span id="cb523-3"><a href="reproducible-research-1.html#cb523-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(my.df, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">align =</span> <span class="fu">c</span>(<span class="st">&quot;r&quot;</span>, <span class="st">&quot;c&quot;</span>),</span>
-<span id="cb523-4"><a href="reproducible-research-1.html#cb523-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;My new table&quot;</span>, </span>
-<span id="cb523-5"><a href="reproducible-research-1.html#cb523-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;First 3 letters&quot;</span>, </span>
-<span id="cb523-6"><a href="reproducible-research-1.html#cb523-6" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;First 3 numbers&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="reproducible-research-1.html#cb522-1" tabindex="-1"></a>my.df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">letters =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</span>
+<span id="cb522-2"><a href="reproducible-research-1.html#cb522-2" tabindex="-1"></a>                <span class="at">numbers =</span> <span class="fu">rnorm</span>(<span class="dv">3</span>))</span>
+<span id="cb522-3"><a href="reproducible-research-1.html#cb522-3" tabindex="-1"></a><span class="fu">kable</span>(my.df, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">align =</span> <span class="fu">c</span>(<span class="st">&quot;r&quot;</span>, <span class="st">&quot;c&quot;</span>),</span>
+<span id="cb522-4"><a href="reproducible-research-1.html#cb522-4" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;My new table&quot;</span>, </span>
+<span id="cb522-5"><a href="reproducible-research-1.html#cb522-5" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;First 3 letters&quot;</span>, </span>
+<span id="cb522-6"><a href="reproducible-research-1.html#cb522-6" tabindex="-1"></a>                    <span class="st">&quot;First 3 numbers&quot;</span>))</span></code></pre></div>
 <table>
 <caption><span id="tab:unnamed-chunk-303">Table 5.1: </span>My new table</caption>
 <thead>
@@ -1150,15 +1154,15 @@ element for each column.</td>
 <tbody>
 <tr class="odd">
 <td align="right">a</td>
-<td align="center">-0.03</td>
+<td align="center">0.58</td>
 </tr>
 <tr class="even">
 <td align="right">b</td>
-<td align="center">-1.23</td>
+<td align="center">-0.17</td>
 </tr>
 <tr class="odd">
 <td align="right">c</td>
-<td align="center">0.32</td>
+<td align="center">-0.15</td>
 </tr>
 </tbody>
 </table>
@@ -1170,13 +1174,13 @@ going to reinvent their wheels.”</p>
 <p>If you want to do fancier tables, you may want to explore the <code>xtable</code> and <code>pander</code> packages. As a note, these might both be more effective when compiling to pdf, rather than html.</p>
 </div>
 </div>
-<div id="in-course-exercise-chapter-5" class="section level2" number="5.6">
-<h2><span class="header-section-number">5.6</span> In-course exercise Chapter 5</h2>
+<div id="in-course-exercise-chapter-5" class="section level2 hasAnchor" number="5.6">
+<h2><span class="header-section-number">5.6</span> In-course exercise Chapter 5<a href="reproducible-research-1.html#in-course-exercise-chapter-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>For all of today’s tasks, you’ll use the code from last week’s in-course exercise to do the exercises. This week we are not focusing on writing new code, but rather on how to take R code and put it in an R Markdown file, so we can create reports from files that include the original code.</p>
-<div id="creating-a-markdown-document" class="section level3" number="5.6.1">
-<h3><span class="header-section-number">5.6.1</span> Creating a Markdown document</h3>
+<div id="creating-a-markdown-document" class="section level3 hasAnchor" number="5.6.1">
+<h3><span class="header-section-number">5.6.1</span> Creating a Markdown document<a href="reproducible-research-1.html#creating-a-markdown-document" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>First, you’ll create a Markdown document, without any R code in it yet.</p>
-<p>In RStudio, go to “File” -&gt; “New File” -&gt; “R Markdown.” From the window that brings up, choose “Document” on the left-hand column and “HTML” as the output format. A new file will open in the script pane of your RStudio session. Save this file (you may pick the name and directory). The file extension should be “.Rmd.”</p>
+<p>In RStudio, go to “File” -&gt; “New File” -&gt; “R Markdown”. From the window that brings up, choose “Document” on the left-hand column and “HTML” as the output format. A new file will open in the script pane of your RStudio session. Save this file (you may pick the name and directory). The file extension should be “.Rmd”.</p>
 <p>First, before you try to write your own Markdown, try rendering the example that the script includes by default. (This code is always included, as a template, when you first open a new RMarkdown file using the RStudio “New file” interface we used in this example.) Try rendering this default R Markdown example by clicking the “Knit” button at the top of the script file.</p>
 <p>For some of you, you may not yet have everything you need on your computer to be able to get this to work. If so, let me know. RStudio usually includes all the necessary tools when you install it, but there may be some exceptions.</p>
 <p>If you could get the document to knit, do the following tasks:</p>
@@ -1193,8 +1197,8 @@ going to reinvent their wheels.”</p>
 </ul></li>
 </ul>
 </div>
-<div id="adding-in-r-code" class="section level3" number="5.6.2">
-<h3><span class="header-section-number">5.6.2</span> Adding in R code</h3>
+<div id="adding-in-r-code" class="section level3 hasAnchor" number="5.6.2">
+<h3><span class="header-section-number">5.6.2</span> Adding in R code<a href="reproducible-research-1.html#adding-in-r-code" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Now incorporate the R code from previous weeks’ exercises into your document. Once you get the document to render with some basic pieces of code in it, try the following:</p>
 <ul>
 <li>Try some different chunk options. For example, try setting <code>echo = FALSE</code> in some of your code chunks. Similarly, try using the options <code>results = "hide"</code> and <code>include = FALSE</code>.</li>
@@ -1202,19 +1206,19 @@ going to reinvent their wheels.”</p>
 <li>Try using the global commands. See if you can switch the <code>echo</code> default value for this document from TRUE (the usual default) to FALSE.</li>
 </ul>
 </div>
-<div id="working-with-r-markdown-documents" class="section level3" number="5.6.3">
-<h3><span class="header-section-number">5.6.3</span> Working with R Markdown documents</h3>
+<div id="working-with-r-markdown-documents" class="section level3 hasAnchor" number="5.6.3">
+<h3><span class="header-section-number">5.6.3</span> Working with R Markdown documents<a href="reproducible-research-1.html#working-with-r-markdown-documents" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Finally, try the following tasks to get some experience working with R Markdown files in RStudio:</p>
 <ul>
 <li>Go to one of your code chunks. Locate the small gray arrow just to the left of the line where you initiate the code chunk. Click on it and see what happens. Then click on it again.</li>
 <li>Put your cursor inside one of your code chunks. Try using the “Run” button (or Ctrl-Return) to run code in that chunk at your R console. Did it work?</li>
-<li>Pick a code chunk in your document. Put your cursor somewhere in the code in that chunk. Click on the “Run” button and choose “Run All Chunks Above.” What did that do? If it did not work, what do you think might be going on? (Hint: Check <code>getwd()</code> and think about which directory you’ve used to save your R Markdown file.)</li>
-<li>Pick another chunk of code. Put the cursor somewhere in the code for that chunk. Click on the “Run” button and choose “Run Current Chunk.” Then try “Run Next Chunk.” Try to figure out all the options the “Run” button gives you and when each might be useful.</li>
+<li>Pick a code chunk in your document. Put your cursor somewhere in the code in that chunk. Click on the “Run” button and choose “Run All Chunks Above”. What did that do? If it did not work, what do you think might be going on? (Hint: Check <code>getwd()</code> and think about which directory you’ve used to save your R Markdown file.)</li>
+<li>Pick another chunk of code. Put the cursor somewhere in the code for that chunk. Click on the “Run” button and choose “Run Current Chunk”. Then try “Run Next Chunk”. Try to figure out all the options the “Run” button gives you and when each might be useful.</li>
 <li>Click on the small gray arrow to the right of the “Knit HTML” button. If the option is offered, select “Knit Word” and try it. What does this do?</li>
 </ul>
 </div>
-<div id="r-style-guidelines" class="section level3" number="5.6.4">
-<h3><span class="header-section-number">5.6.4</span> R style guidelines</h3>
+<div id="r-style-guidelines" class="section level3 hasAnchor" number="5.6.4">
+<h3><span class="header-section-number">5.6.4</span> R style guidelines<a href="reproducible-research-1.html#r-style-guidelines" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Go through all the R code in your R Markdown file. Are there are places where your code is not following style conventions for R? Clean up your code to correct any of these issues.</p>
 
 </div>
@@ -1289,7 +1293,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');
