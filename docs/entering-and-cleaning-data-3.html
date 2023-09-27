@@ -23,7 +23,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2023-08-21" />
+<meta name="date" content="2023-09-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1027,7 +1027,7 @@ data relevant to West Nile virus.</li>
 <div class="sourceCode" id="cb1098"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1098-1"><a href="entering-and-cleaning-data-3.html#cb1098-1" tabindex="-1"></a><span class="fu">str</span>(wn_papers)</span></code></pre></div>
 <pre><code>## List of 2
 ##  $ meta: tibble [1 × 2] (S3: tbl_df/tbl/data.frame)
-##   ..$ numFound: int 4124
+##   ..$ numFound: int 4148
 ##   ..$ start   : int 0
 ##  $ data: tibble [10 × 6] (S3: tbl_df/tbl/data.frame)
 ##   ..$ journal         : chr [1:10] &quot;PLOS Neglected Tropical Diseases&quot; &quot;PLOS Pathogens&quot; &quot;PLOS Climate&quot; &quot;PLOS Neglected Tropical Diseases&quot; ...
@@ -1036,14 +1036,14 @@ data relevant to West Nile virus.</li>
 ##   ..$ abstract        : chr [1:10] &quot;\nAfter the unexpected arrival of West Nile virus (WNV) in the United States in 1999, the mosquito-borne virus &quot;| __truncated__ &quot;\nIt has been 20 years since West Nile virus first emerged in the Americas, and since then, little progress has&quot;| __truncated__ &quot;\nWest Nile virus (WNV) is an arbovirus with a wide geographical distribution. It is maintained in an enzootic &quot;| __truncated__ &quot;Background: West Nile virus is a mosquito-borne flavivirus which has been posing continuous challenges to publi&quot;| __truncated__ ...
 ##   ..$ title           : chr [1:10] &quot;A 20-year historical review of West Nile virus since its initial emergence in North America: Has West Nile viru&quot;| __truncated__ &quot;Twenty years of West Nile virus spread and evolution in the Americas visualized by Nextstrain&quot; &quot;West Nile virus eco-epidemiology and climate change&quot; &quot;Epidemiology of West Nile virus in Africa: An underestimated threat&quot; ...
 ##   ..$ subject         : chr [1:10] &quot;/Biology and life sciences/Anatomy/Body fluids/Blood,/Biology and life sciences/Immunology/Vaccination and immu&quot;| __truncated__ &quot;/Biology and life sciences/Biogeography/Phylogeography,/Biology and life sciences/Evolutionary biology/Evolutio&quot;| __truncated__ &quot;/Biology and life sciences/Microbiology/Medical microbiology/Microbial pathogens/Viral pathogens/Flaviviruses/W&quot;| __truncated__ &quot;/Biology and life sciences/Microbiology/Medical microbiology/Microbial pathogens/Viral pathogens/Flaviviruses/W&quot;| __truncated__ ...
-##   ..- attr(*, &quot;numFound&quot;)= int 4124
+##   ..- attr(*, &quot;numFound&quot;)= int 4148
 ##   ..- attr(*, &quot;start&quot;)= int 0</code></pre>
 <p>Look at the meta data:</p>
 <div class="sourceCode" id="cb1100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1100-1"><a href="entering-and-cleaning-data-3.html#cb1100-1" tabindex="-1"></a>wn_papers<span class="sc">$</span>meta</span></code></pre></div>
 <pre><code>## # A tibble: 1 × 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1     4124     0</code></pre>
+## 1     4148     0</code></pre>
 <p>Query for just articles with “West Nile” in the title:</p>
 <div class="sourceCode" id="cb1102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1102-1"><a href="entering-and-cleaning-data-3.html#cb1102-1" tabindex="-1"></a>wn_papers_titles <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
 <span id="cb1102-2"><a href="entering-and-cleaning-data-3.html#cb1102-2" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
@@ -1053,7 +1053,7 @@ data relevant to West Nile virus.</li>
 <pre><code>## # A tibble: 1 × 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1      248     0</code></pre>
+## 1      250     0</code></pre>
 <p>Re-run the query using an appropriate limit to get all the matching articles:</p>
 <div class="sourceCode" id="cb1105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1105-1"><a href="entering-and-cleaning-data-3.html#cb1105-1" tabindex="-1"></a>wn_papers_titles <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
 <span id="cb1105-2"><a href="entering-and-cleaning-data-3.html#cb1105-2" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
@@ -1095,8 +1095,8 @@ in each journal:</p>
 <pre><code>## # A tibble: 7 × 2
 ##   journal                              n
 ##   &lt;chr&gt;                            &lt;int&gt;
-## 1 PLoS ONE                            98
-## 2 PLoS Neglected Tropical Diseases    48
+## 1 PLoS ONE                            97
+## 2 PLoS Neglected Tropical Diseases    49
 ## 3 PLoS Pathogens                      28
 ## 4 PLoS Computational Biology           3
 ## 5 PLoS Medicine                        3
