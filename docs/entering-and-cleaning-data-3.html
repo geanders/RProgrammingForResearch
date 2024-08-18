@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 10 Entering and cleaning data #3 | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.40 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 10 Entering and cleaning data #3 | R Programming for Research" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2023-10-30" />
+<meta name="date" content="2024-08-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -52,17 +52,14 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.10.2/plotly.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.4/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
-<link href="libs/bokehjs-0.12.5/bokeh.min.css" rel="stylesheet" />
-<link href="libs/bokehjs-0.12.5/loader.css" rel="stylesheet" />
-<script src="libs/bokehjs-0.12.5/bokeh.min.js"></script>
-<script src="libs/rbokeh-binding-0.5.2/rbokeh.js"></script>
 <link href="libs/dygraphs-1.1.1/dygraph.css" rel="stylesheet" />
 <script src="libs/dygraphs-1.1.1/dygraph-combined.js"></script>
 <script src="libs/dygraphs-1.1.1/shapes.js"></script>
@@ -71,10 +68,10 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.28/datatables.js"></script>
-<link href="libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.33/datatables.js"></script>
+<link href="libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-36719749-2"></script>
 <script>
@@ -88,7 +85,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -696,9 +693,9 @@ the data you want from the API:</p>
 <pre><code>## # A tibble: 3 × 32
 ##   station valid                 lon   lat  tmpf  dwpf  relh  drct  sknt  p01i
 ##   &lt;chr&gt;   &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 DEN     2016-06-01 00:00:00 -105.  39.8    NA    NA    NA   100    10    NA
-## 2 DEN     2016-06-01 00:05:00 -105.  39.8    NA    NA    NA   110    10    NA
-## 3 DEN     2016-06-01 00:10:00 -105.  39.8    NA    NA    NA   110     7    NA
+## 1 DEN     2016-06-01 00:00:00 -105.  39.8    NA    NA    NA    70     7    NA
+## 2 DEN     2016-06-01 00:05:00 -105.  39.8    NA    NA    NA    80     8    NA
+## 3 DEN     2016-06-01 00:10:00 -105.  39.8    NA    NA    NA    80     9    NA
 ## # ℹ 22 more variables: alti &lt;dbl&gt;, mslp &lt;dbl&gt;, vsby &lt;dbl&gt;, gust &lt;dbl&gt;,
 ## #   skyc1 &lt;chr&gt;, skyc2 &lt;chr&gt;, skyc3 &lt;chr&gt;, skyc4 &lt;chr&gt;, skyl1 &lt;dbl&gt;,
 ## #   skyl2 &lt;dbl&gt;, skyl3 &lt;dbl&gt;, skyl4 &lt;dbl&gt;, wxcodes &lt;chr&gt;,
@@ -1027,7 +1024,7 @@ data relevant to West Nile virus.</li>
 <div class="sourceCode" id="cb1098"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1098-1"><a href="entering-and-cleaning-data-3.html#cb1098-1" tabindex="-1"></a><span class="fu">str</span>(wn_papers)</span></code></pre></div>
 <pre><code>## List of 2
 ##  $ meta: tibble [1 × 2] (S3: tbl_df/tbl/data.frame)
-##   ..$ numFound: int 4170
+##   ..$ numFound: int 4374
 ##   ..$ start   : int 0
 ##  $ data: tibble [10 × 6] (S3: tbl_df/tbl/data.frame)
 ##   ..$ journal         : chr [1:10] &quot;PLOS Neglected Tropical Diseases&quot; &quot;PLOS Pathogens&quot; &quot;PLOS Climate&quot; &quot;PLOS Neglected Tropical Diseases&quot; ...
@@ -1036,14 +1033,14 @@ data relevant to West Nile virus.</li>
 ##   ..$ abstract        : chr [1:10] &quot;\nAfter the unexpected arrival of West Nile virus (WNV) in the United States in 1999, the mosquito-borne virus &quot;| __truncated__ &quot;\nIt has been 20 years since West Nile virus first emerged in the Americas, and since then, little progress has&quot;| __truncated__ &quot;\nWest Nile virus (WNV) is an arbovirus with a wide geographical distribution. It is maintained in an enzootic &quot;| __truncated__ &quot;Background: West Nile virus is a mosquito-borne flavivirus which has been posing continuous challenges to publi&quot;| __truncated__ ...
 ##   ..$ title           : chr [1:10] &quot;A 20-year historical review of West Nile virus since its initial emergence in North America: Has West Nile viru&quot;| __truncated__ &quot;Twenty years of West Nile virus spread and evolution in the Americas visualized by Nextstrain&quot; &quot;West Nile virus eco-epidemiology and climate change&quot; &quot;Epidemiology of West Nile virus in Africa: An underestimated threat&quot; ...
 ##   ..$ subject         : chr [1:10] &quot;/Biology and life sciences/Anatomy/Body fluids/Blood,/Biology and life sciences/Immunology/Vaccination and immu&quot;| __truncated__ &quot;/Biology and life sciences/Biogeography/Phylogeography,/Biology and life sciences/Evolutionary biology/Evolutio&quot;| __truncated__ &quot;/Biology and life sciences/Microbiology/Medical microbiology/Microbial pathogens/Viral pathogens/Flaviviruses/W&quot;| __truncated__ &quot;/Biology and life sciences/Microbiology/Medical microbiology/Microbial pathogens/Viral pathogens/Flaviviruses/W&quot;| __truncated__ ...
-##   ..- attr(*, &quot;numFound&quot;)= int 4170
+##   ..- attr(*, &quot;numFound&quot;)= int 4374
 ##   ..- attr(*, &quot;start&quot;)= int 0</code></pre>
 <p>Look at the meta data:</p>
 <div class="sourceCode" id="cb1100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1100-1"><a href="entering-and-cleaning-data-3.html#cb1100-1" tabindex="-1"></a>wn_papers<span class="sc">$</span>meta</span></code></pre></div>
 <pre><code>## # A tibble: 1 × 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1     4170     0</code></pre>
+## 1     4374     0</code></pre>
 <p>Query for just articles with “West Nile” in the title:</p>
 <div class="sourceCode" id="cb1102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1102-1"><a href="entering-and-cleaning-data-3.html#cb1102-1" tabindex="-1"></a>wn_papers_titles <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
 <span id="cb1102-2"><a href="entering-and-cleaning-data-3.html#cb1102-2" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
@@ -1053,7 +1050,7 @@ data relevant to West Nile virus.</li>
 <pre><code>## # A tibble: 1 × 2
 ##   numFound start
 ##      &lt;int&gt; &lt;int&gt;
-## 1      251     0</code></pre>
+## 1      260     0</code></pre>
 <p>Re-run the query using an appropriate limit to get all the matching articles:</p>
 <div class="sourceCode" id="cb1105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1105-1"><a href="entering-and-cleaning-data-3.html#cb1105-1" tabindex="-1"></a>wn_papers_titles <span class="ot">&lt;-</span> <span class="fu">searchplos</span>(<span class="at">q =</span> <span class="st">&quot;title:West Nile&quot;</span>, </span>
 <span id="cb1105-2"><a href="entering-and-cleaning-data-3.html#cb1105-2" tabindex="-1"></a>                        <span class="at">fl =</span> <span class="fu">c</span>(<span class="st">&quot;publication_date&quot;</span>, <span class="st">&quot;title&quot;</span>, <span class="st">&quot;journal&quot;</span>, <span class="st">&quot;subject&quot;</span>,</span>
@@ -1095,8 +1092,8 @@ in each journal:</p>
 <pre><code>## # A tibble: 7 × 2
 ##   journal                              n
 ##   &lt;chr&gt;                            &lt;int&gt;
-## 1 PLoS ONE                            97
-## 2 PLoS Neglected Tropical Diseases    49
+## 1 PLoS ONE                            95
+## 2 PLoS Neglected Tropical Diseases    51
 ## 3 PLoS Pathogens                      28
 ## 4 PLoS Computational Biology           3
 ## 5 PLoS Medicine                        3

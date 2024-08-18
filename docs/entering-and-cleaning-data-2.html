@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 6 Entering and cleaning data #2 | R Programming for Research</title>
   <meta name="description" content="This is a bookdown version of the course notes for R Programming for Research, Colorado State University, Fall 2016." />
-  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.40 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 6 Entering and cleaning data #2 | R Programming for Research" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2023-10-30" />
+<meta name="date" content="2024-08-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -52,17 +52,14 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.10.2/plotly.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.4/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
-<link href="libs/bokehjs-0.12.5/bokeh.min.css" rel="stylesheet" />
-<link href="libs/bokehjs-0.12.5/loader.css" rel="stylesheet" />
-<script src="libs/bokehjs-0.12.5/bokeh.min.js"></script>
-<script src="libs/rbokeh-binding-0.5.2/rbokeh.js"></script>
 <link href="libs/dygraphs-1.1.1/dygraph.css" rel="stylesheet" />
 <script src="libs/dygraphs-1.1.1/dygraph-combined.js"></script>
 <script src="libs/dygraphs-1.1.1/shapes.js"></script>
@@ -71,10 +68,10 @@
 <script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
 <script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.28/datatables.js"></script>
-<link href="libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.33/datatables.js"></script>
+<link href="libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-36719749-2"></script>
 <script>
@@ -88,7 +85,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -761,19 +758,19 @@ a pdf of the lecture slides for this video.</p>
 <p>Here is some simulated wide data:</p>
 <div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="entering-and-cleaning-data-2.html#cb540-1" tabindex="-1"></a>wide_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 4
-##   time             X      Y      Z
-##   &lt;date&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 2009-01-01 -0.220   0.604 -6.90 
-## 2 2009-01-02 -0.0971  0.673 -7.56 
-## 3 2009-01-03 -0.120  -2.92  -0.714</code></pre>
+##   time            X       Y     Z
+##   &lt;date&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 2009-01-01 -0.777 -0.0600 -4.11
+## 2 2009-01-02  1.58  -0.278  -4.97
+## 3 2009-01-03  1.17   2.35    1.06</code></pre>
 <p>In the <code>wide_stocks</code> dataset, there are separate columns for three different stocks (<code>X</code>, <code>Y</code>, and <code>Z</code>). Each cell gives the value for a certain stock on a certain day. This data isn’t “tidy”, because the identify of the stock (<code>X</code>, <code>Y</code>, or <code>Z</code>) is a variable, and you’ll probably want to include it as a variable in modeling.</p>
 <div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="entering-and-cleaning-data-2.html#cb542-1" tabindex="-1"></a>wide_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 4
-##   time             X      Y      Z
-##   &lt;date&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 2009-01-01 -0.220   0.604 -6.90 
-## 2 2009-01-02 -0.0971  0.673 -7.56 
-## 3 2009-01-03 -0.120  -2.92  -0.714</code></pre>
+##   time            X       Y     Z
+##   &lt;date&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 2009-01-01 -0.777 -0.0600 -4.11
+## 2 2009-01-02  1.58  -0.278  -4.97
+## 3 2009-01-03  1.17   2.35    1.06</code></pre>
 <p>If you want to convert the dataframe to have all stock values in a single column, you can use <code>pivot_longer</code> to convert wide data to long data:</p>
 <div class="sourceCode" id="cb544"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb544-1"><a href="entering-and-cleaning-data-2.html#cb544-1" tabindex="-1"></a>long_stocks <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(<span class="at">data =</span> wide_stocks,</span>
 <span id="cb544-2"><a href="entering-and-cleaning-data-2.html#cb544-2" tabindex="-1"></a>                            <span class="at">cols =</span> <span class="sc">-</span>time,</span>
@@ -783,21 +780,21 @@ a pdf of the lecture slides for this video.</p>
 <pre><code>## # A tibble: 5 × 3
 ##   time       stock   price
 ##   &lt;date&gt;     &lt;chr&gt;   &lt;dbl&gt;
-## 1 2009-01-01 X     -0.220 
-## 2 2009-01-01 Y      0.604 
-## 3 2009-01-01 Z     -6.90  
-## 4 2009-01-02 X     -0.0971
-## 5 2009-01-02 Y      0.673</code></pre>
+## 1 2009-01-01 X     -0.777 
+## 2 2009-01-01 Y     -0.0600
+## 3 2009-01-01 Z     -4.11  
+## 4 2009-01-02 X      1.58  
+## 5 2009-01-02 Y     -0.278</code></pre>
 <p>In this “longer” dataframe, there is now one column that gives the identify of the stock (<code>stock</code>) and another column that gives the price of that stock that day (<code>price</code>):</p>
 <div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="entering-and-cleaning-data-2.html#cb546-1" tabindex="-1"></a>long_stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 × 3
 ##   time       stock   price
 ##   &lt;date&gt;     &lt;chr&gt;   &lt;dbl&gt;
-## 1 2009-01-01 X     -0.220 
-## 2 2009-01-01 Y      0.604 
-## 3 2009-01-01 Z     -6.90  
-## 4 2009-01-02 X     -0.0971
-## 5 2009-01-02 Y      0.673</code></pre>
+## 1 2009-01-01 X     -0.777 
+## 2 2009-01-01 Y     -0.0600
+## 3 2009-01-01 Z     -4.11  
+## 4 2009-01-02 X      1.58  
+## 5 2009-01-02 Y     -0.278</code></pre>
 <p>The format for a <code>pivots_longer</code> call is:</p>
 <div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="entering-and-cleaning-data-2.html#cb548-1" tabindex="-1"></a><span class="do">## Generic code</span></span>
 <span id="cb548-2"><a href="entering-and-cleaning-data-2.html#cb548-2" tabindex="-1"></a>new_df <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(old_df,</span>
@@ -822,13 +819,13 @@ a pdf of the lecture slides for this video.</p>
 <span id="cb550-3"><a href="entering-and-cleaning-data-2.html#cb550-3" tabindex="-1"></a>                      <span class="at">values_from =</span> price)</span>
 <span id="cb550-4"><a href="entering-and-cleaning-data-2.html#cb550-4" tabindex="-1"></a>stocks[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]</span></code></pre></div>
 <pre><code>## # A tibble: 5 × 4
-##   time             X      Y      Z
-##   &lt;date&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 2009-01-01 -0.220   0.604 -6.90 
-## 2 2009-01-02 -0.0971  0.673 -7.56 
-## 3 2009-01-03 -0.120  -2.92  -0.714
-## 4 2009-01-04  0.667   0.553 -5.52 
-## 5 2009-01-05  0.431   0.692  6.57</code></pre>
+##   time            X       Y     Z
+##   &lt;date&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 2009-01-01 -0.777 -0.0600 -4.11
+## 2 2009-01-02  1.58  -0.278  -4.97
+## 3 2009-01-03  1.17   2.35    1.06
+## 4 2009-01-04  1.15  -3.14    1.73
+## 5 2009-01-05  0.831 -0.605   5.82</code></pre>
 <p>Notice that this reverses the action of <code>pivot_longer</code>.</p>
 <p>The “wider” your data the less likely it is to be tidy, so won’t use <code>pivot_wider</code> frequently when you are preparing data for analysis. However, <code>pivot_wider</code> can be very helpful in creating tables for final reports and presentations.</p>
 <p>For example, if you wanted to create a table with means and standard deviations for each of the three stocks, you could use <code>pivot_wider</code> to rearrange the final summary to create an attractive table.</p>
@@ -839,9 +836,9 @@ a pdf of the lecture slides for this video.</p>
 <pre><code>## # A tibble: 3 × 4
 ##   stock     N   mean    sd
 ##   &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1 X        10  0.288 0.889
-## 2 Y        10  0.191 1.78 
-## 3 Z        10 -0.264 5.26</code></pre>
+## 1 X        10  0.234  1.17
+## 2 Y        10 -1.06   1.84
+## 3 Z        10 -1.44   4.15</code></pre>
 <div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="entering-and-cleaning-data-2.html#cb554-1" tabindex="-1"></a>stock_summary <span class="sc">%&gt;%</span></span>
 <span id="cb554-2"><a href="entering-and-cleaning-data-2.html#cb554-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">&quot;Mean (Std.dev.)&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>(mean, <span class="dv">2</span>), <span class="st">&quot; (&quot;</span>,</span>
 <span id="cb554-3"><a href="entering-and-cleaning-data-2.html#cb554-3" tabindex="-1"></a>                                    <span class="fu">round</span>(sd, <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>)) <span class="sc">%&gt;%</span></span>
@@ -868,9 +865,9 @@ a pdf of the lecture slides for this video.</p>
 </tr>
 <tr class="even">
 <td align="left">Mean (Std.dev.)</td>
-<td align="left">0.29 (0.89)</td>
-<td align="left">0.19 (1.78)</td>
-<td align="left">-0.26 (5.26)</td>
+<td align="left">0.23 (1.17)</td>
+<td align="left">-1.06 (1.84)</td>
+<td align="left">-1.44 (4.15)</td>
 </tr>
 </tbody>
 </table>
