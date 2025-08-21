@@ -23,7 +23,7 @@
 <meta name="author" content="Brooke Anderson, Rachel Severson, and Nicholas Good" />
 
 
-<meta name="date" content="2024-08-18" />
+<meta name="date" content="2025-08-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -95,7 +95,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -846,16 +846,16 @@ function.</p>
 <pre><code>## Simple feature collection with 3 features and 12 fields
 ## Geometry type: MULTIPOLYGON
 ## Dimension:     XY
-## Bounding box:  xmin: -109.0603 ymin: 36.99891 xmax: -107.3775 ymax: 39.36671
+## Bounding box:  xmin: -108.3811 ymin: 36.99902 xmax: -105.0487 ymax: 39.91437
 ## Geodetic CRS:  NAD83
-##   STATEFP COUNTYFP COUNTYNS       AFFGEOID GEOID      NAME         NAMELSAD
-## 1      08      077 00198154 0500000US08077 08077      Mesa      Mesa County
-## 2      08      083 00198157 0500000US08083 08083 Montezuma Montezuma County
-## 3      08      067 00198148 0500000US08067 08067  La Plata  La Plata County
+##   STATEFP COUNTYFP COUNTYNS        GEOIDFQ GEOID      NAME         NAMELSAD
+## 1      08      067 00198148 0500000US08067 08067  La Plata  La Plata County
+## 2      08      059 00198145 0500000US08059 08059 Jefferson Jefferson County
+## 3      08      065 00198149 0500000US08065 08065      Lake      Lake County
 ##   STUSPS STATE_NAME LSAD      ALAND   AWATER                       geometry
-## 1     CO   Colorado   06 8621348059 31991710 MULTIPOLYGON (((-109.0603 3...
-## 2     CO   Colorado   06 5255990019 27208195 MULTIPOLYGON (((-109.0459 3...
-## 3     CO   Colorado   06 4376255278 25642579 MULTIPOLYGON (((-108.3796 3...</code></pre>
+## 1     CO   Colorado   06 4376255274 25642579 MULTIPOLYGON (((-108.3796 3...
+## 2     CO   Colorado   06 1979762077 25052756 MULTIPOLYGON (((-105.0558 3...
+## 3     CO   Colorado   06  976215866 18111565 MULTIPOLYGON (((-106.5862 3...</code></pre>
 <p>The <code>geometry</code> column has a special class (sfc):</p>
 <div class="sourceCode" id="cb981"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb981-1"><a href="reporting-results-2.html#cb981-1" tabindex="-1"></a><span class="fu">class</span>(co_counties<span class="sc">$</span>geometry)</span></code></pre></div>
 <pre><code>## [1] &quot;sfc_MULTIPOLYGON&quot; &quot;sfc&quot;</code></pre>
@@ -875,7 +875,7 @@ out the coordinates of the bounding box:</p>
 ## -109.06025   36.99243 -102.04152   41.00344</code></pre>
 <div class="sourceCode" id="cb985"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb985-1"><a href="reporting-results-2.html#cb985-1" tabindex="-1"></a><span class="fu">st_bbox</span>(co_counties<span class="sc">$</span>geometry[<span class="dv">1</span>]) <span class="co"># Just for first county</span></span></code></pre></div>
 <pre><code>##       xmin       ymin       xmax       ymax 
-## -109.06025   38.49999 -107.37748   39.36671</code></pre>
+## -108.38107   36.99901 -107.48146   37.64032</code></pre>
 <p>You can add <code>sf</code> objects to <code>ggplot</code> objects using <code>geom_sf</code>:</p>
 <div class="sourceCode" id="cb987"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb987-1"><a href="reporting-results-2.html#cb987-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb987-2"><a href="reporting-results-2.html#cb987-2" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
@@ -903,10 +903,10 @@ out the coordinates of the bounding box:</p>
 ## Dimension:     XY
 ## Bounding box:  xmin: -106.1954 ymin: 40.25788 xmax: -104.9431 ymax: 40.99821
 ## Geodetic CRS:  NAD83
-##   STATEFP COUNTYFP COUNTYNS       AFFGEOID GEOID    NAME       NAMELSAD STUSPS
+##   STATEFP COUNTYFP COUNTYNS        GEOIDFQ GEOID    NAME       NAMELSAD STUSPS
 ## 1      08      069 00198150 0500000US08069 08069 Larimer Larimer County     CO
 ##   STATE_NAME LSAD      ALAND   AWATER                       geometry
-## 1   Colorado   06 6722952763 99045889 MULTIPOLYGON (((-106.1954 4...</code></pre>
+## 1   Colorado   06 6722949995 99048648 MULTIPOLYGON (((-106.1954 4...</code></pre>
 <p>Note: You may need the development version of <code>ggplot2</code> for the next piece of code to work (<code>devtools::install_github("tidyverse/ggplot2")</code>).</p>
 <div class="sourceCode" id="cb992"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb992-1"><a href="reporting-results-2.html#cb992-1" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
 <span id="cb992-2"><a href="reporting-results-2.html#cb992-2" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> co_counties, <span class="at">color =</span> <span class="st">&quot;lightgray&quot;</span>) <span class="sc">+</span> </span>
@@ -1433,42 +1433,42 @@ get to this figure.</li>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
-"sharing": {
-"github": false,
-"facebook": true,
-"twitter": true,
-"linkedin": false,
-"weibo": false,
-"instapaper": false,
-"vk": false,
-"whatsapp": false,
-"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
-},
-"fontsettings": {
-"theme": "white",
-"family": "sans",
-"size": 2
-},
-"edit": {
-"link": "https://github.com/geanders/RProgrammingForResearch/edit/master/09a-reportingresults2.Rmd",
-"text": "Edit"
-},
-"history": {
-"link": null,
-"text": null
-},
-"view": {
-"link": null,
-"text": null
-},
-"download": ["RProgrammingForResearch.pdf"],
-"search": {
-"engine": "fuse",
-"options": null
-},
-"toc": {
-"collapse": "section"
-}
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/geanders/RProgrammingForResearch/edit/master/09a-reportingresults2.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": ["RProgrammingForResearch.pdf"],
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "section"
+  }
 });
 });
 </script>
