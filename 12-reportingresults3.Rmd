@@ -298,14 +298,14 @@ table(!is.na(paris_twitter$longitude))
 
 Here is a table of the number of tweets under the five most-tweeted tags:
 
-```{r aac}
+```{r aac, eval = FALSE}
 head(paris_twitter)
 tweet_sum <- paris_twitter %>%
-  dplyr::group_by_(~ tag) %>%
-  dplyr::summarize_(n = ~ n(),
+  dplyr::group_by(~ tag) %>%
+  dplyr::summarize(n = ~ n(),
                    example = ~ gsub("[[:punct:]]", " ", 
                                  base::sample(text, 1))) %>%
-  dplyr::arrange_(~ dplyr::desc(n))
+  dplyr::arrange(~ dplyr::desc(n))
 knitr::kable(tweet_sum[1:5, ],
              col.names = c("Tag", "# of Tweets", "Example Tweet"))
 ```
@@ -607,7 +607,7 @@ ggplot2::map_data("world", "usa") %>%
 
 You can also make choropleths interactive. Remember that we earlier created a choropleth of US state populations with the following code:
 
-```{r  message = FALSE, warning = FALSE}
+```{r  message = FALSE, warning = FALSE, eval = FALSE}
 library(choroplethr)
 data(df_pop_state)
 state_choropleth(df_pop_state)
@@ -615,7 +615,7 @@ state_choropleth(df_pop_state)
 
 You can use the following code with `plotly` to make an interactive choropleth instead:
 
-```{r  message = FALSE, warning = FALSE}
+```{r  message = FALSE, warning = FALSE, eval = FALSE}
 us_map <- list(scope = 'usa',
   projection = list(type = 'albers usa'),
   lakecolor = toRGB('white'))
